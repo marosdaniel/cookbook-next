@@ -1,8 +1,5 @@
 import React from 'react';
-
-type Props = {
-  children: React.ReactNode;
-};
+import { Props } from '@/types/common';
 
 export function ServerProviders({ children }: Props) {
   // Server-safe providers (none for now, add theme or other SSR-safe providers here)
