@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import './globals.css';
-import { ServerProviders } from '@/providers/server';
+import { headers } from 'next/headers';
 import dynamic from 'next/dynamic';
-import { getStoredLocale, getLocaleMessages } from '@/lib/locale';
+import { ServerProviders } from '@/providers/server';
+import { getLocaleMessages } from '@/lib/locale';
+import './globals.css';
 
 const ClientProviders = dynamic(
   () => import('@/providers/client').then((m) => m.ClientProviders),
@@ -32,15 +33,23 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Load default messages based on stored locale
-  const storedLocale = getStoredLocale();
-  const messages = await getLocaleMessages(storedLocale);
+  // Get locale from cookies on server-side
+  const headersList = await headers();
+  const cookieHeader = headersList.get('cookie') || '';
+  const localeCookie =
+    cookieHeader
+      .split('; ')
+      .find((row) => row.startsWith('locale='))
+      ?.split('=')[1] || 'en';
+
+  // Load messages based on the locale from cookies
+  const messages = await getLocaleMessages(localeCookie);
 
   return (
-    <html lang={storedLocale}>
+    <html lang={localeCookie}>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ServerProviders>
-          <ClientProviders messages={messages} initialLocale={storedLocale}>
+          <ClientProviders messages={messages} initialLocale={localeCookie}>
             {children}
           </ClientProviders>
         </ServerProviders>
