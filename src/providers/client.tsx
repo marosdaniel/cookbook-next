@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ReduxProviderWrapper } from './state/reduxProvider';
-import { MantineProviderWrapper } from './ui/mantine';
+import { MantineProviderWrapper } from './mantine/mantine';
 
 type Props = {
   children: React.ReactNode;
