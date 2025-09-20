@@ -1,0 +1,14 @@
+{
+  "extends": ["next/core-web-vitals", "eslint:recommended", "plugin:import/recommended"],
+  "plugins": ["unused-imports"],
+  "rules": {
+    "unused-imports/no-unused-imports": "error",
+    "import/order": [
+      "error",
+      {
+        "groups": [["builtin", "external", "internal"]],
+        "newlines-between": "always"
+      }
+    ]
+  }
+}
