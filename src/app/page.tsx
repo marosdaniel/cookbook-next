@@ -1,14 +1,14 @@
 'use client';
 
 import { useLocale } from '@/hooks/useLocale';
-import { Button } from '@mantine/core';
+import { Button, Title } from '@mantine/core';
 
 export default function Home() {
   const { locale, changeLocale, t } = useLocale();
 
   return (
     <div style={{ padding: '2rem' }}>
-      <h1>Next.js Cookbook</h1>
+      <Title order={1}>Next.js Cookbook123123</Title>
 
       <div style={{ marginBottom: '2rem' }}>
         <p>Current locale: {locale}</p>
