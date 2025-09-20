@@ -11,13 +11,13 @@ if (!process.env.MONGODB_URI) {
 }
 
 if (process.env.NODE_ENV === 'development') {
-  // @ts-ignore
+  // @ts-expect-error
   if (!global._mongoClientPromise) {
     client = new MongoClient(uri, options);
-    // @ts-ignore
+    // @ts-expect-error
     global._mongoClientPromise = client.connect();
   }
-  // @ts-ignore
+  // @ts-expect-error
   clientPromise = global._mongoClientPromise;
 } else {
   client = new MongoClient(uri, options);
