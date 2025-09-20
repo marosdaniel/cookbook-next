@@ -1,0 +1,42 @@
+{
+  "Colors": {
+    "prefix": "cls",
+    "body": ["$1: ${p => p.theme.colors.$2};$0"]
+  },
+  "Format message": {
+    "prefix": "fm",
+    "body": ["formatMessage(messages$1)$0"]
+  },
+  "Import styles": {
+    "prefix": "isty",
+    "body": ["import { $1 } from './styles';$0"]
+  },
+  "Export default": {
+    "prefix": "exp",
+    "body": ["export { default } from './$1';$0"]
+  },
+  "Skeleton component": {
+    "prefix": "cmp",
+    "body": ["import React from 'react';", "", "const $1 = () => {", "  return null;", "};", "", "export default $2;$0"]
+  },
+  "Styled Component": {
+    "prefix": "scomp",
+    "body": ["export const $1 = styled.$2`", "  $0", "`;"]
+  },
+  "Export interface IProps": {
+    "prefix": "exi",
+    "body": ["export interface IProps {", "  $0", "}"]
+  },
+  "Import types": {
+    "prefix": "imt",
+    "body": ["import { $0 } from './types';"]
+  },
+  "Use Intl": {
+    "prefix": "uin",
+    "body": ["const { formatMessage } = useIntl();"]
+  },
+  "Import use intl": {
+    "prefix": "iuin",
+    "body": ["import { useIntl } from 'react-intl';"]
+  }
+}
