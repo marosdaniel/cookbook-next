@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
 import dynamic from 'next/dynamic';
+import { NextIntlClientProvider } from 'next-intl';
 import { ServerProviders } from '@/providers/server';
 import { getLocaleMessages } from '@/lib/locale';
 import '@mantine/core/styles.css';
@@ -23,23 +23,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Get locale from cookies on server-side
-  const headersList = await headers();
-  const cookieHeader = headersList.get('cookie') || '';
-  const localeCookie =
-    cookieHeader
-      .split('; ')
-      .find((row) => row.startsWith('locale='))
-      ?.split('=')[1] || 'en';
-
-  // Load messages based on the locale from cookies
-  const messages = await getLocaleMessages(localeCookie);
+  // Load default English messages for SSR
+  const messages = await getLocaleMessages('en');
 
   return (
-    <html lang={localeCookie}>
+    <html lang="en">
       <body suppressHydrationWarning={true}>
         <ServerProviders>
-          <ClientProviders messages={messages} initialLocale={localeCookie}>
+          <ClientProviders messages={messages} locale="en">
             {children}
           </ClientProviders>
         </ServerProviders>

@@ -1,16 +1,13 @@
 import { getRequestConfig } from 'next-intl/server';
 
-export default getRequestConfig(async ({ requestLocale }) => {
-  // Get locale from request or default to 'en'
-  let locale = await requestLocale;
-
-  // Default to 'en' if no locale is provided
-  if (!locale) {
-    locale = 'en';
-  }
+export default getRequestConfig(async () => {
+  // Default messages for server-side rendering
+  const messages = (await import(`../locales/en.json`)).default;
 
   return {
-    locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
+    locale: 'en',
+    messages,
+    timeZone: 'Europe/Budapest',
+    now: new Date(),
   };
 });

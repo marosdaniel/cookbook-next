@@ -25,8 +25,6 @@ export const useLocale = () => {
     setLocale(newLocale);
     const newMessages = await getLocaleMessages(newLocale);
     setMessages(newMessages);
-    // This will trigger a re-render and the client provider will load new messages
-    window.location.reload();
   };
 
   const t = (key: string) => {

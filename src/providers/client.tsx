@@ -11,8 +11,8 @@ import { store } from '@/lib/store';
 export function ClientProviders({
   children,
   messages: initialMessages,
-  initialLocale = 'en',
-}: Props & { messages: any; initialLocale?: string }) {
+  locale: initialLocale,
+}: Props & { messages: any; locale: string }) {
   const [messages, setMessages] = useState(initialMessages);
   const [locale, setLocale] = useState(initialLocale);
 
@@ -31,11 +31,16 @@ export function ClientProviders({
   }, [initialLocale]);
 
   return (
-    <ReduxProvider store={store}>
-      <NextIntlClientProvider locale={locale} messages={messages}>
+    <NextIntlClientProvider
+      locale={locale}
+      messages={messages}
+      timeZone="Europe/Budapest"
+      now={new Date()}
+    >
+      <ReduxProvider store={store}>
         <MantineProviderWrapper>{children}</MantineProviderWrapper>
-      </NextIntlClientProvider>
-    </ReduxProvider>
+      </ReduxProvider>
+    </NextIntlClientProvider>
   );
 }
 
