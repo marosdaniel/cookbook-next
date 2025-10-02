@@ -1,0 +1,1 @@
+export { addToFavoriteRecipes } from './addToFavoriteRecipes';

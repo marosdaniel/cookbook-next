@@ -1,0 +1,23 @@
+# Recipe-related schema definitions
+
+type Recipe {
+  id: ID!
+  title: String!
+  description: String
+  ingredients: [String!]!
+  instructions: String!
+}
+
+extend type Query {
+  recipes: [Recipe!]!
+  recipe(id: ID!): Recipe
+}
+
+extend type Mutation {
+  addRecipe(
+    title: String!
+    description: String
+    ingredients: [String!]!
+    instructions: String!
+  ): Recipe!
+}

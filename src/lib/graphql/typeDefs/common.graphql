@@ -1,0 +1,6 @@
+scalar DateTime
+
+# Base root types to allow module files to extend
+type Query
+
+type Mutation
