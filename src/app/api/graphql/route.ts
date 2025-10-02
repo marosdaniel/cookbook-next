@@ -1,6 +1,7 @@
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { ApolloServer } from '@apollo/server';
 import jwt from 'jsonwebtoken';
+import type { NextRequest } from 'next/server';
 import {
   typeDefs,
   resolvers as scalarResolvers,
@@ -44,4 +45,12 @@ const handler = startServerAndCreateNextHandler(server, {
   },
 });
 
-export { handler as GET, handler as POST };
+// Cast to App Router handler type to satisfy Next.js constraints
+export const GET = handler as unknown as (
+  request: NextRequest,
+  context: { params: Promise<Record<string, never>> }
+) => Promise<Response>;
+export const POST = handler as unknown as (
+  request: NextRequest,
+  context: { params: Promise<Record<string, never>> }
+) => Promise<Response>;
