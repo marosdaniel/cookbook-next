@@ -1,4 +1,8 @@
-import { createTheme, type MantineTheme, type MantineThemeOverride } from "@mantine/core";
+import {
+	createTheme,
+	type MantineTheme,
+	type MantineThemeOverride,
+} from "@mantine/core";
 
 export const lightTheme: MantineThemeOverride = createTheme({
 	// fontFamily: 'Segoe UI',

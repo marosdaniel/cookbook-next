@@ -17,12 +17,12 @@ export function ClientProviders({
 	const [locale, setLocale] = useState(initialLocale);
 
 	useEffect(() => {
-		const loadLocale = async () => {
-			const storedLocale = await getStoredLocale();
+		const loadLocale = () => {
+			const storedLocale = getStoredLocale();
 			setLocale(storedLocale);
 
 			if (storedLocale !== initialLocale) {
-				const localeMessages = await getLocaleMessages(storedLocale);
+				const localeMessages = getLocaleMessages(storedLocale);
 				setMessages(localeMessages);
 			}
 		};

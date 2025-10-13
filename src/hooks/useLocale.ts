@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import {
+	getLocaleMessages,
 	getStoredLocale,
 	setStoredLocale,
-	getLocaleMessages,
 } from "@/lib/locale";
 
 export const useLocale = () => {
