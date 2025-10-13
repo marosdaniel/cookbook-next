@@ -1,90 +1,90 @@
 # User-related schema definitions
 
 type BaseResponse {
-  success: Boolean
-  message: String
+	success: Boolean
+	message: String
 }
 
 type OperationResult {
-  success: Boolean!
-  message: String!
-  statusCode: Int
+	success: Boolean!
+	message: String!
+	statusCode: Int
 }
 
 enum UserRole {
-  ADMIN
-  USER
-  BLOGGER
+	ADMIN
+	USER
+	BLOGGER
 }
 
 type User {
-  _id: ID!
-  firstName: String!
-  lastName: String!
-  userName: String!
-  email: String!
-  password: String!
-  recipes: [Recipe!]
-  favoriteRecipes: [Recipe!]
-  locale: String!
-  role: UserRole!
-  resetPasswordToken: String
-  resetPasswordExpires: DateTime
-  createdAt: DateTime!
+	_id: ID!
+	firstName: String!
+	lastName: String!
+	userName: String!
+	email: String!
+	password: String!
+	recipes: [Recipe!]
+	favoriteRecipes: [Recipe!]
+	locale: String!
+	role: UserRole!
+	resetPasswordToken: String
+	resetPasswordExpires: DateTime
+	createdAt: DateTime!
 }
 
 input UserRegisterInput {
-  firstName: String!
-  lastName: String!
-  userName: String!
-  email: String!
-  password: String!
+	firstName: String!
+	lastName: String!
+	userName: String!
+	email: String!
+	password: String!
 }
 
 input UserEditInput {
-  firstName: String
-  lastName: String
-  locale: String
+	firstName: String
+	lastName: String
+	locale: String
 }
 
 input PasswordEditInput {
-  currentPassword: String!
-  newPassword: String!
-  confirmNewPassword: String!
+	currentPassword: String!
+	newPassword: String!
+	confirmNewPassword: String!
 }
 
 input UserLoginInput {
-  userNameOrEmail: String!
-  password: String!
+	userNameOrEmail: String!
+	password: String!
 }
 
 type AuthPayload {
-  token: String!
-  user: User!
-  userId: ID!
+	token: String!
+	user: User!
+	userId: ID!
 }
 
 extend type Query {
-  getUserById(id: ID!): User!
-  getUserByUserName(userName: String!): User!
-  getAllUser: [User]!
-  getFavoriteRecipes(userId: ID!, limit: Int): [Recipe!]!
+	getUserById(id: ID!): User!
+	getUserByUserName(userName: String!): User!
+	getAllUser: [User]!
+	getFavoriteRecipes(userId: ID!, limit: Int): [Recipe!]!
 }
 
 extend type Mutation {
-  loginUser(userLoginInput: UserLoginInput!): AuthPayload!
-  createUser(userRegisterInput: UserRegisterInput): User!
-  editUser(id: ID!, userEditInput: UserEditInput!): User!
+	loginUser(userLoginInput: UserLoginInput!): AuthPayload!
+	createUser(userRegisterInput: UserRegisterInput): User!
+	editUser(id: ID!, userEditInput: UserEditInput!): User!
 
-  changePassword(id: ID!, passwordEditInput: PasswordEditInput!): Boolean!
-  resetPassword(email: String!): BaseResponse!
-  setNewPassword(token: String!, newPassword: String!): BaseResponse!
+	changePassword(id: ID!, passwordEditInput: PasswordEditInput!): Boolean!
+	resetPassword(email: String!): BaseResponse!
+	setNewPassword(token: String!, newPassword: String!): BaseResponse!
 
-  deleteUser(id: ID!): Boolean!
-  deleteAllUser: Int!
+	deleteUser(id: ID!): Boolean!
+	deleteAllUser: Int!
 
-  addToFavoriteRecipes(userId: ID!, recipeId: ID!): OperationResult!
-  removeFromFavoriteRecipes(userId: ID!, recipeId: ID!): OperationResult!
+	addToFavoriteRecipes(userId: ID!, recipeId: ID!): OperationResult!
+	removeFromFavoriteRecipes(userId: ID!, recipeId: ID!): OperationResult!
 
-  cleanUserRecipes(userId: ID!): Boolean!
+	cleanUserRecipes(userId: ID!): Boolean!
 }

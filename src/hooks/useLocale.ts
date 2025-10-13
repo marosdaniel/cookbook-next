@@ -1,44 +1,44 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
-  getStoredLocale,
-  setStoredLocale,
-  getLocaleMessages,
-} from '@/lib/locale';
+	getStoredLocale,
+	setStoredLocale,
+	getLocaleMessages,
+} from "@/lib/locale";
 
 export const useLocale = () => {
-  const [locale, setLocale] = useState('en');
-  const [messages, setMessages] = useState<any>({});
+	const [locale, setLocale] = useState("en");
+	const [messages, setMessages] = useState<any>({});
 
-  useEffect(() => {
-    const loadLocale = async () => {
-      const storedLocale = getStoredLocale();
-      setLocale(storedLocale);
-      const localeMessages = await getLocaleMessages(storedLocale);
-      setMessages(localeMessages);
-    };
+	useEffect(() => {
+		const loadLocale = async () => {
+			const storedLocale = getStoredLocale();
+			setLocale(storedLocale);
+			const localeMessages = await getLocaleMessages(storedLocale);
+			setMessages(localeMessages);
+		};
 
-    loadLocale();
-  }, []);
+		loadLocale();
+	}, []);
 
-  const changeLocale = async (newLocale: string) => {
-    setStoredLocale(newLocale);
-    setLocale(newLocale);
-    const newMessages = await getLocaleMessages(newLocale);
-    setMessages(newMessages);
-  };
+	const changeLocale = async (newLocale: string) => {
+		setStoredLocale(newLocale);
+		setLocale(newLocale);
+		const newMessages = await getLocaleMessages(newLocale);
+		setMessages(newMessages);
+	};
 
-  const t = (key: string) => {
-    const keys = key.split('.');
-    let value = messages;
-    for (const k of keys) {
-      value = value?.[k];
-    }
-    return value || key;
-  };
+	const t = (key: string) => {
+		const keys = key.split(".");
+		let value = messages;
+		for (const k of keys) {
+			value = value?.[k];
+		}
+		return value || key;
+	};
 
-  return {
-    locale,
-    changeLocale,
-    t,
-  };
+	return {
+		locale,
+		changeLocale,
+		t,
+	};
 };
