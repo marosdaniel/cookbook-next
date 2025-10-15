@@ -64,14 +64,14 @@ type AuthPayload {
 	userId: ID!
 }
 
-extend type Query {
+type Query {
 	getUserById(id: ID!): User!
 	getUserByUserName(userName: String!): User!
 	getAllUser: [User]!
 	getFavoriteRecipes(userId: ID!, limit: Int): [Recipe!]!
 }
 
-extend type Mutation {
+type Mutation {
 	loginUser(userLoginInput: UserLoginInput!): AuthPayload!
 	createUser(userRegisterInput: UserRegisterInput): User!
 	editUser(id: ID!, userEditInput: UserEditInput!): User!

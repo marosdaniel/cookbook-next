@@ -1,23 +1,146 @@
 # Recipe-related schema definitions
 
+type Rating {
+	_id: ID!
+	recipeId: ID!
+	userId: ID!
+	ratingValue: Float!
+	createdAt: DateTime
+	updatedAt: DateTime
+}
+
+input RatingInput {
+	recipeId: ID!
+	ratingValue: Float!
+}
+
+type Ingredient {
+	_id: ID!
+	localId: String!
+	name: String!
+	quantity: Float!
+	unit: String!
+}
+
+input IngredientInput {
+	_id: ID
+	localId: String!
+	name: String!
+	quantity: Float!
+	unit: String!
+}
+
+type PreparationStep {
+	_id: ID!
+	description: String!
+	order: Int!
+}
+
+input PreparationStepInput {
+	_id: ID
+	description: String!
+	order: Int!
+}
+
+type Category {
+	_id: ID!
+	name: String!
+	key: String!
+	label: String!
+	type: String!
+}
+
+type Label {
+	_id: ID!
+	name: String!
+	key: String!
+	label: String!
+	type: String!
+}
+
+input MetaInputPartial {
+	value: String!
+	label: String!
+}
+
+type DifficultyLevel {
+	_id: ID!
+	name: String!
+	key: String!
+	label: String!
+	type: String!
+}
+
 type Recipe {
-	id: ID!
+	_id: ID!
 	title: String!
 	description: String
-	ingredients: [String!]!
-	instructions: String!
+	ingredients: [Ingredient]!
+	category: Category!
+	labels: [Label]!
+	preparationSteps: [PreparationStep]!
+	createdAt: DateTime!
+	updatedAt: DateTime!
+	createdBy: String!
+	# author: User!
+	imgSrc: String
+	cookingTime: Int!
+	difficultyLevel: DifficultyLevel!
+	servings: Int!
+	youtubeLink: String
+	averageRating: Float!
+	ratingsCount: Int!
+	userRating: Float
+	isFavorite: Boolean
 }
 
-extend type Query {
-	recipes: [Recipe!]!
-	recipe(id: ID!): Recipe
+input RecipeCreateInput {
+	title: String!
+	description: String
+	ingredients: [IngredientInput]!
+	preparationSteps: [PreparationStepInput]!
+	category: MetaInputPartial!
+	labels: [MetaInputPartial]
+	imgSrc: String
+	cookingTime: Int!
+	difficultyLevel: MetaInputPartial!
+	servings: Int!
+	youtubeLink: String
 }
 
-extend type Mutation {
-	addRecipe(
-		title: String!
-		description: String
-		ingredients: [String!]!
-		instructions: String!
-	): Recipe!
+input RecipeEditInput {
+	title: String!
+	description: String
+	ingredients: [IngredientInput]!
+	preparationSteps: [PreparationStepInput]!
+	category: MetaInputPartial!
+	labels: [MetaInputPartial]
+	imgSrc: String
+	cookingTime: Int!
+	difficultyLevel: MetaInputPartial!
+	servings: Int!
+	youtubeLink: String
+}
+
+type RecipeData {
+	recipes: [Recipe]!
+	totalRecipes: Int!
+}
+
+type Query {
+	getRecipeById(_id: ID!): Recipe!
+	getRecipes(limit: Int): RecipeData!
+	getRecipesByTitle(title: String!, limit: Int): RecipeData!
+	getRecipesByUserName(userName: String!, limit: Int): RecipeData!
+	getRecipesByUserId(userId: ID!, limit: Int): RecipeData! # deprecated
+	getRatingsByRecipe(recipeId: ID!): [Rating!]!
+}
+
+type Mutation {
+	createRecipe(recipeCreateInput: RecipeCreateInput): Recipe!
+	editRecipe(id: ID!, recipeEditInput: RecipeEditInput): Recipe!
+	deleteRecipe(id: ID!): Boolean! # true if  something was deleted, false if the id was not found or deleted
+	deleteAllRecipes: Int! # number of deleted recipes
+	rateRecipe(ratingInput: RatingInput!): Recipe!
+	deleteRating(recipeId: ID!): Boolean! # true if  something was deleted, false if the id was not found or deleted
 }
