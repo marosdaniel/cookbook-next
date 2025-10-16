@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
 	getLocaleMessages,
 	getStoredLocale,
 	setStoredLocale,
-} from "@/lib/locale";
+} from '@/lib/locale';
 
 export const useLocale = () => {
-	const [locale, setLocale] = useState("en");
+	const [locale, setLocale] = useState('en');
 	const [messages, setMessages] = useState<any>({});
 
 	useEffect(() => {
@@ -28,7 +28,7 @@ export const useLocale = () => {
 	};
 
 	const t = (key: string) => {
-		const keys = key.split(".");
+		const keys = key.split('.');
 		let value = messages;
 		for (const k of keys) {
 			value = value?.[k];

@@ -23,12 +23,15 @@
 			"correctness": {
 				"noUnusedImports": "warn",
 				"noUnusedVariables": "error"
+			},
+			"suspicious": {
+				"noExplicitAny": "warn"
 			}
 		}
 	},
 	"javascript": {
 		"formatter": {
-			"quoteStyle": "double"
+			"quoteStyle": "single"
 		}
 	},
 	"assist": {

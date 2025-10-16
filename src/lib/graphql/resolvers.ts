@@ -1,4 +1,4 @@
-import { addToFavoriteRecipes } from "./resolvers/user/mutations";
+import { addToFavoriteRecipes } from './resolvers/user/mutations';
 
 export const resolvers = {
 	Query: {},

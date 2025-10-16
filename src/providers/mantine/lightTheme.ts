@@ -2,23 +2,23 @@ import {
 	createTheme,
 	type MantineTheme,
 	type MantineThemeOverride,
-} from "@mantine/core";
+} from '@mantine/core';
 
 export const lightTheme: MantineThemeOverride = createTheme({
 	// fontFamily: 'Segoe UI',
-	primaryColor: "pink",
+	primaryColor: 'pink',
 	colors: {
-		"bright-pink": [
-			"#F0BBDD",
-			"#ED9BCF",
-			"#EC7CC3",
-			"#ED5DB8",
-			"#F13EAF",
-			"#F71FA7",
-			"#FF00A1",
-			"#E00890",
-			"#C50E82",
-			"#AD1374",
+		'bright-pink': [
+			'#F0BBDD',
+			'#ED9BCF',
+			'#EC7CC3',
+			'#ED5DB8',
+			'#F13EAF',
+			'#F71FA7',
+			'#FF00A1',
+			'#E00890',
+			'#C50E82',
+			'#AD1374',
 		],
 	},
 	autoContrast: true,
@@ -53,23 +53,23 @@ export const lightTheme: MantineThemeOverride = createTheme({
 		},
 		Checkbox: {
 			defaultProps: {
-				c: "pink.7",
+				c: 'pink.7',
 			},
 		},
 		NavLink: {
 			defaultProps: {
-				c: "gray.7",
+				c: 'gray.7',
 				fw: 600,
 			},
 		},
 		Title: {
 			defaultProps: {
-				c: "gray.8",
+				c: 'gray.8',
 			},
 		},
 		Text: {
 			defaultProps: {
-				c: "gray.8",
+				c: 'gray.8',
 			},
 		},
 	},

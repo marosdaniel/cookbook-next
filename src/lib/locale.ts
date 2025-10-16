@@ -1,8 +1,8 @@
-export const LOCALE_STORAGE_KEY = "locale";
+export const LOCALE_STORAGE_KEY = 'locale';
 
 export const getStoredLocale = (): string => {
 	// Try localStorage first (works on both server and client)
-	if (typeof window !== "undefined") {
+	if (typeof window !== 'undefined') {
 		try {
 			const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
 			if (stored) return stored;
@@ -12,23 +12,23 @@ export const getStoredLocale = (): string => {
 	}
 
 	// Fallback to cookies
-	if (typeof window !== "undefined") {
+	if (typeof window !== 'undefined') {
 		try {
 			const stored = document.cookie
-				.split("; ")
+				.split('; ')
 				.find((row) => row.startsWith(`${LOCALE_STORAGE_KEY}=`))
-				?.split("=")[1];
+				?.split('=')[1];
 			if (stored) return stored;
 		} catch {
 			// Ignore cookie errors
 		}
 	}
 
-	return "en";
+	return 'en';
 };
 
 export const setStoredLocale = (locale: string): void => {
-	if (typeof window === "undefined") return;
+	if (typeof window === 'undefined') return;
 
 	try {
 		// Set in localStorage
@@ -49,7 +49,7 @@ export const getLocaleMessages = async (locale: string) => {
 	} catch {
 		// Fallback to English
 		try {
-			const messages = await import("../locales/en.json");
+			const messages = await import('../locales/en.json');
 			return messages.default || messages;
 		} catch {
 			// Ultimate fallback - return empty object

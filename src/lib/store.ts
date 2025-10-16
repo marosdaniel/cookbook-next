@@ -1,9 +1,9 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
+import { configureStore, createSlice } from '@reduxjs/toolkit';
 
 const initialState = { count: 0 };
 
 const exampleSlice = createSlice({
-	name: "example",
+	name: 'example',
 	initialState,
 	reducers: {
 		increment(state) {

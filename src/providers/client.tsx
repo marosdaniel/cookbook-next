@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { NextIntlClientProvider } from "next-intl";
-import { useEffect, useState } from "react";
-import { Provider as ReduxProvider } from "react-redux";
-import { getLocaleMessages, getStoredLocale } from "@/lib/locale";
-import { store } from "@/lib/store";
-import type { Props } from "@/types/common";
-import { MantineProviderWrapper } from "./mantine/mantine";
+import { NextIntlClientProvider } from 'next-intl';
+import { useEffect, useState } from 'react';
+import { Provider as ReduxProvider } from 'react-redux';
+import { getLocaleMessages, getStoredLocale } from '@/lib/locale';
+import { store } from '@/lib/store';
+import type { Props } from '@/types/common';
+import { MantineProviderWrapper } from './mantine/mantine';
 
 export function ClientProviders({
 	children,
