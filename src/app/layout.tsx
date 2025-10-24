@@ -37,7 +37,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body suppressHydrationWarning={true}>
+      <body>
         <ServerProviders>
           <ClientProviders messages={allMessages} locale="en">
             {children}

@@ -1,6 +1,9 @@
 {
   "name": "cookbook-next",
-  "version": "0.1.6",
+  "description": "A recipe sharing platform built with Next.js, Apollo Server, and MongoDB.",
+  "author": "Daniel Maros",
+  "license": "MIT",
+  "version": "0.1.7",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

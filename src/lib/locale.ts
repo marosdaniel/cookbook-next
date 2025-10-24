@@ -1,6 +1,6 @@
 import type { LocaleMessages } from '@/types/common';
 
-export const LOCALE_STORAGE_KEY = 'locale';
+export const LOCALE_STORAGE_KEY = 'cookbook-locale';
 
 export const getStoredLocale = (): string => {
   // Try localStorage first (works on both server and client)
