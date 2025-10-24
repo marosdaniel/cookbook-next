@@ -1,2 +1,2 @@
-export { setLocale } from './global';
+export * from './global';
 export * from './store';

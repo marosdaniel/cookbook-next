@@ -3,8 +3,7 @@
 import { Button, Title } from '@mantine/core';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useDispatch } from 'react-redux';
-import { setLocale } from '@/lib/store';
-import { useLocale } from '@/lib/store/global';
+import { setLocale, useLocale } from '@/lib/store';
 
 export default function Home() {
   const dispatch = useDispatch();
