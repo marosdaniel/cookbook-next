@@ -23,4 +23,4 @@ const globalSlice = createSlice({
 
 export const { setLocale } = globalSlice.actions;
 
-export default globalSlice.reducer;
+export const globalReducer = globalSlice.reducer;

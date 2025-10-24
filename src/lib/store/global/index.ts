@@ -1,1 +1,2 @@
-export { default, setLocale } from './global';
+export * from './global';
+export * from './selectors';

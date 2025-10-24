@@ -3,13 +3,13 @@
   "description": "A recipe sharing platform built with Next.js, Apollo Server, and MongoDB.",
   "author": "Daniel Maros",
   "license": "MIT",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint-format-fix": "biome format --write && biome lint --write"
+    "lint:fix": "biome format --write && biome lint --write"
   },
   "dependencies": {
     "@apollo/server": "^5.0.0",

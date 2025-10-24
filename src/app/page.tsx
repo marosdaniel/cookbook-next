@@ -2,15 +2,15 @@
 
 import { Button, Title } from '@mantine/core';
 import { useFormatter, useTranslations } from 'next-intl';
-import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '@/lib/store';
+import { useDispatch } from 'react-redux';
 import { setLocale } from '@/lib/store';
+import { useLocale } from '@/lib/store/global';
 
 export default function Home() {
   const dispatch = useDispatch();
-  const locale = useSelector((state: RootState) => state.global.locale);
+  const locale = useLocale();
   const format = useFormatter();
-  const t = useTranslations();
+  const translate = useTranslations();
 
   // Test advanced features
   const testDate = new Date();
@@ -46,10 +46,10 @@ export default function Home() {
 
       <div>
         <h2>Translations Test:</h2>
-        <p>Edit: {t('general.edit')}</p>
-        <p>Save: {t('general.save')}</p>
-        <p>Cancel: {t('general.cancel')}</p>
-        <p>Login: {t('auth.login')}</p>
+        <p>Edit: {translate('general.edit')}</p>
+        <p>Save: {translate('general.save')}</p>
+        <p>Cancel: {translate('general.cancel')}</p>
+        <p>Login: {translate('auth.login')}</p>
 
         <h2>Advanced Features Test:</h2>
         <p>
