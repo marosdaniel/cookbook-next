@@ -1,24 +1,24 @@
 type Metadata {
-	key: String!
-	label: String!
-	type: String!
-	name: String!
+  key: String!
+  label: String!
+  type: String!
+  name: String!
 }
 
 input CreateMetadataInput {
-	key: String!
-	label: String!
-	type: String!
-	name: String!
+  key: String!
+  label: String!
+  type: String!
+  name: String!
 }
 
 type Query {
-	getMetadataByType(type: String!): [Metadata]!
-	getMetadataByKey(key: String!): Metadata!
-	getAllMetadata: [Metadata]!
+  getMetadataByType(type: String!): [Metadata]!
+  getMetadataByKey(key: String!): Metadata!
+  getAllMetadata: [Metadata]!
 }
 
 type Mutation {
-	createMetadata(createMetadataInput: CreateMetadataInput!): Metadata!
-	deleteMetadata(key: String!): Boolean!
+  createMetadata(createMetadataInput: CreateMetadataInput!): Metadata!
+  deleteMetadata(key: String!): Boolean!
 }

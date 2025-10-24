@@ -1,47 +1,50 @@
 'use client';
 
 import { NextIntlClientProvider } from 'next-intl';
-import { useEffect, useState } from 'react';
-import { Provider as ReduxProvider } from 'react-redux';
-import { getLocaleMessages, getStoredLocale } from '@/lib/locale';
+import type { FC } from 'react';
+import { useEffect } from 'react';
+import { Provider as ReduxProvider, useSelector } from 'react-redux';
+import { getStoredLocale } from '@/lib/locale';
+import type { RootState } from '@/lib/store';
 import { store } from '@/lib/store';
-import type { Props } from '@/types/common';
+import { setLocale } from '@/lib/store/global';
+import type { ClientProvidersProps } from '@/types/common';
 import { MantineProviderWrapper } from './mantine/mantine';
 
-export function ClientProviders({
-	children,
-	messages: initialMessages,
-	locale: initialLocale,
-}: Props & { messages: any; locale: string }) {
-	const [messages, setMessages] = useState(initialMessages);
-	const [locale, setLocale] = useState(initialLocale);
+const ClientProvidersInner: FC<ClientProvidersProps> = ({
+  children,
+  messages,
+  locale: initialLocale,
+}) => {
+  const locale = useSelector((state: RootState) => state.global.locale);
+  const currentMessages = messages[locale] || messages.en;
 
-	useEffect(() => {
-		const loadLocale = () => {
-			const storedLocale = getStoredLocale();
-			setLocale(storedLocale);
+  useEffect(() => {
+    const storedLocale = getStoredLocale();
+    const localeToSet = storedLocale || initialLocale;
+    if (localeToSet !== locale) {
+      store.dispatch(setLocale(localeToSet));
+    }
+  }, [initialLocale, locale]);
 
-			if (storedLocale !== initialLocale) {
-				const localeMessages = getLocaleMessages(storedLocale);
-				setMessages(localeMessages);
-			}
-		};
+  return (
+    <NextIntlClientProvider
+      locale={locale}
+      messages={currentMessages}
+      timeZone="Europe/Budapest"
+      now={new Date()}
+    >
+      <MantineProviderWrapper>{children}</MantineProviderWrapper>
+    </NextIntlClientProvider>
+  );
+};
 
-		loadLocale();
-	}, [initialLocale]);
-
-	return (
-		<NextIntlClientProvider
-			locale={locale}
-			messages={messages}
-			timeZone="Europe/Budapest"
-			now={new Date()}
-		>
-			<ReduxProvider store={store}>
-				<MantineProviderWrapper>{children}</MantineProviderWrapper>
-			</ReduxProvider>
-		</NextIntlClientProvider>
-	);
-}
+export const ClientProviders: FC<ClientProvidersProps> = (props) => {
+  return (
+    <ReduxProvider store={store}>
+      <ClientProvidersInner {...props} />
+    </ReduxProvider>
+  );
+};
 
 export default ClientProviders;

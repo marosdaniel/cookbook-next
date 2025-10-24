@@ -15,5 +15,5 @@ export const typeDefs = gql`
 `;
 
 export const resolvers = {
-	DateTime: DateTimeResolver,
+  DateTime: DateTimeResolver,
 };
