@@ -1,9 +1,11 @@
 'use client';
 
+import { ApolloProvider as ApolloProviderBase } from '@apollo/client/react';
 import { NextIntlClientProvider } from 'next-intl';
 import type { FC } from 'react';
 import { useEffect } from 'react';
 import { Provider as ReduxProvider, useSelector } from 'react-redux';
+import { apolloClient } from '@/lib/apollo/client';
 import { getStoredLocale } from '@/lib/locale';
 import type { RootState } from '@/lib/store';
 import { store } from '@/lib/store';
@@ -41,9 +43,11 @@ const ClientProvidersInner: FC<ClientProvidersProps> = ({
 
 export const ClientProviders: FC<ClientProvidersProps> = (props) => {
   return (
-    <ReduxProvider store={store}>
-      <ClientProvidersInner {...props} />
-    </ReduxProvider>
+    <ApolloProviderBase client={apolloClient}>
+      <ReduxProvider store={store}>
+        <ClientProvidersInner {...props} />
+      </ReduxProvider>
+    </ApolloProviderBase>
   );
 };
 
