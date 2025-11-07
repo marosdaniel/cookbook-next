@@ -1,15 +1,11 @@
 import { ObjectId } from 'mongodb';
+import type { IContext } from '@/lib/graphql/types/context';
 import { getDb } from '../../../db';
 
 interface OperationResult {
   success: boolean;
   message: string;
   statusCode?: number;
-}
-
-interface IContext {
-  _id?: ObjectId | string;
-  role?: 'ADMIN' | 'USER' | 'BLOGGER';
 }
 
 export const addToFavoriteRecipes = async (
@@ -21,7 +17,7 @@ export const addToFavoriteRecipes = async (
 
   if (
     !currentUser ||
-    (currentUser._id?.toString() !== userId && currentUser.role !== 'ADMIN')
+    (currentUser.userId !== userId && currentUser.role !== 'ADMIN')
   ) {
     return {
       success: false,

@@ -1,56 +1,122 @@
 import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
+import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
 import type { NextRequest } from 'next/server';
-import { resolvers } from '../../../lib/graphql/resolvers';
 import {
-  resolvers as scalarResolvers,
-  typeDefs,
-} from '../../../lib/graphql/schema';
+  canUserPerformOperation,
+  type UserRole,
+} from '@/lib/graphql/operationsConfig';
+import {
+  getOperationNameFromRequest,
+  isIntrospectionQuery,
+} from '@/lib/graphql/operationUtils';
+import { resolvers } from '@/lib/graphql/resolvers';
+import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
+import type { IContext } from '@/lib/graphql/types/context';
 
-const server = new ApolloServer({
+// JWT payload structure
+interface JWTPayload {
+  userId: string;
+  role: UserRole;
+}
+
+// Create Apollo Server instance
+const server = new ApolloServer<IContext>({
   typeDefs,
   resolvers: { ...scalarResolvers, ...resolvers },
 });
 
-type ContextUser = { _id?: string; role?: 'ADMIN' | 'USER' | 'BLOGGER' };
+/**
+ * Extract authorization header from Next.js request
+ */
+function getAuthorizationHeader(req: NextRequest): string {
+  const authHeader = req.headers.get('authorization');
+  return authHeader || '';
+}
 
-const handler = startServerAndCreateNextHandler(server, {
-  context: async (req) => {
-    // Normalize header access across runtimes
-    const hdr = (name: string): string => {
-      const h = (req.headers as any)?.get
-        ? (req.headers as any).get(name)
-        : (req.headers as any)[name];
-      return Array.isArray(h) ? h[0] : h || '';
+/**
+ * Extract and verify JWT token from authorization header
+ */
+function extractUserFromToken(
+  authHeader: string,
+): Pick<IContext, 'userId' | 'role'> | null {
+  if (!authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+
+  const token = authHeader.slice(7);
+
+  try {
+    const payload = jwt.verify(
+      token,
+      process.env.NEXTAUTH_SECRET || 'secret',
+    ) as JWTPayload;
+
+    return {
+      userId: payload.userId,
+      role: payload.role,
     };
-    const auth = hdr('authorization');
-    let user: ContextUser | undefined;
-    if (auth.startsWith('Bearer ')) {
-      const token = auth.slice(7);
-      try {
-        const payload = jwt.verify(
-          token,
-          process.env.NEXTAUTH_SECRET || 'secret',
-        ) as any;
-        user = {
-          _id: payload.userId?.toString?.() ?? String(payload.userId),
-          role: payload.role,
-        };
-      } catch {
-        // ignore invalid token
-      }
+  } catch {
+    // Invalid or expired token
+    return null;
+  }
+}
+
+/**
+ * Check if user has permission to perform the operation
+ */
+function checkOperationPermission(
+  operationName: string | null,
+  userRole?: UserRole,
+): void {
+  if (!operationName) {
+    return;
+  }
+
+  if (!canUserPerformOperation(operationName, userRole)) {
+    throw new GraphQLError(
+      `Unauthorized: You don't have permission to perform '${operationName}'`,
+      {
+        extensions: {
+          code: 'FORBIDDEN',
+          http: { status: 403 },
+          requiredRole: userRole || 'Authenticated user',
+        },
+      },
+    );
+  }
+}
+
+/**
+ * Create GraphQL context for each request
+ */
+const handler = startServerAndCreateNextHandler<NextRequest, IContext>(server, {
+  context: async (req: NextRequest): Promise<IContext> => {
+    // Extract operation name from request
+    const operationName = await getOperationNameFromRequest(req);
+
+    // Allow introspection queries (GraphQL Playground, development)
+    if (isIntrospectionQuery(operationName)) {
+      return { operationName };
     }
-    return user ?? {};
+
+    // Extract and verify user from JWT token
+    const authHeader = getAuthorizationHeader(req);
+    const user = extractUserFromToken(authHeader);
+
+    // Check operation permissions
+    checkOperationPermission(operationName, user?.role);
+
+    // Return context with user data
+    return {
+      userId: user?.userId,
+      role: user?.role,
+      operationName,
+    };
   },
 });
 
-// Cast to App Router handler type to satisfy Next.js constraints
-export const GET = handler as unknown as (
-  request: NextRequest,
-  context: { params: Promise<Record<string, never>> },
-) => Promise<Response>;
-export const POST = handler as unknown as (
-  request: NextRequest,
-  context: { params: Promise<Record<string, never>> },
-) => Promise<Response>;
+// Export Next.js route handlers
+export const GET = handler;
+export const POST = handler;

@@ -1,7 +1,7 @@
 # Recipe-related schema definitions
 
 type Rating {
-  _id: ID!
+  id: ID!
   recipeId: ID!
   userId: ID!
   ratingValue: Float!
@@ -15,7 +15,7 @@ input RatingInput {
 }
 
 type Ingredient {
-  _id: ID!
+  id: ID
   localId: String!
   name: String!
   quantity: Float!
@@ -31,19 +31,19 @@ input IngredientInput {
 }
 
 type PreparationStep {
-  _id: ID!
+  id: ID
   description: String!
   order: Int!
 }
 
 input PreparationStepInput {
-  _id: ID
+  id: ID
   description: String!
   order: Int!
 }
 
 type Category {
-  _id: ID!
+  id: ID
   name: String!
   key: String!
   label: String!
@@ -51,7 +51,7 @@ type Category {
 }
 
 type Label {
-  _id: ID!
+  id: ID
   name: String!
   key: String!
   label: String!
@@ -64,7 +64,7 @@ input MetaInputPartial {
 }
 
 type DifficultyLevel {
-  _id: ID!
+  id: ID
   name: String!
   key: String!
   label: String!
@@ -72,7 +72,7 @@ type DifficultyLevel {
 }
 
 type Recipe {
-  _id: ID!
+  id: ID!
   title: String!
   description: String
   ingredients: [Ingredient]!
@@ -128,7 +128,7 @@ type RecipeData {
 }
 
 type Query {
-  getRecipeById(_id: ID!): Recipe!
+  getRecipeById(id: ID!): Recipe!
   getRecipes(limit: Int): RecipeData!
   getRecipesByTitle(title: String!, limit: Int): RecipeData!
   getRecipesByUserName(userName: String!, limit: Int): RecipeData!
