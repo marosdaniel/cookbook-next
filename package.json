@@ -33,7 +33,7 @@
     "@reduxjs/toolkit": "^2.10.1",
     "@yaacovcr/transform": "^0.0.8",
     "bcrypt": "^6.0.0",
-    "formik": "^2.4.6",
+    "formik": "^2.4.8",
     "graphql": "17.0.0-alpha.9",
     "graphql-scalars": "^1.25.0",
     "graphql-tag": "^2.12.6",
