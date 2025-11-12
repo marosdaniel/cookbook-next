@@ -2,7 +2,7 @@ import type { DocumentNode } from 'graphql';
 import { parse } from 'graphql';
 
 /**
- * GraphQL query/mutation string-ből kiolvassa az operation nevét
+ * Extracts the operation name from a GraphQL query/mutation string
  */
 export const extractOperationName = (query: string): string | null => {
   try {
@@ -32,7 +32,7 @@ export const getQueryFromRequest = async (
   req: Request,
 ): Promise<string | null> => {
   try {
-    // Next.js Request API használata
+    // Using Next.js Request API
     const body = await req.clone().json();
     return body.query || null;
   } catch (error) {
