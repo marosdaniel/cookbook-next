@@ -1,9 +1,8 @@
 import Link from 'next/link';
-import type { FC } from 'react';
+import type { FC, PropsWithChildren } from 'react';
 import './auth.css';
-import type { AuthLayoutProps } from './types';
 
-const AuthLayout: FC<AuthLayoutProps> = ({ children }) => {
+const AuthLayout: FC<PropsWithChildren> = ({ children }) => {
   return (
     <div className="auth-layout">
       <header className="auth-header">

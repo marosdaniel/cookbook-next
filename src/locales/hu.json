@@ -70,7 +70,14 @@
     "emailWithResetLinkSent": "Email küldve a jelszó visszaállítására szolgáló linkkel.",
     "shouldBeValidEmail": "Érvényes email címnek kell lennie",
     "ratingSuccess": "Recept sikeresen értékelve",
-    "ratingFailed": "Hiba történt a recept értékelése közben"
+    "ratingFailed": "Hiba történt a recept értékelése közben",
+    "userFavoriteUnauthorized": "Jogosulatlan művelet - nincs megfelelő jogosultsága",
+    "userFavoriteInvalidUserId": "Érvénytelen felhasználó azonosító formátum",
+    "userFavoriteInvalidRecipeId": "Érvénytelen recept azonosító formátum",
+    "userFavoriteUserNotFound": "Felhasználó nem található",
+    "userFavoriteRecipeNotFound": "Recept nem található",
+    "userFavoriteAlreadyFavorite": "A recept már a kedvencek között van",
+    "userFavoriteSuccess": "Recept sikeresen hozzáadva a kedvencekhez"
   },
   "seo": {
     "recipeDetailTitle": "{title} - Recept tőle: {createdBy} | Receptkönyv",

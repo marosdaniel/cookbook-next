@@ -14,6 +14,7 @@ import {
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import type { IContext } from '@/lib/graphql/types/context';
+import { prisma } from '@/lib/prisma';
 
 // JWT payload structure
 interface JWTPayload {
@@ -98,7 +99,7 @@ const handler = startServerAndCreateNextHandler<NextRequest, IContext>(server, {
 
     // Allow introspection queries (GraphQL Playground, development)
     if (isIntrospectionQuery(operationName)) {
-      return { operationName };
+      return { operationName, prisma };
     }
 
     // Extract and verify user from JWT token
@@ -108,11 +109,12 @@ const handler = startServerAndCreateNextHandler<NextRequest, IContext>(server, {
     // Check operation permissions
     checkOperationPermission(operationName, user?.role);
 
-    // Return context with user data
+    // Return context with user data and Prisma client
     return {
       userId: user?.userId,
       role: user?.role,
       operationName,
+      prisma,
     };
   },
 });

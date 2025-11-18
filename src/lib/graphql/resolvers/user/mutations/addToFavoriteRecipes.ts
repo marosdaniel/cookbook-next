@@ -1,10 +1,13 @@
-import { ObjectId } from 'mongodb';
+import {
+  type MessageKey,
+  USER_FAVORITE_MESSAGE_KEYS,
+} from '@/lib/graphql/messageKeys';
 import type { IContext } from '@/lib/graphql/types/context';
-import { getDb } from '../../../db';
 
 interface OperationResult {
   success: boolean;
   message: string;
+  messageKey: MessageKey;
   statusCode?: number;
 }
 
@@ -13,65 +16,71 @@ export const addToFavoriteRecipes = async (
   { userId, recipeId }: { userId: string; recipeId: string },
   context: IContext,
 ): Promise<OperationResult> => {
-  const currentUser = context;
+  const { userId: currentUserId, role: currentUserRole, prisma } = context;
 
   if (
-    !currentUser ||
-    (currentUser.userId !== userId && currentUser.role !== 'ADMIN')
+    !currentUserId ||
+    (currentUserId !== userId && currentUserRole !== 'ADMIN')
   ) {
     return {
       success: false,
       message: 'Unauthorized operation - insufficient permissions',
+      messageKey: USER_FAVORITE_MESSAGE_KEYS.UNAUTHORIZED,
       statusCode: 403,
     };
   }
 
-  if (!ObjectId.isValid(userId)) {
-    return {
-      success: false,
-      message: 'Invalid userId format',
-      statusCode: 400,
-    };
-  }
+  // Prisma handles ObjectId validation automatically
 
-  if (!ObjectId.isValid(recipeId)) {
-    return {
-      success: false,
-      message: 'Invalid recipeId format',
-      statusCode: 400,
-    };
-  }
-
-  const db = await getDb();
-  const usersCol = db.collection('users');
-  const recipesCol = db.collection('recipes');
-
-  const user = await usersCol.findOne({ _id: new ObjectId(userId) });
-  if (!user)
-    return { success: false, message: 'User not found', statusCode: 404 };
-  const recipe = await recipesCol.findOne({ _id: new ObjectId(recipeId) });
-  if (!recipe)
-    return { success: false, message: 'Recipe not found', statusCode: 404 };
-
-  const already = await usersCol.findOne({
-    _id: new ObjectId(userId),
-    favoriteRecipes: new ObjectId(recipeId),
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
   });
-  if (already)
+  if (!user)
+    return {
+      success: false,
+      message: 'User not found',
+      messageKey: USER_FAVORITE_MESSAGE_KEYS.USER_NOT_FOUND,
+      statusCode: 404,
+    };
+  const recipe = await prisma.recipe.findUnique({
+    where: { id: recipeId },
+  });
+  if (!recipe)
+    return {
+      success: false,
+      message: 'Recipe not found',
+      messageKey: USER_FAVORITE_MESSAGE_KEYS.RECIPE_NOT_FOUND,
+      statusCode: 404,
+    };
+
+  const alreadyFavorite = user.favoriteRecipeIds?.includes(recipeId);
+  if (alreadyFavorite)
     return {
       success: false,
       message: 'Recipe already in favorites',
+      messageKey: USER_FAVORITE_MESSAGE_KEYS.ALREADY_FAVORITE,
       statusCode: 400,
     };
 
-  await usersCol.updateOne(
-    { _id: new ObjectId(userId) },
-    { $addToSet: { favoriteRecipes: new ObjectId(recipeId) } },
-  );
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: userId },
+      data: {
+        favoriteRecipeIds: { push: recipeId },
+      },
+    }),
+    prisma.recipe.update({
+      where: { id: recipeId },
+      data: {
+        favoritedByIds: { push: userId },
+      },
+    }),
+  ]);
 
   return {
     success: true,
     message: 'Recipe successfully added to favorites',
+    messageKey: USER_FAVORITE_MESSAGE_KEYS.SUCCESS,
     statusCode: 200,
   };
 };

@@ -69,7 +69,14 @@
     "emailWithResetLinkSent": "Eine E-Mail mit einem Link zum Zurücksetzen Ihres Passworts wurde Ihnen gesendet.",
     "shouldBeValidEmail": "Sollte eine gültige E-Mail sein",
     "ratingSuccess": "Rezept erfolgreich bewertet",
-    "ratingFailed": "Beim Bewerten des Rezepts ist ein Fehler aufgetreten"
+    "ratingFailed": "Beim Bewerten des Rezepts ist ein Fehler aufgetreten",
+    "userFavoriteUnauthorized": "Nicht autorisierte Operation - unzureichende Berechtigungen",
+    "userFavoriteInvalidUserId": "Ungültiges Benutzer-ID-Format",
+    "userFavoriteInvalidRecipeId": "Ungültiges Rezept-ID-Format",
+    "userFavoriteUserNotFound": "Benutzer nicht gefunden",
+    "userFavoriteRecipeNotFound": "Rezept nicht gefunden",
+    "userFavoriteAlreadyFavorite": "Rezept bereits in Favoriten",
+    "userFavoriteSuccess": "Rezept erfolgreich zu Favoriten hinzugefügt"
   },
   "seo": {
     "recipeDetailTitle": "{title} - Rezept von {createdBy} | Kochbuch",
