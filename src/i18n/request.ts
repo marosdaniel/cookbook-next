@@ -8,6 +8,5 @@ export default getRequestConfig(async () => {
     locale: 'en',
     messages,
     timeZone: 'Europe/Budapest',
-    now: new Date(),
   };
 });

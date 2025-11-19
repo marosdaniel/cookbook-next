@@ -14,7 +14,7 @@ const AuthLayout: FC<PropsWithChildren> = ({ children }) => {
       <main className="auth-main">{children}</main>
 
       <footer className="auth-footer">
-        <p>&copy; {new Date().getFullYear()} Cookbook. All rights reserved.</p>
+        <p>&copy; 2025 Cookbook. All rights reserved.</p>
       </footer>
     </div>
   );
