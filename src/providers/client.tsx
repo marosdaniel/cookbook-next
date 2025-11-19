@@ -33,7 +33,6 @@ const ClientProvidersInner: FC<ClientProvidersProps> = ({
       locale={locale}
       messages={currentMessages}
       timeZone="Europe/Budapest"
-      now={new Date()}
     >
       <MantineProviderWrapper>{children}</MantineProviderWrapper>
     </NextIntlClientProvider>

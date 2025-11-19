@@ -11,8 +11,6 @@ export default function Home() {
   const format = useFormatter();
   const translate = useTranslations();
 
-  // Test advanced features
-  const testDate = new Date();
   const testNumber = 1234.56;
   const itemCount: number = 5;
 
@@ -51,10 +49,6 @@ export default function Home() {
         <p>Login: {translate('auth.login')}</p>
 
         <h2>Advanced Features Test:</h2>
-        <p>
-          Date:{' '}
-          {format.dateTime(testDate, { dateStyle: 'full', timeStyle: 'short' })}
-        </p>
         <p>
           Number:{' '}
           {format.number(testNumber, { style: 'currency', currency: 'EUR' })}
