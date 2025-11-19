@@ -119,6 +119,20 @@ const handler = startServerAndCreateNextHandler<NextRequest, IContext>(server, {
   },
 });
 
+/**
+ * Wrap handler to match Next.js 16 App Router signature
+ *
+ * Next.js 16 requires route handlers to accept a second parameter (context)
+ * containing params. The Apollo Server integration doesn't generate handlers
+ * with this signature, so we wrap it to satisfy TypeScript's type checking.
+ */
+async function wrappedHandler(
+  request: NextRequest,
+  _context: { params: Promise<Record<string, never>> },
+): Promise<Response> {
+  return handler(request);
+}
+
 // Export Next.js route handlers
-export const GET = handler;
-export const POST = handler;
+export const GET = wrappedHandler;
+export const POST = wrappedHandler;
