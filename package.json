@@ -16,8 +16,7 @@
     "dev": "next dev --turbopack",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint:fix": "biome format --write && biome lint --write",
-    "postinstall": "prisma generate"
+    "lint:fix": "biome format --write && biome lint --write"
   },
   "dependencies": {
     "@apollo/client": "^4.0.9",
