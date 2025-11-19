@@ -1,6 +1,5 @@
-export type Props = {
-  children: React.ReactNode;
-};
+import type { PropsWithChildren } from 'react';
+
 export type Locale = 'en' | 'hu' | 'de';
 
 // Recursive type for nested locale message objects
@@ -12,7 +11,7 @@ export type AllMessages = {
   [locale: string]: LocaleMessages;
 };
 
-export type ClientProvidersProps = Props & {
+export type ClientProvidersProps = PropsWithChildren & {
   messages: AllMessages;
   locale: string;
 };
