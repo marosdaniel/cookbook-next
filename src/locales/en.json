@@ -3,6 +3,7 @@
     "login": "Login",
     "register": "Register",
     "welcomeBack": "Welcome back!",
+    "createAccount": "Create an account",
     "dontYouHaveAnAccount": "Do not have an account yet?",
     "createAccountButton": "Create account",
     "rememberMe": "Remember me",
@@ -16,7 +17,10 @@
     "forgotPasswordTitle": "Forgot your password?",
     "forgotPasswordDescription": "Enter your email and we will send you a link to reset your password.",
     "resetPasswordButton": "Reset password",
-    "backToLogin": "Back to login"
+    "backToLogin": "Back to login",
+    "invalidCredentials": "Invalid email or password",
+    "loginSuccess": "Successfully logged in!",
+    "loginError": "An error occurred during login"
   },
 
   "general": {

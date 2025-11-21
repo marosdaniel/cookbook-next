@@ -1,6 +1,7 @@
 'use client';
 
 import { ApolloProvider as ApolloProviderBase } from '@apollo/client/react';
+import { SessionProvider } from 'next-auth/react';
 import { NextIntlClientProvider } from 'next-intl';
 import type { FC } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -30,11 +31,13 @@ const ClientProvidersInner: FC<ClientProvidersProps> = ({
 
 export const ClientProviders: FC<ClientProvidersProps> = (props) => {
   return (
-    <ApolloProviderBase client={apolloClient}>
-      <ReduxProvider store={store}>
-        <ClientProvidersInner {...props} />
-      </ReduxProvider>
-    </ApolloProviderBase>
+    <SessionProvider>
+      <ApolloProviderBase client={apolloClient}>
+        <ReduxProvider store={store}>
+          <ClientProvidersInner {...props} />
+        </ReduxProvider>
+      </ApolloProviderBase>
+    </SessionProvider>
   );
 };
 

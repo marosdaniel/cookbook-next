@@ -105,10 +105,17 @@ const SignUpForm: FC = () => {
     onSubmit: handleSignUp,
   });
 
+  const isSubmitDisabled =
+    loading ||
+    isPending ||
+    !isPrivacyAccepted ||
+    !formik.isValid ||
+    !formik.dirty;
+
   return (
-    <Container size={420} my={40} id="registration-page">
+    <Container size={520} w={520} my={40} id="registration-page">
       <Title ta="center" c="var(--mantine-color-gray-8)">
-        {t('auth.welcomeBack')}
+        {t('auth.createAccount')}
       </Title>
       <Group mt={5} justify="center" align="center">
         <Text c="dimmed" size="sm" ta="center">
@@ -132,7 +139,6 @@ const SignUpForm: FC = () => {
           required
           id="first-name"
           placeholder={t('user.firstName')}
-          mt="md"
           label={t('user.firstName')}
           name="firstName"
           onChange={formik.handleChange}
@@ -212,10 +218,11 @@ const SignUpForm: FC = () => {
         />
 
         <Button
+          id="submit-button"
           fullWidth
           mt="xl"
           type="submit"
-          disabled={loading || isPending || !isPrivacyAccepted}
+          disabled={isSubmitDisabled}
           loading={loading || isPending}
           loaderProps={{ type: 'dots' }}
         >

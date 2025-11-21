@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import type { IContext } from '@/lib/graphql/types/common';
 
 interface UserLoginInput {
-  userNameOrEmail: string;
+  email: string;
   password: string;
 }
 
@@ -21,17 +21,17 @@ export const loginUser = async (
   { userLoginInput }: LoginUserArgs,
   { prisma }: IContext,
 ) => {
-  const { userNameOrEmail, password } = userLoginInput;
+  const { email, password } = userLoginInput;
 
-  // Keressük meg a usert username vagy email alapján
-  const user = await prisma.user.findFirst({
+  // Keressük meg a usert email alapján
+  const user = await prisma.user.findUnique({
     where: {
-      OR: [{ userName: userNameOrEmail }, { email: userNameOrEmail }],
+      email: email,
     },
   });
 
   if (!user) {
-    throw new GraphQLError('Hibás felhasználónév/email vagy jelszó', {
+    throw new GraphQLError('Hibás email cím vagy jelszó', {
       extensions: { code: 'UNAUTHENTICATED' },
     });
   }
@@ -40,7 +40,7 @@ export const loginUser = async (
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
-    throw new GraphQLError('Hibás felhasználónév/email vagy jelszó', {
+    throw new GraphQLError('Hibás email cím vagy jelszó', {
       extensions: { code: 'UNAUTHENTICATED' },
     });
   }

@@ -5,20 +5,14 @@ import type {
 import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { GraphQLError } from 'graphql';
-import jwt from 'jsonwebtoken';
 import type { NextRequest } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import type { IContext } from '@/lib/graphql/types/common';
 import { prisma } from '@/lib/prisma';
-import type { UserRole } from '../../../lib/graphql/types/user';
-
-// JWT payload structure
-interface JWTPayload {
-  userId: string;
-  role: UserRole;
-}
 
 /**
  * Plugin to log GraphQL operations (development only)
@@ -71,52 +65,16 @@ const server = new ApolloServer<IContext>({
 });
 
 /**
- * Extract authorization header from Next.js request
- */
-function getAuthorizationHeader(req: NextRequest): string {
-  const authHeader = req.headers.get('authorization');
-  return authHeader || '';
-}
-
-/**
- * Extract and verify JWT token from authorization header
- */
-function extractUserFromToken(
-  authHeader: string,
-): Pick<IContext, 'userId' | 'role'> | null {
-  if (!authHeader.startsWith('Bearer ')) {
-    return null;
-  }
-
-  const token = authHeader.slice(7);
-
-  try {
-    const payload = jwt.verify(
-      token,
-      process.env.NEXTAUTH_SECRET || 'secret',
-    ) as JWTPayload;
-
-    return {
-      userId: payload.userId,
-      role: payload.role,
-    };
-  } catch {
-    // Invalid or expired token
-    return null;
-  }
-}
-
-/**
  * Create GraphQL context for each request
  */
 const handler = startServerAndCreateNextHandler<NextRequest, IContext>(server, {
-  context: async (req: NextRequest): Promise<IContext> => {
-    const authHeader = getAuthorizationHeader(req);
-    const user = extractUserFromToken(authHeader);
+  context: async (): Promise<IContext> => {
+    // Get NextAuth session
+    const session = await getServerSession(authOptions);
 
     return {
-      userId: user?.userId,
-      role: user?.role,
+      userId: session?.user?.id,
+      role: session?.user?.role,
       operationName: null,
       prisma,
     };
