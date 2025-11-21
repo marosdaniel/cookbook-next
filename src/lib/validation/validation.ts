@@ -33,8 +33,8 @@ export const loginValidationSchema = z.object({
     .min(5, 'Too Short!')
     .max(20, 'Too Long!')
     .regex(
-      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/,
-      'Password must contain at least 5 characters, including at least 1 number',
+      /^(?=.*[A-Za-z])(?=.*\d).{5,}$/,
+      'Password must contain at least 5 characters, including at least 1 letter and 1 number',
     ),
 });
 
@@ -45,8 +45,8 @@ export const newPasswordValidationSchema = z
       .min(5, 'Too Short!')
       .max(20, 'Too Long!')
       .regex(
-        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/,
-        'Password must contain at least 5 characters, including at least 1 number',
+        /^(?=.*[A-Za-z])(?=.*\d).{5,}$/,
+        'Password must contain at least 5 characters, including at least 1 letter and 1 number',
       ),
     confirmNewPassword: z.string(),
   })
@@ -66,16 +66,16 @@ export const passwordEditValidationSchema = z
       .min(5, 'Too Short!')
       .max(20, 'Too Long!')
       .regex(
-        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/,
-        'Password must contain at least 5 characters, including at least 1 number',
+        /^(?=.*[A-Za-z])(?=.*\d).{5,}$/,
+        'Password must contain at least 5 characters, including at least 1 letter and 1 number',
       ),
     newPassword: z
       .string()
       .min(5, 'Too Short!')
       .max(20, 'Too Long!')
       .regex(
-        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/,
-        'Password must contain at least 5 characters, including at least 1 number',
+        /^(?=.*[A-Za-z])(?=.*\d).{5,}$/,
+        'Password must contain at least 5 characters, including at least 1 letter and 1 number',
       ),
     confirmNewPassword: z.string(),
   })

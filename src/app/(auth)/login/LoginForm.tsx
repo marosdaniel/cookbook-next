@@ -44,6 +44,7 @@ export const LoginForm: FC = () => {
           title: translate('response.error'),
           message: translate('auth.invalidCredentials'),
           color: 'red',
+          position: 'top-right',
         });
         setIsSigningIn(false);
         return;
@@ -94,7 +95,6 @@ export const LoginForm: FC = () => {
           {translate('auth.createAccountButton')}
         </Button>
       </Group>
-
       <Paper
         component="form"
         withBorder

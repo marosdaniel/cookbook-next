@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import { getLocaleMessages } from '@/lib/locale';
 import { ServerProviders } from '@/providers/server';
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 import './globals.css';
 
 const ClientProviders = dynamic(
