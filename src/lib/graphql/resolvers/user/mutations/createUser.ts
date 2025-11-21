@@ -9,6 +9,7 @@ import { ErrorTypes } from '../../../../validation/errorCatalog';
 import { throwCustomError } from '../../../../validation/throwCustomError';
 
 export const createUser = async (
+  _parent: unknown,
   { userRegisterInput }: CreateUserArgs,
   { prisma }: IContext,
 ) => {

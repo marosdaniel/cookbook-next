@@ -1,13 +1,13 @@
+import type {
+  ApolloServerPlugin,
+  GraphQLRequestListener,
+} from '@apollo/server';
 import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
 import type { NextRequest } from 'next/server';
 import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
-import {
-  getOperationNameFromRequest,
-  isIntrospectionQuery,
-} from '@/lib/graphql/operationUtils';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import type { IContext } from '@/lib/graphql/types/common';
@@ -20,10 +20,54 @@ interface JWTPayload {
   role: UserRole;
 }
 
+/**
+ * Plugin to log GraphQL operations (development only)
+ */
+const loggingPlugin: ApolloServerPlugin<IContext> = {
+  async requestDidStart(): Promise<GraphQLRequestListener<IContext>> {
+    return {
+      async didResolveOperation(requestContext) {
+        const { operationName } = requestContext.request;
+        console.log(`[GraphQL] Operation: ${operationName || 'anonymous'}`);
+      },
+    };
+  },
+};
+
+/**
+ * Plugin to validate operation permissions
+ */
+const authPlugin: ApolloServerPlugin<IContext> = {
+  async requestDidStart(): Promise<GraphQLRequestListener<IContext>> {
+    return {
+      async didResolveOperation(requestContext) {
+        const { operationName } = requestContext.request;
+        const { role } = requestContext.contextValue;
+
+        // Check operation permissions
+        if (operationName && !canUserPerformOperation(operationName, role)) {
+          throw new GraphQLError(
+            `Unauthorized: You don't have permission to perform '${operationName}'`,
+            {
+              extensions: {
+                code: 'FORBIDDEN',
+                http: { status: 403 },
+                requiredRole: role || 'Authenticated user',
+              },
+            },
+          );
+        }
+      },
+    };
+  },
+};
+
 // Create Apollo Server instance
 const server = new ApolloServer<IContext>({
   typeDefs,
   resolvers: { ...scalarResolvers, ...resolvers },
+  plugins: [loggingPlugin, authPlugin],
+  introspection: true,
 });
 
 /**
@@ -63,74 +107,41 @@ function extractUserFromToken(
 }
 
 /**
- * Check if user has permission to perform the operation
- */
-function checkOperationPermission(
-  operationName: string | null,
-  userRole?: UserRole,
-): void {
-  if (!operationName) {
-    return;
-  }
-
-  if (!canUserPerformOperation(operationName, userRole)) {
-    throw new GraphQLError(
-      `Unauthorized: You don't have permission to perform '${operationName}'`,
-      {
-        extensions: {
-          code: 'FORBIDDEN',
-          http: { status: 403 },
-          requiredRole: userRole || 'Authenticated user',
-        },
-      },
-    );
-  }
-}
-
-/**
  * Create GraphQL context for each request
  */
 const handler = startServerAndCreateNextHandler<NextRequest, IContext>(server, {
   context: async (req: NextRequest): Promise<IContext> => {
-    // Extract operation name from request
-    const operationName = await getOperationNameFromRequest(req);
-
-    // Allow introspection queries (GraphQL Playground, development)
-    if (isIntrospectionQuery(operationName)) {
-      return { operationName, prisma };
-    }
-
-    // Extract and verify user from JWT token
     const authHeader = getAuthorizationHeader(req);
     const user = extractUserFromToken(authHeader);
 
-    // Check operation permissions
-    checkOperationPermission(operationName, user?.role);
-
-    // Return context with user data and Prisma client
     return {
       userId: user?.userId,
       role: user?.role,
-      operationName,
+      operationName: null,
       prisma,
     };
   },
 });
 
-/**
- * Wrap handler to match Next.js 16 App Router signature
- *
- * Next.js 16 requires route handlers to accept a second parameter (context)
- * containing params. The Apollo Server integration doesn't generate handlers
- * with this signature, so we wrap it to satisfy TypeScript's type checking.
- */
 async function wrappedHandler(
   request: NextRequest,
   _context: { params: Promise<Record<string, never>> },
 ): Promise<Response> {
+  if (request.method === 'GET') {
+    return new Response(
+      JSON.stringify({
+        message: 'GraphQL API endpoint. Use POST requests.',
+        endpoint: '/api/graphql',
+      }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+  }
+
   return handler(request);
 }
 
 // Export Next.js route handlers
-export const GET = wrappedHandler;
 export const POST = wrappedHandler;

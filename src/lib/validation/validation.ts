@@ -100,8 +100,8 @@ export const customValidationSchema = z
       .min(5, 'Too Short!')
       .max(20, 'Too Long!')
       .regex(
-        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/,
-        'Password must contain at least 5 characters, including at least 1 number',
+        /^(?=.*[A-Za-z])(?=.*\d).{5,}$/,
+        'Password must contain at least 5 characters, including at least 1 letter and 1 number',
       ),
     confirmPassword: z.string(),
     userName: z
