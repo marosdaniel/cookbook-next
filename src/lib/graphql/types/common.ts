@@ -1,6 +1,5 @@
 import type { prisma } from '@/lib/prisma';
-
-export type UserRole = 'ADMIN' | 'USER' | 'BLOGGER';
+import type { UserRole } from './user';
 
 /**
  * GraphQL context interface - available to all resolvers
@@ -11,3 +10,10 @@ export interface IContext {
   operationName?: string | null;
   prisma: typeof prisma;
 }
+
+export type OperationResponse = {
+  success: boolean;
+  message: string;
+  messageKey: string;
+  statusCode: number;
+};

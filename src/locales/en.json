@@ -12,6 +12,7 @@
     "alreadyHaveAnAccount": "Already have an account?",
     "iAcceptThePrivacyPolicy": "I accept the privacy policy",
     "createAnAccountButton": "Create an account",
+    "accountCreatedSuccess": "Account created successfully. Please login.",
     "forgotPasswordTitle": "Forgot your password?",
     "forgotPasswordDescription": "Enter your email and we will send you a link to reset your password.",
     "resetPasswordButton": "Reset password",

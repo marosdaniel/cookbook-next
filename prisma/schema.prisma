@@ -10,6 +10,12 @@ datasource db {
   url      = env("MONGODB_URI")
 }
 
+enum UserRole {
+  ADMIN
+  USER
+  BLOGGER
+}
+
 // User model
 model User {
   id                    String    @id @default(auto()) @map("_id") @db.ObjectId
@@ -19,7 +25,7 @@ model User {
   email                 String    @unique
   password              String
   locale                String    @default("en")
-  role                  String    @default("USER") // "ADMIN" | "USER" | "BLOGGER"
+  role                  UserRole  @default(USER)
   resetPasswordToken    String?
   resetPasswordExpires  DateTime?
   createdAt             DateTime  @default(now())

@@ -1,23 +1,14 @@
+import { UserRole } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import { GraphQLError } from 'graphql';
-import type { IContext } from '@/lib/graphql/types/context';
-
-interface UserRegisterInput {
-  firstName: string;
-  lastName: string;
-  userName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  locale?: string;
-}
-
-interface CreateUserArgs {
-  userRegisterInput: UserRegisterInput;
-}
+import { ZodError } from 'zod';
+import { USER_REGISTER_MESSAGE_KEYS } from '@/lib/graphql/messageKeys';
+import type { IContext } from '@/lib/graphql/types/common';
+import type { CreateUserArgs } from '@/lib/graphql/types/user';
+import { customValidationSchema } from '@/lib/validation/validation';
+import { ErrorTypes } from '../../../../validation/errorCatalog';
+import { throwCustomError } from '../../../../validation/throwCustomError';
 
 export const createUser = async (
-  _parent: unknown,
   { userRegisterInput }: CreateUserArgs,
   { prisma }: IContext,
 ) => {
@@ -31,32 +22,28 @@ export const createUser = async (
     locale,
   } = userRegisterInput;
 
-  // Validáció: jelszavak egyezése
-  if (password !== confirmPassword) {
-    throw new GraphQLError('A jelszavak nem egyeznek', {
-      extensions: { code: 'BAD_USER_INPUT' },
+  try {
+    customValidationSchema.parse({
+      firstName,
+      lastName,
+      userName,
+      email,
+      password,
+      confirmPassword,
     });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const firstErrorMessage = error.issues[0]?.message || 'Validation failed';
+
+      throwCustomError(firstErrorMessage, ErrorTypes.VALIDATION_ERROR, {
+        messageKey: USER_REGISTER_MESSAGE_KEYS.VALIDATION_ERROR,
+        details: error.issues,
+        originalError: error,
+      });
+    }
+    throwCustomError('Unexpected validation error', ErrorTypes.BAD_REQUEST);
   }
 
-  // Validáció: jelszó erőssége
-  if (password.length < 8) {
-    throw new GraphQLError(
-      'A jelszónak legalább 8 karakter hosszúnak kell lennie',
-      {
-        extensions: { code: 'BAD_USER_INPUT' },
-      },
-    );
-  }
-
-  // Email formátum validáció
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    throw new GraphQLError('Érvénytelen email formátum', {
-      extensions: { code: 'BAD_USER_INPUT' },
-    });
-  }
-
-  // Ellenőrizzük, hogy létezik-e már a username vagy email
   const existingUser = await prisma.user.findFirst({
     where: {
       OR: [{ userName }, { email }],
@@ -65,23 +52,23 @@ export const createUser = async (
 
   if (existingUser) {
     if (existingUser.userName === userName) {
-      throw new GraphQLError('Ez a felhasználónév már foglalt', {
-        extensions: { code: 'BAD_USER_INPUT' },
+      throwCustomError('This username is already taken', ErrorTypes.CONFLICT, {
+        messageKey: USER_REGISTER_MESSAGE_KEYS.USERNAME_TAKEN,
       });
     }
     if (existingUser.email === email) {
-      throw new GraphQLError('Ez az email cím már regisztrálva van', {
-        extensions: { code: 'BAD_USER_INPUT' },
-      });
+      throwCustomError(
+        'This email address is already registered',
+        ErrorTypes.CONFLICT,
+        { messageKey: USER_REGISTER_MESSAGE_KEYS.EMAIL_TAKEN },
+      );
     }
   }
 
-  // Jelszó hashelése
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-  // User létrehozása
-  const newUser = await prisma.user.create({
+  await prisma.user.create({
     data: {
       firstName,
       lastName,
@@ -89,22 +76,14 @@ export const createUser = async (
       email,
       password: hashedPassword,
       locale: locale || 'en',
-      role: 'USER',
+      role: UserRole.USER,
     },
   });
 
-  // Ne adjuk vissza a jelszót
   return {
-    id: newUser.id,
-    firstName: newUser.firstName,
-    lastName: newUser.lastName,
-    userName: newUser.userName,
-    email: newUser.email,
-    locale: newUser.locale,
-    role: newUser.role,
-    recipes: [],
-    favoriteRecipes: [],
-    createdAt: newUser.createdAt,
-    updatedAt: newUser.updatedAt,
+    success: true,
+    message: 'User successfully created',
+    messageKey: USER_REGISTER_MESSAGE_KEYS.SUCCESS,
+    statusCode: 201,
   };
 };

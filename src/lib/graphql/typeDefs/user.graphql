@@ -5,11 +5,25 @@ type BaseResponse {
   message: String
 }
 
-type OperationResult {
+type RegisterResponse {
+  success: Boolean!
+  message: String!
+  messageKey: String!
+}
+
+type OperationResponse {
   success: Boolean!
   message: String!
   messageKey: String!
   statusCode: Int
+}
+
+type UserOperationResponse {
+  success: Boolean!
+  message: String!
+  messageKey: String!
+  statusCode: Int
+  user: User
 }
 
 enum UserRole {
@@ -74,7 +88,7 @@ type Query {
 
 type Mutation {
   loginUser(userLoginInput: UserLoginInput!): AuthPayload!
-  createUser(userRegisterInput: UserRegisterInput): User!
+  createUser(userRegisterInput: UserRegisterInput): RegisterResponse!
   editUser(id: ID!, userEditInput: UserEditInput!): User!
 
   changePassword(id: ID!, passwordEditInput: PasswordEditInput!): Boolean!
@@ -84,8 +98,8 @@ type Mutation {
   deleteUser(id: ID!): Boolean!
   deleteAllUser: Int!
 
-  addToFavoriteRecipes(userId: ID!, recipeId: ID!): OperationResult!
-  removeFromFavoriteRecipes(userId: ID!, recipeId: ID!): OperationResult!
+  addToFavoriteRecipes(userId: ID!, recipeId: ID!): OperationResponse!
+  removeFromFavoriteRecipes(userId: ID!, recipeId: ID!): OperationResponse!
 
   cleanUserRecipes(userId: ID!): Boolean!
 }

@@ -3,18 +3,16 @@ import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
 import type { NextRequest } from 'next/server';
-import {
-  canUserPerformOperation,
-  type UserRole,
-} from '@/lib/graphql/operationsConfig';
+import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
 import {
   getOperationNameFromRequest,
   isIntrospectionQuery,
 } from '@/lib/graphql/operationUtils';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
-import type { IContext } from '@/lib/graphql/types/context';
+import type { IContext } from '@/lib/graphql/types/common';
 import { prisma } from '@/lib/prisma';
+import type { UserRole } from '../../../lib/graphql/types/user';
 
 // JWT payload structure
 interface JWTPayload {

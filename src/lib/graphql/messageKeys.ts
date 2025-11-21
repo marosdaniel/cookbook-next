@@ -9,5 +9,9 @@ export const USER_FAVORITE_MESSAGE_KEYS = {
   SUCCESS: 'response.userFavoriteSuccess',
 } as const;
 
-export type MessageKey =
-  (typeof USER_FAVORITE_MESSAGE_KEYS)[keyof typeof USER_FAVORITE_MESSAGE_KEYS];
+export const USER_REGISTER_MESSAGE_KEYS = {
+  VALIDATION_ERROR: 'response.userRegisterValidationError',
+  USERNAME_TAKEN: 'response.userRegisterUsernameTaken',
+  EMAIL_TAKEN: 'response.userRegisterEmailTaken',
+  SUCCESS: 'response.userRegisterSuccess',
+} as const;

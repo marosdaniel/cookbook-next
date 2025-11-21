@@ -27,7 +27,7 @@ export const nameValidationSchema = z.object({
 });
 
 export const loginValidationSchema = z.object({
-  email: z.string().email('Invalid email address'),
+  email: z.email({ error: 'Invalid email address' }),
   password: z
     .string()
     .min(5, 'Too Short!')
@@ -56,7 +56,7 @@ export const newPasswordValidationSchema = z
   });
 
 export const resetPasswordValidationSchema = z.object({
-  email: z.string().email('Invalid email address'),
+  email: z.email({ error: 'Invalid email address' }),
 });
 
 export const passwordEditValidationSchema = z
@@ -94,7 +94,7 @@ export const customValidationSchema = z
       .string()
       .min(2, 'Too Short!')
       .regex(/^\D+$/, 'should not contain numbers'),
-    email: z.string().email('Invalid email address'),
+    email: z.email({ error: 'Invalid email address' }),
     password: z
       .string()
       .min(5, 'Too Short!')
@@ -117,7 +117,7 @@ export const customValidationSchema = z
 export const recipeFormValidationSchema = z.object({
   title: z.string().min(1, 'Required'),
   description: z.string().min(1, 'Required'),
-  imgSrc: z.string().url('Invalid url').optional().or(z.literal('')),
+  imgSrc: z.url({ error: 'Invalid url' }).optional().or(z.literal('')),
   cookingTime: z.number().positive('Required'),
   difficultyLevel: z.object({
     key: z.string().min(1, 'Required'),
@@ -139,8 +139,7 @@ export const recipeFormValidationSchema = z.object({
   steps: z.array(z.string().min(1, 'Required')),
   servings: z.number().positive('Required'),
   youtubeLink: z
-    .string()
-    .url('Invalid url')
+    .url({ error: 'Invalid url' })
     .regex(
       /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//,
       'URL must be a valid YouTube link',

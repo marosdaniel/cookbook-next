@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
-import type { IContext } from '@/lib/graphql/types/context';
+import type { IContext } from '@/lib/graphql/types/common';
 
 interface UserLoginInput {
   userNameOrEmail: string;
