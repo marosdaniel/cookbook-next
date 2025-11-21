@@ -5,6 +5,7 @@ import { ServerProviders } from '@/providers/server';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import './globals.css';
+import Shell from '../components/Shell';
 
 const ClientProviders = dynamic(
   () => import('@/providers/client').then((m) => m.ClientProviders),
@@ -37,7 +38,7 @@ export default async function RootLayout(props: LayoutProps<'/'>) {
       <body>
         <ServerProviders>
           <ClientProviders messages={allMessages} locale="en">
-            {props.children}
+            <Shell>{props.children}</Shell>
           </ClientProviders>
         </ServerProviders>
       </body>

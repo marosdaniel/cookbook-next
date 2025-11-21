@@ -113,7 +113,7 @@ const SignUpForm: FC = () => {
     !formik.dirty;
 
   return (
-    <Container size={520} w={520} my={40} id="registration-page">
+    <Container maw={520} my={40} id="sign-up-page">
       <Title ta="center" c="var(--mantine-color-gray-8)">
         {t('auth.createAccount')}
       </Title>

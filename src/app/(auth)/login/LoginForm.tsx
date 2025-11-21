@@ -84,7 +84,7 @@ export const LoginForm: FC = () => {
     formik.isSubmitting || isSigningIn || !formik.isValid || !formik.dirty;
 
   return (
-    <Container size={520} w={520} my={40} id="login-page">
+    <Container maw={520} my={40} id="login-page">
       <Title ta="center" c="var(--mantine-color-gray-8)">
         {translate('auth.welcomeBack')}
       </Title>
