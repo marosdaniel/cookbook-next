@@ -37,6 +37,7 @@ export const LoginForm: FC = () => {
         email: values.email,
         password: values.password,
         redirect: false,
+        rememberMe,
       });
 
       if (result?.error) {

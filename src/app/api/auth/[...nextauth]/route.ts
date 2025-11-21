@@ -10,8 +10,11 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
+        rememberMe: { label: 'Remember Me', type: 'checkbox' },
       },
-      async authorize(credentials) {
+      async authorize(
+        credentials?: Record<'email' | 'password' | 'rememberMe', string>,
+      ) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Email and password are required');
         }
@@ -41,19 +44,22 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user.id,
           email: user.email,
-          name: `${user.firstName} ${user.lastName}`,
           firstName: user.firstName,
           lastName: user.lastName,
           userName: user.userName,
           role: user.role,
           locale: user.locale,
+          rememberMe:
+            credentials.rememberMe === 'true' ||
+            credentials.rememberMe === 'on',
         };
       },
     }),
   ],
   session: {
     strategy: 'jwt',
-    maxAge: 7 * 24 * 60 * 60, // 7 days
+    // maxAge will be set dynamically in jwt callback
+    maxAge: 7 * 24 * 60 * 60, // default 7 days
   },
   pages: {
     signIn: '/login',
@@ -70,6 +76,11 @@ export const authOptions: NextAuthOptions = {
         token.firstName = user.firstName;
         token.lastName = user.lastName;
         token.locale = user.locale;
+        // Set session maxAge dynamically
+        (token as any).rememberMe = (user as any).rememberMe;
+        (token as any).maxAge = (user as any).rememberMe
+          ? 30 * 24 * 60 * 60
+          : 2 * 60 * 60; // 30 nap vagy 2 óra
       }
       return token;
     },
@@ -82,6 +93,8 @@ export const authOptions: NextAuthOptions = {
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
         session.user.locale = token.locale as string;
+        (session.user as any).rememberMe = (token as any).rememberMe;
+        (session as any).maxAge = (token as any).maxAge;
       }
       return session;
     },
