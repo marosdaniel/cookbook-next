@@ -4,6 +4,7 @@ import type { Locale } from '../../../types/common';
 
 type GlobalState = {
   locale: Locale;
+  isDarkMode: boolean;
 };
 
 // TODO: When user authentication is implemented, initialize locale from user preferences
@@ -14,6 +15,7 @@ type GlobalState = {
 // This will require moving locale initialization to a client-side useEffect to avoid hydration mismatch
 const initialState: GlobalState = {
   locale: 'en',
+  isDarkMode: false,
 };
 
 const globalSlice = createSlice({
@@ -25,9 +27,11 @@ const globalSlice = createSlice({
     setLocale(state, action: PayloadAction<Locale>) {
       state.locale = action.payload;
     },
+    setDarkMode(state, action: PayloadAction<boolean>) {
+      state.isDarkMode = action.payload;
+    },
   },
 });
 
-export const { setLocale } = globalSlice.actions;
-
+export const { setLocale, setDarkMode } = globalSlice.actions;
 export const globalReducer = globalSlice.reducer;

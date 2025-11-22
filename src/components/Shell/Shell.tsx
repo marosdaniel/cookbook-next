@@ -1,8 +1,9 @@
 'use client';
 
-import { AppShell, Burger } from '@mantine/core';
+import { AppShell, Burger, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import type { FC, PropsWithChildren } from 'react';
+import Logo from '../Logo';
 
 const Shell: FC<PropsWithChildren> = ({ children }) => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
@@ -18,12 +19,15 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
       }}
     >
       <AppShell.Header>
-        <Burger
-          opened={mobileOpened}
-          onClick={toggleMobile}
-          hiddenFrom="sm"
-          size="sm"
-        />
+        <Group h="100%" px="md">
+          <Burger
+            opened={mobileOpened}
+            onClick={toggleMobile}
+            size="sm"
+            display={{ base: 'block', md: 'none' }}
+          />
+          <Logo headingSize={2} />
+        </Group>
       </AppShell.Header>
       <AppShell.Navbar>Navbar</AppShell.Navbar>
       <AppShell.Main>{children}</AppShell.Main>
