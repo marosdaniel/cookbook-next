@@ -19,14 +19,14 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
       }}
     >
       <AppShell.Header>
-        <Group h="100%" px="md">
+        <Group h="100%" px="md" justify="space-between">
+          <Logo headingSize={2} />
           <Burger
             opened={mobileOpened}
             onClick={toggleMobile}
             size="sm"
-            display={{ base: 'block', md: 'none' }}
+            display={{ base: 'block', sm: 'none' }}
           />
-          <Logo headingSize={2} />
         </Group>
       </AppShell.Header>
       <AppShell.Navbar>Navbar</AppShell.Navbar>
