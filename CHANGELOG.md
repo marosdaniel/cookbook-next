@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/marosdaniel/cookbook-next/compare/v1.1.0...v1.2.0) (2025-11-23)
+
+
+### Features
+
+* add Vitest test coverage reporting, configuration, and documentation ([24bb9e4](https://github.com/marosdaniel/cookbook-next/commit/24bb9e4e9e47500aebeca9a5c2e7debf80734520))
+
 # [1.1.0](https://github.com/marosdaniel/cookbook-next/compare/v1.0.0...v1.1.0) (2025-11-23)
 
 
