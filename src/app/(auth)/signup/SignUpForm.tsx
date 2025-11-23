@@ -2,7 +2,6 @@
 
 import { useMutation } from '@apollo/client/react';
 import {
-  Anchor,
   Button,
   Checkbox,
   Container,
@@ -23,6 +22,7 @@ import { useState, useTransition } from 'react';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { CREATE_USER } from '@/lib/graphql/mutations';
 import { customValidationSchema } from '@/lib/validation/validation';
+import PrivacyPolicyLink from '../../../components/PrivacyPolicyLink';
 import type { CreateUserData, CreateUserVars } from './types';
 
 const SignUpForm: FC = () => {
@@ -33,19 +33,6 @@ const SignUpForm: FC = () => {
     CREATE_USER,
   );
   const [isPrivacyAccepted, setIsPrivacyAccepted] = useState<boolean>(false);
-
-  const privacyLink = (
-    <Anchor
-      variant="gradient"
-      gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
-      component={Link}
-      href="/"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      {t('auth.iAcceptThePrivacyPolicy')}
-    </Anchor>
-  );
 
   const handleChangePrivacy = () => {
     setIsPrivacyAccepted(!isPrivacyAccepted);
@@ -198,7 +185,7 @@ const SignUpForm: FC = () => {
 
         <Checkbox
           size="md"
-          label={privacyLink}
+          label={<PrivacyPolicyLink />}
           mt="xl"
           checked={isPrivacyAccepted}
           onChange={handleChangePrivacy}
