@@ -77,10 +77,8 @@ export const authOptions: NextAuthOptions = {
         token.lastName = user.lastName;
         token.locale = user.locale;
         // Set session maxAge dynamically
-        (token as any).rememberMe = (user as any).rememberMe;
-        (token as any).maxAge = (user as any).rememberMe
-          ? 30 * 24 * 60 * 60
-          : 2 * 60 * 60; // 30 nap vagy 2 óra
+        token.rememberMe = user.rememberMe;
+        token.maxAge = user.rememberMe ? 30 * 24 * 60 * 60 : 2 * 60 * 60; // 30 days or 2 hours
       }
       return token;
     },
@@ -93,8 +91,8 @@ export const authOptions: NextAuthOptions = {
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
         session.user.locale = token.locale as string;
-        (session.user as any).rememberMe = (token as any).rememberMe;
-        (session as any).maxAge = (token as any).maxAge;
+        session.user.rememberMe = token.rememberMe;
+        session.maxAge = token.maxAge;
       }
       return session;
     },

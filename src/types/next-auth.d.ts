@@ -3,6 +3,7 @@ import type { DefaultSession } from 'next-auth';
 
 declare module 'next-auth' {
   interface Session {
+    maxAge?: number;
     user: {
       id: string;
       userName: string;
@@ -10,6 +11,7 @@ declare module 'next-auth' {
       lastName: string;
       role: UserRole;
       locale: string;
+      rememberMe?: boolean;
     } & DefaultSession['user'];
   }
 
@@ -20,6 +22,7 @@ declare module 'next-auth' {
     lastName: string;
     role: UserRole;
     locale: string;
+    rememberMe?: boolean;
   }
 }
 
@@ -31,5 +34,7 @@ declare module 'next-auth/jwt' {
     lastName: string;
     role: UserRole;
     locale: string;
+    rememberMe?: boolean;
+    maxAge?: number;
   }
 }

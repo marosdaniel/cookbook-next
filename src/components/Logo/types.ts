@@ -1,5 +1,5 @@
-import { TitleOrder } from '@mantine/core';
+import type { TitleOrder } from '@mantine/core';
 
-export interface Iprops {
-  headingSize?: TitleOrder;
-}
+export type LogoProps = {
+  headingSize: TitleOrder;
+};

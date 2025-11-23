@@ -3,9 +3,9 @@ import cx from 'clsx';
 import RouterLink from 'next/link';
 import { useGlobal } from '../../lib/store';
 import classes from './Logo.module.css';
-import type { Iprops } from './types';
+import type { LogoProps } from './types';
 
-const Logo = ({ headingSize }: Iprops) => {
+const Logo = ({ headingSize }: LogoProps) => {
   const { isDarkMode } = useGlobal();
 
   const buttonClasses = cx({

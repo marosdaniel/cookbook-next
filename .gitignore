@@ -27,6 +27,8 @@
 ### VS Code #################
 .vscode/
 !.vscode/snippets0.code-snippets
+!.vscode/settings.json
+!.vscode/extensions.json
 
 # debug
 npm-debug.log*
