@@ -26,7 +26,7 @@ import PrivacyPolicyLink from '../../../components/PrivacyPolicyLink';
 import type { CreateUserData, CreateUserVars } from './types';
 
 const SignUpForm: FC = () => {
-  const t = useTranslations();
+  const translate = useTranslations();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [createUser, { loading }] = useMutation<CreateUserData, CreateUserVars>(
@@ -46,8 +46,8 @@ const SignUpForm: FC = () => {
 
       if (data?.createUser) {
         notifications.show({
-          title: t('response.success'),
-          message: t('auth.accountCreatedSuccess'),
+          title: translate('response.success'),
+          message: translate('auth.accountCreatedSuccess'),
           color: 'green',
         });
 
@@ -59,7 +59,7 @@ const SignUpForm: FC = () => {
       const message =
         error instanceof Error ? error.message : 'An unknown error occurred';
       notifications.show({
-        title: t('response.error'),
+        title: translate('response.error'),
         message: message,
         color: 'red',
       });
@@ -89,14 +89,14 @@ const SignUpForm: FC = () => {
   return (
     <Container maw={520} my={40} id="sign-up-page">
       <Title ta="center" c="var(--mantine-color-gray-8)">
-        {t('auth.createAccount')}
+        {translate('auth.createAccount')}
       </Title>
       <Group mt={5} justify="center" align="center">
         <Text c="dimmed" size="sm" ta="center">
-          {t('auth.alreadyHaveAnAccount')}
+          {translate('auth.alreadyHaveAnAccount')}
         </Text>
         <Button variant="transparent" size="sm" component={Link} href="/login">
-          {t('auth.login')}
+          {translate('auth.login')}
         </Button>
       </Group>
 
@@ -112,8 +112,8 @@ const SignUpForm: FC = () => {
         <TextInput
           required
           id="first-name"
-          placeholder={t('user.firstName')}
-          label={t('user.firstName')}
+          placeholder={translate('user.firstName')}
+          label={translate('user.firstName')}
           name="firstName"
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -123,9 +123,9 @@ const SignUpForm: FC = () => {
         <TextInput
           required
           id="last-name"
-          placeholder={t('user.lastName')}
+          placeholder={translate('user.lastName')}
           mt="md"
-          label={t('user.lastName')}
+          label={translate('user.lastName')}
           name="lastName"
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -135,9 +135,9 @@ const SignUpForm: FC = () => {
         <TextInput
           required
           id="user-name"
-          placeholder={t('user.userName')}
+          placeholder={translate('user.userName')}
           mt="md"
-          label={t('user.userName')}
+          label={translate('user.userName')}
           name="userName"
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -145,7 +145,7 @@ const SignUpForm: FC = () => {
           error={formik.touched.userName && formik.errors.userName}
         />
         <TextInput
-          label={t('user.email')}
+          label={translate('user.email')}
           placeholder="your@email.com"
           required
           mt="md"
@@ -157,11 +157,11 @@ const SignUpForm: FC = () => {
           error={formik.touched.email && formik.errors.email}
         />
         <PasswordInput
-          placeholder={t('user.password')}
+          placeholder={translate('user.password')}
           required
           mt="md"
           id="password"
-          label={t('user.password')}
+          label={translate('user.password')}
           name="password"
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -169,11 +169,11 @@ const SignUpForm: FC = () => {
           error={formik.touched.password && formik.errors.password}
         />
         <PasswordInput
-          placeholder={t('user.confirmPassword')}
+          placeholder={translate('user.confirmPassword')}
           required
           mt="md"
           id="confirm-password"
-          label={t('user.confirmPassword')}
+          label={translate('user.confirmPassword')}
           name="confirmPassword"
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -200,7 +200,7 @@ const SignUpForm: FC = () => {
           loading={loading || isPending}
           loaderProps={{ type: 'dots' }}
         >
-          {t('auth.createAnAccountButton')}
+          {translate('auth.createAnAccountButton')}
         </Button>
       </Paper>
     </Container>
