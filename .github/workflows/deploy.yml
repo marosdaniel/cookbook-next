@@ -153,6 +153,17 @@ jobs:
       - name: Install Vercel CLI
         run: pnpm add -g vercel@latest
 
+      - name: Debug - Check Vercel Token
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "ERROR: VERCEL_TOKEN is empty or not set!"
+            exit 1
+          else
+            echo "VERCEL_TOKEN is set (length: ${#VERCEL_TOKEN} characters)"
+          fi
+
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production
         env:
