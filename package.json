@@ -16,8 +16,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "prisma generate && next build",
-    "start": "next start",
-    "lint:fix": "biome format --write && biome lint --write",
+    "typecheck": "prisma generate && tsc --noEmit",
+    "postinstall": "prisma generate",
     "test:coverage": "vitest run --coverage",
     "test:unit": "vitest run",
     "test:integration": "vitest run"
