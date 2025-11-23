@@ -87,6 +87,28 @@ jobs:
       - name: Run Coverage
         run: pnpm test:coverage
 
+      - name: Generate Coverage Summary
+        id: coverage-summary
+        run: |
+          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Category | Percentage |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|------------|" >> $GITHUB_STEP_SUMMARY
+          
+          LINES=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
+          STATEMENTS=$(cat coverage/coverage-summary.json | jq -r '.total.statements.pct')
+          FUNCTIONS=$(cat coverage/coverage-summary.json | jq -r '.total.functions.pct')
+          BRANCHES=$(cat coverage/coverage-summary.json | jq -r '.total.branches.pct')
+          
+          echo "| Lines | ${LINES}% |" >> $GITHUB_STEP_SUMMARY
+          echo "| Statements | ${STATEMENTS}% |" >> $GITHUB_STEP_SUMMARY
+          echo "| Functions | ${FUNCTIONS}% |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branches | ${BRANCHES}% |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "[View Full Report](https://marosdaniel.github.io/cookbook-next/)" >> $GITHUB_STEP_SUMMARY
+          
+          echo "lines=$LINES" >> $GITHUB_OUTPUT
+
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
@@ -120,6 +142,9 @@ jobs:
           name: coverage-report
           path: coverage
 
+      - name: Copy coverage summary to root
+        run: cp coverage/coverage-summary.json coverage/coverage-summary.json || echo "Summary already in place"
+
       - name: Upload to GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
@@ -128,8 +153,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          token: ${{ secrets.GH_PAGES_TOKEN }}
 
   deploy:
     needs: pages

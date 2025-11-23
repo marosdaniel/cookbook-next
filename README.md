@@ -19,9 +19,14 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 ## Test Coverage
 
 The project includes unit and integration tests powered by Vitest.
-You can view the coverage report locally by opening the generated HTML file:
 
-[Coverage report (GitHub Pages)](https://marosdaniel.github.io/cookbook-next/coverage/)
+**Latest Coverage Summary:**
 
-<!-- Optional badge (update manually) -->
-![Coverage](https://img.shields.io/badge/coverage-XX%25-brightgreen)
+| Category | Percentage |
+|----------|------------|
+| Lines | ![Coverage](https://img.shields.io/badge/dynamic/json?url=https://marosdaniel.github.io/cookbook-next/coverage-summary.json&label=lines&query=$.total.lines.pct&suffix=%&color=brightgreen) |
+| Statements | ![Coverage](https://img.shields.io/badge/dynamic/json?url=https://marosdaniel.github.io/cookbook-next/coverage-summary.json&label=statements&query=$.total.statements.pct&suffix=%&color=brightgreen) |
+| Functions | ![Coverage](https://img.shields.io/badge/dynamic/json?url=https://marosdaniel.github.io/cookbook-next/coverage-summary.json&label=functions&query=$.total.functions.pct&suffix=%&color=brightgreen) |
+| Branches | ![Coverage](https://img.shields.io/badge/dynamic/json?url=https://marosdaniel.github.io/cookbook-next/coverage-summary.json&label=branches&query=$.total.branches.pct&suffix=%&color=brightgreen) |
+
+[📊 View Full Coverage Report](https://marosdaniel.github.io/cookbook-next/)
