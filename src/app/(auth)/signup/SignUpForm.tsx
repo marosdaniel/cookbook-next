@@ -1,6 +1,5 @@
 'use client';
 
-import { gql } from '@apollo/client';
 import { useMutation } from '@apollo/client/react';
 import {
   Anchor,
@@ -22,21 +21,9 @@ import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 import { useState, useTransition } from 'react';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
+import { CREATE_USER } from '@/lib/graphql/mutations';
 import { customValidationSchema } from '@/lib/validation/validation';
 import type { CreateUserData, CreateUserVars } from './types';
-
-const CREATE_USER = gql`
-  mutation CreateUser($userRegisterInput: UserRegisterInput!) {
-    createUser(userRegisterInput: $userRegisterInput) {
-      id
-      firstName
-      lastName
-      userName
-      email
-      role
-    }
-  }
-`;
 
 const SignUpForm: FC = () => {
   const t = useTranslations();
