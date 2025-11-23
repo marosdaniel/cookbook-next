@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/marosdaniel/cookbook-next/compare/v1.0.0...v1.1.0) (2025-11-23)
+
+
+### Features
+
+* introduce Vitest for unit and integration testing with CI integration and make Logo headingSize optional. ([a1476d4](https://github.com/marosdaniel/cookbook-next/commit/a1476d44a62bf7730bdf66d3a996bedc5ff230a2))
+
 # 1.0.0 (2025-11-23)
 
 
