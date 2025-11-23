@@ -21,7 +21,7 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 The project includes unit and integration tests powered by Vitest.
 You can view the coverage report locally by opening the generated HTML file:
 
-[Coverage report](./coverage/index.html)
+[Coverage report (GitHub Pages)](https://marosdaniel.github.io/cookbook-next/coverage/)
 
 <!-- Optional badge (update manually) -->
 ![Coverage](https://img.shields.io/badge/coverage-XX%25-brightgreen)
