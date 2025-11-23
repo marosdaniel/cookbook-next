@@ -35,11 +35,11 @@ jobs:
       - name: Run Type Check
         run: pnpm tsc --noEmit
 
-      # - name: Run Unit Tests
-      #   run: pnpm test:unit
+      - name: Run Unit Tests
+        run: pnpm test:unit
 
-      # - name: Run Integration Tests
-      #   run: pnpm test:integration
+      - name: Run Integration Tests
+        run: pnpm test:integration
 
   # e2e:
   #   needs: checks
