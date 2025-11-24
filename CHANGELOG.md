@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/marosdaniel/cookbook-next/compare/v1.3.0...v1.4.0) (2025-11-24)
+
+
+### Features
+
+* Relocate NextTopLoader to Mantine provider with theme-based color and remove comments from deploy workflow. ([3b9826a](https://github.com/marosdaniel/cookbook-next/commit/3b9826a99138b9fdc2f7dd3c840b7864ec3142fa))
+
 # [1.3.0](https://github.com/marosdaniel/cookbook-next/compare/v1.2.0...v1.3.0) (2025-11-24)
 
 
