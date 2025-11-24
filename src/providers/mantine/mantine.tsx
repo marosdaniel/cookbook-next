@@ -2,6 +2,7 @@
 
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
+import NextTopLoader from 'nextjs-toploader';
 import type { PropsWithChildren } from 'react';
 import { darkTheme } from './darkTheme';
 import { lightTheme } from './lightTheme';
@@ -10,9 +11,14 @@ export function MantineProviderWrapper({
   children,
 }: Readonly<PropsWithChildren>) {
   const isDarkMode = false; // Replace with your actual dark mode logic
+  const theme = isDarkMode ? darkTheme : lightTheme;
+
   return (
-    <MantineProvider theme={isDarkMode ? darkTheme : lightTheme}>
+    <MantineProvider theme={theme}>
       <Notifications />
+      <NextTopLoader
+        color={theme.colors?.[theme.primaryColor ?? 'pink']?.[7] ?? '#E00890'}
+      />
       {children}
     </MantineProvider>
   );
