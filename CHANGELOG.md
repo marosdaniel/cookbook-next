@@ -1,3 +1,15 @@
+# [1.3.0](https://github.com/marosdaniel/cookbook-next/compare/v1.2.0...v1.3.0) (2025-11-24)
+
+
+### Features
+
+* add automated release workflow using semantic-release ([8e0e6f3](https://github.com/marosdaniel/cookbook-next/commit/8e0e6f34de6fcd4e97469227e85aed768f884ac0))
+* add CREATE_USER GraphQL mutation and refactor its usage in the signup form. ([ef07607](https://github.com/marosdaniel/cookbook-next/commit/ef07607ed8b529bfbb0798f2f8d5f7097c3c4c45))
+* add manual trigger for deploy workflow ([76d0293](https://github.com/marosdaniel/cookbook-next/commit/76d02935354b34d28011528349b3e649659b67e5))
+* display detailed coverage metrics in README via dynamic badges and generate coverage summary in workflow ([5cfc947](https://github.com/marosdaniel/cookbook-next/commit/5cfc94787481f87544978abe38b11baed20123a7))
+* Implement GitHub Pages deployment for coverage reports by refactoring the deploy workflow and updating the README link. ([dda2cce](https://github.com/marosdaniel/cookbook-next/commit/dda2cce9d8feca67fbd9dd166e639c34e3ba107c))
+* Implement privacy policy validation for signup, add global loading indicator, and update i18n messages. ([ae8638e](https://github.com/marosdaniel/cookbook-next/commit/ae8638ea9db08d0deee7fa02536593c8ba8df261))
+
 # [1.2.0](https://github.com/marosdaniel/cookbook-next/compare/v1.1.0...v1.2.0) (2025-11-23)
 
 
