@@ -4,11 +4,11 @@
   cursor: pointer;
   transition:
     background 0.3s ease,
-    opacity 0.3s ease; /* Áttűnés a hoverre és az opacity-re */
-  opacity: 1; /* Alapértelmezett opacitás */
+    opacity 0.3s ease;
+  opacity: 1;
 }
 
 .dark:hover {
   background: transparent;
-  opacity: 0.8; /* Enyhén átlátszó hover esetén */
+  opacity: 0.8;
 }
