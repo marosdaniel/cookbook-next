@@ -18,10 +18,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
-import { useState, useTransition } from 'react';
+import { useTransition } from 'react';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { CREATE_USER } from '@/lib/graphql/mutations';
-import { customValidationSchema } from '@/lib/validation/validation';
+import { signUpValidationSchema } from '@/lib/validation/validation';
 import PrivacyPolicyLink from '../../../components/PrivacyPolicyLink';
 import type { CreateUserData, CreateUserVars } from './types';
 
@@ -32,16 +32,14 @@ const SignUpForm: FC = () => {
   const [createUser, { loading }] = useMutation<CreateUserData, CreateUserVars>(
     CREATE_USER,
   );
-  const [isPrivacyAccepted, setIsPrivacyAccepted] = useState<boolean>(false);
 
-  const handleChangePrivacy = () => {
-    setIsPrivacyAccepted(!isPrivacyAccepted);
-  };
-
-  const handleSignUp = async (values: CreateUserVars['userRegisterInput']) => {
+  const handleSignUp = async (
+    values: CreateUserVars['userRegisterInput'] & { privacyAccepted: boolean },
+  ) => {
     try {
+      const { privacyAccepted: _, ...userRegisterInput } = values;
       const { data } = await createUser({
-        variables: { userRegisterInput: values },
+        variables: { userRegisterInput },
       });
 
       if (data?.createUser) {
@@ -57,7 +55,9 @@ const SignUpForm: FC = () => {
       }
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : 'An unknown error occurred';
+        error instanceof Error
+          ? error.message
+          : translate('response.unknownError');
       notifications.show({
         title: translate('response.error'),
         message: message,
@@ -74,17 +74,14 @@ const SignUpForm: FC = () => {
       email: '',
       password: '',
       confirmPassword: '',
+      privacyAccepted: false,
     },
-    validationSchema: toFormikValidationSchema(customValidationSchema),
+    validationSchema: toFormikValidationSchema(signUpValidationSchema),
     onSubmit: handleSignUp,
   });
 
   const isSubmitDisabled =
-    loading ||
-    isPending ||
-    !isPrivacyAccepted ||
-    !formik.isValid ||
-    !formik.dirty;
+    loading || isPending || !formik.isValid || !formik.dirty;
 
   return (
     <Container maw={520} my={40} id="sign-up-page">
@@ -187,8 +184,12 @@ const SignUpForm: FC = () => {
           size="md"
           label={<PrivacyPolicyLink />}
           mt="xl"
-          checked={isPrivacyAccepted}
-          onChange={handleChangePrivacy}
+          name="privacyAccepted"
+          checked={formik.values.privacyAccepted}
+          onChange={formik.handleChange}
+          error={
+            formik.touched.privacyAccepted && formik.errors.privacyAccepted
+          }
         />
 
         <Button

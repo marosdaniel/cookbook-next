@@ -7,6 +7,7 @@ import '@mantine/notifications/styles.css';
 import './globals.css';
 import type { PropsWithChildren } from 'react';
 import Shell from '../components/Shell';
+import NextTopLoader from 'nextjs-toploader';
 
 const ClientProviders = dynamic(
   () => import('@/providers/client').then((m) => m.ClientProviders),
@@ -36,8 +37,9 @@ export default async function RootLayout(props: Readonly<PropsWithChildren>) {
 
   return (
     <html lang="en">
-      <body>
+      <body suppressHydrationWarning>
         <ServerProviders>
+          <NextTopLoader />
           <ClientProviders messages={allMessages} locale="en">
             <Shell>{props.children}</Shell>
           </ClientProviders>

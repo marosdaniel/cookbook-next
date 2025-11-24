@@ -82,7 +82,8 @@
     "userFavoriteUserNotFound": "User not found",
     "userFavoriteRecipeNotFound": "Recipe not found",
     "userFavoriteAlreadyFavorite": "Recipe already in favorites",
-    "userFavoriteSuccess": "Recipe successfully added to favorites"
+    "userFavoriteSuccess": "Recipe successfully added to favorites",
+    "unknownError": "An unknown error occurred"
   },
   "seo": {
     "recipeDetailTitle": "{title} - Recipe by {createdBy} | Cookbook",

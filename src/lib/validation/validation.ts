@@ -114,6 +114,12 @@ export const customValidationSchema = z
     path: ['confirmPassword'],
   });
 
+export const signUpValidationSchema = customValidationSchema.safeExtend({
+  privacyAccepted: z.literal(true, {
+    error: 'You must accept the privacy policy',
+  }),
+});
+
 export const recipeFormValidationSchema = z.object({
   title: z.string().min(1, 'Required'),
   description: z.string().min(1, 'Required'),

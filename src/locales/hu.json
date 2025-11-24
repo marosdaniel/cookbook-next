@@ -15,7 +15,9 @@
     "forgotPasswordTitle": "Elfelejtette a jelszavát?",
     "forgotPasswordDescription": "Adja meg az email címét és küldünk egy linket a jelszó visszaállításához.",
     "resetPasswordButton": "Jelszó visszaállítása",
-    "backToLogin": "Vissza a bejelentkezéshez"
+    "backToLogin": "Vissza a bejelentkezéshez",
+    "createAccount": "Fiók létrehozása",
+    "accountCreatedSuccess": "Fiók sikeresen létrehozva. Kérjük jelentkezzen be."
   },
 
   "general": {
@@ -77,7 +79,8 @@
     "userFavoriteUserNotFound": "Felhasználó nem található",
     "userFavoriteRecipeNotFound": "Recept nem található",
     "userFavoriteAlreadyFavorite": "A recept már a kedvencek között van",
-    "userFavoriteSuccess": "Recept sikeresen hozzáadva a kedvencekhez"
+    "userFavoriteSuccess": "Recept sikeresen hozzáadva a kedvencekhez",
+    "unknownError": "Ismeretlen hiba történt"
   },
   "seo": {
     "recipeDetailTitle": "{title} - Recept tőle: {createdBy} | Receptkönyv",
