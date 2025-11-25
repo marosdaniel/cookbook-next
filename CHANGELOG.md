@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/marosdaniel/cookbook-next/compare/v1.4.0...v1.5.0) (2025-11-25)
+
+
+### Features
+
+* Dynamically generate authentication page metadata using new translated descriptions. ([fdacf22](https://github.com/marosdaniel/cookbook-next/commit/fdacf222f94df75b1badcbe5422f76fe226f65dd))
+
 # [1.4.0](https://github.com/marosdaniel/cookbook-next/compare/v1.3.0...v1.4.0) (2025-11-24)
 
 
