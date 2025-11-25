@@ -1,11 +1,16 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 import type { FC } from 'react';
 
-export const metadata: Metadata = {
-  title: 'Reset Password | Cookbook',
-  description: 'Reset your Cookbook account password',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('auth');
+
+  return {
+    title: `${t('forgotPasswordTitle')} | Cookbook`,
+    description: t('resetPasswordDescription'),
+  };
+}
 
 const ResetPasswordPage: FC = () => {
   return (

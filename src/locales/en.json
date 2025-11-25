@@ -20,7 +20,10 @@
     "backToLogin": "Back to login",
     "invalidCredentials": "Invalid email or password",
     "loginSuccess": "Successfully logged in!",
-    "loginError": "An error occurred during login"
+    "loginError": "An error occurred during login",
+    "loginDescription": "Sign in to your Cookbook account to access your recipes and favorites",
+    "signupDescription": "Create your Cookbook account to save and share recipes",
+    "resetPasswordDescription": "Enter your email and we will send you a link to reset your password"
   },
 
   "general": {

@@ -17,7 +17,10 @@
     "resetPasswordButton": "Jelszó visszaállítása",
     "backToLogin": "Vissza a bejelentkezéshez",
     "createAccount": "Fiók létrehozása",
-    "accountCreatedSuccess": "Fiók sikeresen létrehozva. Kérjük jelentkezzen be."
+    "accountCreatedSuccess": "Fiók sikeresen létrehozva. Kérjük jelentkezzen be.",
+    "loginDescription": "Jelentkezzen be Cookbook fiókjába, hogy hozzáférjen receptjeihez és kedvenceihez",
+    "signupDescription": "Hozzon létre Cookbook fiókot receptek mentéséhez és megosztásához",
+    "resetPasswordDescription": "Adja meg az email címét és küldünk egy linket a jelszó visszaállításához"
   },
 
   "general": {

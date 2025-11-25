@@ -1,11 +1,16 @@
 import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import type { FC } from 'react';
 import SignUpForm from './SignUpForm';
 
-export const metadata: Metadata = {
-  title: 'Sign Up | Cookbook',
-  description: 'Create a new Cookbook account',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('auth');
+
+  return {
+    title: `${t('createAccount')} | Cookbook`,
+    description: t('signupDescription'),
+  };
+}
 
 const SignUpPage: FC = () => {
   return <SignUpForm />;
