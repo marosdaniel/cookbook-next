@@ -1,14 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';
-import type { ResetPasswordPageProps } from './types';
 
 export const metadata: Metadata = {
   title: 'Reset Password | Cookbook',
   description: 'Reset your Cookbook account password',
 };
 
-const ResetPasswordPage: FC<ResetPasswordPageProps> = () => {
+const ResetPasswordPage: FC = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">

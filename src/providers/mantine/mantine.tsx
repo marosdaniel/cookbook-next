@@ -18,6 +18,15 @@ export function MantineProviderWrapper({
       <Notifications />
       <NextTopLoader
         color={theme.colors?.[theme.primaryColor ?? 'pink']?.[7] ?? '#E00890'}
+        showSpinner={false}
+        height={2}
+        // delay={200}
+        // speed={200}
+        // crawlSpeed={200}
+        crawl={true}
+        easing="ease-in-out"
+        key="top-loader"
+        // nonce=''
       />
       {children}
     </MantineProvider>

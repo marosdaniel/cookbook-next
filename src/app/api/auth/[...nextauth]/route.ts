@@ -59,7 +59,7 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
     // maxAge will be set dynamically in jwt callback
-    maxAge: 7 * 24 * 60 * 60, // default 7 days
+    maxAge: 14 * 24 * 60 * 60, // 14 days
   },
   pages: {
     signIn: '/login',
@@ -78,7 +78,7 @@ export const authOptions: NextAuthOptions = {
         token.locale = user.locale;
         // Set session maxAge dynamically
         token.rememberMe = user.rememberMe;
-        token.maxAge = user.rememberMe ? 30 * 24 * 60 * 60 : 2 * 60 * 60; // 30 days or 2 hours
+        token.maxAge = user.rememberMe ? 14 * 24 * 60 * 60 : 2 * 60 * 60; // 14 days or 2 hours
       }
       return token;
     },
