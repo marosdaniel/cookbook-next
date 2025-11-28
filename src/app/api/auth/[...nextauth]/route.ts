@@ -12,9 +12,11 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
         rememberMe: { label: 'Remember Me', type: 'checkbox' },
       },
-      async authorize(
-        credentials?: Record<'email' | 'password' | 'rememberMe', string>,
-      ) {
+      async authorize(credentials?: {
+        email: string;
+        password: string;
+        rememberMe: string;
+      }) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Email and password are required');
         }
@@ -84,13 +86,13 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       // Add user data from token to session
-      if (token && session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role;
-        session.user.userName = token.userName as string;
-        session.user.firstName = token.firstName as string;
-        session.user.lastName = token.lastName as string;
-        session.user.locale = token.locale as string;
+      if (token && session.user && token.id) {
+        session.user.id = token.id;
+        session.user.role = token.role ?? 'USER';
+        session.user.userName = token.userName ?? '';
+        session.user.firstName = token.firstName ?? '';
+        session.user.lastName = token.lastName ?? '';
+        session.user.locale = token.locale ?? 'en';
         session.user.rememberMe = token.rememberMe;
         session.maxAge = token.maxAge;
       }

@@ -1,10 +1,10 @@
 import type { User, UserRegisterInput } from '@/lib/graphql/types/user';
 
 // Client-side mutation types for Apollo Client
-export type CreateUserData = {
+export interface CreateUserData {
   createUser: User;
-};
+}
 
-export type CreateUserVars = {
+export interface CreateUserVars {
   userRegisterInput: UserRegisterInput;
-};
+}
