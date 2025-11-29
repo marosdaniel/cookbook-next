@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/marosdaniel/cookbook-next/compare/v1.5.0...v1.6.0) (2025-11-29)
+
+
+### Features
+
+* Disable shell navigation components on authentication routes and add `baseline-browser-mapping` dependency. ([a8d7671](https://github.com/marosdaniel/cookbook-next/commit/a8d7671e103e0bd4f7c93cf0d50b563837b64b8c))
+
 # [1.5.0](https://github.com/marosdaniel/cookbook-next/compare/v1.4.0...v1.5.0) (2025-11-25)
 
 
