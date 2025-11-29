@@ -1,3 +1,11 @@
+# [1.7.0](https://github.com/marosdaniel/cookbook-next/compare/v1.6.0...v1.7.0) (2025-11-29)
+
+
+### Features
+
+* Add language selector with dynamic locale management and localized SEO metadata. ([720cc6f](https://github.com/marosdaniel/cookbook-next/commit/720cc6f76854ae2a5b2d738f0fcab62339d28990))
+* Implement 404 page, refactor authentication metadata to use dynamic locale fetching with `force-dynamic`, and disable Next.js component caching. ([3d34576](https://github.com/marosdaniel/cookbook-next/commit/3d34576059026e93735bc4e23d8bcda2aa21e7b1))
+
 # [1.6.0](https://github.com/marosdaniel/cookbook-next/compare/v1.5.0...v1.6.0) (2025-11-29)
 
 
