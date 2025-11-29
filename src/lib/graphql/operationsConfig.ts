@@ -8,7 +8,7 @@
  * - adminOperations: Only for ADMIN role
  */
 
-import type { UserRole } from './types/user';
+import type { UserRole } from '../../types/user';
 
 interface OperationsConfig {
   publicOperations: string[];

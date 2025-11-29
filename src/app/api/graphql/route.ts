@@ -11,14 +11,14 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
-import type { IContext } from '@/lib/graphql/types/common';
 import { prisma } from '@/lib/prisma';
+import type { GraphQLContext } from '../../../types/graphql/context';
 
 /**
  * Plugin to log GraphQL operations (development only)
  */
-const loggingPlugin: ApolloServerPlugin<IContext> = {
-  async requestDidStart(): Promise<GraphQLRequestListener<IContext>> {
+const loggingPlugin: ApolloServerPlugin<GraphQLContext> = {
+  async requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
     return {
       async didResolveOperation(requestContext) {
         const { operationName } = requestContext.request;
@@ -31,8 +31,8 @@ const loggingPlugin: ApolloServerPlugin<IContext> = {
 /**
  * Plugin to validate operation permissions
  */
-const authPlugin: ApolloServerPlugin<IContext> = {
-  async requestDidStart(): Promise<GraphQLRequestListener<IContext>> {
+const authPlugin: ApolloServerPlugin<GraphQLContext> = {
+  async requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
     return {
       async didResolveOperation(requestContext) {
         const { operationName } = requestContext.request;
@@ -57,7 +57,7 @@ const authPlugin: ApolloServerPlugin<IContext> = {
 };
 
 // Create Apollo Server instance
-const server = new ApolloServer<IContext>({
+const server = new ApolloServer<GraphQLContext>({
   typeDefs,
   resolvers: { ...scalarResolvers, ...resolvers },
   plugins: [loggingPlugin, authPlugin],
@@ -67,19 +67,22 @@ const server = new ApolloServer<IContext>({
 /**
  * Create GraphQL context for each request
  */
-const handler = startServerAndCreateNextHandler<NextRequest, IContext>(server, {
-  context: async (): Promise<IContext> => {
-    // Get NextAuth session
-    const session = await getServerSession(authOptions);
+const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(
+  server,
+  {
+    context: async (): Promise<GraphQLContext> => {
+      // Get NextAuth session
+      const session = await getServerSession(authOptions);
 
-    return {
-      userId: session?.user?.id,
-      role: session?.user?.role,
-      operationName: null,
-      prisma,
-    };
+      return {
+        userId: session?.user?.id,
+        role: session?.user?.role,
+        operationName: null,
+        prisma,
+      };
+    },
   },
-});
+);
 
 async function wrappedHandler(
   request: NextRequest,

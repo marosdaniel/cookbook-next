@@ -1,21 +1,6 @@
-// User-related types for GraphQL operations
-
-import type { Locale } from '../../../types/common';
-import type { OperationResponse } from './common';
-
-export type UserRole = 'ADMIN' | 'USER' | 'BLOGGER';
-
-export type User = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  userName: string;
-  email: string;
-  role: UserRole;
-  locale: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
+import type { Locale } from '../common';
+import type { OperationResponse } from '../graphql/responses';
+import type { User } from '../user';
 
 // Mutation inputs
 export type UserRegisterInput = {
@@ -29,7 +14,7 @@ export type UserRegisterInput = {
 };
 
 export type UserLoginInput = {
-  userNameOrEmail: string;
+  email: string;
   password: string;
 };
 

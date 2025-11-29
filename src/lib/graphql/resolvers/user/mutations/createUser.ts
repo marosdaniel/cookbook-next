@@ -2,16 +2,17 @@ import { UserRole } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { ZodError } from 'zod';
 import { USER_REGISTER_MESSAGE_KEYS } from '@/lib/graphql/messageKeys';
-import type { IContext } from '@/lib/graphql/types/common';
-import type { CreateUserArgs } from '@/lib/graphql/types/user';
+
 import { customValidationSchema } from '@/lib/validation/validation';
+import type { CreateUserArgs } from '../../../../../types/api/user';
+import type { GraphQLContext } from '../../../../../types/graphql/context';
 import { ErrorTypes } from '../../../../validation/errorCatalog';
 import { throwCustomError } from '../../../../validation/throwCustomError';
 
 export const createUser = async (
   _parent: unknown,
   { userRegisterInput }: CreateUserArgs,
-  { prisma }: IContext,
+  { prisma }: GraphQLContext,
 ) => {
   const {
     firstName,

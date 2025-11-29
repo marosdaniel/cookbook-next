@@ -1,10 +1,11 @@
 import { USER_FAVORITE_MESSAGE_KEYS } from '@/lib/graphql/messageKeys';
-import type { IContext, OperationResponse } from '@/lib/graphql/types/common';
+import type { GraphQLContext } from '../../../../../types/graphql/context';
+import type { OperationResponse } from '../../../../../types/graphql/responses';
 
 export const addToFavoriteRecipes = async (
   _: unknown,
   { userId, recipeId }: { userId: string; recipeId: string },
-  context: IContext,
+  context: GraphQLContext,
 ): Promise<OperationResponse> => {
   const { userId: currentUserId, role: currentUserRole, prisma } = context;
 
