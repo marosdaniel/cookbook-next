@@ -38,13 +38,8 @@ export const setStoredLocale = (locale: string): void => {
 
     // Set in cookies (expires in 1 year)
     const maxAge = 60 * 60 * 24 * 365;
+    // biome-ignore lint/suspicious/noDocumentCookie: We need to set the cookie manually for i18n
     document.cookie = `${LOCALE_STORAGE_KEY}=${locale}; path=/; max-age=${maxAge}`;
-    console.log(
-      '[setStoredLocale] Set locale to:',
-      locale,
-      'Cookie:',
-      document.cookie,
-    );
   } catch (error) {
     console.error('[setStoredLocale] Error setting locale:', error);
   }

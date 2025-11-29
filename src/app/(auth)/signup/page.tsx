@@ -1,29 +1,19 @@
 import type { Metadata } from 'next';
 import type { FC } from 'react';
 import { getLocaleFromCookies } from '@/app/layout';
-import { getLocaleMessages } from '@/lib/locale';
+import { getAuthMetadata } from '@/lib/seo';
 import SignUpForm from './SignUpForm';
 
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocaleFromCookies();
-  const messages = await getLocaleMessages(locale);
-
-  const auth = messages.auth as Record<string, unknown> | undefined;
-  const title =
-    typeof auth?.createAccount === 'string'
-      ? auth.createAccount
-      : 'Create Account';
-  const description =
-    typeof auth?.signupDescription === 'string'
-      ? auth.signupDescription
-      : 'Create your account';
-
-  return {
-    title: `${title} | Cookbook`,
-    description,
-  };
+  return getAuthMetadata(locale, {
+    titleKey: 'createAccount',
+    descriptionKey: 'signupDescription',
+    fallbackTitle: 'Create Account',
+    fallbackDescription: 'Create your account',
+  });
 }
 
 const SignUpPage: FC = () => {

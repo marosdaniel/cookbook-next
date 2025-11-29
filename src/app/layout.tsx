@@ -22,12 +22,6 @@ export const getLocaleFromCookies = cache(async () => {
   await connection();
   const cookieStore = await cookies();
   const locale = cookieStore.get(LOCALE_STORAGE_KEY)?.value || 'en';
-  console.log(
-    '[getLocaleFromCookies] Reading locale from cookies:',
-    locale,
-    'Cookie name:',
-    LOCALE_STORAGE_KEY,
-  );
   return locale;
 });
 

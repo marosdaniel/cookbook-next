@@ -2,28 +2,18 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { FC } from 'react';
 import { getLocaleFromCookies } from '@/app/layout';
-import { getLocaleMessages } from '@/lib/locale';
+import { getAuthMetadata } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocaleFromCookies();
-  const messages = await getLocaleMessages(locale);
-
-  const auth = messages.auth as Record<string, unknown> | undefined;
-  const title =
-    typeof auth?.forgotPasswordTitle === 'string'
-      ? auth.forgotPasswordTitle
-      : 'Forgot Password';
-  const description =
-    typeof auth?.resetPasswordDescription === 'string'
-      ? auth.resetPasswordDescription
-      : 'Reset your password';
-
-  return {
-    title: `${title} | Cookbook`,
-    description,
-  };
+  return getAuthMetadata(locale, {
+    titleKey: 'forgotPasswordTitle',
+    descriptionKey: 'resetPasswordDescription',
+    fallbackTitle: 'Forgot Password',
+    fallbackDescription: 'Reset your password',
+  });
 }
 
 const ResetPasswordPage: FC = () => {
