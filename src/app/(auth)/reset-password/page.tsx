@@ -1,14 +1,28 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
 import type { FC } from 'react';
+import { getLocaleFromCookies } from '@/app/layout';
+import { getLocaleMessages } from '@/lib/locale';
+
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('auth');
+  const locale = await getLocaleFromCookies();
+  const messages = await getLocaleMessages(locale);
+
+  const auth = messages.auth as Record<string, unknown> | undefined;
+  const title =
+    typeof auth?.forgotPasswordTitle === 'string'
+      ? auth.forgotPasswordTitle
+      : 'Forgot Password';
+  const description =
+    typeof auth?.resetPasswordDescription === 'string'
+      ? auth.resetPasswordDescription
+      : 'Reset your password';
 
   return {
-    title: `${t('forgotPasswordTitle')} | Cookbook`,
-    description: t('resetPasswordDescription'),
+    title: `${title} | Cookbook`,
+    description,
   };
 }
 

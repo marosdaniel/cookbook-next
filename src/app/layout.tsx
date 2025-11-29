@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 import { cookies } from 'next/headers';
 import { connection } from 'next/server';
 import { getLocaleMessages, LOCALE_STORAGE_KEY } from '@/lib/locale';
@@ -11,16 +11,24 @@ import type { PropsWithChildren } from 'react';
 import { cache } from 'react';
 import Shell from '../components/Shell';
 
-const ClientProviders = dynamic(
+const ClientProviders = nextDynamic(
   () => import('@/providers/client').then((m) => m.ClientProviders),
   {
     ssr: true,
   },
 );
 
-const getLocaleFromCookies = cache(async () => {
+export const getLocaleFromCookies = cache(async () => {
+  await connection();
   const cookieStore = await cookies();
-  return cookieStore.get(LOCALE_STORAGE_KEY)?.value || 'en';
+  const locale = cookieStore.get(LOCALE_STORAGE_KEY)?.value || 'en';
+  console.log(
+    '[getLocaleFromCookies] Reading locale from cookies:',
+    locale,
+    'Cookie name:',
+    LOCALE_STORAGE_KEY,
+  );
+  return locale;
 });
 
 export async function generateMetadata(): Promise<Metadata> {

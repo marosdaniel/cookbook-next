@@ -39,8 +39,14 @@ export const setStoredLocale = (locale: string): void => {
     // Set in cookies (expires in 1 year)
     const maxAge = 60 * 60 * 24 * 365;
     document.cookie = `${LOCALE_STORAGE_KEY}=${locale}; path=/; max-age=${maxAge}`;
-  } catch {
-    // Ignore storage errors
+    console.log(
+      '[setStoredLocale] Set locale to:',
+      locale,
+      'Cookie:',
+      document.cookie,
+    );
+  } catch (error) {
+    console.error('[setStoredLocale] Error setting locale:', error);
   }
 };
 

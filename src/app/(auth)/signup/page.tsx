@@ -1,14 +1,28 @@
 import type { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
 import type { FC } from 'react';
+import { getLocaleFromCookies } from '@/app/layout';
+import { getLocaleMessages } from '@/lib/locale';
 import SignUpForm from './SignUpForm';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('auth');
+  const locale = await getLocaleFromCookies();
+  const messages = await getLocaleMessages(locale);
+
+  const auth = messages.auth as Record<string, unknown> | undefined;
+  const title =
+    typeof auth?.createAccount === 'string'
+      ? auth.createAccount
+      : 'Create Account';
+  const description =
+    typeof auth?.signupDescription === 'string'
+      ? auth.signupDescription
+      : 'Create your account';
 
   return {
-    title: `${t('createAccount')} | Cookbook`,
-    description: t('signupDescription'),
+    title: `${title} | Cookbook`,
+    description,
   };
 }
 
