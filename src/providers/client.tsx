@@ -4,18 +4,27 @@ import { ApolloProvider as ApolloProviderBase } from '@apollo/client/react';
 import { SessionProvider } from 'next-auth/react';
 import { NextIntlClientProvider } from 'next-intl';
 import type { FC } from 'react';
-import { Provider as ReduxProvider } from 'react-redux';
+import { useEffect } from 'react';
+import { Provider as ReduxProvider, useDispatch } from 'react-redux';
 import { apolloClient } from '@/lib/apollo/client';
 import { store } from '@/lib/store';
-import { useLocale } from '@/lib/store/global';
-import type { ClientProvidersProps } from '@/types/common';
+import { setLocale } from '@/lib/store/global';
+import type { ClientProvidersProps, Locale } from '@/types/common';
 import { MantineProviderWrapper } from './mantine/mantine';
 
 const ClientProvidersInner: FC<ClientProvidersProps> = ({
   children,
   messages,
+  locale,
 }) => {
-  const locale = useLocale();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (locale) {
+      dispatch(setLocale(locale as Locale));
+    }
+  }, [locale, dispatch]);
+
   const currentMessages = messages[locale] || messages.en;
 
   return (

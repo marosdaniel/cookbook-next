@@ -3,6 +3,7 @@
     "login": "Anmelden",
     "register": "Registrieren",
     "welcomeBack": "Willkommen zurück!",
+    "createAccount": "Ein Konto erstellen",
     "dontYouHaveAnAccount": "Haben Sie noch kein Konto?",
     "createAccountButton": "Konto erstellen",
     "rememberMe": "Erinnere dich an mich",
@@ -16,6 +17,10 @@
     "forgotPasswordDescription": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
     "resetPasswordButton": "Passwort zurücksetzen",
     "backToLogin": "Zurück zur Anmeldung"
+  },
+  "common": {
+    "language": "Sprache",
+    "languageSelector": "Sprache ändern"
   },
   "general": {
     "edit": "Bearbeiten",
@@ -79,6 +84,8 @@
     "userFavoriteSuccess": "Rezept erfolgreich zu Favoriten hinzugefügt"
   },
   "seo": {
+    "appTitle": "Cookbook - Teilen Sie Ihre Rezepte",
+    "appDescription": "Der beste Ort, um Rezepte zu finden und zu teilen.",
     "recipeDetailTitle": "{title} - Rezept von {createdBy} | Kochbuch",
     "recipeDetailDescription": "{title} Rezept, erstellt von {createdBy}. Dieses Rezept gehört zur {category} Kategorie und kann in {cookingTime} Minuten zubereitet werden. Schauen Sie sich die genauen Zutaten und detaillierten Kochanweisungen an!",
     "recipeDetailKeywords": "Rezept, {title}, {category}, Kochen, {createdBy}, Zutaten, Mahlzeit"

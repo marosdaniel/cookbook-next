@@ -1,18 +1,28 @@
 'use client';
 
 import { Button, Title } from '@mantine/core';
-import { useFormatter, useTranslations } from 'next-intl';
-import { useDispatch } from 'react-redux';
-import { setLocale, useLocale } from '@/lib/store';
+import { useRouter } from 'next/navigation';
+import { useFormatter, useLocale, useTranslations } from 'next-intl';
+import { useTransition } from 'react';
+import { setStoredLocale } from '@/lib/locale';
 
 export default function Home() {
-  const dispatch = useDispatch();
+  const router = useRouter();
   const locale = useLocale();
   const format = useFormatter();
   const translate = useTranslations();
+  const [isPending, startTransition] = useTransition();
 
   const testNumber = 1234.56;
   const itemCount: number = 5;
+
+  const handleLocaleChange = (newLocale: string) => {
+    if (newLocale === locale) return;
+    setStoredLocale(newLocale);
+    startTransition(() => {
+      router.refresh();
+    });
+  };
 
   return (
     <div style={{ padding: '2rem' }}>
@@ -21,21 +31,25 @@ export default function Home() {
       <div style={{ marginBottom: '2rem' }}>
         <p>Current locale: {locale}</p>
         <Button
-          onClick={() => dispatch(setLocale('en'))}
-          disabled={locale === 'en'}
+          onClick={() => handleLocaleChange('en')}
+          disabled={locale === 'en' || isPending}
+          loading={isPending && locale !== 'en'}
           style={{ marginRight: '1rem' }}
         >
           English
         </Button>
         <Button
-          onClick={() => dispatch(setLocale('hu'))}
-          disabled={locale === 'hu'}
+          onClick={() => handleLocaleChange('hu')}
+          disabled={locale === 'hu' || isPending}
+          loading={isPending && locale !== 'hu'}
+          style={{ marginRight: '1rem' }}
         >
           Magyar
         </Button>
         <Button
-          onClick={() => dispatch(setLocale('de'))}
-          disabled={locale === 'de'}
+          onClick={() => handleLocaleChange('de')}
+          disabled={locale === 'de' || isPending}
+          loading={isPending && locale !== 'de'}
         >
           Deutsch
         </Button>

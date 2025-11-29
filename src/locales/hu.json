@@ -22,6 +22,10 @@
     "signupDescription": "Hozzon létre Cookbook fiókot receptek mentéséhez és megosztásához",
     "resetPasswordDescription": "Adja meg az email címét és küldünk egy linket a jelszó visszaállításához"
   },
+  "common": {
+    "language": "Nyelv",
+    "languageSelector": "Nyelvváltás"
+  },
 
   "general": {
     "edit": "Szerkesztés",
@@ -86,6 +90,8 @@
     "unknownError": "Ismeretlen hiba történt"
   },
   "seo": {
+    "appTitle": "Cookbook - Oszd meg receptjeidet",
+    "appDescription": "A legjobb hely receptek keresésére és megosztására.",
     "recipeDetailTitle": "{title} - Recept tőle: {createdBy} | Receptkönyv",
     "recipeDetailDescription": "{title} recept, készítette: {createdBy}. Ez a recept a {category} kategóriába tartozik és {cookingTime} perc alatt elkészíthető. Nézze meg a pontos hozzávalókat és a részletes elkészítési útmutatót!",
     "recipeDetailKeywords": "recept, {title}, {category}, főzés, {createdBy}, hozzávalók, étel"
