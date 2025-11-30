@@ -4,6 +4,7 @@ import { AppShell, Burger, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { usePathname } from 'next/navigation';
 import type { FC, PropsWithChildren } from 'react';
+import { isAuthRoute } from '@/types/routes';
 import LanguageSelector from '../LanguageSelector';
 import Logo from '../Logo';
 
@@ -11,9 +12,7 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const pathname = usePathname();
 
-  const isAuthPage = ['/login', '/signup', '/reset-password'].includes(
-    pathname,
-  );
+  const isAuthPage = isAuthRoute(pathname);
 
   return (
     <AppShell

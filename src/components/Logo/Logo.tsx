@@ -1,6 +1,7 @@
 import { Button, Title } from '@mantine/core';
 import cx from 'clsx';
 import RouterLink from 'next/link';
+import { PUBLIC_ROUTES } from '@/types/routes';
 import { useGlobal } from '../../lib/store';
 import classes from './Logo.module.css';
 import type { LogoProps } from './types';
@@ -15,7 +16,7 @@ const Logo = ({ headingSize }: LogoProps) => {
   return (
     <Button
       component={RouterLink}
-      href="/"
+      href={PUBLIC_ROUTES.HOME}
       variant="white"
       className={buttonClasses}
     >

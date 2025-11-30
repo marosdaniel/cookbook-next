@@ -5,13 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { type FC, useTransition } from 'react';
 import { FiCheck, FiGlobe } from 'react-icons/fi';
+import { LANGUAGES } from '@/i18n/languages';
 import { setStoredLocale } from '@/lib/locale';
-
-const LANGUAGES = [
-  { code: 'en', label: 'English', flag: '🇺🇸' },
-  { code: 'hu', label: 'Magyar', flag: '🇭🇺' },
-  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
-];
 
 const LanguageSelector: FC = () => {
   const t = useTranslations('common');
