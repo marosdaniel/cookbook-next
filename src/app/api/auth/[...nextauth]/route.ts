@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import NextAuth, { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
+import type { Locale } from '@/types/common';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -50,7 +51,7 @@ export const authOptions: NextAuthOptions = {
           lastName: user.lastName,
           userName: user.userName,
           role: user.role,
-          locale: user.locale,
+          locale: user.locale as Locale,
           rememberMe:
             credentials.rememberMe === 'true' ||
             credentials.rememberMe === 'on',
