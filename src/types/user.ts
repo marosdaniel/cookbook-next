@@ -1,4 +1,5 @@
 import type { UserRole as PrismaUserRole } from '@prisma/client';
+import type { Locale } from './common';
 
 // Re-export Prisma UserRole as the canonical type
 export type { UserRole } from '@prisma/client';
@@ -12,7 +13,7 @@ export type BaseUser = {
   firstName: string;
   lastName: string;
   role: PrismaUserRole;
-  locale: string;
+  locale: Locale;
 };
 
 /**
@@ -34,5 +35,64 @@ export type SessionUser = BaseUser & {
   rememberMe?: boolean;
 };
 
-// Re-export API-specific types for convenience
-export type { UserRegisterInput } from './api/user';
+// --- API Types ---
+
+import type { OperationResponse } from './graphql/responses';
+
+// Mutation inputs
+export type UserRegisterInput = {
+  firstName: string;
+  lastName: string;
+  userName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  locale?: Locale;
+};
+
+export type UserLoginInput = {
+  email: string;
+  password: string;
+};
+
+export type UserEditInput = {
+  firstName?: string;
+  lastName?: string;
+  locale?: Locale;
+};
+
+export type PasswordEditInput = {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
+
+// Mutation arguments
+export type CreateUserArgs = {
+  userRegisterInput: UserRegisterInput;
+};
+
+export type LoginUserArgs = {
+  userLoginInput: UserLoginInput;
+};
+
+export type EditUserArgs = {
+  id: string;
+  userEditInput: UserEditInput;
+};
+
+export type ChangePasswordArgs = {
+  id: string;
+  passwordEditInput: PasswordEditInput;
+};
+
+// Mutation responses
+export type AuthPayload = {
+  token: string;
+  user: User;
+  userId: string;
+};
+
+export type UserOperationResponse = OperationResponse & {
+  user?: User;
+};

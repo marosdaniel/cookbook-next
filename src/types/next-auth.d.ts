@@ -1,4 +1,5 @@
 import type { DefaultSession } from 'next-auth';
+import type { Locale } from './common';
 import type { SessionUser } from './user';
 
 declare module 'next-auth' {
@@ -17,7 +18,7 @@ declare module 'next-auth/jwt' {
     firstName?: string;
     lastName?: string;
     role?: import('@prisma/client').UserRole;
-    locale?: string;
+    locale?: Locale;
     rememberMe?: boolean;
     maxAge?: number;
   }

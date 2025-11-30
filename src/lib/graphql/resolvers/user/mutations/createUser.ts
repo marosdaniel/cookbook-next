@@ -4,8 +4,8 @@ import { ZodError } from 'zod';
 import { USER_REGISTER_MESSAGE_KEYS } from '@/lib/graphql/messageKeys';
 
 import { customValidationSchema } from '@/lib/validation/validation';
-import type { CreateUserArgs } from '../../../../../types/api/user';
 import type { GraphQLContext } from '../../../../../types/graphql/context';
+import type { CreateUserArgs } from '../../../../../types/user';
 import { ErrorTypes } from '../../../../validation/errorCatalog';
 import { throwCustomError } from '../../../../validation/throwCustomError';
 

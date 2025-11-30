@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
-import type { LoginUserArgs } from '../../../../../types/api/user';
 import type { GraphQLContext } from '../../../../../types/graphql/context';
+import type { LoginUserArgs } from '../../../../../types/user';
 
 const JWT_SECRET =
   process.env.JWT_SECRET || 'your-secret-key-change-this-in-production';
