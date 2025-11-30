@@ -3,7 +3,7 @@
   "description": "A recipe sharing platform built with Next.js, Apollo Server, and MongoDB.",
   "author": "Daniel Maros",
   "license": "MIT",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "type": "module",
   "private": true,
   "repository": {

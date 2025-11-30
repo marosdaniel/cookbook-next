@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/marosdaniel/cookbook-next/compare/v1.7.0...v1.8.0) (2025-11-30)
+
+
+### Features
+
+* Define and consume centralized application route and i18n language constants. ([1e58270](https://github.com/marosdaniel/cookbook-next/commit/1e58270b2f3729ae02693aee948bd3cff32b3ada))
+
 # [1.7.0](https://github.com/marosdaniel/cookbook-next/compare/v1.6.0...v1.7.0) (2025-11-29)
 
 
