@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/marosdaniel/cookbook-next/compare/v1.8.0...v1.9.0) (2025-12-01)
+
+
+### Features
+
+* add happy-dom as Vitest environment and introduce tests for LanguageSelector and PrivacyPolicyLink components ([70b5115](https://github.com/marosdaniel/cookbook-next/commit/70b5115f94274727f748ee3211c2a5a2416ec9e8))
+
 # [1.8.0](https://github.com/marosdaniel/cookbook-next/compare/v1.7.0...v1.8.0) (2025-11-30)
 
 
