@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/marosdaniel/cookbook-next/compare/v1.9.0...v1.10.0) (2025-12-02)
+
+
+### Features
+
+* Add reset password functionality and centralize locale utility to `lib/locale`. ([caec11d](https://github.com/marosdaniel/cookbook-next/commit/caec11db3ab4b9e179f0e355dafb32fb3000f455))
+
 # [1.9.0](https://github.com/marosdaniel/cookbook-next/compare/v1.8.0...v1.9.0) (2025-12-01)
 
 
