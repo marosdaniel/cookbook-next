@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import type { FC } from 'react';
-import { getLocaleFromCookies } from '@/app/layout';
+import { getLocaleFromCookies } from '@/lib/locale';
 import { getAuthMetadata } from '@/lib/seo';
 import SignUpForm from './SignUpForm';
 

@@ -15,3 +15,12 @@ export const CREATE_USER = gql`
     }
   }
 `;
+
+export const RESET_PASSWORD = gql`
+  mutation ResetPassword($email: String!) {
+    resetPassword(email: $email) {
+      success
+      message
+    }
+  }
+`;

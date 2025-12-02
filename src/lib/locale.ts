@@ -1,3 +1,6 @@
+import { cookies } from 'next/headers';
+import { connection } from 'next/server';
+import { cache } from 'react';
 import type { LocaleMessages } from '@/types/common';
 
 export const LOCALE_STORAGE_KEY = 'cookbook-locale';
@@ -63,3 +66,10 @@ export const getLocaleMessages = async (
     }
   }
 };
+
+export const getLocaleFromCookies = cache(async () => {
+  await connection();
+  const cookieStore = await cookies();
+  const locale = cookieStore.get(LOCALE_STORAGE_KEY)?.value || 'en';
+  return locale;
+});

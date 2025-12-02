@@ -1,14 +1,12 @@
 import type { Metadata } from 'next';
 import nextDynamic from 'next/dynamic';
-import { cookies } from 'next/headers';
 import { connection } from 'next/server';
-import { getLocaleMessages, LOCALE_STORAGE_KEY } from '@/lib/locale';
+import { getLocaleFromCookies, getLocaleMessages } from '@/lib/locale';
 import { ServerProviders } from '@/providers/server';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import './globals.css';
 import type { PropsWithChildren } from 'react';
-import { cache } from 'react';
 import Shell from '../components/Shell';
 
 const ClientProviders = nextDynamic(
@@ -17,13 +15,6 @@ const ClientProviders = nextDynamic(
     ssr: true,
   },
 );
-
-export const getLocaleFromCookies = cache(async () => {
-  await connection();
-  const cookieStore = await cookies();
-  const locale = cookieStore.get(LOCALE_STORAGE_KEY)?.value || 'en';
-  return locale;
-});
 
 export async function generateMetadata(): Promise<Metadata> {
   await connection();
