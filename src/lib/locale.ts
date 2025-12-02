@@ -66,10 +66,3 @@ export const getLocaleMessages = async (
     }
   }
 };
-
-export const getLocaleFromCookies = cache(async () => {
-  await connection();
-  const cookieStore = await cookies();
-  const locale = cookieStore.get(LOCALE_STORAGE_KEY)?.value || 'en';
-  return locale;
-});
