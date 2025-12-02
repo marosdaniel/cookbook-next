@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { getStoredLocale, LOCALE_STORAGE_KEY, setStoredLocale } from './locale';
+import { LOCALE_STORAGE_KEY } from './locale';
+import { getStoredLocale, setStoredLocale } from './locale.client';
 
 describe('locale utils', () => {
   beforeEach(() => {

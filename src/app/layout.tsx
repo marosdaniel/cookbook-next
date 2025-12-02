@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import nextDynamic from 'next/dynamic';
 import { connection } from 'next/server';
-import { getLocaleMessages } from '@/lib/locale';
+import { getLocaleMessages } from '@/lib/locale/locale';
 import { ServerProviders } from '@/providers/server';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import './globals.css';
 import type { PropsWithChildren } from 'react';
 import Shell from '@/components/Shell';
-import { getLocaleFromCookies } from '@/lib/server-locale';
+import { getLocaleFromCookies } from '@/lib/locale/locale.server';
 
 const ClientProviders = nextDynamic(
   () => import('@/providers/client').then((m) => m.ClientProviders),

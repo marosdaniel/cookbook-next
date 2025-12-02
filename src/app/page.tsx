@@ -4,7 +4,7 @@ import { Button, Title } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { useTransition } from 'react';
-import { setStoredLocale } from '@/lib/locale';
+import { setStoredLocale } from '@/lib/locale/locale.client';
 
 export default function Home() {
   const router = useRouter();

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import type { FC } from 'react';
+import { getLocaleFromCookies } from '@/lib/locale/locale.server';
 import { getAuthMetadata } from '@/lib/seo';
-import { getLocaleFromCookies } from '@/lib/server-locale';
 import { LoginForm } from './LoginForm';
 
 export const dynamic = 'force-dynamic';

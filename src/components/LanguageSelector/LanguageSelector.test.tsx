@@ -39,7 +39,7 @@ vi.mock('@/lib/locale', () => ({
 }));
 
 // Import the mocked function
-import { setStoredLocale } from '@/lib/locale';
+import { setStoredLocale } from '@/lib/locale/locale.client';
 
 const mockSetStoredLocale = vi.mocked(setStoredLocale);
 

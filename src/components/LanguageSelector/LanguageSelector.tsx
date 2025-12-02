@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { type FC, useTransition } from 'react';
 import { FiCheck, FiGlobe } from 'react-icons/fi';
 import { LANGUAGES } from '@/i18n/languages';
-import { setStoredLocale } from '@/lib/locale';
+import { setStoredLocale } from '@/lib/locale/locale.client';
 
 const LanguageSelector: FC = () => {
   const t = useTranslations('common');

@@ -1,9 +1,6 @@
-import { cookies } from 'next/headers';
-import { connection } from 'next/server';
-import { cache } from 'react';
-import type { LocaleMessages } from '@/types/common';
+'use client';
 
-export const LOCALE_STORAGE_KEY = 'cookbook-locale';
+import { LOCALE_STORAGE_KEY } from './locale';
 
 export const getStoredLocale = (): string => {
   // Try localStorage first (works on both server and client)
@@ -45,24 +42,5 @@ export const setStoredLocale = (locale: string): void => {
     document.cookie = `${LOCALE_STORAGE_KEY}=${locale}; path=/; max-age=${maxAge}`;
   } catch (error) {
     console.error('[setStoredLocale] Error setting locale:', error);
-  }
-};
-
-export const getLocaleMessages = async (
-  locale: string,
-): Promise<LocaleMessages> => {
-  try {
-    // Use dynamic import to load JSON files from src/locales directory
-    const messages = await import(`../locales/${locale}.json`);
-    return messages.default || messages;
-  } catch {
-    // Fallback to English
-    try {
-      const messages = await import('../locales/en.json');
-      return messages.default || messages;
-    } catch {
-      // Ultimate fallback - return empty object
-      return {};
-    }
   }
 };

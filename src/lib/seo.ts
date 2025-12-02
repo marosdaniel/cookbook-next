@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getLocaleMessages } from '@/lib/locale';
+import { getLocaleMessages } from '@/lib/locale/locale';
 
 type AuthMessages = {
   login?: string;
