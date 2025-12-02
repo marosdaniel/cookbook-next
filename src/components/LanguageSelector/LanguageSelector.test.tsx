@@ -34,16 +34,15 @@ vi.mock('@/i18n/languages', () => ({
 }));
 
 // Mock locale utilities
-vi.mock('@/lib/locale', () => ({
+vi.mock('@/lib/locale/locale.client', () => ({
   setStoredLocale: vi.fn(),
 }));
 
-// Import the mocked function
+// Import the mocked function after mocking
 import { setStoredLocale } from '@/lib/locale/locale.client';
 
-const mockSetStoredLocale = vi.mocked(setStoredLocale);
-
 describe('LanguageSelector', () => {
+  const mockSetStoredLocale = vi.mocked(setStoredLocale);
   beforeEach(() => {
     vi.clearAllMocks();
   });
