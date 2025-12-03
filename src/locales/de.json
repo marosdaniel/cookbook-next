@@ -16,7 +16,14 @@
     "forgotPasswordTitle": "Haben Sie Ihr Passwort vergessen?",
     "forgotPasswordDescription": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
     "resetPasswordButton": "Passwort zurücksetzen",
-    "backToLogin": "Zurück zur Anmeldung"
+    "backToLogin": "Zurück zur Anmeldung",
+    "accountCreatedSuccess": "Konto erfolgreich erstellt. Bitte melden Sie sich an.",
+    "invalidCredentials": "Ungültige E-Mail-Adresse oder Passwort",
+    "loginSuccess": "Erfolgreich angemeldet!",
+    "loginError": "Bei der Anmeldung ist ein Fehler aufgetreten",
+    "loginDescription": "Melden Sie sich bei Ihrem Cookbook-Konto an, um auf Ihre Rezepte und Favoriten zuzugreifen",
+    "signupDescription": "Erstellen Sie ein Cookbook-Konto, um Rezepte zu speichern und zu teilen",
+    "resetPasswordDescription": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts"
   },
   "common": {
     "language": "Sprache",

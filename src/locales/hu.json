@@ -18,6 +18,9 @@
     "backToLogin": "Vissza a bejelentkezéshez",
     "createAccount": "Fiók létrehozása",
     "accountCreatedSuccess": "Fiók sikeresen létrehozva. Kérjük jelentkezzen be.",
+    "invalidCredentials": "Érvénytelen email cím vagy jelszó",
+    "loginSuccess": "Sikeres bejelentkezés!",
+    "loginError": "Hiba történt a bejelentkezés során",
     "loginDescription": "Jelentkezzen be Cookbook fiókjába, hogy hozzáférjen receptjeihez és kedvenceihez",
     "signupDescription": "Hozzon létre Cookbook fiókot receptek mentéséhez és megosztásához",
     "resetPasswordDescription": "Adja meg az email címét és küldünk egy linket a jelszó visszaállításához"
