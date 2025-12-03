@@ -3,14 +3,18 @@
 import { AppShell, Burger, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import type { FC, PropsWithChildren } from 'react';
 import { isAuthRoute } from '@/types/routes';
+import AuthButton from '../AuthButton';
 import LanguageSelector from '../LanguageSelector';
 import Logo from '../Logo';
+import Navbar from '../Navbar';
 
 const Shell: FC<PropsWithChildren> = ({ children }) => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   const isAuthPage = isAuthRoute(pathname);
 
@@ -31,7 +35,8 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
           <Logo headingSize={2} />
-          <Group>
+          <Group gap="xs">
+            {!session && !isAuthPage && <AuthButton variant="compact" />}
             <LanguageSelector />
             {!isAuthPage && (
               <Burger
@@ -44,7 +49,11 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
           </Group>
         </Group>
       </AppShell.Header>
-      {!isAuthPage && <AppShell.Navbar>Navbar</AppShell.Navbar>}
+      {!isAuthPage && (
+        <AppShell.Navbar>
+          <Navbar />
+        </AppShell.Navbar>
+      )}
       <AppShell.Main>{children}</AppShell.Main>
       <AppShell.Footer>Footer</AppShell.Footer>
     </AppShell>

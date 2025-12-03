@@ -50,3 +50,12 @@ export const isPublicRoute = (path: string): boolean => {
     (route) => path === route || path.startsWith(`${route}/`),
   );
 };
+
+/**
+ * Helper to check if a path is protected (requires authentication)
+ */
+export const isProtectedRoute = (path: string): boolean => {
+  return Object.values(PROTECTED_ROUTES).some(
+    (route) => path === route || path.startsWith(`${route}/`),
+  );
+};
