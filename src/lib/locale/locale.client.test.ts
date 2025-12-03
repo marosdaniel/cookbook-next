@@ -24,8 +24,8 @@ describe('locale.client', () => {
   });
 
   describe('getStoredLocale', () => {
-    it('should return "en" when no locale is stored', () => {
-      expect(getStoredLocale()).toBe('en');
+    it('should return "en-gb" when no locale is stored', () => {
+      expect(getStoredLocale()).toBe('en-gb');
     });
 
     it('should return locale from localStorage when present', () => {
@@ -59,7 +59,7 @@ describe('locale.client', () => {
       });
       setCookie('');
 
-      expect(getStoredLocale()).toBe('en');
+      expect(getStoredLocale()).toBe('en-gb');
     });
   });
 
@@ -89,7 +89,7 @@ describe('locale.client', () => {
       // @ts-expect-error - Testing SSR behavior
       delete globalThis.window;
 
-      expect(() => setStoredLocale('en')).not.toThrow();
+      expect(() => setStoredLocale('en-gb')).not.toThrow();
 
       globalThis.window = originalWindow;
     });

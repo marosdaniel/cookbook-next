@@ -93,7 +93,7 @@ export const authOptions: NextAuthOptions = {
         session.user.userName = token.userName ?? '';
         session.user.firstName = token.firstName ?? '';
         session.user.lastName = token.lastName ?? '';
-        session.user.locale = token.locale ?? 'en';
+        session.user.locale = token.locale ?? 'en-gb';
         session.user.rememberMe = token.rememberMe;
         session.maxAge = token.maxAge;
       }

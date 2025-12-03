@@ -14,7 +14,7 @@ vi.mock('next/navigation', () => ({
 
 // Mock next-intl
 vi.mock('next-intl', () => ({
-  useLocale: () => 'en',
+  useLocale: () => 'en-gb',
   useTranslations: () => (key: string) => {
     const translations: Record<string, string> = {
       'common.languageSelector': 'Language Selector',
@@ -27,7 +27,7 @@ vi.mock('next-intl', () => ({
 // Mock LANGUAGES
 vi.mock('@/i18n/languages', () => ({
   LANGUAGES: [
-    { code: 'en', label: 'English', flag: '🇺🇸' },
+    { code: 'en-gb', label: 'English', flag: '🇬🇧' },
     { code: 'hu', label: 'Magyar', flag: '🇭🇺' },
     { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
   ],
@@ -88,7 +88,7 @@ describe('LanguageSelector', () => {
       expect(screen.getByText('English')).toBeInTheDocument();
       expect(screen.getByText('Magyar')).toBeInTheDocument();
       expect(screen.getByText('Deutsch')).toBeInTheDocument();
-      expect(screen.getByText('🇺🇸')).toBeInTheDocument();
+      expect(screen.getByText('🇬🇧')).toBeInTheDocument();
       expect(screen.getByText('🇭🇺')).toBeInTheDocument();
       expect(screen.getByText('🇩🇪')).toBeInTheDocument();
     });

@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocaleFromCookies();
   const messages = await getLocaleMessages(locale);
 
-  const seo = messages.seo as Record<string, unknown> | undefined;
+  const seo = messages.seo as Record<string, string> | undefined;
   const appTitle =
     typeof seo?.appTitle === 'string' ? seo.appTitle : 'Cookbook';
   const appDescription =
@@ -42,13 +42,13 @@ export default async function RootLayout(props: Readonly<PropsWithChildren>) {
 
   // Load all language messages for SSR
   const [enMessages, huMessages, deMessages] = await Promise.all([
-    getLocaleMessages('en'),
+    getLocaleMessages('en-gb'),
     getLocaleMessages('hu'),
     getLocaleMessages('de'),
   ]);
 
   const allMessages = {
-    en: enMessages,
+    'en-gb': enMessages,
     hu: huMessages,
     de: deMessages,
   };

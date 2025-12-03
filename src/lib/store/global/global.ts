@@ -14,7 +14,7 @@ type GlobalState = {
 // 3. Fallback to 'en' if neither is available
 // This will require moving locale initialization to a client-side useEffect to avoid hydration mismatch
 const initialState: GlobalState = {
-  locale: 'en',
+  locale: 'en-gb',
   isDarkMode: false,
 };
 

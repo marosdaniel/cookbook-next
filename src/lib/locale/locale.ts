@@ -7,12 +7,12 @@ export const getLocaleMessages = async (
 ): Promise<LocaleMessages> => {
   try {
     // Use dynamic import to load JSON files from src/locales directory
-    const messages = await import(`../locales/${locale}.json`);
+    const messages = await import(`../../locales/${locale}.json`);
     return messages.default || messages;
   } catch {
     // Fallback to English
     try {
-      const messages = await import('../../locales/en.json');
+      const messages = await import('../../locales/en-gb.json');
       return messages.default || messages;
     } catch {
       // Ultimate fallback - return empty object

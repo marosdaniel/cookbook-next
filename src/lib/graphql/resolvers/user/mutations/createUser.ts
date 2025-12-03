@@ -77,7 +77,7 @@ export const createUser = async (
       userName,
       email,
       password: hashedPassword,
-      locale: locale || 'en',
+      locale: locale || 'en-gb',
       role: UserRole.USER,
     },
   });

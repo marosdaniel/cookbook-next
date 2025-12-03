@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react';
 
-export type Locale = 'en' | 'hu' | 'de';
+export type Locale = 'en-gb' | 'hu' | 'de';
 
 // Recursive type for nested locale message objects
 export type LocaleMessages = {

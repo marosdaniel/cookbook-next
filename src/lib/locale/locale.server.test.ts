@@ -14,14 +14,14 @@ vi.mock('next/server', () => ({
 
 describe('locale.server', () => {
   describe('getLocaleFromCookies', () => {
-    it('should return "en" by default when no cookie is set', async () => {
+    it('should return "en-gb" by default when no cookie is set', async () => {
       const { cookies } = await import('next/headers');
       vi.mocked(cookies).mockResolvedValue({
         get: vi.fn().mockReturnValue(undefined),
       } as unknown as ReadonlyRequestCookies);
 
       const locale = await getLocaleFromCookies();
-      expect(locale).toBe('en');
+      expect(locale).toBe('en-gb');
     });
 
     it('should return locale from cookie when present', async () => {
@@ -45,14 +45,14 @@ describe('locale.server', () => {
       expect(getMock).toHaveBeenCalledWith(LOCALE_STORAGE_KEY);
     });
 
-    it('should return "en" when cookie value is empty string', async () => {
+    it('should return "en-gb" when cookie value is empty string', async () => {
       const { cookies } = await import('next/headers');
       vi.mocked(cookies).mockResolvedValue({
         get: vi.fn().mockReturnValue({ value: '' }),
       } as unknown as ReadonlyRequestCookies);
 
       const locale = await getLocaleFromCookies();
-      expect(locale).toBe('en');
+      expect(locale).toBe('en-gb');
     });
 
     it('should cache the result using React cache', async () => {

@@ -31,9 +31,9 @@ export default function Home() {
       <div style={{ marginBottom: '2rem' }}>
         <p>Current locale: {locale}</p>
         <Button
-          onClick={() => handleLocaleChange('en')}
-          disabled={locale === 'en' || isPending}
-          loading={isPending && locale !== 'en'}
+          onClick={() => handleLocaleChange('en-gb')}
+          disabled={locale === 'en-gb' || isPending}
+          loading={isPending && locale !== 'en-gb'}
           style={{ marginRight: '1rem' }}
         >
           English

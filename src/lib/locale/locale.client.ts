@@ -26,7 +26,7 @@ export const getStoredLocale = (): string => {
     }
   }
 
-  return 'en';
+  return 'en-gb';
 };
 
 export const setStoredLocale = (locale: string): void => {

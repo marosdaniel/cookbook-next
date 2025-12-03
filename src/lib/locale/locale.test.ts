@@ -11,7 +11,7 @@ describe('locale', () => {
   describe('getLocaleMessages', () => {
     describe('successful loading', () => {
       it('should load messages for a valid locale', async () => {
-        const messages = await getLocaleMessages('en');
+        const messages = await getLocaleMessages('en-gb');
         expect(messages).toBeDefined();
         expect(typeof messages).toBe('object');
       });
