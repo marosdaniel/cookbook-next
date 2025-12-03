@@ -1,3 +1,11 @@
+# [1.12.0](https://github.com/marosdaniel/cookbook-next/compare/v1.11.0...v1.12.0) (2025-12-03)
+
+
+### Features
+
+* Add `AuthButton` and `Navbar` components, integrating them into the `Shell` for authentication and navigation. ([635c59d](https://github.com/marosdaniel/cookbook-next/commit/635c59dd948e04ef2bfeb3cf4ee55109ac0e80c4))
+* add positioning, transition, and closing behavior props to LanguageSelector Menu. ([495a07b](https://github.com/marosdaniel/cookbook-next/commit/495a07b3fa4045a53dbfd3dd2453286f727a41d5))
+
 # [1.11.0](https://github.com/marosdaniel/cookbook-next/compare/v1.10.0...v1.11.0) (2025-12-03)
 
 
