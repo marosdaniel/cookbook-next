@@ -25,7 +25,16 @@ const LanguageSelector: FC = () => {
   };
 
   return (
-    <Menu shadow="md" width={200} position="bottom-end">
+    <Menu
+      shadow="md"
+      width={200}
+      position="bottom-end"
+      withinPortal={false}
+      offset={4}
+      transitionProps={{ duration: 150 }}
+      closeOnClickOutside
+      middlewares={{ flip: true, shift: true, inline: false }}
+    >
       <Menu.Target>
         <ActionIcon
           variant="subtle"
