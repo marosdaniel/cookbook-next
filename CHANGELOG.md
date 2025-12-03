@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/marosdaniel/cookbook-next/compare/v1.10.0...v1.11.0) (2025-12-03)
+
+
+### Features
+
+* Replace generic 'en' locale with 'en-gb' and update all related configurations and files. ([b201570](https://github.com/marosdaniel/cookbook-next/commit/b20157056269df871a3429d517e6c99e43e0052d))
+
 # [1.10.0](https://github.com/marosdaniel/cookbook-next/compare/v1.9.0...v1.10.0) (2025-12-02)
 
 
