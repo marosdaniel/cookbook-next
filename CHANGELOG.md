@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/marosdaniel/cookbook-next/compare/v1.12.0...v1.13.0) (2025-12-03)
+
+
+### Features
+
+* Add new translation keys for login, signup, and password reset messages in German and Hungarian. ([2513c2b](https://github.com/marosdaniel/cookbook-next/commit/2513c2bcc7bc389baa84eb144a712f2dccdb2a35))
+
 # [1.12.0](https://github.com/marosdaniel/cookbook-next/compare/v1.11.0...v1.12.0) (2025-12-03)
 
 
