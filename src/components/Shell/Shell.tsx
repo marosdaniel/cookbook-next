@@ -55,7 +55,9 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
         </AppShell.Navbar>
       )}
       <AppShell.Main>{children}</AppShell.Main>
-      <AppShell.Footer>Footer</AppShell.Footer>
+      <AppShell.Footer p="md" ml={{ base: 0, sm: isAuthPage ? 0 : 300 }}>
+        Footer
+      </AppShell.Footer>
     </AppShell>
   );
 };
