@@ -55,7 +55,7 @@ const LanguageSelector: FC = () => {
             leftSection={<span style={{ fontSize: 18 }}>{lang.flag}</span>}
             rightSection={
               lang.code === locale ? (
-                <FiCheck size={16} color={theme.colors.blue[6]} />
+                <FiCheck size={16} color={theme.colors.pink[7]} />
               ) : null
             }
             onClick={() => handleLanguageChange(lang.code)}
