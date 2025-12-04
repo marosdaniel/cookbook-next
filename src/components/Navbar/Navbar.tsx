@@ -10,6 +10,7 @@ import {
   Text,
 } from '@mantine/core';
 import { usePathname } from 'next/navigation';
+import type { Session } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
@@ -18,7 +19,7 @@ import { isProtectedRoute } from '@/types/routes';
 
 const Navbar: FC = () => {
   const t = useTranslations('sidebar');
-  const { data: session } = useSession();
+  const { data: session } = useSession() as { data: Session | null };
   const pathname = usePathname();
 
   const handleLogout = async () => {
@@ -29,7 +30,8 @@ const Navbar: FC = () => {
     });
   };
 
-  const userName = session?.user?.userName || session?.user?.email || 'User';
+  const userName = session?.user?.userName || session?.user?.email || '';
+  console.log({ session, userName });
   const userInitials = userName
     .split(' ')
     .map((n) => n[0])

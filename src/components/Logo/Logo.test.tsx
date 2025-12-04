@@ -1,48 +1,30 @@
-import type React from 'react';
 import '@testing-library/jest-dom';
-import { MantineProvider } from '@mantine/core';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import Logo from './Logo';
+import { Logo, LogoIcon } from './Logo';
 
-// Mock useGlobal
-vi.mock('../../lib/store', () => ({
-  useGlobal: () => ({
-    isDarkMode: false,
-  }),
+// Mock useComputedColorScheme
+vi.mock('@mantine/core', () => ({
+  useComputedColorScheme: vi.fn(() => 'light'),
 }));
 
-// Mock next/link
-vi.mock('next/link', () => {
-  return {
-    __esModule: true,
-    default: ({
-      children,
-      href,
-    }: {
-      children: React.ReactNode;
-      href: string;
-    }) => <a href={href}>{children}</a>,
-  };
-});
+// Mock next/image
+vi.mock('next/image', () => ({
+  default: ({ src, alt, priority, ...props }: any) => (
+    <img src={src} alt={alt} {...props} />
+  ),
+}));
 
 describe('Logo', () => {
-  it('renders the CookBook title', () => {
-    render(
-      <MantineProvider>
-        <Logo />
-      </MantineProvider>,
-    );
-    expect(screen.getByText('CookBook')).toBeInTheDocument();
+  it('renders the Logo component with correct alt text', () => {
+    render(<Logo />);
+    const image = screen.getByAltText('Cookbook Logo');
+    expect(image).toBeInTheDocument();
   });
 
-  it('renders with correct heading level when headingSize is provided', () => {
-    render(
-      <MantineProvider>
-        <Logo headingSize={1} />
-      </MantineProvider>,
-    );
-    const title = screen.getByText('CookBook');
-    expect(title.tagName).toBe('H1');
+  it('renders the LogoIcon component with correct alt text', () => {
+    render(<LogoIcon />);
+    const image = screen.getByAltText('Cookbook');
+    expect(image).toBeInTheDocument();
   });
 });

@@ -1,30 +1,76 @@
-import { Button, Title } from '@mantine/core';
-import cx from 'clsx';
-import RouterLink from 'next/link';
-import { PUBLIC_ROUTES } from '@/types/routes';
-import { useGlobal } from '../../lib/store';
-import classes from './Logo.module.css';
-import type { LogoProps } from './types';
+'use client';
 
-const Logo = ({ headingSize }: LogoProps) => {
-  const { isDarkMode } = useGlobal();
+import { useComputedColorScheme } from '@mantine/core';
+import Image from 'next/image';
 
-  const buttonClasses = cx({
-    [classes.dark]: isDarkMode,
-  });
+interface BaseLogoProps {
+  className?: string;
+}
+
+export interface LogoProps extends BaseLogoProps {
+  width?: number;
+  height?: number;
+  priority?: boolean;
+}
+
+export interface LogoIconProps extends BaseLogoProps {
+  size?: number;
+}
+
+/**
+ * Hook to get the appropriate logo source based on the current color scheme
+ */
+function useLogoSrc() {
+  const colorScheme = useComputedColorScheme('light');
+  const isDark = colorScheme === 'dark';
+
+  return {
+    src: isDark ? '/logo-dark.png' : '/logo-light.png',
+    isDark,
+  };
+}
+
+/**
+ * Cookbook Logo Component
+ * Full-sized logo with customizable dimensions
+ * Automatically switches between light and dark mode logos
+ */
+export function Logo({
+  width = 120,
+  height = 120,
+  className = '',
+  priority = false,
+}: LogoProps) {
+  const { src } = useLogoSrc();
 
   return (
-    <Button
-      component={RouterLink}
-      href={PUBLIC_ROUTES.HOME}
-      variant="white"
-      className={buttonClasses}
-    >
-      <Title c="pink.7" order={headingSize || 2}>
-        CookBook
-      </Title>
-    </Button>
+    <Image
+      src={src}
+      alt="Cookbook Logo"
+      width={width}
+      height={height}
+      className={className}
+      priority={priority}
+    />
   );
-};
+}
 
-export default Logo;
+/**
+ * Cookbook Logo Icon Component
+ * Compact square logo for navbar, buttons, etc.
+ * Always uses priority loading and square dimensions
+ */
+export function LogoIcon({ size = 40, className = '' }: LogoIconProps) {
+  const { src } = useLogoSrc();
+
+  return (
+    <Image
+      src={src}
+      alt="Cookbook"
+      width={size}
+      height={size}
+      className={className}
+      priority
+    />
+  );
+}

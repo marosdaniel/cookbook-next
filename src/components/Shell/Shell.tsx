@@ -8,7 +8,7 @@ import type { FC, PropsWithChildren } from 'react';
 import { isAuthRoute } from '@/types/routes';
 import AuthButton from '../AuthButton';
 import LanguageSelector from '../LanguageSelector';
-import Logo from '../Logo';
+import { Logo } from '../Logo';
 import Navbar from '../Navbar';
 
 const Shell: FC<PropsWithChildren> = ({ children }) => {
@@ -34,7 +34,7 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
     >
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
-          <Logo headingSize={2} />
+          <Logo width={40} height={40} priority />
           <Group gap="xs">
             {!session && !isAuthPage && <AuthButton variant="compact" />}
             <LanguageSelector />
