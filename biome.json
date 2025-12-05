@@ -27,6 +27,9 @@
       },
       "suspicious": {
         "noExplicitAny": "warn"
+      },
+      "performance": {
+        "noImgElement": "warn"
       }
     }
   },
@@ -43,5 +46,22 @@
         "recommended": true
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "**/*.test.tsx",
+        "**/*.test.ts",
+        "**/*.spec.tsx",
+        "**/*.spec.ts"
+      ],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noImgElement": "off"
+          }
+        }
+      }
+    }
+  ]
 }
