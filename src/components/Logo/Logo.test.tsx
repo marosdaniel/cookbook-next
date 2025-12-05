@@ -3,9 +3,9 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { Logo, LogoIcon } from './Logo';
 
-// Mock useComputedColorScheme
+// Mock useMantineColorScheme
 vi.mock('@mantine/core', () => ({
-  useComputedColorScheme: vi.fn(() => 'light'),
+  useMantineColorScheme: vi.fn(() => ({ colorScheme: 'light' })),
 }));
 
 // Mock next/image
