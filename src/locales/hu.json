@@ -133,8 +133,15 @@
     "label-asian": "ázsiai",
     "label-bbq": "grill",
     "label-sugarfree": "cukormentes",
-    "label-smoothie": "turmix",
+    "label-smoothie": "smoothie",
     "label-cocktail": "koktél",
     "label-hungarian": "magyar"
+  },
+  "notFound": {
+    "title": "404",
+    "heading": "Úgy néz ki, ez a recept nem létezik! 🍳",
+    "description": "A keresett oldal nincs a szakácskönyvünkben.",
+    "hint": "Lehet, hogy elfogyott, vagy sosem is volt a menüben...",
+    "backButton": "Vissza a főoldalra"
   }
 }

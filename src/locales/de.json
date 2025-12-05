@@ -131,8 +131,15 @@
     "label-asian": "asiatisch",
     "label-bbq": "BBQ",
     "label-sugarfree": "zuckerfrei",
-    "label-smoothie": "Smoothie",
-    "label-cocktail": "Cocktail",
+    "label-smoothie": "smoothie",
+    "label-cocktail": "cocktail",
     "label-hungarian": "ungarisch"
+  },
+  "notFound": {
+    "title": "404",
+    "heading": "Es sieht so aus, als ob dieses Rezept nicht existiert! 🍳",
+    "description": "Die Seite, die Sie suchen, ist nicht in unserem Kochbuch.",
+    "hint": "Vielleicht wurde es gegessen, oder es war nie auf der Speisekarte...",
+    "backButton": "Zurück zur Startseite"
   }
 }

@@ -136,5 +136,12 @@
     "label-smoothie": "smoothie",
     "label-cocktail": "cocktail",
     "label-hungarian": "hungarian"
+  },
+  "notFound": {
+    "title": "404",
+    "heading": "It looks like this recipe doesn't exist! 🍳",
+    "description": "The page you are looking for is not in our cookbook.",
+    "hint": "Maybe it's been eaten, or it was never on the menu...",
+    "backButton": "Back to homepage"
   }
 }
