@@ -1,3 +1,10 @@
+# [1.18.0](https://github.com/marosdaniel/cookbook-next/compare/v1.17.0...v1.18.0) (2025-12-05)
+
+
+### Features
+
+* add theme switcher component with i18n and Redux state management. ([b2b70c5](https://github.com/marosdaniel/cookbook-next/commit/b2b70c540c621608f0c10e4f86cab56a9e6f227d))
+
 # [1.17.0](https://github.com/marosdaniel/cookbook-next/compare/v1.16.0...v1.17.0) (2025-12-05)
 
 
