@@ -37,13 +37,15 @@ vi.mock('@/lib/store/global', () => ({
 
 // Mock Mantine color scheme
 const mockSetColorScheme = vi.fn();
+const mockColorScheme = { current: 'light' as 'light' | 'dark' };
+
 vi.mock('@mantine/core', async () => {
   const actual = await vi.importActual('@mantine/core');
   return {
     ...actual,
     useMantineColorScheme: () => ({
       setColorScheme: mockSetColorScheme,
-      colorScheme: 'light',
+      colorScheme: mockColorScheme.current,
     }),
   };
 });
@@ -51,6 +53,7 @@ vi.mock('@mantine/core', async () => {
 describe('ThemeSwitcher', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockColorScheme.current = 'light';
   });
 
   describe('Rendering', () => {
@@ -214,6 +217,7 @@ describe('ThemeSwitcher', () => {
   describe('Color Scheme Sync', () => {
     it('syncs color scheme on mount when in light mode', () => {
       mockIsDarkMode.mockReturnValue(false);
+      mockColorScheme.current = 'dark'; // Simulate mismatch to trigger sync
 
       render(
         <MantineProvider>
@@ -226,6 +230,7 @@ describe('ThemeSwitcher', () => {
 
     it('syncs color scheme on mount when in dark mode', () => {
       mockIsDarkMode.mockReturnValue(true);
+      mockColorScheme.current = 'light'; // Simulate mismatch to trigger sync
 
       render(
         <MantineProvider>
@@ -234,6 +239,19 @@ describe('ThemeSwitcher', () => {
       );
 
       expect(mockSetColorScheme).toHaveBeenCalledWith('dark');
+    });
+
+    it('does not sync color scheme when already in correct mode', () => {
+      mockIsDarkMode.mockReturnValue(false);
+      mockColorScheme.current = 'light'; // Already in sync
+
+      render(
+        <MantineProvider>
+          <ThemeSwitcher />
+        </MantineProvider>,
+      );
+
+      expect(mockSetColorScheme).not.toHaveBeenCalled();
     });
   });
 });
