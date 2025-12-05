@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/marosdaniel/cookbook-next/compare/v1.14.0...v1.15.0) (2025-12-05)
+
+
+### Features
+
+* Introduce `noImgElement` lint rule (disabled in tests) and expand `Logo` component test coverage for color scheme and sizing. ([e587f0d](https://github.com/marosdaniel/cookbook-next/commit/e587f0d2917a3f01ac23ce5f6bf00690323f133b))
+
 # [1.14.0](https://github.com/marosdaniel/cookbook-next/compare/v1.13.0...v1.14.0) (2025-12-05)
 
 
