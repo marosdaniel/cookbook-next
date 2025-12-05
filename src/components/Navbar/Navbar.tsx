@@ -6,6 +6,7 @@ import {
   Button,
   Divider,
   Group,
+  Loader,
   Stack,
   Text,
 } from '@mantine/core';
@@ -13,7 +14,7 @@ import { usePathname } from 'next/navigation';
 import type { Session } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import type { FC } from 'react';
+import { type FC, useTransition } from 'react';
 import { FiLogOut } from 'react-icons/fi';
 import { isProtectedRoute } from '@/types/routes';
 
@@ -21,17 +22,19 @@ const Navbar: FC = () => {
   const t = useTranslations('sidebar');
   const { data: session } = useSession() as { data: Session | null };
   const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
 
   const handleLogout = async () => {
     // Only redirect to login if user is on a protected route
     const shouldRedirect = isProtectedRoute(pathname);
-    await signOut({
-      callbackUrl: shouldRedirect ? '/login' : pathname,
+    startTransition(() => {
+      signOut({
+        callbackUrl: shouldRedirect ? '/login' : pathname,
+      });
     });
   };
 
   const userName = session?.user?.userName || session?.user?.email || '';
-  console.log({ session, userName });
   const userInitials = userName
     .split(' ')
     .map((n) => n[0])
@@ -91,24 +94,30 @@ const Navbar: FC = () => {
         <Box>
           <Divider />
           <Box p="md">
-            <Button
-              variant="subtle"
-              color="red"
-              fullWidth
-              leftSection={<FiLogOut size={18} />}
-              onClick={handleLogout}
-              styles={(theme) => ({
-                root: {
-                  justifyContent: 'flex-start',
-                  fontWeight: 500,
-                  '&:hover': {
-                    backgroundColor: theme.colors.red[0],
+            {isPending ? (
+              <Group justify="center">
+                <Loader size="md" type="dots" />
+              </Group>
+            ) : (
+              <Button
+                variant="subtle"
+                color="red"
+                fullWidth
+                leftSection={<FiLogOut size={20} />}
+                onClick={handleLogout}
+                styles={(theme) => ({
+                  root: {
+                    justifyContent: 'flex-start',
+                    fontWeight: 500,
+                    '&:hover': {
+                      backgroundColor: theme.colors.red[0],
+                    },
                   },
-                },
-              })}
-            >
-              {t('logout')}
-            </Button>
+                })}
+              >
+                {t('logout')}
+              </Button>
+            )}
           </Box>
         </Box>
       )}

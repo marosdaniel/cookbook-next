@@ -19,7 +19,7 @@ import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
-import { useState } from 'react';
+import { startTransition, useState } from 'react';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { loginValidationSchema } from '../../../lib/validation';
 import type { LoginFormValues } from './types';
@@ -58,8 +58,10 @@ export const LoginForm: FC = () => {
           color: 'green',
         });
 
-        router.push('/');
-        router.refresh();
+        startTransition(() => {
+          router.push('/');
+          router.refresh();
+        });
       }
     } catch {
       notifications.show({

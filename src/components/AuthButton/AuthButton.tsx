@@ -3,20 +3,20 @@
 import { ActionIcon, Button } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import type { FC } from 'react';
+import { type FC, useTransition } from 'react';
 import { FiLogIn } from 'react-icons/fi';
 import { AUTH_ROUTES } from '@/types/routes';
-
-interface AuthButtonProps {
-  variant?: 'default' | 'compact';
-}
+import type { AuthButtonProps } from './types';
 
 const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const t = useTranslations('auth');
 
   const handleClick = () => {
-    router.push(AUTH_ROUTES.LOGIN);
+    startTransition(() => {
+      router.push(AUTH_ROUTES.LOGIN);
+    });
   };
 
   if (variant === 'compact') {
@@ -30,6 +30,7 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
           onClick={handleClick}
           aria-label={t('login')}
           hiddenFrom="sm"
+          loading={isPending}
         >
           <FiLogIn size={18} />
         </ActionIcon>
@@ -42,6 +43,7 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
           leftSection={<FiLogIn size={16} />}
           onClick={handleClick}
           visibleFrom="sm"
+          loading={isPending}
           styles={{
             root: {
               fontWeight: 600,
