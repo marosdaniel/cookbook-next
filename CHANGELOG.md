@@ -1,3 +1,11 @@
+# [1.14.0](https://github.com/marosdaniel/cookbook-next/compare/v1.13.0...v1.14.0) (2025-12-05)
+
+
+### Features
+
+* Enhance favicon and app icon configuration and refactor Logo component for theme-based variants. ([eb5d63c](https://github.com/marosdaniel/cookbook-next/commit/eb5d63ccb11a20f707e43930fad342b2685ff81e))
+* Introduce image-based logos with dark/light mode switching and add complete favicon and PWA assets. ([8624f96](https://github.com/marosdaniel/cookbook-next/commit/8624f96b7e0448a3d00ef26070f33eac8f388981))
+
 # [1.13.0](https://github.com/marosdaniel/cookbook-next/compare/v1.12.0...v1.13.0) (2025-12-03)
 
 
