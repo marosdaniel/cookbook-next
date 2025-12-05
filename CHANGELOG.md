@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/marosdaniel/cookbook-next/compare/v1.16.0...v1.17.0) (2025-12-05)
+
+
+### Features
+
+* Add tests for AuthLayout, LoginForm, and SignUpForm components. ([879d31f](https://github.com/marosdaniel/cookbook-next/commit/879d31f85fd6b19366b65ef216c25812d367a8bc))
+
 # [1.16.0](https://github.com/marosdaniel/cookbook-next/compare/v1.15.0...v1.16.0) (2025-12-05)
 
 
