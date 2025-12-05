@@ -10,6 +10,7 @@ import AuthButton from '../AuthButton';
 import LanguageSelector from '../LanguageSelector';
 import { Logo } from '../Logo';
 import Navbar from '../Navbar';
+import ThemeSwitcher from '../ThemeSwitcher';
 
 const Shell: FC<PropsWithChildren> = ({ children }) => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
@@ -37,6 +38,7 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
           <Logo width={40} height={40} priority />
           <Group gap="xs">
             {!session && !isAuthPage && <AuthButton variant="compact" />}
+            <ThemeSwitcher />
             <LanguageSelector />
             {!isAuthPage && (
               <Burger

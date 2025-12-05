@@ -27,7 +27,11 @@
   },
   "common": {
     "language": "Sprache",
-    "languageSelector": "Sprache ändern"
+    "languageSelector": "Sprache ändern",
+    "theme": "Thema",
+    "lightMode": "Heller Modus",
+    "darkMode": "Dunkler Modus",
+    "toggleTheme": "Thema wechseln"
   },
   "general": {
     "edit": "Bearbeiten",

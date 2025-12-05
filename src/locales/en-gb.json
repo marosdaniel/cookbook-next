@@ -27,7 +27,11 @@
   },
   "common": {
     "language": "Language",
-    "languageSelector": "Change language"
+    "languageSelector": "Change language",
+    "theme": "Theme",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode",
+    "toggleTheme": "Toggle theme"
   },
 
   "general": {

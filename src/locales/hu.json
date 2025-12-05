@@ -27,7 +27,11 @@
   },
   "common": {
     "language": "Nyelv",
-    "languageSelector": "Nyelvváltás"
+    "languageSelector": "Nyelvváltás",
+    "theme": "Téma",
+    "lightMode": "Világos mód",
+    "darkMode": "Sötét mód",
+    "toggleTheme": "Téma váltása"
   },
 
   "general": {
