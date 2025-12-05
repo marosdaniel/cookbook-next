@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/marosdaniel/cookbook-next/compare/v1.15.0...v1.16.0) (2025-12-05)
+
+
+### Features
+
+* Implement `useTransition` for navigation and sign-out actions with loading states, and extract `AuthButton` types. ([9694088](https://github.com/marosdaniel/cookbook-next/commit/9694088b1776c8b71ed034d6de5394382defa918))
+
 # [1.15.0](https://github.com/marosdaniel/cookbook-next/compare/v1.14.0...v1.15.0) (2025-12-05)
 
 
