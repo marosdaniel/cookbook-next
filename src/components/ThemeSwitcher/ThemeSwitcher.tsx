@@ -2,7 +2,7 @@
 
 import { ActionIcon, useMantineColorScheme } from '@mantine/core';
 import { useTranslations } from 'next-intl';
-import { type FC, useEffect } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { FiMoon, FiSun } from 'react-icons/fi';
 import { useAppDispatch } from '@/lib/store';
 import { setDarkMode } from '@/lib/store/global';
@@ -12,18 +12,39 @@ const ThemeSwitcher: FC = () => {
   const t = useTranslations('common');
   const dispatch = useAppDispatch();
   const isDarkMode = useIsDarkMode();
-  const { setColorScheme } = useMantineColorScheme();
+  const { colorScheme, setColorScheme } = useMantineColorScheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Sync Mantine color scheme with Redux state on mount and when isDarkMode changes
   useEffect(() => {
-    setColorScheme(isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode, setColorScheme]);
+    const targetScheme = isDarkMode ? 'dark' : 'light';
+    if (colorScheme !== targetScheme) {
+      setColorScheme(targetScheme);
+    }
+  }, [isDarkMode, setColorScheme, colorScheme]);
 
   const handleToggleTheme = () => {
     const newDarkMode = !isDarkMode;
     dispatch(setDarkMode(newDarkMode));
     setColorScheme(newDarkMode ? 'dark' : 'light');
   };
+
+  if (!mounted) {
+    return (
+      <ActionIcon
+        variant="subtle"
+        color="gray"
+        size="lg"
+        aria-label={t('toggleTheme')}
+      >
+        <div style={{ width: 20, height: 20 }} />
+      </ActionIcon>
+    );
+  }
 
   return (
     <ActionIcon

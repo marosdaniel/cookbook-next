@@ -23,15 +23,12 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
     <AppShell
       padding="md"
       header={{ height: 60 }}
-      navbar={
-        isAuthPage
-          ? undefined
-          : {
-              width: 300,
-              breakpoint: 'sm',
-              collapsed: { mobile: !mobileOpened, desktop: false },
-            }
-      }
+      navbar={{
+        width: 300,
+        breakpoint: 'sm',
+        collapsed: { mobile: !mobileOpened, desktop: isAuthPage },
+      }}
+      withBorder={false}
     >
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
@@ -51,11 +48,9 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
           </Group>
         </Group>
       </AppShell.Header>
-      {!isAuthPage && (
-        <AppShell.Navbar>
-          <Navbar />
-        </AppShell.Navbar>
-      )}
+      <AppShell.Navbar>
+        {!isAuthPage && <Navbar />}
+      </AppShell.Navbar>
       <AppShell.Main>{children}</AppShell.Main>
       <AppShell.Footer p="md" ml={{ base: 0, sm: isAuthPage ? 0 : 300 }}>
         Footer
