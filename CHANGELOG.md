@@ -1,3 +1,10 @@
+# [1.19.0](https://github.com/marosdaniel/cookbook-next/compare/v1.18.0...v1.19.0) (2025-12-05)
+
+
+### Features
+
+* Refine `AppShell` layout for authentication pages and implement hydration-safe theme switching. ([5185b3c](https://github.com/marosdaniel/cookbook-next/commit/5185b3c8e2b02bfa4eb310100ef7abe6a103db0f))
+
 # [1.18.0](https://github.com/marosdaniel/cookbook-next/compare/v1.17.0...v1.18.0) (2025-12-05)
 
 
