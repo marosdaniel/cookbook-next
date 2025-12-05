@@ -1,3 +1,10 @@
+# [1.20.0](https://github.com/marosdaniel/cookbook-next/compare/v1.19.0...v1.20.0) (2025-12-05)
+
+
+### Features
+
+* Introduce an internationalized 404 Not Found page, including new UI elements, dedicated tests, and updated localization files. ([38030d7](https://github.com/marosdaniel/cookbook-next/commit/38030d7418e4e65a78b13beab7ea1797fc76244c))
+
 # [1.19.0](https://github.com/marosdaniel/cookbook-next/compare/v1.18.0...v1.19.0) (2025-12-05)
 
 
