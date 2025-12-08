@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import nextDynamic from 'next/dynamic';
 import { connection } from 'next/server';
 import { getLocaleMessages } from '@/lib/locale/locale';
@@ -16,6 +16,13 @@ const ClientProviders = nextDynamic(
     ssr: true,
   },
 );
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#FF00A1' },
+    { media: '(prefers-color-scheme: dark)', color: '#FF00A1' },
+  ],
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   await connection();
@@ -56,10 +63,6 @@ export async function generateMetadata(): Promise<Metadata> {
       type: 'website',
       siteName: appTitle,
     },
-    themeColor: [
-      { media: '(prefers-color-scheme: light)', color: '#FF00A1' },
-      { media: '(prefers-color-scheme: dark)', color: '#FF00A1' },
-    ],
   };
 }
 

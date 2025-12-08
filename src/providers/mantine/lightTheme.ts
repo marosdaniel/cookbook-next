@@ -24,6 +24,11 @@ export const lightTheme: MantineThemeOverride = createTheme({
   autoContrast: true,
   luminanceThreshold: 0.61,
   components: {
+    AppShell: {
+      defaultProps: {
+        bg: 'var(--mantine-color-body)',
+      },
+    },
     Button: {
       defaultProps: {
         // c: 'pink.7',

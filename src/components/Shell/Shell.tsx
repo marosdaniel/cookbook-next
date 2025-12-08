@@ -48,9 +48,7 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
           </Group>
         </Group>
       </AppShell.Header>
-      <AppShell.Navbar>
-        {!isAuthPage && <Navbar />}
-      </AppShell.Navbar>
+      <AppShell.Navbar>{!isAuthPage && <Navbar />}</AppShell.Navbar>
       <AppShell.Main>{children}</AppShell.Main>
       <AppShell.Footer p="md" ml={{ base: 0, sm: isAuthPage ? 0 : 300 }}>
         Footer
