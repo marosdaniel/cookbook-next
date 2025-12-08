@@ -6,7 +6,7 @@ import { GiChefToque } from 'react-icons/gi';
 
 export const dynamic = 'force-dynamic';
 
-export default function NotFound() {
+const NotFound = () => {
   const t = useTranslations('notFound');
 
   return (
@@ -43,4 +43,6 @@ export default function NotFound() {
       </Stack>
     </Container>
   );
-}
+};
+
+export default NotFound;
