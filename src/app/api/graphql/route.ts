@@ -6,8 +6,7 @@ import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { GraphQLError } from 'graphql';
 import type { NextRequest } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { auth } from '@/auth';
 import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
@@ -71,8 +70,8 @@ const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(
   server,
   {
     context: async (): Promise<GraphQLContext> => {
-      // Get NextAuth session
-      const session = await getServerSession(authOptions);
+      // Get NextAuth v5 session
+      const session = await auth();
 
       return {
         userId: session?.user?.id,
