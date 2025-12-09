@@ -1,3 +1,10 @@
+# [1.21.0](https://github.com/marosdaniel/cookbook-next/compare/v1.20.0...v1.21.0) (2025-12-09)
+
+
+### Features
+
+* Upgrade to NextAuth v5 (Auth.js) by refactoring authentication logic and updating dependencies. ([23af585](https://github.com/marosdaniel/cookbook-next/commit/23af58533b29433c33f2c70ac732ee1037059efe))
+
 # [1.20.0](https://github.com/marosdaniel/cookbook-next/compare/v1.19.0...v1.20.0) (2025-12-05)
 
 
