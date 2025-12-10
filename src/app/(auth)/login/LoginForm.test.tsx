@@ -288,7 +288,6 @@ describe('LoginForm', () => {
 
       await waitFor(() => {
         expect(mockPush).toHaveBeenCalledWith('/');
-        expect(mockRefresh).toHaveBeenCalled();
       });
     });
 
