@@ -3,12 +3,18 @@ import { MantineProvider } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import SignUpForm from './SignUpForm';
 
 // Mock next/navigation
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
+}));
+
+// Mock next-auth/react
+vi.mock('next-auth/react', () => ({
+  signIn: vi.fn(),
 }));
 
 // Mock next-intl
@@ -28,6 +34,7 @@ vi.mock('next-intl', () => ({
       'response.success': 'Success',
       'response.error': 'Error',
       'auth.accountCreatedSuccess': 'Account created successfully',
+      'auth.loginSuccess': 'Successfully logged in!',
       'response.unknownError': 'Unknown error',
     };
     return translations[key] || key;
@@ -247,8 +254,16 @@ describe('SignUpForm', () => {
 
     it('shows success notification and redirects on successful signup', async () => {
       mockCreateUser.mockResolvedValue({
-        data: { createUser: { id: '1', email: 'john@example.com' } },
+        data: {
+          createUser: {
+            success: true,
+            user: { id: '1', email: 'john@example.com' },
+          },
+        },
       });
+
+      // @ts-expect-error - Mocking signIn return value
+      vi.mocked(signIn).mockResolvedValue({ ok: true });
 
       render(
         <MantineProvider>
@@ -268,6 +283,7 @@ describe('SignUpForm', () => {
 
       fireEvent.click(submitButton);
 
+      // First notification: account created
       await waitFor(() => {
         expect(notifications.show).toHaveBeenCalledWith({
           title: 'Success',
@@ -276,8 +292,27 @@ describe('SignUpForm', () => {
         });
       });
 
+      // Auto-login should be called
       await waitFor(() => {
-        expect(mockPush).toHaveBeenCalledWith('/login');
+        expect(signIn).toHaveBeenCalledWith('credentials', {
+          email: 'john@example.com',
+          password: 'Password123!',
+          redirect: false,
+        });
+      });
+
+      // Second notification: login success
+      await waitFor(() => {
+        expect(notifications.show).toHaveBeenCalledWith({
+          title: 'Success',
+          message: 'Successfully logged in!',
+          color: 'green',
+        });
+      });
+
+      // Redirect to home page
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith('/');
       });
     });
 
