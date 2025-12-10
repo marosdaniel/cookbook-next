@@ -9,7 +9,7 @@ import { setDarkMode } from '@/lib/store/global';
 import { useIsDarkMode } from '@/lib/store/global/selectors';
 
 const ThemeSwitcher: FC = () => {
-  const t = useTranslations('common');
+  const translate = useTranslations('common');
   const dispatch = useAppDispatch();
   const isDarkMode = useIsDarkMode();
   const { colorScheme, setColorScheme } = useMantineColorScheme();
@@ -39,7 +39,7 @@ const ThemeSwitcher: FC = () => {
         variant="subtle"
         color="gray"
         size="lg"
-        aria-label={t('toggleTheme')}
+        aria-label={translate('toggleTheme')}
       >
         <div style={{ width: 20, height: 20 }} />
       </ActionIcon>
@@ -52,8 +52,8 @@ const ThemeSwitcher: FC = () => {
       color="gray"
       size="lg"
       onClick={handleToggleTheme}
-      aria-label={t('toggleTheme')}
-      title={isDarkMode ? t('lightMode') : t('darkMode')}
+      aria-label={translate('toggleTheme')}
+      title={isDarkMode ? translate('lightMode') : translate('darkMode')}
     >
       {isDarkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
     </ActionIcon>

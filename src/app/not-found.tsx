@@ -7,7 +7,7 @@ import { GiChefToque } from 'react-icons/gi';
 export const dynamic = 'force-dynamic';
 
 const NotFound = () => {
-  const t = useTranslations('notFound');
+  const translate = useTranslations('notFound');
 
   return (
     <Container size="sm" style={{ textAlign: 'center', paddingTop: '4rem' }}>
@@ -15,18 +15,18 @@ const NotFound = () => {
         <GiChefToque size={120} style={{ opacity: 0.3 }} />
 
         <Title order={1} size={80} fw={900}>
-          {t('title')}
+          {translate('title')}
         </Title>
 
         <Stack align="center" gap="xs">
           <Title order={2} size="h3">
-            {t('heading')}
+            {translate('heading')}
           </Title>
           <Text c="dimmed" size="lg">
-            {t('description')}
+            {translate('description')}
           </Text>
           <Text c="dimmed" size="sm">
-            {t('hint')}
+            {translate('hint')}
           </Text>
         </Stack>
 
@@ -37,7 +37,7 @@ const NotFound = () => {
             variant="gradient"
             gradient={{ from: 'orange', to: 'red', deg: 45 }}
           >
-            {t('backButton')}
+            {translate('backButton')}
           </Button>
         </Link>
       </Stack>

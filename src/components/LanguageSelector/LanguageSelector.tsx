@@ -9,7 +9,7 @@ import { LANGUAGES } from '@/i18n/languages';
 import { setStoredLocale } from '@/lib/locale/locale.client';
 
 const LanguageSelector: FC = () => {
-  const t = useTranslations('common');
+  const translate = useTranslations('common');
   const locale = useLocale();
   const router = useRouter();
   const theme = useMantineTheme();
@@ -41,14 +41,14 @@ const LanguageSelector: FC = () => {
           color="gray"
           size="lg"
           loading={isPending}
-          aria-label={t('languageSelector')}
+          aria-label={translate('languageSelector')}
         >
           <FiGlobe size={20} />
         </ActionIcon>
       </Menu.Target>
 
       <Menu.Dropdown>
-        <Menu.Label>{t('language')}</Menu.Label>
+        <Menu.Label>{translate('language')}</Menu.Label>
         {LANGUAGES.map((lang) => (
           <Menu.Item
             key={lang.code}

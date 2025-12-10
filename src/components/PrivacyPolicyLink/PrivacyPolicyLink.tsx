@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 
 const PrivacyPolicyLink: FC = () => {
-  const t = useTranslations();
+  const translate = useTranslations();
 
   return (
     <Anchor
@@ -17,7 +17,7 @@ const PrivacyPolicyLink: FC = () => {
       target="_blank"
       rel="noopener noreferrer"
     >
-      {t('auth.iAcceptThePrivacyPolicy')}
+      {translate('auth.iAcceptThePrivacyPolicy')}
     </Anchor>
   );
 };

@@ -11,7 +11,7 @@ import type { AuthButtonProps } from './types';
 const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const t = useTranslations('auth');
+  const translate = useTranslations('auth');
 
   const handleClick = () => {
     startTransition(() => {
@@ -28,7 +28,7 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
           gradient={{ from: 'pink', to: 'grape', deg: 90 }}
           size="lg"
           onClick={handleClick}
-          aria-label={t('login')}
+          aria-label={translate('login')}
           hiddenFrom="sm"
           loading={isPending}
         >
@@ -50,7 +50,7 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
             },
           }}
         >
-          {t('login')}
+          {translate('login')}
         </Button>
       </>
     );
@@ -69,7 +69,7 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
         },
       }}
     >
-      {t('login')}
+      {translate('login')}
     </Button>
   );
 };

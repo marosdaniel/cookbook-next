@@ -19,7 +19,7 @@ import { FiLogOut } from 'react-icons/fi';
 import { isProtectedRoute } from '@/types/routes';
 
 const Navbar: FC = () => {
-  const t = useTranslations('sidebar');
+  const translate = useTranslations('sidebar');
   const { data: session } = useSession() as { data: Session | null };
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
@@ -115,7 +115,7 @@ const Navbar: FC = () => {
                   },
                 })}
               >
-                {t('logout')}
+                {translate('logout')}
               </Button>
             )}
           </Box>
