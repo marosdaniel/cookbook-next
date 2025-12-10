@@ -1,3 +1,10 @@
+# [1.22.0](https://github.com/marosdaniel/cookbook-next/compare/v1.21.0...v1.22.0) (2025-12-10)
+
+
+### Features
+
+* Implement and document CI skip logic for GitHub Actions based on file paths and commit messages. ([1cd4598](https://github.com/marosdaniel/cookbook-next/commit/1cd459806eb729d127d629c35105d1a02b91c2b2))
+
 # [1.21.0](https://github.com/marosdaniel/cookbook-next/compare/v1.20.0...v1.21.0) (2025-12-09)
 
 
