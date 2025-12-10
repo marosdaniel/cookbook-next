@@ -315,6 +315,132 @@ Set these in your Vercel project settings:
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL`
 
+### CI/CD Pipeline
+
+The project uses GitHub Actions for continuous integration and deployment:
+
+**Automatic Deployments:**
+- Tests and quality checks run on every push
+- Production deployment on `main` branch
+- Coverage reports published to GitHub Pages
+
+#### 🚦 CI Workflow Triggers
+
+The CI pipeline intelligently decides when to run based on your changes:
+
+**✅ CI Will Run For:**
+- Code changes in `src/`
+- Configuration changes (`package.json`, `tsconfig.json`, etc.)
+- GitHub Actions workflow changes
+- Prisma schema changes
+- Any TypeScript, JavaScript, or CSS files
+
+**⏭️ CI Will Skip For:**
+- Documentation updates (`*.md` files)
+- VS Code settings changes (`.vscode/**`)
+- License file updates
+- `.gitignore` changes
+- `.env.example` updates
+
+#### 🏷️ Commit Message Conventions
+
+Use these keywords in your commit messages to control CI behavior:
+
+**Skip CI completely:**
+```bash
+git commit -m "docs: update README [skip ci]"
+git commit -m "docs: fix typo [ci skip]"
+```
+
+**Recommended commit message format:**
+```bash
+<type>(<scope>): <subject> [<ci-directive>]
+```
+
+**Types:**
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation only
+- `style:` - Code style changes (formatting, semicolons, etc.)
+- `refactor:` - Code refactoring
+- `test:` - Adding or updating tests
+- `chore:` - Maintenance tasks
+- `perf:` - Performance improvements
+- `ci:` - CI/CD changes
+
+**Examples:**
+```bash
+# Documentation change - CI skipped automatically
+git commit -m "docs: add API documentation"
+
+# Documentation change - CI skipped manually
+git commit -m "docs: update contributing guide [skip ci]"
+
+# Feature with scope
+git commit -m "feat(auth): add password reset functionality"
+git commit -m "feat(recipe): implement recipe sharing feature"
+
+# Bug fix with scope
+git commit -m "fix(login): resolve authentication token expiration"
+git commit -m "fix(navbar): correct mobile menu alignment"
+
+# Refactor with scope and skip CI
+git commit -m "refactor(components): update button styles [skip ci]"
+
+# Feature with mixed changes - skip CI manually if needed
+git commit -m "feat: add user profile page [skip ci]"
+
+# Bug fix - CI runs normally
+git commit -m "fix: resolve login authentication issue"
+
+# Multiple files with explicit skip
+git commit -m "chore: update readme and license [ci skip]"
+```
+
+#### 🔄 CI Jobs Overview
+
+When CI runs, it executes these jobs in order:
+
+1. **Quality Checks** (parallel)
+   - Biome linting
+   - TypeScript type checking
+   - Unit tests
+   - Integration tests
+
+2. **Test Coverage** (after quality checks)
+   - Generate coverage report
+   - Upload to GitHub Pages
+
+3. **Deploy Production** (main branch only)
+   - Build and deploy to Vercel
+
+4. **Semantic Release** (after deployment)
+   - Generate changelog
+   - Create GitHub release
+   - Update version
+
+#### 💡 Best Practices
+
+**When to skip CI:**
+- ✅ Pure documentation changes
+- ✅ README/CHANGELOG updates
+- ✅ Comment updates
+- ✅ Typo fixes in docs
+- ✅ .gitignore or .env.example updates
+
+**When NOT to skip CI:**
+- ❌ Any code changes
+- ❌ Dependency updates
+- ❌ Configuration changes
+- ❌ Test modifications
+- ❌ When you're unsure
+
+**Pro tips:**
+- Use automatic skip (path-based) when possible
+- Use manual `[skip ci]` only for mixed changes
+- Keep documentation commits separate from code commits
+- CI skip works on both commits and pull requests
+
 ---
 
 ## 🤝 Contributing
