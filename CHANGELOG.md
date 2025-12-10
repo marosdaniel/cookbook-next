@@ -1,3 +1,13 @@
+# [1.23.0](https://github.com/marosdaniel/cookbook-next/compare/v1.22.0...v1.23.0) (2025-12-10)
+
+
+### Features
+
+* Add `setNewPasswordTitle` and `setNewPasswordDescription` to SEO interface. ([ff7e61d](https://github.com/marosdaniel/cookbook-next/commit/ff7e61d1c64afe25eb6beeafd40bbbbc4da310a6))
+* Add new password UI messages, update password reset documentation, and adjust validation error key. ([759ad3a](https://github.com/marosdaniel/cookbook-next/commit/759ad3a4ba46cad5773c359c1b6bde60f9ccaca2))
+* Implement full password reset functionality with email templates, new password form, and GraphQL resolvers. ([f363481](https://github.com/marosdaniel/cookbook-next/commit/f363481319a291d8bb991e65bbcaa571e5aa2702))
+* Update signup form test to verify auto-login and redirect to home page after successful account creation. ([827c10d](https://github.com/marosdaniel/cookbook-next/commit/827c10d29aa369370078dc78fe11f6e31c269612))
+
 # [1.22.0](https://github.com/marosdaniel/cookbook-next/compare/v1.21.0...v1.22.0) (2025-12-10)
 
 
