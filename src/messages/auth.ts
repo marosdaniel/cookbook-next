@@ -17,4 +17,6 @@ export const authMessages = {
     'Enter your email and we will send you a link to reset your password.',
   resetPasswordButton: 'Reset password',
   backToLogin: 'Back to login',
+  setNewPasswordTitle: 'Set new password',
+  setNewPasswordDescription: 'Enter your new password below',
 };

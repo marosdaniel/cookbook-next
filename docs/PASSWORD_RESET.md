@@ -94,23 +94,26 @@ Configure the following in your `.env` file:
 
 ```env
 # Email Configuration
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_SECURE=false
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASSWORD=your_app_specific_password
-EMAIL_FROM=your_email@gmail.com
+EMAIL_HOST=<contact admin for credentials>
+EMAIL_PORT=<contact admin for credentials>
+EMAIL_SECURE=<contact admin for credentials>
+EMAIL_USER=<contact admin for credentials>
+EMAIL_PASSWORD=<contact admin for credentials>
+EMAIL_FROM=<contact admin for credentials>
 EMAIL_FROM_NAME=Cookbook
 
 # Application URL
 NEXTAUTH_URL=http://localhost:3000
 ```
 
-### Gmail Setup
+> **⚠️ Note**: For email configuration credentials (EMAIL_USER, EMAIL_PASSWORD, EMAIL_FROM), please contact the project administrator.
+
+### Gmail Setup (For Administrators)
 
 1. Enable 2-factor authentication on your Google account
 2. Generate an "App Password": https://myaccount.google.com/apppasswords
 3. Use this password as the value for `EMAIL_PASSWORD`
+4. Ensure the app password has no spaces when stored in environment variables
 
 ## Security Considerations
 

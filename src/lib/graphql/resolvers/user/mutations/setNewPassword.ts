@@ -31,7 +31,7 @@ export const setNewPassword = async (
           extensions: {
             code: 'WEAK_PASSWORD',
             http: { status: 400 },
-            validationErrors: validationResult.error.errors,
+            validationErrors: validationResult.error.issues,
           },
         },
       );
