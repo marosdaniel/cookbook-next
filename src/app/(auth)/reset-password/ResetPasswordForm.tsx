@@ -12,7 +12,6 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { useFormik } from 'formik';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
@@ -23,14 +22,11 @@ import { IoArrowBackOutline } from 'react-icons/io5';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { RESET_PASSWORD } from '@/lib/graphql/mutations';
 import { resetPasswordValidationSchema } from '@/lib/validation/validation';
-import type { ResetPasswordFormValues } from './types';
-
-interface ResetPasswordResponse {
-  resetPassword: {
-    success: boolean;
-    message: string;
-  };
-}
+import {
+  showErrorNotification,
+  showSuccessNotification,
+} from '../../../utils/notifications';
+import type { ResetPasswordFormValues, ResetPasswordResponse } from './types';
 
 export const ResetPasswordForm: FC = () => {
   const translate = useTranslations();
@@ -49,21 +45,17 @@ export const ResetPasswordForm: FC = () => {
         setIsResetPasswordEmailSent(true);
         formik.resetForm();
 
-        notifications.show({
-          title: translate('response.success'),
-          message: result.data.resetPassword.message,
-          color: 'green',
-        });
+        showSuccessNotification(
+          translate('response.success'),
+          result.data.resetPassword.message,
+        );
       }
     } catch (error: unknown) {
-      notifications.show({
-        title: translate('response.resetPasswordFailed'),
-        message:
-          error instanceof Error
-            ? error.message
-            : (translate('response.somethingWentWrong') as string),
-        color: 'red',
-      });
+      showErrorNotification(
+        translate('response.resetPasswordFailed'),
+        translate('response.somethingWentWrong') as string,
+        error,
+      );
     }
   };
 

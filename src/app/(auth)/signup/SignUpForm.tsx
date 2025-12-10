@@ -73,8 +73,6 @@ const SignUpForm: FC = () => {
           });
           // Keep loading state active until navigation completes
           router.push('/');
-          router.refresh();
-          // Don't set isLoggingIn to false - component will unmount
         } else {
           // Registration succeeded but login failed, redirect to login page
           setIsLoggingIn(false);

@@ -11,7 +11,6 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { useFormik } from 'formik';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -23,6 +22,8 @@ import { IoArrowBackOutline } from 'react-icons/io5';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { SET_NEW_PASSWORD } from '@/lib/graphql/mutations';
 import { setNewPasswordValidationSchema } from '@/lib/validation/validation';
+import { showErrorNotification } from '../../../../utils/notifications';
+import { AUTH_CONSTANTS } from '../../consts';
 import type { SetNewPasswordFormValues, SetNewPasswordResponse } from './types';
 
 export const SetNewPasswordForm: FC = () => {
@@ -37,11 +38,10 @@ export const SetNewPasswordForm: FC = () => {
 
   const handleSetNewPassword = async (values: SetNewPasswordFormValues) => {
     if (!token) {
-      notifications.show({
-        title: translate('response.error'),
-        message: translate('response.invalidResetToken'),
-        color: 'red',
-      });
+      showErrorNotification(
+        translate('response.error'),
+        translate('response.invalidResetToken') as string,
+      );
       return;
     }
 
@@ -57,20 +57,17 @@ export const SetNewPasswordForm: FC = () => {
         setIsPasswordReset(true);
         formik.resetForm();
 
-        // Redirect to login after 1.5 seconds
+        // Redirect to login after delay
         setTimeout(() => {
           router.push('/login');
-        }, 1500);
+        }, AUTH_CONSTANTS.PASSWORD_RESET_REDIRECT_DELAY);
       }
     } catch (error: unknown) {
-      notifications.show({
-        title: translate('response.passwordResetFailed'),
-        message:
-          error instanceof Error
-            ? error.message
-            : (translate('response.somethingWentWrong') as string),
-        color: 'red',
-      });
+      showErrorNotification(
+        translate('response.passwordResetFailed'),
+        translate('response.somethingWentWrong') as string,
+        error,
+      );
     }
   };
 

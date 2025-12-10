@@ -19,7 +19,7 @@ import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
-import { startTransition, useState } from 'react';
+import { useState } from 'react';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { loginValidationSchema } from '../../../lib/validation';
 import type { LoginFormValues } from './types';
@@ -57,11 +57,8 @@ export const LoginForm: FC = () => {
           message: translate('auth.loginSuccess'),
           color: 'green',
         });
-
-        startTransition(() => {
-          router.push('/');
-          router.refresh();
-        });
+        // Navigation will unmount component, keep loading state
+        router.push('/');
       }
     } catch {
       notifications.show({
