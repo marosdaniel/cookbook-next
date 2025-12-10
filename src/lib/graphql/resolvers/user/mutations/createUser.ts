@@ -1,6 +1,7 @@
 import { UserRole } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { ZodError } from 'zod';
+import { sendWelcomeEmail } from '@/lib/email/nodemailer';
 import { USER_REGISTER_MESSAGE_KEYS } from '@/lib/graphql/messageKeys';
 
 import { customValidationSchema } from '@/lib/validation/validation';
@@ -70,7 +71,7 @@ export const createUser = async (
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-  await prisma.user.create({
+  const newUser = await prisma.user.create({
     data: {
       firstName,
       lastName,
@@ -82,10 +83,29 @@ export const createUser = async (
     },
   });
 
+  // Send welcome email (non-blocking)
+  sendWelcomeEmail(newUser.email, newUser.firstName).catch((error) => {
+    console.error('Failed to send welcome email:', error);
+    // Don't fail the registration if email fails
+  });
+
   return {
     success: true,
     message: 'User successfully created',
     messageKey: USER_REGISTER_MESSAGE_KEYS.SUCCESS,
     statusCode: 201,
+    user: {
+      id: newUser.id,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      userName: newUser.userName,
+      email: newUser.email,
+      locale: newUser.locale,
+      role: newUser.role,
+      recipes: [],
+      favoriteRecipes: [],
+      createdAt: newUser.createdAt,
+      updatedAt: newUser.updatedAt,
+    },
   };
 };

@@ -16,9 +16,10 @@ import { notifications } from '@mantine/notifications';
 import { useFormik } from 'formik';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
-import { useTransition } from 'react';
+import { useState } from 'react';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { CREATE_USER } from '@/lib/graphql/mutations';
 import { signUpValidationSchema } from '@/lib/validation/validation';
@@ -28,7 +29,7 @@ import type { CreateUserData, CreateUserVars } from './types';
 const SignUpForm: FC = () => {
   const translate = useTranslations();
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [createUser, { loading }] = useMutation<CreateUserData, CreateUserVars>(
     CREATE_USER,
   );
@@ -37,23 +38,51 @@ const SignUpForm: FC = () => {
     values: CreateUserVars['userRegisterInput'] & { privacyAccepted: boolean },
   ) => {
     try {
-      const { privacyAccepted: _, ...userRegisterInput } = values;
+      const {
+        privacyAccepted: _,
+        password,
+        email,
+        ...userRegisterInput
+      } = values;
       const { data } = await createUser({
-        variables: { userRegisterInput },
+        variables: {
+          userRegisterInput: { ...userRegisterInput, password, email },
+        },
       });
 
-      if (data?.createUser) {
+      if (data?.createUser?.success) {
         notifications.show({
           title: translate('response.success'),
           message: translate('auth.accountCreatedSuccess'),
           color: 'green',
         });
 
-        startTransition(() => {
-          router.push('/login');
+        // Automatically log in the user
+        setIsLoggingIn(true);
+        const result = await signIn('credentials', {
+          email,
+          password,
+          redirect: false,
         });
+
+        if (result?.ok) {
+          notifications.show({
+            title: translate('response.success'),
+            message: translate('auth.loginSuccess'),
+            color: 'green',
+          });
+          // Keep loading state active until navigation completes
+          router.push('/');
+          router.refresh();
+          // Don't set isLoggingIn to false - component will unmount
+        } else {
+          // Registration succeeded but login failed, redirect to login page
+          setIsLoggingIn(false);
+          router.push('/login');
+        }
       }
     } catch (error) {
+      setIsLoggingIn(false);
       const message =
         error instanceof Error
           ? error.message
@@ -81,7 +110,7 @@ const SignUpForm: FC = () => {
   });
 
   const isSubmitDisabled =
-    loading || isPending || !formik.isValid || !formik.dirty;
+    loading || isLoggingIn || !formik.isValid || !formik.dirty;
 
   return (
     <Container maw={520} my={40} id="sign-up-page">
@@ -198,7 +227,7 @@ const SignUpForm: FC = () => {
           mt="xl"
           type="submit"
           disabled={isSubmitDisabled}
-          loading={loading || isPending}
+          loading={loading || isLoggingIn}
           loaderProps={{ type: 'dots' }}
         >
           {translate('auth.createAnAccountButton')}

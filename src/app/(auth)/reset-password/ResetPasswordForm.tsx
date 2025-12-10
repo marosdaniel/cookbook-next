@@ -7,13 +7,13 @@ import {
   Container,
   Group,
   Paper,
+  Stack,
   Text,
   TextInput,
   Title,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useFormik } from 'formik';
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 import { useState } from 'react';
@@ -24,19 +24,36 @@ import { RESET_PASSWORD } from '@/lib/graphql/mutations';
 import { resetPasswordValidationSchema } from '@/lib/validation/validation';
 import type { ResetPasswordFormValues } from './types';
 
+interface ResetPasswordResponse {
+  resetPassword: {
+    success: boolean;
+    message: string;
+  };
+}
+
 export const ResetPasswordForm: FC = () => {
   const translate = useTranslations();
-  const [resetPassword, { loading }] = useMutation(RESET_PASSWORD);
+  const [resetPassword, { loading }] =
+    useMutation<ResetPasswordResponse>(RESET_PASSWORD);
   const [isResetPasswordEmailSent, setIsResetPasswordEmailSent] =
     useState(false);
 
   const handleResetPassword = async (values: ResetPasswordFormValues) => {
     try {
-      await resetPassword({
+      const result = await resetPassword({
         variables: { email: values.email },
       });
-      setIsResetPasswordEmailSent(true);
-      formik.resetForm();
+
+      if (result.data?.resetPassword?.success) {
+        setIsResetPasswordEmailSent(true);
+        formik.resetForm();
+
+        notifications.show({
+          title: translate('response.success'),
+          message: result.data.resetPassword.message,
+          color: 'green',
+        });
+      }
     } catch (error: unknown) {
       notifications.show({
         title: translate('response.resetPasswordFailed'),
@@ -59,8 +76,10 @@ export const ResetPasswordForm: FC = () => {
 
   return (
     <Container size={460} my={30} id="reset-password-page">
-      <Title ta="center">{translate('auth.forgotPasswordTitle')}</Title>
-      <Text c="dimmed" fz="sm" ta="center">
+      <Title ta="center" mb="xs">
+        {translate('auth.forgotPasswordTitle')}
+      </Title>
+      <Text c="dimmed" fz="sm" ta="center" mb="xl">
         {translate('auth.forgotPasswordDescription')}
       </Text>
 
@@ -71,21 +90,33 @@ export const ResetPasswordForm: FC = () => {
         shadow="md"
         p={30}
         radius="md"
-        mt="xl"
       >
         {isResetPasswordEmailSent ? (
-          <Alert
-            variant="light"
-            color="green"
-            title="Email sent successfully"
-            icon={<CiCircleInfo size={30} />}
-          >
-            <Text size="sm">
-              {translate('response.emailWithResetLinkSent')}
-            </Text>
-          </Alert>
+          <Stack gap="md">
+            <Alert
+              variant="light"
+              color="green"
+              title={translate('response.emailSent')}
+              icon={<CiCircleInfo size={30} />}
+            >
+              <Text size="sm">
+                {translate('response.emailWithResetLinkSent')}
+              </Text>
+              <Text size="sm" mt="sm" c="dimmed">
+                {translate('response.checkSpamFolder')}
+              </Text>
+            </Alert>
+
+            <Button
+              variant="light"
+              onClick={() => setIsResetPasswordEmailSent(false)}
+              fullWidth
+            >
+              {translate('auth.sendAnotherEmail')}
+            </Button>
+          </Stack>
         ) : (
-          <>
+          <Stack gap="md">
             <TextInput
               id="email"
               name="email"
@@ -102,31 +133,30 @@ export const ResetPasswordForm: FC = () => {
                   : ''
               }
             />
-            <Group mt="lg">
-              <Button
-                type="submit"
-                loading={loading}
-                loaderProps={{ type: 'dots' }}
-                fullWidth
-                disabled={formik.touched.email && Boolean(formik.errors.email)}
-              >
-                {translate('auth.resetPasswordButton')}
-              </Button>
-            </Group>
-          </>
+
+            <Button
+              type="submit"
+              loading={loading}
+              loaderProps={{ type: 'dots' }}
+              fullWidth
+              disabled={!formik.isValid || !formik.dirty}
+            >
+              {translate('auth.sendResetLink')}
+            </Button>
+          </Stack>
         )}
-        <Button
-          mt="lg"
-          component={Link}
-          size="sm"
-          href="/login"
-          variant="subtle"
-          pl={0}
-          pr={0}
-          leftSection={<IoArrowBackOutline />}
-        >
-          {translate('auth.backToLogin')}
-        </Button>
+
+        <Group justify="center" mt="lg">
+          <Button
+            component="a"
+            size="sm"
+            href="/login"
+            variant="subtle"
+            leftSection={<IoArrowBackOutline />}
+          >
+            {translate('auth.backToLogin')}
+          </Button>
+        </Group>
       </Paper>
     </Container>
   );

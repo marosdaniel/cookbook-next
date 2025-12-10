@@ -88,7 +88,7 @@ type Query {
 
 type Mutation {
   loginUser(userLoginInput: UserLoginInput!): AuthPayload!
-  createUser(userRegisterInput: UserRegisterInput): RegisterResponse!
+  createUser(userRegisterInput: UserRegisterInput): UserOperationResponse!
   editUser(id: ID!, userEditInput: UserEditInput!): User!
 
   changePassword(id: ID!, passwordEditInput: PasswordEditInput!): Boolean!

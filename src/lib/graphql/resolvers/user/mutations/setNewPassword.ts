@@ -1,59 +1,97 @@
-// import validator from 'validator';
-// import bcrypt from 'bcrypt';
-// import crypto from 'crypto';
-// import { User } from '../../../../graphql/models';
-// import { throwCustomError } from '../../../../helpers/error-handler.helper';
-// import { IContext } from '../../../../context/types';
-// import { ISetNewPassword } from './types';
+import crypto from 'node:crypto';
+import bcrypt from 'bcrypt';
+import { GraphQLError } from 'graphql';
+import { z } from 'zod';
+import { prisma } from '@/lib/prisma';
 
-// export const setNewPassword = async (_: any, { token, newPassword }: ISetNewPassword, context: IContext) => {
-//   const currentUser = context;
+interface SetNewPasswordInput {
+  token: string;
+  newPassword: string;
+}
 
-//   if (!currentUser) {
-//     throwCustomError('Unauthenticated operation - no user found', { errorCode: 'UNAUTHENTICATED', errorStatus: 401 });
-//   }
+// Password validation schema
+const passwordSchema = z
+  .string()
+  .min(8, 'Password must be at least 8 characters')
+  .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+  .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+  .regex(/\d/, 'Password must contain at least one number');
 
-//   const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+export const setNewPassword = async (
+  _: unknown,
+  { token, newPassword }: SetNewPasswordInput,
+) => {
+  try {
+    // Validate password strength
+    const validationResult = passwordSchema.safeParse(newPassword);
+    if (!validationResult.success) {
+      throw new GraphQLError(
+        'Password must be at least 8 characters long and include uppercase, lowercase letters and a number',
+        {
+          extensions: {
+            code: 'WEAK_PASSWORD',
+            http: { status: 400 },
+            validationErrors: validationResult.error.errors,
+          },
+        },
+      );
+    }
 
-//   const user = await User.findOne({
-//     resetPasswordToken: hashedToken,
-//     resetPasswordExpires: { $gt: Date.now() },
-//   });
+    // Hash the token from URL to compare with stored hash
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
-//   if (!user) {
-//     throwCustomError('Invalid or expired reset token', { errorCode: 'INVALID_RESET_TOKEN', errorStatus: 400 });
-//   }
+    // Find user with valid token
+    const user = await prisma.user.findFirst({
+      where: {
+        resetPasswordToken: hashedToken,
+        resetPasswordExpires: {
+          gt: new Date(), // Token must not be expired
+        },
+      },
+    });
 
-//   if (
-//     !validator.isStrongPassword(newPassword, {
-//       minLength: 8,
-//       minLowercase: 1,
-//       minUppercase: 1,
-//       minNumbers: 1,
-//     })
-//   ) {
-//     throwCustomError(
-//       'Password must be at least 8 characters long and include uppercase, lowercase letters and a numbers',
-//       {
-//         errorCode: 'WEAK_PASSWORD',
-//         errorStatus: 400,
-//       },
-//     );
-//   }
+    if (!user) {
+      throw new GraphQLError(
+        'Invalid or expired reset token. Please request a new password reset.',
+        {
+          extensions: {
+            code: 'INVALID_RESET_TOKEN',
+            http: { status: 400 },
+          },
+        },
+      );
+    }
 
-//   try {
-//     const hashedPassword = await bcrypt.hash(newPassword, 10);
-//     user.password = hashedPassword;
-//     user.resetPasswordToken = undefined;
-//     user.resetPasswordExpires = undefined;
-//     await user.save();
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-//     return {
-//       success: true,
-//       message: 'Password successfully reset',
-//     };
-//   } catch (error) {
-//     console.error('Error during password reset:', error);
-//     throwCustomError('Could not reset password', { errorCode: 'PASSWORD_RESET_FAILED', errorStatus: 500 });
-//   }
-// };
+    // Update user password and clear reset token fields
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetPasswordToken: null,
+        resetPasswordExpires: null,
+      },
+    });
+
+    console.log(`Password successfully reset for user: ${user.email}`);
+
+    return {
+      success: true,
+      message:
+        'Password successfully reset. You can now login with your new password.',
+    };
+  } catch (error) {
+    console.error('Error in setNewPassword:', error);
+    if (error instanceof GraphQLError) {
+      throw error;
+    }
+    throw new GraphQLError('An error occurred during password reset', {
+      extensions: {
+        code: 'INTERNAL_SERVER_ERROR',
+        http: { status: 500 },
+      },
+    });
+  }
+};
