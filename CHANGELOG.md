@@ -1,3 +1,10 @@
+# [1.24.0](https://github.com/marosdaniel/cookbook-next/compare/v1.23.0...v1.24.0) (2025-12-10)
+
+
+### Features
+
+* update default user locale from 'en' to 'en-gb' ([21c0451](https://github.com/marosdaniel/cookbook-next/commit/21c0451cee070d1f863ba5012bc94a96270b8a72))
+
 # [1.23.0](https://github.com/marosdaniel/cookbook-next/compare/v1.22.0...v1.23.0) (2025-12-10)
 
 
