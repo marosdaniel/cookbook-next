@@ -14,6 +14,7 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useFormik } from 'formik';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 import { useState } from 'react';
@@ -148,7 +149,7 @@ export const ResetPasswordForm: FC = () => {
 
         <Group justify="center" mt="lg">
           <Button
-            component="a"
+            component={Link}
             size="sm"
             href="/login"
             variant="subtle"
