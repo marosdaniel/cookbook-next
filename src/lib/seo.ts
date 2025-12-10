@@ -8,6 +8,8 @@ type AuthMessages = {
   signupDescription?: string;
   forgotPasswordTitle?: string;
   resetPasswordDescription?: string;
+  setNewPasswordTitle?: string;
+  setNewPasswordDescription?: string;
   // add more keys as needed
 };
 
