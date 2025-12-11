@@ -1,3 +1,10 @@
+# [1.26.0](https://github.com/marosdaniel/cookbook-next/compare/v1.25.0...v1.26.0) (2025-12-11)
+
+
+### Features
+
+* enhance Logo component with optional text display and mobile visibility control. ([6ebcfd8](https://github.com/marosdaniel/cookbook-next/commit/6ebcfd8071fbf6b7a6a3d4ad137427f2000903c4))
+
 # [1.25.0](https://github.com/marosdaniel/cookbook-next/compare/v1.24.0...v1.25.0) (2025-12-11)
 
 
