@@ -20,7 +20,13 @@ const Footer: FC = () => {
         gap={4}
         hiddenFrom="md"
       >
-        <Logo variant="icon" width={36} height={36} withText />
+        <Logo
+          variant="icon"
+          width={36}
+          height={36}
+          withText
+          href={PUBLIC_ROUTES.HOME}
+        />
         <Text size="xs" c="dimmed">
           &copy; {currentYear} Cookbook. All rights reserved.
         </Text>
@@ -56,7 +62,13 @@ const Footer: FC = () => {
         visibleFrom="md"
       >
         <Group gap="xs">
-          <Logo variant="icon" width={36} height={36} withText />
+          <Logo
+            variant="icon"
+            width={36}
+            height={36}
+            withText
+            href={PUBLIC_ROUTES.HOME}
+          />
           <Text size="xs" c="dimmed">
             &copy; {currentYear} Cookbook. All rights reserved.
           </Text>

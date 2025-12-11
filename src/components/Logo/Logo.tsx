@@ -2,6 +2,8 @@
 
 import { Group, Text, useMantineColorScheme } from '@mantine/core';
 import Image from 'next/image';
+import Link from 'next/link';
+import { PUBLIC_ROUTES } from '../../types/routes';
 import { LOGO_SRC_DARK, LOGO_SRC_LIGHT } from './consts';
 import type { LogoProps } from './types';
 
@@ -18,6 +20,7 @@ export const Logo = ({
   priority = false,
   withText = false,
   hideTextOnMobile = false,
+  href,
 }: LogoProps) => {
   const { colorScheme } = useMantineColorScheme();
 
@@ -40,26 +43,37 @@ export const Logo = ({
     />
   );
 
-  if (withText) {
+  const content = withText ? (
+    <Group gap="xs" align="center" className={className}>
+      {logoImage}
+      <Text
+        component="span"
+        variant="gradient"
+        gradient={{ from: 'pink', to: 'violet', deg: 45 }}
+        fw={700}
+        size={variant === 'icon' ? 'xl' : '2rem'}
+        visibleFrom={hideTextOnMobile ? 'sm' : undefined}
+        style={{ lineHeight: 1 }}
+      >
+        Cookbook
+      </Text>
+    </Group>
+  ) : (
+    logoImage
+  );
+
+  if (href) {
     return (
-      <Group gap="xs" align="center" className={className}>
-        {logoImage}
-        <Text
-          component="span"
-          variant="gradient"
-          gradient={{ from: 'pink', to: 'violet', deg: 45 }}
-          fw={700}
-          size={variant === 'icon' ? 'xl' : '2rem'}
-          visibleFrom={hideTextOnMobile ? 'sm' : undefined}
-          style={{ lineHeight: 1 }}
-        >
-          Cookbook
-        </Text>
-      </Group>
+      <Link
+        href={PUBLIC_ROUTES.HOME}
+        style={{ textDecoration: 'none', color: 'inherit' }}
+      >
+        {content}
+      </Link>
     );
   }
 
-  return logoImage;
+  return content;
 };
 
 /**

@@ -13,4 +13,6 @@ export interface LogoProps {
   hideTextOnMobile?: boolean;
   /** Image loading priority */
   priority?: boolean;
+  /** Optional link href (wraps logo in a Link component) */
+  href?: string;
 }

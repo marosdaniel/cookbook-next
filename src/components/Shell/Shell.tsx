@@ -5,7 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import type { FC, PropsWithChildren } from 'react';
-import { isAuthRoute } from '@/types/routes';
+import { isAuthRoute, PUBLIC_ROUTES } from '@/types/routes';
 import AuthButton from '../AuthButton';
 import Footer from '../Footer';
 import LanguageSelector from '../LanguageSelector';
@@ -40,6 +40,7 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
             priority
             withText
             hideTextOnMobile
+            href={PUBLIC_ROUTES.HOME}
           />
           <Group gap="xs">
             {!session && !isAuthPage && <AuthButton variant="compact" />}
