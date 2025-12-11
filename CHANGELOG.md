@@ -1,3 +1,10 @@
+# [1.25.0](https://github.com/marosdaniel/cookbook-next/compare/v1.24.0...v1.25.0) (2025-12-11)
+
+
+### Features
+
+* add Footer component to Shell and update Prisma and Node.js types dependencies. ([035fcb1](https://github.com/marosdaniel/cookbook-next/commit/035fcb111c2d08f7e1dd6f30fd2bc1381e8679eb))
+
 # [1.24.0](https://github.com/marosdaniel/cookbook-next/compare/v1.23.0...v1.24.0) (2025-12-10)
 
 
