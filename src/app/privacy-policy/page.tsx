@@ -1,4 +1,4 @@
-import { Container, List, Stack, Text, Title } from '@mantine/core';
+import { Container, Stack, Text, Title } from '@mantine/core';
 
 const PrivacyPolicyPage = () => {
   return (
@@ -34,14 +34,18 @@ const PrivacyPolicyPage = () => {
             messages in our online forums or entering competitions, contests or
             giveaways) or otherwise when you contact us.
           </Text>
-          <List withPadding>
-            <List.Item>
-              Personal Data: Name, email address, passwords, contact data.
-            </List.Item>
-            <List.Item>
-              Usage Data: IP address, browser type, device information.
-            </List.Item>
-          </List>
+          <ul style={{ paddingLeft: '1.5rem', margin: '0.75rem 0' }}>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <Text component="span">
+                Personal Data: Name, email address, passwords, contact data.
+              </Text>
+            </li>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <Text component="span">
+                Usage Data: IP address, browser type, device information.
+              </Text>
+            </li>
+          </ul>
         </Stack>
 
         <Stack gap="md">
@@ -56,14 +60,22 @@ const PrivacyPolicyPage = () => {
             with you, with your consent, and/or for compliance with our legal
             obligations.
           </Text>
-          <List withPadding>
-            <List.Item>
-              To facilitate account creation and logon process.
-            </List.Item>
-            <List.Item>To post testimonials.</List.Item>
-            <List.Item>To request feedback.</List.Item>
-            <List.Item>To enable user-to-user communications.</List.Item>
-          </List>
+          <ul style={{ paddingLeft: '1.5rem', margin: '0.75rem 0' }}>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <Text component="span">
+                To facilitate account creation and logon process.
+              </Text>
+            </li>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <Text component="span">To post testimonials.</Text>
+            </li>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <Text component="span">To request feedback.</Text>
+            </li>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <Text component="span">To enable user-to-user communications.</Text>
+            </li>
+          </ul>
         </Stack>
 
         <Stack gap="md">

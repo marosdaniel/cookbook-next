@@ -1,4 +1,4 @@
-import { Container, List, Stack, Text, Title } from '@mantine/core';
+import { Container, Stack, Text, Title } from '@mantine/core';
 
 const CookiePolicyPage = () => {
   return (
@@ -15,9 +15,9 @@ const CookiePolicyPage = () => {
           </Title>
           <Text>
             Cookies are simple text files that are stored on your computer or
-            mobile device by a website’s server. Each cookie is unique to your
+            mobile device by a website's server. Each cookie is unique to your
             web browser. It will contain some anonymous information such as a
-            unique identifier, website’s domain name, and some digits and
+            unique identifier, website's domain name, and some digits and
             numbers.
           </Text>
         </Stack>
@@ -33,23 +33,29 @@ const CookiePolicyPage = () => {
             improve our services by collecting anonymous information about how
             you use our site.
           </Text>
-          <List withPadding>
-            <List.Item>
-              <strong>Necessary Cookies:</strong> These are essential for you to
-              browse the website and use its features.
-            </List.Item>
-            <List.Item>
-              <strong>Functionality Cookies:</strong> Allow the website to
-              remember choices you make (such as your user name, language or the
-              region you are in).
-            </List.Item>
-            <List.Item>
-              <strong>Performance Cookies:</strong> Collect information about
-              how you use a website, like which pages you visited and which
-              links you clicked on. None of this information can be used to
-              identify you.
-            </List.Item>
-          </List>
+          <ul style={{ paddingLeft: '1.5rem', margin: '0.75rem 0' }}>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <Text component="span">
+                <strong>Necessary Cookies:</strong> These are essential for you to
+                browse the website and use its features.
+              </Text>
+            </li>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <Text component="span">
+                <strong>Functionality Cookies:</strong> Allow the website to
+                remember choices you make (such as your user name, language or the
+                region you are in).
+              </Text>
+            </li>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <Text component="span">
+                <strong>Performance Cookies:</strong> Collect information about
+                how you use a website, like which pages you visited and which
+                links you clicked on. None of this information can be used to
+                identify you.
+              </Text>
+            </li>
+          </ul>
         </Stack>
 
         <Stack gap="md">
@@ -57,12 +63,20 @@ const CookiePolicyPage = () => {
             3. Detailed Cookie Usage
           </Title>
           <Text>We may use cookies for the following purposes:</Text>
-          <List withPadding>
-            <List.Item>Authentication and security</List.Item>
-            <List.Item>Preferences and settings</List.Item>
-            <List.Item>Analytics and research</List.Item>
-            <List.Item>Advertising</List.Item>
-          </List>
+          <ul style={{ paddingLeft: '1.5rem', margin: '0.75rem 0' }}>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <Text component="span">Authentication and security</Text>
+            </li>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <Text component="span">Preferences and settings</Text>
+            </li>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <Text component="span">Analytics and research</Text>
+            </li>
+            <li style={{ marginBottom: '0.5rem' }}>
+              <Text component="span">Advertising</Text>
+            </li>
+          </ul>
         </Stack>
 
         <Stack gap="md">
