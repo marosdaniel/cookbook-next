@@ -19,73 +19,73 @@ enum UserRole {
 
 // User model
 model User {
-  id                    String    @id @default(auto()) @map("_id") @db.ObjectId
-  firstName             String
-  lastName              String
-  userName              String    @unique
-  email                 String    @unique
-  password              String
-  locale                String    @default("en-gb")
-  role                  UserRole  @default(USER)
-  resetPasswordToken    String?
-  resetPasswordExpires  DateTime?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-  
+  id                   String    @id @default(auto()) @map("_id") @db.ObjectId
+  firstName            String
+  lastName             String
+  userName             String    @unique
+  email                String    @unique
+  password             String
+  locale               String    @default("en-gb")
+  role                 UserRole  @default(USER)
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
   // Relations
-  recipes               Recipe[]  @relation("UserRecipes")
-  favoriteRecipeIds     String[]  @db.ObjectId
-  favoriteRecipes       Recipe[]  @relation("FavoriteRecipes", fields: [favoriteRecipeIds], references: [id])
-  ratings               Rating[]
+  recipes           Recipe[] @relation("UserRecipes")
+  favoriteRecipeIds String[] @db.ObjectId
+  favoriteRecipes   Recipe[] @relation("FavoriteRecipes", fields: [favoriteRecipeIds], references: [id])
+  ratings           Rating[]
 
   @@map("users")
 }
 
 // Recipe model
 model Recipe {
-  id                String              @id @default(auto()) @map("_id") @db.ObjectId
-  title             String
-  description       String?
-  ingredients       Ingredient[]
-  preparationSteps  PreparationStep[]
-  category          Category
-  labels            Label[]
-  imgSrc            String?
-  cookingTime       Int
-  difficultyLevel   DifficultyLevel
-  servings          Int
-  youtubeLink       String?
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  
+  id               String            @id @default(auto()) @map("_id") @db.ObjectId
+  title            String
+  description      String?
+  ingredients      Ingredient[]
+  preparationSteps PreparationStep[]
+  category         Category
+  labels           Label[]
+  imgSrc           String?
+  cookingTime      Int
+  difficultyLevel  DifficultyLevel
+  servings         Int
+  youtubeLink      String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
   // Author relation
-  createdBy         String              @db.ObjectId
-  author            User                @relation("UserRecipes", fields: [createdBy], references: [id])
-  
+  createdBy String @db.ObjectId
+  author    User   @relation("UserRecipes", fields: [createdBy], references: [id])
+
   // Favorite relation
-  favoritedByIds    String[]            @db.ObjectId
-  favoritedBy       User[]              @relation("FavoriteRecipes", fields: [favoritedByIds], references: [id])
-  
+  favoritedByIds String[] @db.ObjectId
+  favoritedBy    User[]   @relation("FavoriteRecipes", fields: [favoritedByIds], references: [id])
+
   // Ratings
-  ratings           Rating[]
+  ratings Rating[]
 
   @@map("recipes")
 }
 
 // Rating model
 model Rating {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  ratingValue  Float
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  ratingValue Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   // Relations
-  recipeId     String   @db.ObjectId
-  recipe       Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
-  
-  userId       String   @db.ObjectId
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  recipeId String @db.ObjectId
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([recipeId, userId])
   @@map("ratings")
 }
@@ -97,7 +97,7 @@ model Metadata {
   key   String @unique
   label String
   type  String // "CATEGORY" | "LABEL" | "DIFFICULTY_LEVEL"
-  
+
   @@map("metadata")
 }
 
