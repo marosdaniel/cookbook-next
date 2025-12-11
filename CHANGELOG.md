@@ -1,3 +1,11 @@
+# [1.28.0](https://github.com/marosdaniel/cookbook-next/compare/v1.27.0...v1.28.0) (2025-12-11)
+
+
+### Features
+
+* Add optional `href` prop to the `Logo` component, making header and footer logos link to the home page. ([6fdf72d](https://github.com/marosdaniel/cookbook-next/commit/6fdf72d9aff0a13af2bafe74289f7ed4b6ad2989))
+* Add Privacy Policy and Cookie Policy pages, and standardize public and authentication route definitions. ([877641a](https://github.com/marosdaniel/cookbook-next/commit/877641aab788dd3bdef8ae63ce15235d881ad535))
+
 # [1.27.0](https://github.com/marosdaniel/cookbook-next/compare/v1.26.0...v1.27.0) (2025-12-11)
 
 
