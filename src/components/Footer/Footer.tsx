@@ -11,7 +11,7 @@ const Footer: FC = () => {
   return (
     <Group h="100%" justify="space-between" align="center" px="md">
       <Group gap="xs">
-        <Logo variant="icon" width={24} height={24} />
+        <Logo variant="icon" width={24} height={24} withText />
         <Text size="xs" c="dimmed">
           &copy; {currentYear} Cookbook. All rights reserved.
         </Text>

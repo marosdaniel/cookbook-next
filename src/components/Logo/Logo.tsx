@@ -1,6 +1,6 @@
 'use client';
 
-import { useMantineColorScheme } from '@mantine/core';
+import { Group, Text, useMantineColorScheme } from '@mantine/core';
 import Image from 'next/image';
 import { LOGO_SRC_DARK, LOGO_SRC_LIGHT } from './consts';
 import type { LogoProps } from './types';
@@ -16,6 +16,8 @@ export const Logo = ({
   height,
   className = '',
   priority = false,
+  withText = false,
+  hideTextOnMobile = false,
 }: LogoProps) => {
   const { colorScheme } = useMantineColorScheme();
 
@@ -27,16 +29,37 @@ export const Logo = ({
   const finalWidth = width ?? defaultSize;
   const finalHeight = height ?? defaultSize;
 
-  return (
+  const logoImage = (
     <Image
       src={logoSrc}
       alt={variant === 'icon' ? 'Cookbook' : 'Cookbook Logo'}
       width={finalWidth}
       height={finalHeight}
-      className={className}
+      className={withText ? undefined : className}
       priority={priority}
     />
   );
+
+  if (withText) {
+    return (
+      <Group gap="xs" align="center" className={className}>
+        {logoImage}
+        <Text
+          component="span"
+          variant="gradient"
+          gradient={{ from: 'pink', to: 'violet', deg: 45 }}
+          fw={700}
+          size={variant === 'icon' ? 'xl' : '2rem'}
+          visibleFrom={hideTextOnMobile ? 'sm' : undefined}
+          style={{ lineHeight: 1 }}
+        >
+          Cookbook
+        </Text>
+      </Group>
+    );
+  }
+
+  return logoImage;
 };
 
 /**

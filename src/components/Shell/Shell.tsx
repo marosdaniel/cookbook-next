@@ -33,7 +33,14 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
     >
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
-          <Logo width={40} height={40} priority />
+          <Logo
+            variant="icon"
+            width={40}
+            height={40}
+            priority
+            withText
+            hideTextOnMobile
+          />
           <Group gap="xs">
             {!session && !isAuthPage && <AuthButton variant="compact" />}
             <ThemeSwitcher />

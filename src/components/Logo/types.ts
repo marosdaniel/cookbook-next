@@ -7,6 +7,10 @@ export interface LogoProps {
   height?: number;
   /** Additional CSS classes */
   className?: string;
+  /** Show 'Cookbook' text next to logo */
+  withText?: boolean;
+  /** Hide text on mobile (only applies if withText is true) */
+  hideTextOnMobile?: boolean;
   /** Image loading priority */
   priority?: boolean;
 }
