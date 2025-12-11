@@ -1,3 +1,10 @@
+# [1.27.0](https://github.com/marosdaniel/cookbook-next/compare/v1.26.0...v1.27.0) (2025-12-11)
+
+
+### Features
+
+* Implement responsive footer layout with increased logo size and adjust shell main content padding and footer height. ([4315670](https://github.com/marosdaniel/cookbook-next/commit/4315670df17490761a41e834832565083803ff9a))
+
 # [1.26.0](https://github.com/marosdaniel/cookbook-next/compare/v1.25.0...v1.26.0) (2025-12-11)
 
 
