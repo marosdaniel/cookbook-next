@@ -3,6 +3,7 @@
 import { Anchor, Group, Stack, Text } from '@mantine/core';
 import Link from 'next/link';
 import type { FC } from 'react';
+import { PUBLIC_ROUTES } from '../../types/routes';
 import { Logo } from '../Logo';
 
 const Footer: FC = () => {
@@ -26,8 +27,7 @@ const Footer: FC = () => {
         <Group gap="md">
           <Anchor
             component={Link}
-            // biome-ignore lint/suspicious/noExplicitAny: Placeholder route
-            href={'/privacy-policy' as any}
+            href={PUBLIC_ROUTES.PRIVACY_POLICY}
             size="xs"
             c="dimmed"
             underline="hover"
@@ -35,9 +35,9 @@ const Footer: FC = () => {
             Privacy Policy
           </Anchor>
           <Anchor
+            variant="subtle"
             component={Link}
-            // biome-ignore lint/suspicious/noExplicitAny: Placeholder route
-            href={'/cookie-policy' as any}
+            href={PUBLIC_ROUTES.COOKIE_POLICY}
             size="xs"
             c="dimmed"
             underline="hover"
@@ -65,8 +65,7 @@ const Footer: FC = () => {
         <Group gap="md">
           <Anchor
             component={Link}
-            // biome-ignore lint/suspicious/noExplicitAny: Placeholder route
-            href={'/privacy-policy' as any}
+            href={PUBLIC_ROUTES.PRIVACY_POLICY}
             size="xs"
             c="dimmed"
             underline="hover"
@@ -75,11 +74,11 @@ const Footer: FC = () => {
           </Anchor>
           <Anchor
             component={Link}
-            // biome-ignore lint/suspicious/noExplicitAny: Placeholder route
-            href={'/cookie-policy' as any}
+            href={PUBLIC_ROUTES.COOKIE_POLICY}
             size="xs"
             c="dimmed"
             underline="hover"
+            variant="subtle"
           >
             Cookie Policy
           </Anchor>

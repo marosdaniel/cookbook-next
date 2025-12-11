@@ -7,6 +7,9 @@ export const PUBLIC_ROUTES = {
   HOME: '/',
   ABOUT: '/about',
   RECIPES: '/recipes',
+  PRIVACY_POLICY: '/privacy-policy',
+  COOKIE_POLICY: '/cookie-policy',
+  TERMS_OF_SERVICE: '/terms-of-service',
 } as const;
 
 // Authentication routes (Login, Register, Reset Password)

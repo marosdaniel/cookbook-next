@@ -5,6 +5,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { AUTH_ROUTES } from '../../../types/routes';
 import { LoginForm } from './LoginForm';
 
 // Mock next/navigation
@@ -148,7 +149,7 @@ describe('LoginForm', () => {
 
       const signupLink = screen.getByRole('link', { name: /create account/i });
       expect(signupLink).toBeInTheDocument();
-      expect(signupLink).toHaveAttribute('href', '/signup');
+      expect(signupLink).toHaveAttribute('href', AUTH_ROUTES.SIGNUP);
     });
 
     it('renders forgot password link', () => {
@@ -162,7 +163,10 @@ describe('LoginForm', () => {
         name: /forgot password/i,
       });
       expect(forgotPasswordLink).toBeInTheDocument();
-      expect(forgotPasswordLink).toHaveAttribute('href', '/reset-password');
+      expect(forgotPasswordLink).toHaveAttribute(
+        'href',
+        AUTH_ROUTES.RESET_PASSWORD,
+      );
     });
 
     it('has correct container id', () => {

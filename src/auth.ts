@@ -3,6 +3,7 @@ import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
 import type { Locale } from '@/types/common';
+import { AUTH_ROUTES } from './types/routes';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -60,8 +61,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     maxAge: 14 * 24 * 60 * 60, // 14 days
   },
   pages: {
-    signIn: '/login',
-    error: '/login',
+    signIn: AUTH_ROUTES.LOGIN,
+    error: AUTH_ROUTES.LOGIN,
   },
   callbacks: {
     async jwt({ token, user }) {

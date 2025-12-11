@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { AUTH_ROUTES } from '../../types/routes';
 import { resetPasswordEmailTemplate } from './templates/resetPasswordEmailTemplate';
 import { welcomeEmailTemplate } from './templates/welcomeEmailTemplate';
 
@@ -27,7 +28,7 @@ export const sendPasswordResetEmail = async (
   email: string,
   resetToken: string,
 ) => {
-  const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password/${resetToken}`;
+  const resetUrl = `${process.env.NEXTAUTH_URL}${AUTH_ROUTES.RESET_PASSWORD}/${resetToken}`;
   const { html, text } = resetPasswordEmailTemplate(resetUrl);
 
   const mailOptions = {

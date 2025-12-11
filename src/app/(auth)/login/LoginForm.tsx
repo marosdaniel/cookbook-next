@@ -22,6 +22,7 @@ import type { FC } from 'react';
 import { useState } from 'react';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { loginValidationSchema } from '../../../lib/validation';
+import { AUTH_ROUTES } from '../../../types/routes';
 import type { LoginFormValues } from './types';
 
 export const LoginForm: FC = () => {
@@ -91,7 +92,12 @@ export const LoginForm: FC = () => {
         <Text c="dimmed" size="sm" ta="center">
           {translate('auth.dontYouHaveAnAccount')}
         </Text>
-        <Button variant="transparent" size="sm" component={Link} href="/signup">
+        <Button
+          variant="transparent"
+          size="sm"
+          component={Link}
+          href={AUTH_ROUTES.SIGNUP}
+        >
           {translate('auth.createAccountButton')}
         </Button>
       </Group>
@@ -141,7 +147,7 @@ export const LoginForm: FC = () => {
             gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
             component={Link}
             size="sm"
-            href="/reset-password"
+            href={AUTH_ROUTES.RESET_PASSWORD}
           >
             {translate('auth.forgotPassword')}
           </Anchor>

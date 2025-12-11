@@ -16,7 +16,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { type FC, useTransition } from 'react';
 import { FiLogOut } from 'react-icons/fi';
-import { isProtectedRoute } from '@/types/routes';
+import { AUTH_ROUTES, isProtectedRoute } from '@/types/routes';
 
 const Navbar: FC = () => {
   const translate = useTranslations('sidebar');
@@ -29,7 +29,7 @@ const Navbar: FC = () => {
     const shouldRedirect = isProtectedRoute(pathname);
     startTransition(() => {
       signOut({
-        callbackUrl: shouldRedirect ? '/login' : pathname,
+        callbackUrl: shouldRedirect ? AUTH_ROUTES.LOGIN : pathname,
       });
     });
   };

@@ -22,6 +22,7 @@ import { IoArrowBackOutline } from 'react-icons/io5';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { RESET_PASSWORD } from '@/lib/graphql/mutations';
 import { resetPasswordValidationSchema } from '@/lib/validation/validation';
+import { AUTH_ROUTES } from '../../../types/routes';
 import {
   showErrorNotification,
   showSuccessNotification,
@@ -143,7 +144,7 @@ export const ResetPasswordForm: FC = () => {
           <Button
             component={Link}
             size="sm"
-            href="/login"
+            href={AUTH_ROUTES.LOGIN}
             variant="subtle"
             leftSection={<IoArrowBackOutline />}
           >

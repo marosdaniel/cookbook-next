@@ -24,6 +24,7 @@ import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { CREATE_USER } from '@/lib/graphql/mutations';
 import { signUpValidationSchema } from '@/lib/validation/validation';
 import PrivacyPolicyLink from '../../../components/PrivacyPolicyLink';
+import { AUTH_ROUTES } from '../../../types/routes';
 import type { CreateUserData, CreateUserVars } from './types';
 
 const SignUpForm: FC = () => {
@@ -76,7 +77,7 @@ const SignUpForm: FC = () => {
         } else {
           // Registration succeeded but login failed, redirect to login page
           setIsLoggingIn(false);
-          router.push('/login');
+          router.push(AUTH_ROUTES.LOGIN);
         }
       }
     } catch (error) {
@@ -119,7 +120,12 @@ const SignUpForm: FC = () => {
         <Text c="dimmed" size="sm" ta="center">
           {translate('auth.alreadyHaveAnAccount')}
         </Text>
-        <Button variant="transparent" size="sm" component={Link} href="/login">
+        <Button
+          variant="transparent"
+          size="sm"
+          component={Link}
+          href={AUTH_ROUTES.LOGIN}
+        >
           {translate('auth.login')}
         </Button>
       </Group>

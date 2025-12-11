@@ -22,6 +22,7 @@ import { IoArrowBackOutline } from 'react-icons/io5';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { SET_NEW_PASSWORD } from '@/lib/graphql/mutations';
 import { setNewPasswordValidationSchema } from '@/lib/validation/validation';
+import { AUTH_ROUTES } from '../../../../types/routes';
 import { showErrorNotification } from '../../../../utils/notifications';
 import { AUTH_CONSTANTS } from '../../consts';
 import type { SetNewPasswordFormValues, SetNewPasswordResponse } from './types';
@@ -59,7 +60,7 @@ export const SetNewPasswordForm: FC = () => {
 
         // Redirect to login after delay
         setTimeout(() => {
-          router.push('/login');
+          router.push(AUTH_ROUTES.LOGIN);
         }, AUTH_CONSTANTS.PASSWORD_RESET_REDIRECT_DELAY);
       }
     } catch (error: unknown) {
@@ -163,7 +164,7 @@ export const SetNewPasswordForm: FC = () => {
           <Button
             component={Link}
             size="sm"
-            href="/login"
+            href={AUTH_ROUTES.LOGIN}
             variant="subtle"
             leftSection={<IoArrowBackOutline />}
           >
