@@ -1,3 +1,5 @@
+import type { Route } from 'next';
+
 export interface LogoProps {
   /** Variant determines the default size */
   variant?: 'default' | 'icon';
@@ -14,5 +16,5 @@ export interface LogoProps {
   /** Image loading priority */
   priority?: boolean;
   /** Optional link href (wraps logo in a Link component) */
-  href?: string;
+  href?: Route;
 }

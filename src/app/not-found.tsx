@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { FiHome } from 'react-icons/fi';
 import { GiChefToque } from 'react-icons/gi';
-import { AUTH_ROUTES, PUBLIC_ROUTES } from '../types/routes';
+import { PUBLIC_ROUTES } from '../types/routes';
 
 export const dynamic = 'force-dynamic';
 

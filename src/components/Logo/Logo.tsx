@@ -3,7 +3,7 @@
 import { Group, Text, useMantineColorScheme } from '@mantine/core';
 import Image from 'next/image';
 import Link from 'next/link';
-import { PUBLIC_ROUTES } from '../../types/routes';
+import { usePathname } from 'next/navigation';
 import { LOGO_SRC_DARK, LOGO_SRC_LIGHT } from './consts';
 import type { LogoProps } from './types';
 
@@ -23,6 +23,7 @@ export const Logo = ({
   href,
 }: LogoProps) => {
   const { colorScheme } = useMantineColorScheme();
+  const pathname = usePathname();
 
   // Determine logo source based on theme
   const logoSrc = colorScheme === 'dark' ? LOGO_SRC_DARK : LOGO_SRC_LIGHT;
@@ -62,11 +63,17 @@ export const Logo = ({
     logoImage
   );
 
+  // Only render as link if href is provided
   if (href) {
     return (
       <Link
-        href={PUBLIC_ROUTES.HOME}
+        href={href}
         style={{ textDecoration: 'none', color: 'inherit' }}
+        onClick={(e) => {
+          if (pathname === href) {
+            e.preventDefault();
+          }
+        }}
       >
         {content}
       </Link>

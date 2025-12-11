@@ -3,6 +3,7 @@ import '@testing-library/jest-dom';
 import { MantineProvider } from '@mantine/core';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { PUBLIC_ROUTES } from '../../types/routes';
 import PrivacyPolicyLink from './PrivacyPolicyLink';
 
 // Mock next-intl
@@ -51,7 +52,7 @@ describe('PrivacyPolicyLink', () => {
       </MantineProvider>,
     );
     const link = screen.getByText('I accept the Privacy Policy');
-    expect(link).toHaveAttribute('href', '/');
+    expect(link).toHaveAttribute('href', PUBLIC_ROUTES.PRIVACY_POLICY);
   });
 
   it('opens in a new tab with correct security attributes', () => {
