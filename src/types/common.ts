@@ -4,7 +4,7 @@ export type Locale = 'en-gb' | 'hu' | 'de';
 
 // Recursive type for nested locale message objects
 export type LocaleMessages = {
-  [key: string]: string | LocaleMessages;
+  [key: string]: string | string[] | LocaleMessages;
 };
 
 export type AllMessages = {
