@@ -10,6 +10,10 @@ type AuthMessages = {
   resetPasswordDescription?: string;
   setNewPasswordTitle?: string;
   setNewPasswordDescription?: string;
+  cookiePolicyTitle?: string;
+  cookiePolicyDescription?: string;
+  privacyPolicyTitle?: string;
+  privacyPolicyDescription?: string;
   // add more keys as needed
 };
 

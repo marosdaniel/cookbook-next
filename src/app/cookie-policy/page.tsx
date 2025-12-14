@@ -1,95 +1,90 @@
-import { Container, Stack, Text, Title } from '@mantine/core';
+import type { Metadata } from 'next';
+import { Box, Container, Stack, Text, Title } from '@mantine/core';
+import { getLocaleFromCookies } from '@/lib/locale/locale.server';
+import { getAuthMetadata } from '@/lib/seo';
+import { getLocaleMessages } from '@/lib/locale/locale';
+import type { LegalMessages } from '@/types/common';
 
-const CookiePolicyPage = () => {
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocaleFromCookies();
+  return getAuthMetadata(locale, {
+    titleKey: 'cookiePolicyTitle',
+    descriptionKey: 'cookiePolicyDescription',
+    fallbackTitle: 'Cookie Policy',
+    fallbackDescription: 'Learn about how Cookbook uses cookies.',
+  });
+}
+
+const CookiePolicyPage = async () => {
+  const locale = await getLocaleFromCookies();
+  const messages = await getLocaleMessages(locale);
+  const legalMessages = messages.legal as unknown as LegalMessages;
+  const t = legalMessages?.cookiePolicy;
+
+  if (!t) return null;
+
   return (
     <Container size="md" py="xl">
       <Stack gap="lg">
-        <Title order={1}>Cookie Policy</Title>
+        <Title order={1}>{t.title}</Title>
         <Text size="sm" c="dimmed">
-          Last updated: {new Date().toLocaleDateString()}
+          {t.lastUpdated}
+          {new Date().toLocaleDateString(locale)}
         </Text>
 
         <Stack gap="md">
           <Title order={2} size="h3">
-            1. What Are Cookies?
+            {t.whatAreCookies.title}
           </Title>
-          <Text>
-            Cookies are simple text files that are stored on your computer or
-            mobile device by a website's server. Each cookie is unique to your
-            web browser. It will contain some anonymous information such as a
-            unique identifier, website's domain name, and some digits and
-            numbers.
-          </Text>
+          <Text>{t.whatAreCookies.content}</Text>
         </Stack>
 
         <Stack gap="md">
           <Title order={2} size="h3">
-            2. How We Use Cookies
+            {t.howWeUse.title}
           </Title>
-          <Text>
-            We use cookies to improve your browsing experience and to help us
-            understand how our website is being used. Some cookies are essential
-            for the website to function properly, while others help us to
-            improve our services by collecting anonymous information about how
-            you use our site.
-          </Text>
-          <ul style={{ paddingLeft: '1.5rem', margin: '0.75rem 0' }}>
-            <li style={{ marginBottom: '0.5rem' }}>
+          <Text>{t.howWeUse.content}</Text>
+          <Box component="ul" pl="xl" mt="xs">
+            <Box component="li" mb="xs">
               <Text component="span">
-                <strong>Necessary Cookies:</strong> These are essential for you to
-                browse the website and use its features.
+                <strong>{t.howWeUse.list.necessaryTitle}</strong>{' '}
+                {t.howWeUse.list.necessaryContent}
               </Text>
-            </li>
-            <li style={{ marginBottom: '0.5rem' }}>
+            </Box>
+            <Box component="li" mb="xs">
               <Text component="span">
-                <strong>Functionality Cookies:</strong> Allow the website to
-                remember choices you make (such as your user name, language or the
-                region you are in).
+                <strong>{t.howWeUse.list.functionalityTitle}</strong>{' '}
+                {t.howWeUse.list.functionalityContent}
               </Text>
-            </li>
-            <li style={{ marginBottom: '0.5rem' }}>
+            </Box>
+            <Box component="li" mb="xs">
               <Text component="span">
-                <strong>Performance Cookies:</strong> Collect information about
-                how you use a website, like which pages you visited and which
-                links you clicked on. None of this information can be used to
-                identify you.
+                <strong>{t.howWeUse.list.performanceTitle}</strong>{' '}
+                {t.howWeUse.list.performanceContent}
               </Text>
-            </li>
-          </ul>
+            </Box>
+          </Box>
         </Stack>
 
         <Stack gap="md">
           <Title order={2} size="h3">
-            3. Detailed Cookie Usage
+            {t.detailedUsage.title}
           </Title>
-          <Text>We may use cookies for the following purposes:</Text>
-          <ul style={{ paddingLeft: '1.5rem', margin: '0.75rem 0' }}>
-            <li style={{ marginBottom: '0.5rem' }}>
-              <Text component="span">Authentication and security</Text>
-            </li>
-            <li style={{ marginBottom: '0.5rem' }}>
-              <Text component="span">Preferences and settings</Text>
-            </li>
-            <li style={{ marginBottom: '0.5rem' }}>
-              <Text component="span">Analytics and research</Text>
-            </li>
-            <li style={{ marginBottom: '0.5rem' }}>
-              <Text component="span">Advertising</Text>
-            </li>
-          </ul>
+          <Text>{t.detailedUsage.content}</Text>
+          <Box component="ul" pl="xl" mt="xs">
+            {t.detailedUsage.list.map((item) => (
+              <Box key={item} component="li" mb="xs">
+                <Text component="span">{item}</Text>
+              </Box>
+            ))}
+          </Box>
         </Stack>
 
         <Stack gap="md">
           <Title order={2} size="h3">
-            4. Managing Cookies
+            {t.managing.title}
           </Title>
-          <Text>
-            If you want to restrict or block the cookies that are set by our
-            website, you can do so through your browser setting. Alternatively,
-            you can visit www.internetcookies.com, which contains comprehensive
-            information on how to do this on a wide variety of browsers and
-            devices.
-          </Text>
+          <Text>{t.managing.content}</Text>
         </Stack>
       </Stack>
     </Container>

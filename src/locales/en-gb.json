@@ -34,7 +34,11 @@
     "loginError": "An error occurred during login",
     "loginDescription": "Sign in to your Cookbook account to access your recipes and favourites",
     "signupDescription": "Create your Cookbook account to save and share recipes",
-    "resetPasswordDescription": "Enter your email and we will send you a link to reset your password"
+    "resetPasswordDescription": "Enter your email and we will send you a link to reset your password",
+    "cookiePolicyTitle": "Cookie Policy",
+    "cookiePolicyDescription": "Learn about how Cookbook uses cookies.",
+    "privacyPolicyTitle": "Privacy Policy",
+    "privacyPolicyDescription": "Learn about how Cookbook protects your privacy."
   },
   "common": {
     "language": "Language",
@@ -161,5 +165,73 @@
     "description": "The page you are looking for is not in our cookbook.",
     "hint": "Maybe it's been eaten, or it was never on the menu...",
     "backButton": "Back to homepage"
+  },
+  "legal": {
+    "cookiePolicy": {
+      "title": "Cookie Policy",
+      "lastUpdated": "Last updated: ",
+      "whatAreCookies": {
+        "title": "1. What Are Cookies?",
+        "content": "Cookies are simple text files that are stored on your computer or mobile device by a website's server. Each cookie is unique to your web browser. It will contain some anonymous information such as a unique identifier, website's domain name, and some digits and numbers."
+      },
+      "howWeUse": {
+        "title": "2. How We Use Cookies",
+        "content": "We use cookies to improve your browsing experience and to help us understand how our website is being used. Some cookies are essential for the website to function properly, while others help us to improve our services by collecting anonymous information about how you use our site.",
+        "list": {
+          "necessaryTitle": "Necessary Cookies:",
+          "necessaryContent": "These are essential for you to browse the website and use its features.",
+          "functionalityTitle": "Functionality Cookies:",
+          "functionalityContent": "Allow the website to remember choices you make (such as your user name, language or the region you are in).",
+          "performanceTitle": "Performance Cookies:",
+          "performanceContent": "Collect information about how you use a website, like which pages you visited and which links you clicked on. None of this information can be used to identify you."
+        }
+      },
+      "detailedUsage": {
+        "title": "3. Detailed Cookie Usage",
+        "content": "We may use cookies for the following purposes:",
+        "list": [
+          "Authentication and security",
+          "Preferences and settings",
+          "Analytics and research",
+          "Advertising"
+        ]
+      },
+      "managing": {
+        "title": "4. Managing Cookies",
+        "content": "If you want to restrict or block the cookies that are set by our website, you can do so through your browser setting. Alternatively, you can visit www.internetcookies.com, which contains comprehensive information on how to do this on a wide variety of browsers and devices."
+      }
+    },
+    "privacyPolicy": {
+      "title": "Privacy Policy",
+      "lastUpdated": "Last updated: ",
+      "introduction": {
+        "title": "1. Introduction",
+        "content": "Welcome to Cookbook (\"we,\" \"our,\" or \"us\"). We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about this privacy notice or our practices with regard to your personal information, please contacting us."
+      },
+      "infoCollect": {
+        "title": "2. Information We Collect",
+        "content": "We collect personal information that you voluntarily provide to us when you register on the website, express an interest in obtaining information about us or our products and services, when you participate in activities on the website (such as by posting messages in our online forums or entering competitions, contests or giveaways) or otherwise when you contact us.",
+        "list": {
+          "personalTitle": "Personal Data:",
+          "personalContent": "Name, email address, passwords, contact data.",
+          "usageTitle": "Usage Data:",
+          "usageContent": "IP address, browser type, device information."
+        }
+      },
+      "howUse": {
+        "title": "3. How We Use Your Information",
+        "content": "We use personal information collected via our website for a variety of business purposes described below. We process your personal information for these purposes in reliance on our legitimate business interests, in order to enter into or perform a contract with you, with your consent, and/or for compliance with our legal obligations.",
+        "list": [
+          "To facilitate account creation and logon process.",
+          "To post testimonials.",
+          "To request feedback.",
+          "To enable user-to-user communications."
+        ]
+      },
+      "contact": {
+        "title": "4. Contact Us",
+        "content": "If you have questions or comments about this policy, you may email us at support@cookbook.com."
+      }
+    }
   }
 }

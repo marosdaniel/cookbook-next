@@ -34,7 +34,11 @@
     "loginError": "Hiba történt a bejelentkezés során",
     "loginDescription": "Jelentkezzen be Cookbook fiókjába, hogy hozzáférjen receptjeihez és kedvenceihez",
     "signupDescription": "Hozzon létre Cookbook fiókot receptek mentéséhez és megosztásához",
-    "resetPasswordDescription": "Adja meg az email címét és küldünk egy linket a jelszó visszaállításához"
+    "resetPasswordDescription": "Adja meg az email címét és küldünk egy linket a jelszó visszaállításához",
+    "cookiePolicyTitle": "Süti Szabályzat",
+    "cookiePolicyDescription": "Tudjon meg többet arról, hogyan használja a Cookbook a sütiket.",
+    "privacyPolicyTitle": "Adatvédelmi Szabályzat",
+    "privacyPolicyDescription": "Tudjon meg többet arról, hogyan védi a Cookbook az Ön adatait."
   },
   "common": {
     "language": "Nyelv",
@@ -161,5 +165,73 @@
     "description": "A keresett oldal nincs a szakácskönyvünkben.",
     "hint": "Lehet, hogy elfogyott, vagy sosem is volt a menüben...",
     "backButton": "Vissza a főoldalra"
+  },
+  "legal": {
+    "cookiePolicy": {
+      "title": "Süti Szabályzat",
+      "lastUpdated": "Utoljára frissítve: ",
+      "whatAreCookies": {
+        "title": "1. Mik azok a sütik?",
+        "content": "A sütik egyszerű szöveges fájlok, amelyeket a weboldal szervere tárol a számítógépén vagy mobileszközén. Minden süti egyedi az Ön böngészőjében. Névtelen információkat tartalmaz, például egy egyedi azonosítót, a weboldal domain nevét, valamint számjegyeket és számokat."
+      },
+      "howWeUse": {
+        "title": "2. Hogyan használjuk a sütiket",
+        "content": "Sütiket használunk a böngészési élmény javítása és a weboldalunk használatának megértése érdekében. Egyes sütik elengedhetetlenek a weboldal megfelelő működéséhez, míg mások segítenek szolgáltatásaink fejlesztésében azáltal, hogy névtelen információkat gyűjtenek a webhely használatáról.",
+        "list": {
+          "necessaryTitle": "Szükséges sütik:",
+          "necessaryContent": "Ezek elengedhetetlenek ahhoz, hogy böngészhesse a weboldalt és használhassa annak funkcióit.",
+          "functionalityTitle": "Funkcionális sütik:",
+          "functionalityContent": "Lehetővé teszik a weboldal számára, hogy megjegyezze az Ön választásait (például felhasználónév, nyelv vagy régió).",
+          "performanceTitle": "Teljesítmény sütik:",
+          "performanceContent": "Információkat gyűjtenek arról, hogyan használja a weboldalt, például mely oldalakat látogatta meg és milyen linkekre kattintott. Ezen információk egyike sem használható fel az Ön azonosítására."
+        }
+      },
+      "detailedUsage": {
+        "title": "3. Részletes süti használat",
+        "content": "Sütiket a következő célokra használhatunk:",
+        "list": [
+          "Hitelesítés és biztonság",
+          "Beállítások és preferenciák",
+          "Elemzés és kutatás",
+          "Hirdetések"
+        ]
+      },
+      "managing": {
+        "title": "4. Sütik kezelése",
+        "content": "Ha korlátozni vagy tiltani szeretné a weboldalunk által beállított sütiket, ezt a böngésző beállításaiban teheti meg. Alternatív megoldásként látogasson el a www.internetcookies.com oldalra, amely átfogó információkat tartalmaz arról, hogyan teheti ezt meg a legkülönbözőbb böngészőkben és eszközökön."
+      }
+    },
+    "privacyPolicy": {
+      "title": "Adatvédelmi Szabályzat",
+      "lastUpdated": "Utoljára frissítve: ",
+      "introduction": {
+        "title": "1. Bevezetés",
+        "content": "Üdvözöli a Cookbook („mi” vagy „minket”). Elkötelezettek vagyunk az Ön személyes adatainak és magánéletének védelme mellett. Ha kérdése vagy aggálya van ezzel az adatvédelmi tájékoztatóval vagy a személyes adataival kapcsolatos gyakorlatunkkal kapcsolatban, kérjük, lépjen kapcsolatba velünk."
+      },
+      "infoCollect": {
+        "title": "2. Az általunk gyűjtött információk",
+        "content": "Személyes adatokat gyűjtünk, amelyeket önkéntesen ad meg nekünk, amikor regisztrál a weboldalon, érdeklődik termékeink és szolgáltatásaink iránt, részt vesz a weboldalon végzett tevékenységekben (például üzenetek közzététele online fórumainkon vagy versenyeken, nyereményjátékokban való részvétel), vagy egyéb módon kapcsolatba lép velünk.",
+        "list": {
+          "personalTitle": "Személyes adatok:",
+          "personalContent": "Név, email cím, jelszavak, elérhetőségi adatok.",
+          "usageTitle": "Használati adatok:",
+          "usageContent": "IP cím, böngésző típusa, eszközinformációk."
+        }
+      },
+      "howUse": {
+        "title": "3. Hogyan használjuk az információit",
+        "content": "A weboldalunkon keresztül gyűjtött személyes adatokat az alábbiakban leírt különféle üzleti célokra használjuk fel. Személyes adatait ezen célokból jogos üzleti érdekeink alapján, Önnel kötött szerződés megkötése vagy teljesítése érdekében, az Ön hozzájárulásával és/vagy jogi kötelezettségeink teljesítése érdekében dolgozzuk fel.",
+        "list": [
+          "Fiók létrehozásának és bejelentkezésének megkönnyítése.",
+          "Visszajelzések közzététele.",
+          "Visszajelzés kérése.",
+          "Felhasználók közötti kommunikáció engedélyezése."
+        ]
+      },
+      "contact": {
+        "title": "4. Kapcsolat",
+        "content": "Ha kérdése vagy észrevétele van ezzel a szabályzattal kapcsolatban, küldjön e-mailt a support@cookbook.com címre."
+      }
+    }
   }
 }
