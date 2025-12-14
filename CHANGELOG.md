@@ -1,3 +1,11 @@
+# [1.29.0](https://github.com/marosdaniel/cookbook-next/compare/v1.28.0...v1.29.0) (2025-12-14)
+
+
+### Features
+
+* Dynamically render and internationalize Privacy and Cookie Policy pages with enhanced SEO. ([0ec1de8](https://github.com/marosdaniel/cookbook-next/commit/0ec1de8baae68e53645d8f51470fc87b4fe7809e))
+* support string arrays in `LocaleMessages` type ([2b72471](https://github.com/marosdaniel/cookbook-next/commit/2b724712678f70bd7c181772a44d88eee74a5cf0))
+
 # [1.28.0](https://github.com/marosdaniel/cookbook-next/compare/v1.27.0...v1.28.0) (2025-12-11)
 
 
