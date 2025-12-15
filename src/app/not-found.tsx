@@ -13,7 +13,7 @@ const NotFound = () => {
   return (
     <Container size="sm" style={{ textAlign: 'center', paddingTop: '4rem' }}>
       <Stack align="center" gap="xl">
-        <GiChefToque size={120} style={{ opacity: 0.3 }} />
+        <GiChefToque size={120} style={{ opacity: 0.5 }} />
 
         <Title order={1} size={80} fw={900}>
           {translate('title')}
@@ -36,7 +36,7 @@ const NotFound = () => {
             size="lg"
             leftSection={<FiHome size={20} />}
             variant="gradient"
-            gradient={{ from: 'orange', to: 'red', deg: 45 }}
+            gradient={{ from: 'pink', to: 'violet', deg: 45 }}
           >
             {translate('backButton')}
           </Button>
