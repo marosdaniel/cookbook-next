@@ -124,7 +124,7 @@ describe('NotFound', () => {
   it('chef hat icon has correct opacity styling', () => {
     renderWithMantine(<NotFound />);
     const chefHatIcon = screen.getByTestId('icon-chef-hat');
-    expect(chefHatIcon).toHaveStyle({ opacity: 0.3 });
+    expect(chefHatIcon).toHaveStyle({ opacity: 0.5 });
   });
 
   it('chef hat icon has correct size', () => {
