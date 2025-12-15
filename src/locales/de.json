@@ -34,7 +34,11 @@
     "loginError": "Bei der Anmeldung ist ein Fehler aufgetreten",
     "loginDescription": "Melden Sie sich bei Ihrem Cookbook-Konto an, um auf Ihre Rezepte und Favoriten zuzugreifen",
     "signupDescription": "Erstellen Sie ein Cookbook-Konto, um Rezepte zu speichern und zu teilen",
-    "resetPasswordDescription": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts"
+    "resetPasswordDescription": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts",
+    "cookiePolicyTitle": "Cookie-Richtlinie",
+    "cookiePolicyDescription": "Erfahren Sie mehr darüber, wie Cookbook Cookies verwendet.",
+    "privacyPolicyTitle": "Datenschutzrichtlinie",
+    "privacyPolicyDescription": "Erfahren Sie mehr darüber, wie Cookbook Ihre Privatsphäre schützt."
   },
   "common": {
     "language": "Sprache",
@@ -159,5 +163,73 @@
     "description": "Die Seite, die Sie suchen, ist nicht in unserem Kochbuch.",
     "hint": "Vielleicht wurde es gegessen, oder es war nie auf der Speisekarte...",
     "backButton": "Zurück zur Startseite"
+  },
+  "legal": {
+    "cookiePolicy": {
+      "title": "Cookie-Richtlinie",
+      "lastUpdated": "Zuletzt aktualisiert: ",
+      "whatAreCookies": {
+        "title": "1. Was sind Cookies?",
+        "content": "Cookies sind einfache Textdateien, die vom Server einer Website auf Ihrem Computer oder Mobilgerät gespeichert werden. Jedes Cookie ist einzigartig für Ihren Webbrowser. Es enthält einige anonyme Informationen wie eine eindeutige Kennung, den Domainnamen der Website sowie einige Ziffern und Zahlen."
+      },
+      "howWeUse": {
+        "title": "2. Wie wir Cookies verwenden",
+        "content": "Wir verwenden Cookies, um Ihr Browsing-Erlebnis zu verbessern und um zu verstehen, wie unsere Website genutzt wird. Einige Cookies sind für das ordnungsgemäße Funktionieren der Website unerlässlich, während andere uns helfen, unsere Dienste zu verbessern, indem sie anonyme Informationen darüber sammeln, wie Sie unsere Website nutzen.",
+        "list": {
+          "necessaryTitle": "Notwendige Cookies:",
+          "necessaryContent": "Diese sind unerlässlich, damit Sie die Website durchsuchen und ihre Funktionen nutzen können.",
+          "functionalityTitle": "Funktionale Cookies:",
+          "functionalityContent": "Ermöglichen es der Website, sich an Ihre Entscheidungen zu erinnern (z. B. Ihren Benutzernamen, Ihre Sprache oder die Region, in der Sie sich befinden).",
+          "performanceTitle": "Leistungs-Cookies:",
+          "performanceContent": "Sammeln Informationen darüber, wie Sie eine Website nutzen, z. B. welche Seiten Sie besucht und auf welche Links Sie geklickt haben. Keine dieser Informationen kann verwendet werden, um Sie zu identifizieren."
+        }
+      },
+      "detailedUsage": {
+        "title": "3. Detaillierte Cookie-Nutzung",
+        "content": "Wir können Cookies für folgende Zwecke verwenden:",
+        "list": [
+          "Authentifizierung und Sicherheit",
+          "Präferenzen und Einstellungen",
+          "Analysen und Forschung",
+          "Werbung"
+        ]
+      },
+      "managing": {
+        "title": "4. Cookies verwalten",
+        "content": "Wenn Sie die von unserer Website gesetzten Cookies einschränken oder blockieren möchten, können Sie dies über Ihre Browsereinstellungen tun. Alternativ können Sie www.internetcookies.com besuchen, das umfassende Informationen darüber enthält, wie Sie dies bei einer Vielzahl von Browsern und Geräten tun können."
+      }
+    },
+    "privacyPolicy": {
+      "title": "Datenschutzrichtlinie",
+      "lastUpdated": "Zuletzt aktualisiert: ",
+      "introduction": {
+        "title": "1. Einführung",
+        "content": "Willkommen bei Cookbook (\"wir\", \"unser\" oder \"uns\"). Wir sind dem Schutz Ihrer persönlichen Daten und Ihrer Privatsphäre verpflichtet. Wenn Sie Fragen oder Bedenken zu dieser Datenschutzerklärung oder unseren Praktiken in Bezug auf Ihre persönlichen Daten haben, kontaktieren Sie uns bitte."
+      },
+      "infoCollect": {
+        "title": "2. Informationen, die wir sammeln",
+        "content": "Wir sammeln persönliche Informationen, die Sie uns freiwillig zur Verfügung stellen, wenn Sie sich auf der Website registrieren, Interesse an Informationen über uns oder unsere Produkte und Dienstleistungen bekunden, wenn Sie an Aktivitäten auf der Website teilnehmen (z. B. durch das Posten von Nachrichten in unseren Online-Foren oder die Teilnahme an Wettbewerben oder Gewinnspielen) oder wenn Sie uns auf andere Weise kontaktieren.",
+        "list": {
+          "personalTitle": "Persönliche Daten:",
+          "personalContent": "Name, E-Mail-Adresse, Passwörter, Kontaktdaten.",
+          "usageTitle": "Nutzungsdaten:",
+          "usageContent": "IP-Adresse, Browsertyp, Geräteinformationen."
+        }
+      },
+      "howUse": {
+        "title": "3. Wie wir Ihre Informationen verwenden",
+        "content": "Wir verwenden über unsere Website gesammelte persönliche Informationen für eine Vielzahl von unten beschriebenen Geschäftszwecken. Wir verarbeiten Ihre persönlichen Informationen für diese Zwecke auf der Grundlage unserer berechtigten Geschäftsinteressen, um einen Vertrag mit Ihnen abzuschließen oder zu erfüllen, mit Ihrer Zustimmung und/oder zur Erfüllung unserer gesetzlichen Verpflichtungen.",
+        "list": [
+          "Um die Kontoerstellung und den Anmeldevorgang zu erleichtern.",
+          "Um Testimonials zu veröffentlichen.",
+          "Um Feedback anzufordern.",
+          "Um die Kommunikation zwischen Benutzern zu ermöglichen."
+        ]
+      },
+      "contact": {
+        "title": "4. Kontaktieren Sie uns",
+        "content": "Wenn Sie Fragen oder Kommentare zu dieser Richtlinie haben, können Sie uns unter support@cookbook.com eine E-Mail senden."
+      }
+    }
   }
 }

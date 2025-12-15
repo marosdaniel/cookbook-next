@@ -1,6 +1,6 @@
 'use client';
 
-import { Group, Text, useMantineColorScheme } from '@mantine/core';
+import { Group, Text, useComputedColorScheme } from '@mantine/core';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -22,11 +22,15 @@ export const Logo = ({
   hideTextOnMobile = false,
   href,
 }: LogoProps) => {
-  const { colorScheme } = useMantineColorScheme();
+  // Use computed color scheme for SSR-safe theme detection
+  const computedColorScheme = useComputedColorScheme('light', {
+    getInitialValueInEffect: true,
+  });
   const pathname = usePathname();
 
   // Determine logo source based on theme
-  const logoSrc = colorScheme === 'dark' ? LOGO_SRC_DARK : LOGO_SRC_LIGHT;
+  const logoSrc =
+    computedColorScheme === 'dark' ? LOGO_SRC_DARK : LOGO_SRC_LIGHT;
 
   // Default sizes based on variant
   const defaultSize = variant === 'icon' ? 40 : 120;
