@@ -6,13 +6,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { LOGO_SRC_DARK, LOGO_SRC_LIGHT } from './consts';
 import { Logo, LogoIcon } from './Logo';
 
-// Mock useMantineColorScheme
-const mockColorScheme = vi.fn();
+// Mock useComputedColorScheme
+const mockComputedColorScheme = vi.fn();
 vi.mock('@mantine/core', async () => {
   const actual = await vi.importActual('@mantine/core');
   return {
     ...actual,
-    useMantineColorScheme: () => ({ colorScheme: mockColorScheme() }),
+    useComputedColorScheme: () => mockComputedColorScheme(),
   };
 });
 
@@ -42,7 +42,7 @@ vi.mock('next/image', () => ({
 describe('Logo', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockColorScheme.mockReturnValue('light');
+    mockComputedColorScheme.mockReturnValue('light');
   });
 
   describe('Logo Component', () => {
@@ -57,7 +57,7 @@ describe('Logo', () => {
     });
 
     it('uses light logo in light mode', () => {
-      mockColorScheme.mockReturnValue('light');
+      mockComputedColorScheme.mockReturnValue('light');
       render(
         <MantineProvider>
           <Logo />
@@ -68,7 +68,7 @@ describe('Logo', () => {
     });
 
     it('uses dark logo in dark mode', () => {
-      mockColorScheme.mockReturnValue('dark');
+      mockComputedColorScheme.mockReturnValue('dark');
       render(
         <MantineProvider>
           <Logo />
@@ -156,7 +156,7 @@ describe('Logo', () => {
     });
 
     it('uses light logo in light mode', () => {
-      mockColorScheme.mockReturnValue('light');
+      mockComputedColorScheme.mockReturnValue('light');
       render(
         <MantineProvider>
           <LogoIcon />
@@ -167,7 +167,7 @@ describe('Logo', () => {
     });
 
     it('uses dark logo in dark mode', () => {
-      mockColorScheme.mockReturnValue('dark');
+      mockComputedColorScheme.mockReturnValue('dark');
       render(
         <MantineProvider>
           <LogoIcon />
