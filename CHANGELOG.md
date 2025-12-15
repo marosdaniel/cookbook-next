@@ -1,3 +1,10 @@
+## [1.30.1](https://github.com/marosdaniel/cookbook-next/compare/v1.30.0...v1.30.1) (2025-12-15)
+
+
+### Bug Fixes
+
+* adjust expected chef hat icon opacity in not-found test. ([9e6dcd3](https://github.com/marosdaniel/cookbook-next/commit/9e6dcd38a2b19a6e38e800702bc883efa9a87046))
+
 # [1.30.0](https://github.com/marosdaniel/cookbook-next/compare/v1.29.0...v1.30.0) (2025-12-15)
 
 
