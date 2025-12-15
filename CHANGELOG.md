@@ -1,3 +1,10 @@
+# [1.30.0](https://github.com/marosdaniel/cookbook-next/compare/v1.29.0...v1.30.0) (2025-12-15)
+
+
+### Features
+
+* Enhance theme management for SSR, add German legal content translations, and update dependencies. ([3bb7fe4](https://github.com/marosdaniel/cookbook-next/commit/3bb7fe42f16e61fdef24c8d05e7290bba0282428))
+
 # [1.29.0](https://github.com/marosdaniel/cookbook-next/compare/v1.28.0...v1.29.0) (2025-12-14)
 
 
