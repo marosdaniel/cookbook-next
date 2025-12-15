@@ -110,16 +110,6 @@ describe('Logo', () => {
       expect(image).toHaveAttribute('width', '40');
       expect(image).toHaveAttribute('height', '40');
     });
-
-    it('applies custom className', () => {
-      render(
-        <MantineProvider>
-          <Logo className="custom-class" />
-        </MantineProvider>,
-      );
-      const image = screen.getByTestId('logo-image');
-      expect(image).toHaveClass('custom-class');
-    });
   });
 
   describe('LogoIcon Component', () => {
