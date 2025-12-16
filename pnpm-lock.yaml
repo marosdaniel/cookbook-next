@@ -96,11 +96,11 @@ importers:
         specifier: ^9.2.0
         version: 9.2.0(@types/react@19.2.7)(react@19.2.3)(redux@5.0.1)
       zod:
-        specifier: ^4.2.0
-        version: 4.2.0
+        specifier: ^4.2.1
+        version: 4.2.1
       zod-formik-adapter:
         specifier: ^2.0.0
-        version: 2.0.0(formik@2.4.9(@types/react@19.2.7)(react@19.2.3))(zod@4.2.0)
+        version: 2.0.0(formik@2.4.9(@types/react@19.2.7)(react@19.2.3))(zod@4.2.1)
     devDependencies:
       '@biomejs/biome':
         specifier: 2.3.9
@@ -4295,8 +4295,8 @@ packages:
       formik: ^2.2.9
       zod: 4.x
 
-  zod@4.2.0:
-    resolution: {integrity: sha512-Bd5fw9wlIhtqCCxotZgdTOMwGm1a0u75wARVEY9HMs1X17trvA/lMi4+MGK5EUfYkXVTbX8UDiDKW4OgzHVUZw==}
+  zod@4.2.1:
+    resolution: {integrity: sha512-0wZ1IRqGGhMP76gLqz8EyfBXKk0J2qo2+H3fi4mcUP/KtTocoX08nmIAHl1Z2kJIZbZee8KOpBCSNPRgauucjw==}
 
 snapshots:
 
@@ -8590,9 +8590,9 @@ snapshots:
 
   yoctocolors@2.1.2: {}
 
-  zod-formik-adapter@2.0.0(formik@2.4.9(@types/react@19.2.7)(react@19.2.3))(zod@4.2.0):
+  zod-formik-adapter@2.0.0(formik@2.4.9(@types/react@19.2.7)(react@19.2.3))(zod@4.2.1):
     dependencies:
       formik: 2.4.9(@types/react@19.2.7)(react@19.2.3)
-      zod: 4.2.0
+      zod: 4.2.1
 
-  zod@4.2.0: {}
+  zod@4.2.1: {}
