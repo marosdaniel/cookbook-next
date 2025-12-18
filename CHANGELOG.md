@@ -1,3 +1,10 @@
+# [1.31.0](https://github.com/marosdaniel/cookbook-next/compare/v1.30.1...v1.31.0) (2025-12-18)
+
+
+### Features
+
+* Implement UserButton and NavbarLinksGroup components, add new navigation routes, and update localization keys. ([9f89db2](https://github.com/marosdaniel/cookbook-next/commit/9f89db292c45eebed4e2290c49923b9faa1d3bd2))
+
 ## [1.30.1](https://github.com/marosdaniel/cookbook-next/compare/v1.30.0...v1.30.1) (2025-12-15)
 
 
