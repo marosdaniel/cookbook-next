@@ -3,7 +3,7 @@
 import { Avatar, Group, Text } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 
-export function UserButtonContent() {
+const UserButton = () => {
   const { data: session } = useSession();
 
   if (!session) return null;
@@ -33,4 +33,6 @@ export function UserButtonContent() {
       </div>
     </Group>
   );
-}
+};
+
+export default UserButton;

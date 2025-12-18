@@ -14,7 +14,7 @@ import {
   PROTECTED_ROUTES,
   PUBLIC_ROUTES,
 } from '@/types/routes';
-import { UserButtonContent } from '../UserButton/UserButton';
+import UserButton from '../UserButton';
 import classes from './Navbar.module.css';
 import NavbarLinksGroup from './NavbarLinksGroup/NavbarLinksGroup';
 
@@ -38,7 +38,7 @@ const Navbar: FC = () => {
     ...(session
       ? [
           {
-            label: <UserButtonContent />,
+            label: <UserButton />,
             initiallyOpened: true,
             links: [
               {
