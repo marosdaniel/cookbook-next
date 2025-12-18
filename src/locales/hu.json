@@ -89,7 +89,10 @@
     "newRecipe": "Új recept",
     "logout": "Kijelentkezés",
     "myProfile": "Saját profil",
-    "favorites": "Kedvencek"
+    "favorites": "Kedvencek",
+    "friends": "Barátok",
+    "allRecipes": "Összes recept",
+    "latestRecipes": "Legfrissebb receptek"
   },
   "recipe": {
     "notRatedYet": "Még nincs értékelve"

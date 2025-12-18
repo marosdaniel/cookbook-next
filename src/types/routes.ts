@@ -7,6 +7,7 @@ export const PUBLIC_ROUTES = {
   HOME: '/',
   ABOUT: '/about',
   RECIPES: '/recipes',
+  RECIPES_LATEST: '/recipes/latest',
   PRIVACY_POLICY: '/privacy-policy',
   COOKIE_POLICY: '/cookie-policy',
   TERMS_OF_SERVICE: '/terms-of-service',
@@ -25,6 +26,8 @@ export const PROTECTED_ROUTES = {
   PROFILE: '/profile',
   RECIPES_CREATE: '/recipes/create',
   RECIPES_MY: '/recipes/my-recipes',
+  RECIPES_FAVORITES: '/recipes/favorites',
+  FRIENDS: '/friends',
   SETTINGS: '/settings',
 } as const;
 

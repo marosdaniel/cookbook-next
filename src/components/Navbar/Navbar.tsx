@@ -1,31 +1,31 @@
 'use client';
 
-import {
-  Avatar,
-  Box,
-  Button,
-  Divider,
-  Group,
-  Loader,
-  Stack,
-  Text,
-} from '@mantine/core';
+import { Box, Button, Loader, ScrollArea, Stack } from '@mantine/core';
+import type { Route } from 'next';
 import { usePathname } from 'next/navigation';
 import type { Session } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { type FC, useTransition } from 'react';
-import { FiLogOut } from 'react-icons/fi';
-import { AUTH_ROUTES, isProtectedRoute } from '@/types/routes';
+import { FiBook, FiLogOut, FiPlusCircle } from 'react-icons/fi';
+import {
+  AUTH_ROUTES,
+  isProtectedRoute,
+  PROTECTED_ROUTES,
+  PUBLIC_ROUTES,
+} from '@/types/routes';
+import { UserButtonContent } from '../UserButton/UserButton';
+import classes from './Navbar.module.css';
+import NavbarLinksGroup from './NavbarLinksGroup/NavbarLinksGroup';
 
 const Navbar: FC = () => {
   const translate = useTranslations('sidebar');
+  const authTranslate = useTranslations('auth');
   const { data: session } = useSession() as { data: Session | null };
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
 
   const handleLogout = async () => {
-    // Only redirect to login if user is on a protected route
     const shouldRedirect = isProtectedRoute(pathname);
     startTransition(() => {
       signOut({
@@ -34,94 +34,109 @@ const Navbar: FC = () => {
     });
   };
 
-  const userName = session?.user?.userName || session?.user?.email || '';
-  const userInitials = userName
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
+  const navData = [
+    ...(session
+      ? [
+          {
+            label: <UserButtonContent />,
+            initiallyOpened: true,
+            links: [
+              {
+                label: translate('profile'),
+                link: PROTECTED_ROUTES.PROFILE as unknown as Route,
+              },
+              {
+                label: translate('myRecipes'),
+                link: PROTECTED_ROUTES.RECIPES_MY as unknown as Route,
+              },
+              {
+                label: translate('favorites'),
+                link: PROTECTED_ROUTES.RECIPES_FAVORITES as unknown as Route,
+              },
+              {
+                label: translate('friends'),
+                link: PROTECTED_ROUTES.FRIENDS as unknown as Route,
+              },
+            ],
+          },
+        ]
+      : []),
+    {
+      label: translate('recipes'),
+      icon: FiBook,
+      initiallyOpened: true,
+      links: [
+        {
+          label: translate('allRecipes'),
+          link: PUBLIC_ROUTES.RECIPES as unknown as Route,
+        },
+        {
+          label: translate('latestRecipes'),
+          link: PUBLIC_ROUTES.RECIPES_LATEST as unknown as Route,
+        },
+      ],
+    },
+    ...(session
+      ? [
+          {
+            label: translate('newRecipe'),
+            icon: FiPlusCircle,
+            link: PROTECTED_ROUTES.RECIPES_CREATE as unknown as Route,
+          },
+        ]
+      : []),
+  ];
+
+  const links = navData.map((item, index) => (
+    <NavbarLinksGroup
+      {...item}
+      key={typeof item.label === 'string' ? item.label : `nav-item-${index}`}
+    />
+  ));
 
   return (
-    <Stack h="100%" gap={0}>
-      {/* User info section - only for authenticated users */}
-      {session && (
-        <>
+    <div className={classes.navbar}>
+      <ScrollArea className={classes.links}>
+        <div className={classes.linksInner}>{links}</div>
+      </ScrollArea>
+
+      <div className={classes.footer}>
+        {session ? (
+          <Stack gap="xs" p="md">
+            <Button
+              variant="subtle"
+              color="red"
+              fullWidth
+              leftSection={
+                isPending ? <Loader size="xs" /> : <FiLogOut size={20} />
+              }
+              onClick={handleLogout}
+              disabled={isPending}
+              styles={{
+                root: {
+                  justifyContent: 'flex-start',
+                  fontWeight: 500,
+                },
+              }}
+            >
+              {translate('logout')}
+            </Button>
+          </Stack>
+        ) : (
           <Box p="md">
-            <Group gap="sm">
-              <Avatar color="pink" radius="xl" size="md">
-                {userInitials}
-              </Avatar>
-              <Box style={{ flex: 1, minWidth: 0 }}>
-                <Text size="sm" fw={600} truncate>
-                  {userName}
-                </Text>
-                <Text size="xs" c="dimmed" truncate>
-                  {session.user?.email}
-                </Text>
-              </Box>
-            </Group>
+            <Button
+              component="a"
+              href={AUTH_ROUTES.LOGIN}
+              variant="gradient"
+              gradient={{ from: 'pink', to: 'violet', deg: 45 }}
+              fullWidth
+            >
+              {authTranslate('login')}
+            </Button>
           </Box>
-          <Divider />
-        </>
-      )}
-
-      {/* Public navigation section - visible to everyone */}
-      <Box p="md" style={{ flex: 1 }}>
-        {/* Public navigation items */}
-        <Stack gap="xs">
-          <Text size="sm" c="dimmed">
-            Public navigation items (e.g., Recipes) will go here
-          </Text>
-        </Stack>
-
-        {/* Authenticated-only navigation items */}
-        {session && (
-          <>
-            <Divider my="md" />
-            <Stack gap="xs">
-              <Text size="sm" c="dimmed">
-                Authenticated navigation items (e.g., My Recipes, Profile) will
-                go here
-              </Text>
-            </Stack>
-          </>
         )}
-      </Box>
-
-      {/* Logout section - only for authenticated users */}
-      {session && (
-        <Box>
-          <Divider />
-          <Box p="md">
-            {isPending ? (
-              <Group justify="center">
-                <Loader size="md" type="dots" />
-              </Group>
-            ) : (
-              <Button
-                variant="subtle"
-                color="red"
-                fullWidth
-                leftSection={<FiLogOut size={20} />}
-                onClick={handleLogout}
-                styles={(theme) => ({
-                  root: {
-                    justifyContent: 'flex-start',
-                    fontWeight: 500,
-                    '&:hover': {
-                      backgroundColor: theme.colors.red[0],
-                    },
-                  },
-                })}
-              >
-                {translate('logout')}
-              </Button>
-            )}
-          </Box>
-        </Box>
-      )}
-    </Stack>
+      </div>
+    </div>
   );
 };
 

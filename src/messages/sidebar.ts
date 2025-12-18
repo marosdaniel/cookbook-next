@@ -10,4 +10,7 @@ export const sidebarMessages = {
   logout: 'Logout',
   myProfile: 'My Profile',
   favorites: 'Favorites',
+  friends: 'Friends',
+  allRecipes: 'All Recipes',
+  latestRecipes: 'Latest Recipes',
 };

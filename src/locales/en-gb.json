@@ -89,7 +89,10 @@
     "newRecipe": "New Recipe",
     "logout": "Logout",
     "myProfile": "My Profile",
-    "favorites": "Favourites"
+    "favorites": "Favourites",
+    "friends": "Friends",
+    "allRecipes": "All Recipes",
+    "latestRecipes": "Latest Recipes"
   },
   "recipe": {
     "notRatedYet": "Not rated yet"

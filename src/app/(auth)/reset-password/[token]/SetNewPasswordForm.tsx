@@ -31,7 +31,7 @@ export const SetNewPasswordForm: FC = () => {
   const translate = useTranslations();
   const router = useRouter();
   const params = useParams();
-  const token = params?.token as string;
+  const token = params?.token;
 
   const [setNewPassword, { loading }] =
     useMutation<SetNewPasswordResponse>(SET_NEW_PASSWORD);
@@ -41,7 +41,7 @@ export const SetNewPasswordForm: FC = () => {
     if (!token) {
       showErrorNotification(
         translate('response.error'),
-        translate('response.invalidResetToken') as string,
+        translate('response.invalidResetToken'),
       );
       return;
     }
@@ -66,7 +66,7 @@ export const SetNewPasswordForm: FC = () => {
     } catch (error: unknown) {
       showErrorNotification(
         translate('response.passwordResetFailed'),
-        translate('response.somethingWentWrong') as string,
+        translate('response.somethingWentWrong'),
         error,
       );
     }
@@ -125,13 +125,13 @@ export const SetNewPasswordForm: FC = () => {
           id="newPassword"
           name="newPassword"
           label={translate('auth.newPassword')}
-          placeholder={translate('auth.enterNewPassword') as string}
+          placeholder={translate('auth.enterNewPassword')}
           required
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           value={formik.values.newPassword}
           error={formik.touched.newPassword && formik.errors.newPassword}
-          description={translate('response.passwordRequirements') as string}
+          description={translate('response.passwordRequirements')}
           mb="md"
         />
 
@@ -139,7 +139,7 @@ export const SetNewPasswordForm: FC = () => {
           id="confirmPassword"
           name="confirmPassword"
           label={translate('auth.confirmPassword')}
-          placeholder={translate('auth.confirmNewPassword') as string}
+          placeholder={translate('auth.confirmNewPassword')}
           required
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
