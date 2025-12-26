@@ -1,3 +1,11 @@
+# [1.32.0](https://github.com/marosdaniel/cookbook-next/compare/v1.31.0...v1.32.0) (2025-12-26)
+
+
+### Features
+
+* Implement user profile page with personal data and password management, protected by new authentication middleware and configuration. ([7a35d66](https://github.com/marosdaniel/cookbook-next/commit/7a35d66ed98909c36ebe5e3de50cd0d9c7a89d37))
+* Refactor user GraphQL mutations and queries to use Prisma, update user types, and adjust password change UI. ([49758dd](https://github.com/marosdaniel/cookbook-next/commit/49758dd8ea48dfc372da837ebd43ff48e6262e03))
+
 # [1.31.0](https://github.com/marosdaniel/cookbook-next/compare/v1.30.1...v1.31.0) (2025-12-18)
 
 
