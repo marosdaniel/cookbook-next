@@ -131,12 +131,11 @@ const Password = () => {
               onBlur={formik.handleBlur}
               value={formik.values.currentPassword}
               error={
-                formik.touched.currentPassword &&
-                (formik.errors.currentPassword as string)
+                formik.touched.currentPassword && formik.errors.currentPassword
               }
               description={
                 formik.touched.currentPassword && formik.errors.currentPassword
-                  ? (formik.errors.currentPassword as string)
+                  ? formik.errors.currentPassword
                   : ''
               }
             />
@@ -150,13 +149,10 @@ const Password = () => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.newPassword}
-              error={
-                formik.touched.newPassword &&
-                (formik.errors.newPassword as string)
-              }
+              error={formik.touched.newPassword && formik.errors.newPassword}
               description={
                 formik.touched.newPassword && formik.errors.newPassword
-                  ? (formik.errors.newPassword as string)
+                  ? formik.errors.newPassword
                   : ''
               }
             />
@@ -172,12 +168,12 @@ const Password = () => {
               value={formik.values.confirmNewPassword}
               error={
                 formik.touched.confirmNewPassword &&
-                (formik.errors.confirmNewPassword as string)
+                formik.errors.confirmNewPassword
               }
               description={
                 formik.touched.confirmNewPassword &&
                 formik.errors.confirmNewPassword
-                  ? (formik.errors.confirmNewPassword as string)
+                  ? formik.errors.confirmNewPassword
                   : ''
               }
             />
