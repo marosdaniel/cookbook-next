@@ -95,14 +95,15 @@ describe('NotFound', () => {
 
   it('renders a link to the homepage', () => {
     renderWithMantine(<NotFound />);
-    const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', '/');
+    const linkButtons = screen.getAllByText('Vissza a főoldalra');
+    expect(linkButtons[0].closest('a')).toHaveAttribute('href', '/');
   });
 
-  it('renders the button with correct text', () => {
+  it('renders the link button with correct text', () => {
     renderWithMantine(<NotFound />);
-    const button = screen.getByRole('button', { name: /Vissza a főoldalra/i });
-    expect(button).toBeInTheDocument();
+    const linkButtons = screen.getAllByText('Vissza a főoldalra');
+    expect(linkButtons.length).toBeGreaterThan(0);
+    expect(linkButtons[0]).toBeInTheDocument();
   });
 
   it('renders all main sections', () => {
@@ -112,7 +113,8 @@ describe('NotFound', () => {
     expect(screen.getByText('404')).toBeInTheDocument();
     expect(screen.getByTestId('icon-chef-hat')).toBeInTheDocument();
     expect(screen.getByText(/Úgy néz ki/i)).toBeInTheDocument();
-    expect(screen.getByRole('button')).toBeInTheDocument();
+    const linkButtons = screen.getAllByText('Vissza a főoldalra');
+    expect(linkButtons.length).toBeGreaterThan(0);
   });
 
   it('applies correct container size', () => {
