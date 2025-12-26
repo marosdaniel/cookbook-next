@@ -1,3 +1,10 @@
+# [1.33.0](https://github.com/marosdaniel/cookbook-next/compare/v1.32.0...v1.33.0) (2025-12-26)
+
+
+### Features
+
+* Implement user-specific recipe and following pages, introduce new `StyledText`, `NavButton`, and `UnderConstruction` components, and refactor `AuthButton`. ([d3daf32](https://github.com/marosdaniel/cookbook-next/commit/d3daf32b19cfbef51472b57f5a84a45ff939f4f8))
+
 # [1.32.0](https://github.com/marosdaniel/cookbook-next/compare/v1.31.0...v1.32.0) (2025-12-26)
 
 
