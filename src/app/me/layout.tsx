@@ -1,7 +1,7 @@
 import { Container } from '@mantine/core';
-import type { ReactNode } from 'react';
+import type { PropsWithChildren } from 'react';
 
-export default function MeLayout({ children }: { children: ReactNode }) {
+const MeLayout = ({ children }: Readonly<PropsWithChildren>) => {
   return (
     <Container size="lg" py="xl">
       {/* 
@@ -12,4 +12,6 @@ export default function MeLayout({ children }: { children: ReactNode }) {
       {children}
     </Container>
   );
-}
+};
+
+export default MeLayout;
