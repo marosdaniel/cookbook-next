@@ -1,26 +1,24 @@
-// import { Recipe, User } from '../../../../graphql/models';
-// import { ErrorTypes, throwCustomError } from '../../../../helpers/error-handler.helper';
+import type { GraphQLContext } from '../../../../../types/graphql/context';
 
-// // TODO: TO BE VERIFIED
-// export const cleanUserRecipes = async (userId: string) => {
-//   const user = await User.findById(userId);
+export const cleanUserRecipes = async (
+  _: unknown,
+  { userId }: { userId: string },
+  context: GraphQLContext,
+) => {
+  const { prisma } = context;
 
-//   if (!user) {
-//     throwCustomError('User not found', ErrorTypes.USER_NOT_FOUND);
-//   }
+  // This logic seems redundant with Prisma relations, but keeping it for compatibility
+  // In a relational DB with foreign keys, this kind of cleanup is strictly enforced or cascaded
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { recipes: true },
+  });
 
-//   const validRecipes = [];
-//   for (const recipeId of user.recipes) {
-//     const recipeExists = await Recipe.exists({ _id: recipeId });
-//     if (recipeExists) {
-//       validRecipes.push(recipeId);
-//     }
-//   }
+  if (!user) {
+    throw new Error('User not found');
+  }
 
-//   if (validRecipes.length !== user.recipes.length) {
-//     user.recipes = validRecipes;
-//     await user.save();
-//   }
-
-//   return true;
-// };
+  // Prisma ensures integrity, so logic is essentially checking existence
+  // For the sake of this migration, we'll return true as "cleaned/verified"
+  return true;
+};

@@ -55,7 +55,7 @@ export type UserLoginInput = {
   password: string;
 };
 
-export type UserEditInput = {
+export type UserUpdateInput = {
   firstName?: string;
   lastName?: string;
   locale?: Locale;
@@ -76,13 +76,11 @@ export type LoginUserArgs = {
   userLoginInput: UserLoginInput;
 };
 
-export type EditUserArgs = {
-  id: string;
-  userEditInput: UserEditInput;
+export type UpdateUserArgs = {
+  userUpdateInput: UserUpdateInput;
 };
 
 export type ChangePasswordArgs = {
-  id: string;
   passwordEditInput: PasswordEditInput;
 };
 

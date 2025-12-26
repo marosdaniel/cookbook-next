@@ -46,3 +46,17 @@ export const CHANGE_PASSWORD = gql`
     }
   }
 `;
+
+export const UPDATE_USER = gql`
+  mutation updateUser($userUpdateInput: UserUpdateInput!) {
+    updateUser(userUpdateInput: $userUpdateInput) {
+      success
+      message
+      user {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+`;

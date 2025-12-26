@@ -6,6 +6,7 @@ export const USER_FAVORITE_MESSAGE_KEYS = {
   USER_NOT_FOUND: 'response.userFavoriteUserNotFound',
   RECIPE_NOT_FOUND: 'response.userFavoriteRecipeNotFound',
   ALREADY_FAVORITE: 'response.userFavoriteAlreadyFavorite',
+  NOT_IN_FAVORITES: 'response.userFavoriteNotInFavorites',
   SUCCESS: 'response.userFavoriteSuccess',
 } as const;
 

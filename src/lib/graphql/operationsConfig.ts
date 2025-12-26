@@ -54,7 +54,7 @@ export const operationsConfig: OperationsConfig = {
     'deleteRecipe',
 
     // User mutations
-    'editUser',
+    'updateUser',
     'deleteUser',
     'changePassword',
 

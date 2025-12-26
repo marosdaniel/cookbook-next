@@ -56,7 +56,7 @@ input UserRegisterInput {
   locale: String
 }
 
-input UserEditInput {
+input UserUpdateInput {
   firstName: String
   lastName: String
   locale: String
@@ -79,6 +79,12 @@ type AuthPayload {
   userId: ID!
 }
 
+type UserUpdateResponse {
+  success: Boolean!
+  message: String!
+  user: User
+}
+
 type Query {
   getUserById(id: ID!): User!
   getUserByUserName(userName: String!): User!
@@ -89,9 +95,9 @@ type Query {
 type Mutation {
   loginUser(userLoginInput: UserLoginInput!): AuthPayload!
   createUser(userRegisterInput: UserRegisterInput): UserOperationResponse!
-  editUser(id: ID!, userEditInput: UserEditInput!): User!
+  updateUser(userUpdateInput: UserUpdateInput!): UserUpdateResponse!
 
-  changePassword(id: ID!, passwordEditInput: PasswordEditInput!): Boolean!
+  changePassword(passwordEditInput: PasswordEditInput!): Boolean!
   resetPassword(email: String!): BaseResponse!
   setNewPassword(token: String!, newPassword: String!): BaseResponse!
 

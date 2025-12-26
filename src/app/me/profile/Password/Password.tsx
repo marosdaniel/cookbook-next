@@ -14,6 +14,7 @@ import { notifications } from '@mantine/notifications';
 import { useFormik } from 'formik';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import type { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 
 import { CHANGE_PASSWORD } from '@/lib/graphql/mutations';
@@ -23,34 +24,48 @@ const Password = () => {
   const translate = useTranslations();
   const [isEditMode, setIsEditMode] = useState(false);
 
-  const [changePassword, { loading }] = useMutation(CHANGE_PASSWORD, {
-    onCompleted: (data) => {
-      if (data?.changePassword?.success) {
-        notifications.show({
-          title: translate('response.success'),
-          message: translate('auth.passwordChangedSuccess'), // Ensure this key exists or use a generic one
-          color: 'teal',
-        });
-        handleCancelPasswordEdit();
-      } else {
+  // Define types for the mutation response
+  interface ChangePasswordData {
+    changePassword: {
+      success: boolean;
+      message: string;
+    };
+  }
+
+  const [changePassword, { loading }] = useMutation<ChangePasswordData>(
+    CHANGE_PASSWORD,
+    {
+      onCompleted: (data) => {
+        if (data?.changePassword?.success) {
+          notifications.show({
+            title: translate('response.success'),
+            message: translate('auth.passwordChangedSuccess'), // Ensure this key exists or use a generic one
+            color: 'teal',
+          });
+          handleCancelPasswordEdit();
+        } else {
+          notifications.show({
+            title: translate('response.error'),
+            message:
+              data?.changePassword?.message ||
+              translate('response.unknownError'),
+            color: 'red',
+          });
+        }
+      },
+      onError: (error) => {
         notifications.show({
           title: translate('response.error'),
-          message:
-            data?.changePassword?.message || translate('response.unknownError'),
+          message: error.message || translate('response.unknownError'),
           color: 'red',
         });
-      }
+      },
     },
-    onError: (error) => {
-      notifications.show({
-        title: translate('response.error'),
-        message: error.message || translate('response.unknownError'),
-        color: 'red',
-      });
-    },
-  });
+  );
 
-  const onSubmit = async (values: typeof formik.values) => {
+  const onSubmit = async (
+    values: z.infer<typeof passwordEditValidationSchema>,
+  ) => {
     try {
       await changePassword({
         variables: {
@@ -96,22 +111,13 @@ const Password = () => {
     >
       <Group mb="lg" justify="space-between" align="baseline">
         <Title order={5}>{translate('user.changePasswordTitle')}</Title>
-        {!isEditMode ? (
+        {!isEditMode && (
           <Button variant="subtle" onClick={() => setIsEditMode(true)}>
             {translate('general.edit')}
           </Button>
-        ) : null}
+        )}
       </Group>
-      {!isEditMode ? (
-        <Box>
-          <Box mb="lg">
-            <Text size="sm" c="dimmed">
-              {translate('user.password')}
-            </Text>
-            <Text size="md">***************</Text>
-          </Box>
-        </Box>
-      ) : (
+      {isEditMode ? (
         <Box>
           <Box mt="md">
             <PasswordInput
@@ -189,10 +195,20 @@ const Password = () => {
               type="submit"
               disabled={!formik.isValid || !formik.dirty}
               loading={loading}
+              loaderProps={{ type: 'dots' }}
             >
               {translate('general.save')}
             </Button>
           </Group>
+        </Box>
+      ) : (
+        <Box>
+          <Box mb="lg">
+            <Text size="sm" c="dimmed">
+              {translate('user.password')}
+            </Text>
+            <Text size="md">***************</Text>
+          </Box>
         </Box>
       )}
     </Paper>

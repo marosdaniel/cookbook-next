@@ -1,74 +1,83 @@
-// import { Types } from 'mongoose';
-// import { User, Recipe } from '../../../../graphql/models';
-// import { throwCustomError } from '../../../../helpers/error-handler.helper';
-// import { IContext } from '../../../../context/types';
-// import { IOperationResult } from '../../types';
-// import { IRemoveFromFavoriteRecipes } from './types';
+import { USER_FAVORITE_MESSAGE_KEYS } from '@/lib/graphql/messageKeys';
+import type { GraphQLContext } from '../../../../../types/graphql/context';
+import type { OperationResponse } from '../../../../../types/graphql/responses';
 
-// export const removeFromFavoriteRecipes = async (
-//   _: any,
-//   { userId, recipeId }: IRemoveFromFavoriteRecipes,
-//   context: IContext,
-// ): Promise<IOperationResult> => {
-//   const currentUser = context;
+export const removeFromFavoriteRecipes = async (
+  _: unknown,
+  { userId, recipeId }: { userId: string; recipeId: string },
+  context: GraphQLContext,
+): Promise<OperationResponse> => {
+  const { userId: currentUserId, role: currentUserRole, prisma } = context;
 
-//   if (!currentUser || (currentUser._id.toString() !== userId && currentUser.role !== 'ADMIN')) {
-//     throwCustomError('Unauthorized operation - insufficient permissions', {
-//       errorCode: 'UNAUTHORIZED',
-//       errorStatus: 403,
-//     });
-//   }
+  if (
+    !currentUserId ||
+    (currentUserId !== userId && currentUserRole !== 'ADMIN')
+  ) {
+    return {
+      success: false,
+      message: 'Unauthorized operation - insufficient permissions',
+      messageKey: USER_FAVORITE_MESSAGE_KEYS.UNAUTHORIZED,
+      statusCode: 403,
+    };
+  }
 
-//   if (!Types.ObjectId.isValid(userId)) {
-//     return {
-//       success: false,
-//       message: 'Invalid userId format',
-//       statusCode: 400,
-//     };
-//   }
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+  if (!user)
+    return {
+      success: false,
+      message: 'User not found',
+      messageKey: USER_FAVORITE_MESSAGE_KEYS.USER_NOT_FOUND,
+      statusCode: 404,
+    };
 
-//   if (!Types.ObjectId.isValid(recipeId)) {
-//     return {
-//       success: false,
-//       message: 'Invalid recipeId format',
-//       statusCode: 400,
-//     };
-//   }
+  const recipe = await prisma.recipe.findUnique({
+    where: { id: recipeId },
+  });
+  if (!recipe)
+    return {
+      success: false,
+      message: 'Recipe not found',
+      messageKey: USER_FAVORITE_MESSAGE_KEYS.RECIPE_NOT_FOUND,
+      statusCode: 404,
+    };
 
-//   const user = await User.findById(new Types.ObjectId(userId));
-//   if (!user) {
-//     return {
-//       success: false,
-//       message: 'User not found',
-//       statusCode: 404,
-//     };
-//   }
+  const alreadyFavorite = user.favoriteRecipeIds?.includes(recipeId);
+  if (!alreadyFavorite)
+    return {
+      success: false,
+      message: 'Recipe not in favorites',
+      messageKey: USER_FAVORITE_MESSAGE_KEYS.NOT_IN_FAVORITES,
+      statusCode: 400,
+    };
 
-//   const recipe = await Recipe.findById(new Types.ObjectId(recipeId));
-//   if (!recipe) {
-//     return {
-//       success: false,
-//       message: 'Recipe not found',
-//       statusCode: 404,
-//     };
-//   }
+  // Remove recipeId from favoriteRecipeIds array
+  const updatedFavoriteRecipeIds = user.favoriteRecipeIds.filter(
+    (id) => id !== recipeId,
+  );
 
-//   const originalLength = user.favoriteRecipes.length;
-//   user.favoriteRecipes = user.favoriteRecipes.filter(favoriteRecipeId => favoriteRecipeId.toString() !== recipeId);
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: userId },
+      data: {
+        favoriteRecipeIds: { set: updatedFavoriteRecipeIds },
+      },
+    }),
+    prisma.recipe.update({
+      where: { id: recipeId },
+      data: {
+        favoritedByIds: {
+          set: recipe.favoritedByIds.filter((id) => id !== userId),
+        },
+      },
+    }),
+  ]);
 
-//   if (originalLength === user.favoriteRecipes.length) {
-//     return {
-//       success: false,
-//       message: 'Recipe was not found in the favorites',
-//       statusCode: 400,
-//     };
-//   }
-
-//   await user.save();
-
-//   return {
-//     success: true,
-//     message: 'Recipe successfully removed from favorites',
-//     statusCode: 200,
-//   };
-// };
+  return {
+    success: true,
+    message: 'Recipe successfully removed from favorites',
+    messageKey: USER_FAVORITE_MESSAGE_KEYS.SUCCESS,
+    statusCode: 200,
+  };
+};

@@ -1,9 +1,11 @@
 'use client';
 
+import { useMutation, useQuery } from '@apollo/client/react';
 import {
   Box,
   Button,
   Group,
+  LoadingOverlay,
   Paper,
   Text,
   TextInput,
@@ -14,44 +16,83 @@ import { useFormik } from 'formik';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import type { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
-
+import { UPDATE_USER } from '@/lib/graphql/mutations';
+import { GET_USER_BY_ID } from '@/lib/graphql/queries';
 import { nameValidationSchema } from '@/lib/validation/validation';
 
 const PersonalData = () => {
   const translate = useTranslations();
-  const { data: session, update } = useSession();
-  const user = session?.user;
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
 
   const [isEditMode, setIsEditMode] = useState(false);
 
-  const onSubmit = async (values: { firstName: string; lastName: string }) => {
+  interface GetUserData {
+    getUserById: {
+      id: string;
+      firstName: string;
+      lastName: string;
+    };
+  }
+
+  // Fetch user data from DB directly
+  const {
+    data: userData,
+    loading: userLoading,
+    refetch: refetchUser,
+  } = useQuery<GetUserData>(GET_USER_BY_ID, {
+    variables: { id: userId || '' },
+    skip: !userId,
+    fetchPolicy: 'network-only', // Ensure we always get the fresh data
+  });
+
+  const user = userData?.getUserById;
+
+  // Define types for the mutation response
+  interface UpdateUserData {
+    updateUser: {
+      success: boolean;
+      message: string;
+      user?: {
+        id: string;
+        firstName: string;
+        lastName: string;
+      };
+    };
+  }
+
+  const [updateUser, { loading: updateLoading }] =
+    useMutation<UpdateUserData>(UPDATE_USER);
+
+  const onSubmit = async (values: z.infer<typeof nameValidationSchema>) => {
     try {
-      // TODO: Implement the actual API call to update the user
-      // For now, we simulate a successful update
-      // const result = await dispatch(updateUserThunk({ ... }));
-
-      console.log('Updating user:', values);
-
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Update the session with new data locally (optimistic update)
-      await update({
-        ...session,
-        user: {
-          ...session?.user,
-          firstName: values.firstName,
-          lastName: values.lastName,
+      const { data } = await updateUser({
+        variables: {
+          userUpdateInput: {
+            firstName: values.firstName,
+            lastName: values.lastName,
+          },
         },
       });
 
-      setIsEditMode(false);
-      notifications.show({
-        title: translate('response.success'),
-        message: 'Your personal data has been updated', // Ideally should be translated
-        color: 'teal',
-      });
+      if (data?.updateUser?.success) {
+        await refetchUser(); // Refetch user data to update UI from DB
+        setIsEditMode(false);
+        notifications.show({
+          title: translate('response.success'),
+          message: 'Your personal data has been updated',
+          color: 'teal',
+        });
+      } else {
+        notifications.show({
+          title: translate('response.error'),
+          message:
+            data?.updateUser?.message || translate('response.unknownError'),
+          color: 'red',
+        });
+      }
     } catch (error) {
       console.error('Something went wrong:', error);
       notifications.show({
@@ -67,7 +108,7 @@ const PersonalData = () => {
       firstName: user?.firstName ?? '',
       lastName: user?.lastName ?? '',
     },
-    enableReinitialize: true,
+    enableReinitialize: true, // This is crucial to update form when user data is fetched
     validationSchema: toFormikValidationSchema(nameValidationSchema),
     onSubmit,
   });
@@ -81,6 +122,21 @@ const PersonalData = () => {
     setIsEditMode(false);
   };
 
+  if (userLoading && !user) {
+    return (
+      <Paper
+        shadow="md"
+        radius="lg"
+        p={{ base: 'md', md: 'xl' }}
+        m="32px auto"
+        w={{ base: '100%', md: '80%', lg: '75%' }}
+        pos="relative"
+      >
+        <LoadingOverlay visible={true} />
+      </Paper>
+    );
+  }
+
   return (
     <Paper
       component="form"
@@ -93,35 +149,18 @@ const PersonalData = () => {
       }}
       m="32px auto"
       w={{ base: '100%', md: '80%', lg: '75%' }}
+      pos="relative"
     >
+      <LoadingOverlay visible={userLoading || updateLoading} />
       <Group mb="lg" justify="space-between" align="baseline">
         <Title order={5}>{translate('user.personalDataTitle')}</Title>
-        {!isEditMode ? (
+        {!isEditMode && (
           <Button variant="subtle" onClick={handlePersonalDataEditable}>
             {translate('general.edit')}
           </Button>
-        ) : null}
+        )}
       </Group>
-      {!isEditMode ? (
-        <Box>
-          <Box mb="lg">
-            <Text size="sm" c="dimmed">
-              {translate('user.firstName')}
-            </Text>
-            <Text size="md" fw={500}>
-              {user?.firstName}
-            </Text>
-          </Box>
-          <Box mb="lg">
-            <Text size="sm" c="dimmed">
-              {translate('user.lastName')}
-            </Text>
-            <Text size="md" fw={500}>
-              {user?.lastName}
-            </Text>
-          </Box>
-        </Box>
-      ) : (
+      {isEditMode ? (
         <Box>
           <Box mt="md">
             <TextInput
@@ -175,10 +214,31 @@ const PersonalData = () => {
               size="sm"
               type="submit"
               disabled={!formik.isValid || !formik.dirty}
+              loading={updateLoading}
+              loaderProps={{ type: 'dots' }}
             >
               {translate('general.save')}
             </Button>
           </Group>
+        </Box>
+      ) : (
+        <Box>
+          <Box mb="lg">
+            <Text size="sm" c="dimmed">
+              {translate('user.firstName')}
+            </Text>
+            <Text size="md" fw={500}>
+              {user?.firstName}
+            </Text>
+          </Box>
+          <Box mb="lg">
+            <Text size="sm" c="dimmed">
+              {translate('user.lastName')}
+            </Text>
+            <Text size="md" fw={500}>
+              {user?.lastName}
+            </Text>
+          </Box>
         </Box>
       )}
     </Paper>

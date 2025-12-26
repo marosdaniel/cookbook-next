@@ -1,36 +1,36 @@
-// import { IContext } from '../../../../context/types';
-// import { User } from '../../../../graphql/models';
-// import { throwCustomError } from '../../../../helpers/error-handler.helper';
-// import { IDeleteUser } from './types';
+import type { GraphQLContext } from '../../../../../types/graphql/context';
 
-// export const deleteUser = async (_: any, { id }: IDeleteUser, context: IContext) => {
-//   const currentUser = context;
+export const deleteUser = async (
+  _: unknown,
+  { id }: { id: string },
+  context: GraphQLContext,
+) => {
+  const { userId: currentUserId, role: currentUserRole, prisma } = context;
 
-//   if (!currentUser) {
-//     throwCustomError('Unauthenticated operation - no user found', { errorCode: 'UNAUTHENTICATED', errorStatus: 401 });
-//   }
+  if (!currentUserId) {
+    throw new Error('Unauthenticated operation - no user found');
+  }
 
-//   if (currentUser.role !== 'ADMIN' && currentUser._id !== id) {
-//     throwCustomError('Unauthorized operation - insufficient permissions', {
-//       errorCode: 'UNAUTHORIZED',
-//       errorStatus: 403,
-//     });
-//   }
+  if (currentUserRole !== 'ADMIN' && currentUserId !== id) {
+    throw new Error('Unauthorized operation - insufficient permissions');
+  }
 
-//   try {
-//     const result = await User.deleteOne({ _id: id });
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
 
-//     if (!result || result.deletedCount === 0) {
-//       throwCustomError('User not found.', { errorCode: 'USER_NOT_FOUND', errorStatus: 404 });
-//     }
+    if (!user) {
+      throw new Error('User not found');
+    }
 
-//     return {
-//       success: true,
-//       message: 'User successfully deleted',
-//       deletedCount: result.deletedCount,
-//     };
-//   } catch (error) {
-//     console.error('Error deleting user:', error);
-//     throwCustomError('Could not delete user', { errorCode: 'DELETE_USER_FAILED', errorStatus: 500 });
-//   }
-// };
+    await prisma.user.delete({
+      where: { id },
+    });
+
+    return true;
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    throw new Error('Could not delete user');
+  }
+};

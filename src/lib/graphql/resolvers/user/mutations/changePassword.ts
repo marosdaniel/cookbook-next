@@ -1,47 +1,85 @@
-// import bcrypt from 'bcrypt';
-// import { User } from '../../../../graphql/models';
-// import { throwCustomError } from '../../../../helpers/error-handler.helper';
-// import { IChangePassword } from './types';
-// import { IContext } from '../../../../context/types';
+import bcrypt from 'bcrypt';
+import { auth } from '@/auth';
+import { prisma } from '@/lib/prisma';
 
-// export const changePassword = async (_: any, { id, passwordEditInput }: IChangePassword, context: IContext) => {
-//   const { currentPassword, newPassword, confirmNewPassword } = passwordEditInput;
+interface ChangePasswordInput {
+  passwordEditInput: {
+    currentPassword: string;
+    newPassword: string;
+    confirmNewPassword: string;
+  };
+}
 
-//   const currentUser = context;
+export const changePassword = async (
+  _: unknown,
+  { passwordEditInput }: ChangePasswordInput,
+) => {
+  const { currentPassword, newPassword, confirmNewPassword } =
+    passwordEditInput;
 
-//   if (!currentUser) {
-//     throwCustomError('Unauthenticated operation - no user found', { errorCode: 'UNAUTHENTICATED', errorStatus: 401 });
-//   }
+  try {
+    const session = await auth();
 
-//   if (currentUser.role !== 'ADMIN' && currentUser._id !== id) {
-//     throwCustomError('Unauthorized operation - insufficient permissions', {
-//       errorCode: 'UNAUTHORIZED',
-//       errorStatus: 403,
-//     });
-//   }
+    if (!session || !session.user || !session.user.id) {
+      return {
+        success: false,
+        message: 'Unauthorized',
+      };
+    }
 
-//   const user = await User.findById(id).populate('favoriteRecipes').populate('recipes');
+    const userId = session.user.id;
 
-//   if (!user) {
-//     throwCustomError('User not found', { errorCode: 'USER_NOT_FOUND', errorStatus: 404 });
-//   }
+    if (!currentPassword || !newPassword || !confirmNewPassword) {
+      return {
+        success: false,
+        message: 'Please fill in all fields',
+      };
+    }
 
-//   if (!currentPassword || !newPassword || !confirmNewPassword) {
-//     throwCustomError('Please fill in all fields', { errorCode: 'INVALID_INPUT', errorStatus: 400 });
-//   }
+    if (newPassword !== confirmNewPassword) {
+      return {
+        success: false,
+        message: 'Passwords do not match',
+      };
+    }
 
-//   if (newPassword !== confirmNewPassword) {
-//     throwCustomError('Passwords do not match', { errorCode: 'PASSWORD_MISMATCH', errorStatus: 400 });
-//   }
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
 
-//   const isMatch = await bcrypt.compare(currentPassword, user.password);
-//   if (!isMatch) {
-//     throwCustomError('Invalid password', { errorCode: 'INVALID_PASSWORD', errorStatus: 401 });
-//   }
+    if (!user) {
+      return {
+        success: false,
+        message: 'User not found',
+      };
+    }
 
-//   const hashedPassword = await bcrypt.hash(newPassword, 10);
-//   user.password = hashedPassword;
-//   await user.save();
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return {
+        success: false,
+        message: 'Invalid current password',
+      };
+    }
 
-//   return true;
-// };
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        password: hashedPassword,
+      },
+    });
+
+    return {
+      success: true,
+      message: 'Password changed successfully',
+    };
+  } catch (error) {
+    console.error('Error changing password:', error);
+    return {
+      success: false,
+      message: 'An error occurred while changing the password',
+    };
+  }
+};
