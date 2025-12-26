@@ -23,7 +23,7 @@ export const AUTH_ROUTES = {
 
 // Routes that require authentication (Protected)
 export const PROTECTED_ROUTES = {
-  PROFILE: '/profile',
+  PROFILE: '/me/profile',
   RECIPES_CREATE: '/recipes/create',
   RECIPES_MY: '/recipes/my-recipes',
   RECIPES_FAVORITES: '/recipes/favorites',

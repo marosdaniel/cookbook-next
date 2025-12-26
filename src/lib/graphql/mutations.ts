@@ -37,3 +37,12 @@ export const SET_NEW_PASSWORD = gql`
     }
   }
 `;
+
+export const CHANGE_PASSWORD = gql`
+  mutation changePassword($passwordEditInput: PasswordEditInput!) {
+    changePassword(passwordEditInput: $passwordEditInput) {
+      success
+      message
+    }
+  }
+`;
