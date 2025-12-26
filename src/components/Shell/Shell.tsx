@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import type { FC, PropsWithChildren } from 'react';
 import { isAuthRoute, PUBLIC_ROUTES } from '@/types/routes';
-import AuthButton from '../AuthButton';
+import AuthButton from '../buttons/AuthButton';
 import Footer from '../Footer';
 import LanguageSelector from '../LanguageSelector';
 import { Logo } from '../Logo';

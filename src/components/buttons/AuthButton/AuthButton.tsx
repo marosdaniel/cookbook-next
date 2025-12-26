@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { type FC, useTransition } from 'react';
 import { FiLogIn } from 'react-icons/fi';
 import { AUTH_ROUTES } from '@/types/routes';
+import classes from './AuthButton.module.css';
 import type { AuthButtonProps } from './types';
 
 const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
@@ -25,7 +26,7 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
         {/* Icon only on mobile */}
         <ActionIcon
           variant="gradient"
-          gradient={{ from: 'pink', to: 'grape', deg: 90 }}
+          gradient={{ from: 'pink', to: 'violet', deg: 45 }}
           size="lg"
           onClick={handleClick}
           aria-label={translate('login')}
@@ -38,12 +39,13 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
         {/* Full button on desktop */}
         <Button
           variant="gradient"
-          gradient={{ from: 'pink', to: 'grape', deg: 90 }}
+          gradient={{ from: 'pink', to: 'violet', deg: 45 }}
           size="sm"
           leftSection={<FiLogIn size={16} />}
           onClick={handleClick}
           visibleFrom="sm"
           loading={isPending}
+          className={classes.authButton}
           styles={{
             root: {
               fontWeight: 600,
@@ -59,10 +61,11 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
   return (
     <Button
       variant="gradient"
-      gradient={{ from: 'pink', to: 'grape', deg: 90 }}
+      gradient={{ from: 'pink', to: 'violet', deg: 45 }}
       size="sm"
       leftSection={<FiLogIn size={16} />}
       onClick={handleClick}
+      className={classes.authButton}
       styles={{
         root: {
           fontWeight: 600,

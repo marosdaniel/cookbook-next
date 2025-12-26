@@ -1,0 +1,10 @@
+.gradientText {
+  background: linear-gradient(
+    45deg,
+    var(--mantine-color-pink-6),
+    var(--mantine-color-violet-6)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

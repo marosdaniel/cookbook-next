@@ -1,0 +1,65 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.iconWrapper {
+  font-size: 8rem;
+
+  margin-bottom: 1.5rem;
+  animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.1));
+
+  /* Gradient is applied via SVG definition in component */
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+.title {
+  font-family:
+    Greycliff CF,
+    var(--mantine-font-family);
+  font-weight: 900;
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  letter-spacing: -1px;
+}
+
+/* Gradient text effect fallback if not supported by browser/mantine mixins */
+.gradientText {
+  background: linear-gradient(
+    45deg,
+    var(--mantine-color-pink-6),
+    var(--mantine-color-violet-6)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.backButton {
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.backButton:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 8px 25px rgba(219, 39, 119, 0.3),
+    0 4px 15px rgba(139, 92, 246, 0.2);
+}

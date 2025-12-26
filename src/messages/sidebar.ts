@@ -11,6 +11,7 @@ export const sidebarMessages = {
   myProfile: 'My Profile',
   favorites: 'Favorites',
   friends: 'Friends',
+  followings: 'Following',
   allRecipes: 'All Recipes',
   latestRecipes: 'Latest Recipes',
 };

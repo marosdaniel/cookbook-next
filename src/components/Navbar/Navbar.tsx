@@ -7,13 +7,14 @@ import type { Session } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { type FC, useTransition } from 'react';
-import { FiBook, FiLogOut, FiPlusCircle } from 'react-icons/fi';
+import { FiBook, FiLogIn, FiLogOut, FiPlusCircle } from 'react-icons/fi';
 import {
   AUTH_ROUTES,
   isProtectedRoute,
   PROTECTED_ROUTES,
   PUBLIC_ROUTES,
 } from '@/types/routes';
+import NavButton from '../buttons/NavButton';
 import UserButton from '../UserButton';
 import classes from './Navbar.module.css';
 import NavbarLinksGroup from './NavbarLinksGroup/NavbarLinksGroup';
@@ -54,8 +55,8 @@ const Navbar: FC = () => {
                 link: PROTECTED_ROUTES.RECIPES_FAVORITES as unknown as Route,
               },
               {
-                label: translate('friends'),
-                link: PROTECTED_ROUTES.FRIENDS as unknown as Route,
+                label: translate('followings'),
+                link: PROTECTED_ROUTES.FOLLOWING as unknown as Route,
               },
             ],
           },
@@ -124,15 +125,12 @@ const Navbar: FC = () => {
           </Stack>
         ) : (
           <Box p="md">
-            <Button
-              component="a"
+            <NavButton
+              label={authTranslate('login')}
               href={AUTH_ROUTES.LOGIN}
-              variant="gradient"
-              gradient={{ from: 'pink', to: 'violet', deg: 45 }}
-              fullWidth
-            >
-              {authTranslate('login')}
-            </Button>
+              size="md"
+              icon={<FiLogIn size={20} />}
+            />
           </Box>
         )}
       </div>

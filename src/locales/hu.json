@@ -91,6 +91,7 @@
     "myProfile": "Saját profil",
     "favorites": "Kedvencek",
     "friends": "Barátok",
+    "followings": "Követések",
     "allRecipes": "Összes recept",
     "latestRecipes": "Legfrissebb receptek"
   },
@@ -161,6 +162,13 @@
     "label-smoothie": "smoothie",
     "label-cocktail": "koktél",
     "label-hungarian": "magyar"
+  },
+  "underConstruction": {
+    "title": "Ez az oldal még a sütőben van!",
+    "subtitle": "Hiányzó hozzávalók...",
+    "description": "A séfünk éppen most dolgozik ezen a részen. Lehet, hogy odaégette az előző verziót, vagy csak még keresi a tökéletes fűszerezést. Nézz vissza később!",
+    "backButton": "Vissza a főoldalra",
+    "gradientIconTitle": "Főzőüst ikon színátmenet"
   },
   "notFound": {
     "title": "404",

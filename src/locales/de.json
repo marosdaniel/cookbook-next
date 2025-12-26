@@ -90,6 +90,7 @@
     "myProfile": "Mein Profil",
     "favorites": "Favoriten",
     "friends": "Freunde",
+    "followings": "Folge ich",
     "allRecipes": "Alle Rezepte",
     "latestRecipes": "Neueste Rezepte"
   },
@@ -159,6 +160,13 @@
     "label-smoothie": "smoothie",
     "label-cocktail": "cocktail",
     "label-hungarian": "ungarisch"
+  },
+  "underConstruction": {
+    "title": "Diese Seite ist noch im Ofen!",
+    "subtitle": "Fehlende Zutaten...",
+    "description": "Unser Koch arbeitet gerade an diesem Bereich. Vielleicht hat er die vorherige Version verbrannt, oder er sucht nur nach der perfekten Würze. Schauen Sie später noch einmal vorbei!",
+    "backButton": "Zurück zur Startseite",
+    "gradientIconTitle": "Kochtopf-Symbol Farbverlauf"
   },
   "notFound": {
     "title": "404",

@@ -1,0 +1,11 @@
+.authButton {
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.authButton:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 8px 25px rgba(219, 39, 119, 0.3),
+    0 4px 15px rgba(139, 92, 246, 0.2);
+}

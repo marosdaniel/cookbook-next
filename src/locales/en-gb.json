@@ -91,6 +91,7 @@
     "myProfile": "My Profile",
     "favorites": "Favourites",
     "friends": "Friends",
+    "followings": "Following",
     "allRecipes": "All Recipes",
     "latestRecipes": "Latest Recipes"
   },
@@ -161,6 +162,13 @@
     "label-smoothie": "smoothie",
     "label-cocktail": "cocktail",
     "label-hungarian": "hungarian"
+  },
+  "underConstruction": {
+    "title": "This page is still in the oven!",
+    "subtitle": "Missing ingredients...",
+    "description": "Our chef is currently working on this section. They might have burnt the previous version, or they're just looking for the perfect seasoning. Check back later!",
+    "backButton": "Back to homepage",
+    "gradientIconTitle": "Cooking pot icon gradient"
   },
   "notFound": {
     "title": "404",
