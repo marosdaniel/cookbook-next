@@ -1,3 +1,10 @@
+# [1.34.0](https://github.com/marosdaniel/cookbook-next/compare/v1.33.0...v1.34.0) (2025-12-29)
+
+
+### Features
+
+* add unit tests for authentication logic, NextAuth configuration, and middleware. ([90bebc2](https://github.com/marosdaniel/cookbook-next/commit/90bebc2aadc817f85e7eedbf8bc5c6c8d051d8eb))
+
 # [1.33.0](https://github.com/marosdaniel/cookbook-next/compare/v1.32.0...v1.33.0) (2025-12-26)
 
 
