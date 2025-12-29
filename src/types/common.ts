@@ -2,6 +2,22 @@ import type { PropsWithChildren } from 'react';
 
 export type Locale = 'en-gb' | 'hu' | 'de';
 
+export type AuthMessages = {
+  login?: string;
+  loginDescription?: string;
+  createAccount?: string;
+  signupDescription?: string;
+  forgotPasswordTitle?: string;
+  resetPasswordDescription?: string;
+  setNewPasswordTitle?: string;
+  setNewPasswordDescription?: string;
+  cookiePolicyTitle?: string;
+  cookiePolicyDescription?: string;
+  privacyPolicyTitle?: string;
+  privacyPolicyDescription?: string;
+  // add more keys as needed
+};
+
 // Recursive type for nested locale message objects
 export type LocaleMessages = {
   [key: string]: string | string[] | LocaleMessages;

@@ -1,21 +1,6 @@
 import type { Metadata } from 'next';
 import { getLocaleMessages } from '@/lib/locale/locale';
-
-type AuthMessages = {
-  login?: string;
-  loginDescription?: string;
-  createAccount?: string;
-  signupDescription?: string;
-  forgotPasswordTitle?: string;
-  resetPasswordDescription?: string;
-  setNewPasswordTitle?: string;
-  setNewPasswordDescription?: string;
-  cookiePolicyTitle?: string;
-  cookiePolicyDescription?: string;
-  privacyPolicyTitle?: string;
-  privacyPolicyDescription?: string;
-  // add more keys as needed
-};
+import type { AuthMessages } from '../types/common';
 
 /**
  * Helper to build SEO metadata for auth‑related pages.
