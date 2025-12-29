@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import NextAuth from 'next-auth';
-import { authConfig } from '@/auth.config';
+import { authConfig } from '@/lib/auth/auth.config';
 import { AUTH_ROUTES } from '@/types/routes';
 
 const { auth } = NextAuth(authConfig);

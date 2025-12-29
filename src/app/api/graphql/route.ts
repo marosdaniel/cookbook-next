@@ -6,7 +6,7 @@ import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { GraphQLError } from 'graphql';
 import type { NextRequest } from 'next/server';
-import { auth } from '@/auth';
+import { auth } from '@/lib/auth/auth';
 import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
