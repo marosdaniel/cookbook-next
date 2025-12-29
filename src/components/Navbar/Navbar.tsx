@@ -15,7 +15,7 @@ import {
   PUBLIC_ROUTES,
 } from '@/types/routes';
 import NavButton from '../buttons/NavButton';
-import UserButton from '../UserButton';
+import UserButton from '../buttons/UserButton';
 import classes from './Navbar.module.css';
 import NavbarLinksGroup from './NavbarLinksGroup/NavbarLinksGroup';
 
