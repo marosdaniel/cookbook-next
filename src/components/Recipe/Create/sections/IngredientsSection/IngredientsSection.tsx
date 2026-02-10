@@ -19,21 +19,15 @@ import {
   IconTrash,
 } from '@tabler/icons-react';
 import { getIn, useFormikContext } from 'formik';
-import type { RecipeFormValues } from '../types';
+import type { RecipeFormValues } from '../../types';
+import type { IngredientsSectionProps } from './types';
 
-interface IngredientsSectionProps {
-  unitSuggestions: string[];
-  onAdd: () => void;
-  onBack: () => void;
-  onNext: () => void;
-}
-
-export function IngredientsSection({
+const IngredientsSection = ({
   unitSuggestions,
   onAdd,
   onBack,
   onNext,
-}: Readonly<IngredientsSectionProps>) {
+}: Readonly<IngredientsSectionProps>) => {
   const { values, setFieldValue, touched, errors } =
     useFormikContext<RecipeFormValues>();
 
@@ -201,4 +195,6 @@ export function IngredientsSection({
       </Stack>
     </Paper>
   );
-}
+};
+
+export default IngredientsSection;

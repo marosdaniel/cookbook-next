@@ -28,6 +28,19 @@ export const createRecipe = async (
   { recipeCreateInput }: { recipeCreateInput: RecipeCreateInput },
   context: GraphQLContext,
 ) => {
+  type ErrorType = (typeof ErrorTypes)[keyof typeof ErrorTypes];
+  type AssertPresent = <T>(
+    value: T,
+    message: string,
+    errorType: ErrorType,
+  ) => asserts value is NonNullable<T>;
+
+  const assertPresent: AssertPresent = (value, message, errorType) => {
+    if (value == null) {
+      throwCustomError(message, errorType);
+    }
+  };
+
   if (!context.userId) {
     throwCustomError('Unauthenticated', ErrorTypes.UNAUTHORIZED);
   }
@@ -63,9 +76,7 @@ export const createRecipe = async (
       where: { id: context.userId },
     });
 
-    if (!user) {
-      throwCustomError('User not found', ErrorTypes.UNAUTHORIZED);
-    }
+    assertPresent(user, 'User not found', ErrorTypes.UNAUTHORIZED);
 
     // Fetch Metadata
     const categoryFromDb = await prisma.metadata.findFirst({
@@ -76,13 +87,16 @@ export const createRecipe = async (
       where: { key: difficultyLevel.value, type: 'DIFFICULTY_LEVEL' },
     });
 
-    if (!categoryFromDb || !difficultyLevelFromDb) {
-      throwCustomError(
-        'Invalid category or difficulty level',
-        ErrorTypes.BAD_REQUEST,
-      );
-      // TS knows this throws, but sometimes we return to satisfy types if function wasn't 'never'
-    }
+    assertPresent(
+      categoryFromDb,
+      'Invalid category or difficulty level',
+      ErrorTypes.BAD_REQUEST,
+    );
+    assertPresent(
+      difficultyLevelFromDb,
+      'Invalid category or difficulty level',
+      ErrorTypes.BAD_REQUEST,
+    );
 
     let labelsFromDb: Metadata[] = [];
     if (labels && labels.length > 0) {
@@ -109,18 +123,18 @@ export const createRecipe = async (
           order: s.order || index + 1,
         })),
         category: {
-          name: categoryFromDb?.name,
-          key: categoryFromDb?.key,
-          label: categoryFromDb?.label,
-          type: categoryFromDb?.type,
-          id: categoryFromDb?.id,
+          name: categoryFromDb.name,
+          key: categoryFromDb.key,
+          label: categoryFromDb.label,
+          type: categoryFromDb.type,
+          id: categoryFromDb.id,
         },
         difficultyLevel: {
-          name: difficultyLevelFromDb?.name,
-          key: difficultyLevelFromDb?.key,
-          label: difficultyLevelFromDb?.label,
-          type: difficultyLevelFromDb?.type,
-          id: difficultyLevelFromDb?.id,
+          name: difficultyLevelFromDb.name,
+          key: difficultyLevelFromDb.key,
+          label: difficultyLevelFromDb.label,
+          type: difficultyLevelFromDb.type,
+          id: difficultyLevelFromDb.id,
         },
         labels: labelsFromDb.map((l) => ({
           name: l.name,
@@ -133,7 +147,7 @@ export const createRecipe = async (
         cookingTime,
         servings,
         youtubeLink,
-        createdBy: user?.id,
+        createdBy: user.id,
         ratings: { create: [] },
       },
     });

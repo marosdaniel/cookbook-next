@@ -18,7 +18,7 @@ import { useRecipeForm } from './hooks/useRecipeForm';
 import { useRecipeMetadata } from './hooks/useRecipeMetadata';
 import { Preview } from './Preview';
 import { BasicsSection } from './sections/BasicsSection';
-import { IngredientsSection } from './sections/IngredientsSection';
+import IngredientsSection from './sections/IngredientsSection';
 import { MediaSection } from './sections/MediaSection';
 import { StepsSection } from './sections/StepsSection';
 import type { ComposerSection } from './types';

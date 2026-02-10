@@ -37,10 +37,16 @@ export const createUser = async (
   } catch (error) {
     if (error instanceof ZodError) {
       const firstErrorMessage = error.issues[0]?.message || 'Validation failed';
+      const zodIssues = error.issues.map((issue) => ({
+        path: issue.path.map((segment) =>
+          typeof segment === 'symbol' ? segment.toString() : segment,
+        ),
+        message: issue.message,
+      }));
 
       throwCustomError(firstErrorMessage, ErrorTypes.VALIDATION_ERROR, {
         messageKey: USER_REGISTER_MESSAGE_KEYS.VALIDATION_ERROR,
-        details: error.issues,
+        zodIssues,
         originalError: error,
       });
     }
