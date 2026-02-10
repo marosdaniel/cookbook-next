@@ -20,7 +20,7 @@ const nameFields = {
 };
 
 const emailField = {
-  email: z.email({ error: 'Invalid email address' }),
+  email: z.email({ message: 'Invalid email address' }),
 };
 
 const passwordField = {
@@ -122,7 +122,7 @@ export const signUpValidationSchema = baseUserSchema
 export const recipeFormValidationSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
-  imgSrc: z.string().url('Invalid URL').optional().or(z.literal('')),
+  imgSrc: z.url({ message: 'Invalid URL' }).optional().or(z.literal('')),
   cookingTime: z.coerce.number().positive('Must be positive'),
   servings: z.coerce.number().positive('Must be positive'),
   difficultyLevel: z

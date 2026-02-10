@@ -37,7 +37,7 @@ export function ComposerSidebar({
   onAddIngredient,
   onAddStep,
   onResetDraft,
-}: ComposerSidebarProps) {
+}: Readonly<ComposerSidebarProps>) {
   const sectionItems = [
     {
       key: 'basics' as const,

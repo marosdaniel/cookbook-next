@@ -33,7 +33,7 @@ export function IngredientsSection({
   onAdd,
   onBack,
   onNext,
-}: IngredientsSectionProps) {
+}: Readonly<IngredientsSectionProps>) {
   const { values, setFieldValue, touched, errors } =
     useFormikContext<RecipeFormValues>();
 

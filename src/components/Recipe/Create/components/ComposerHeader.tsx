@@ -35,12 +35,13 @@ export function ComposerHeader({
   onPublish,
   publishLoading,
 }: Readonly<ComposerHeaderProps>) {
-  const ringColor =
-    completion.percent === 100
-      ? 'teal'
-      : completion.percent > 50
-        ? 'blue'
-        : 'orange';
+  let ringColor = 'orange';
+
+  if (completion.percent === 100) {
+    ringColor = 'teal';
+  } else if (completion.percent > 50) {
+    ringColor = 'blue';
+  }
 
   return (
     <Paper

@@ -1,7 +1,6 @@
 import {
   ActionIcon,
   Badge,
-  Box,
   Button,
   Group,
   Image,
@@ -27,7 +26,7 @@ interface MediaSectionProps {
   onNext: () => void;
 }
 
-export function MediaSection({ onBack, onNext }: MediaSectionProps) {
+export function MediaSection({ onBack, onNext }: Readonly<MediaSectionProps>) {
   const { values, setFieldValue, touched, errors } =
     useFormikContext<RecipeFormValues>();
 

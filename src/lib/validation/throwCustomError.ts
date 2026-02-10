@@ -4,7 +4,7 @@ import type { ErrorTypeDefinition } from './errorCatalog';
 interface ErrorOptions {
   messageKey?: string;
   originalError?: unknown;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   zodIssues?: Array<{ path: (string | number)[]; message: string }>;
 }
 

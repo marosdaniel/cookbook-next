@@ -6,7 +6,10 @@
   border-radius: var(--mantine-radius-sm);
 
   &:hover {
-    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
+    background-color: light-dark(
+      var(--mantine-color-gray-0),
+      var(--mantine-color-dark-7)
+    );
     color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
   }
 
@@ -21,10 +24,14 @@
   padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
   padding-left: 1.9375rem;
   margin-left: 1.875rem;
-  border-left: 0.0625rem solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  border-left: 0.0625rem solid
+    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
 
   &:hover {
-    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
+    background-color: light-dark(
+      var(--mantine-color-gray-0),
+      var(--mantine-color-dark-7)
+    );
     color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
   }
 

@@ -145,7 +145,9 @@ describe('NavButton', () => {
     });
 
     it('renders with nested path', () => {
-      renderWithMantine(<NavButton label="About" href={PUBLIC_ROUTES.ABOUT as Route} />);
+      renderWithMantine(
+        <NavButton label="About" href={PUBLIC_ROUTES.ABOUT as Route} />,
+      );
       const link = screen.getByRole('link');
       expect(link).toHaveAttribute('href', PUBLIC_ROUTES.ABOUT);
     });
@@ -204,7 +206,9 @@ describe('NavButton', () => {
     });
 
     it('renders as accessible link element', () => {
-      renderWithMantine(<NavButton label="Link Button" href={PUBLIC_ROUTES.HOME} />);
+      renderWithMantine(
+        <NavButton label="Link Button" href={PUBLIC_ROUTES.HOME} />,
+      );
       expect(screen.getByRole('link')).toBeInTheDocument();
     });
 

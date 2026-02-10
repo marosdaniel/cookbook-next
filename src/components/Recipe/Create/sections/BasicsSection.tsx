@@ -36,7 +36,7 @@ export function BasicsSection({
   levels,
   labels,
   onNext,
-}: BasicsSectionProps) {
+}: Readonly<BasicsSectionProps>) {
   const { values, setFieldValue, touched, errors } =
     useFormikContext<RecipeFormValues>();
 
