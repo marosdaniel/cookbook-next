@@ -1,3 +1,10 @@
+# [1.35.0](https://github.com/marosdaniel/cookbook-next/compare/v1.34.0...v1.35.0) (2026-02-10)
+
+
+### Features
+
+* Implement recipe creation feature with new metadata management, SEO utilities, and updated GraphQL resolvers. ([8730f4d](https://github.com/marosdaniel/cookbook-next/commit/8730f4d1d1b87a970458c1984c592282cbe762d8))
+
 # [1.34.0](https://github.com/marosdaniel/cookbook-next/compare/v1.33.0...v1.34.0) (2025-12-29)
 
 
