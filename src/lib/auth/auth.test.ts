@@ -22,7 +22,7 @@ vi.mock('next-auth/providers/credentials', () => ({
 }));
 
 // Mock prisma and bcrypt
-vi.mock('@/lib/prisma', () => ({
+vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
     user: {
       findUnique: vi.fn(),

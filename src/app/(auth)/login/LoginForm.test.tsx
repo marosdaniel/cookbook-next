@@ -69,7 +69,7 @@ const fillLoginForm = async (
   emailInput: HTMLInputElement,
   passwordInput: HTMLInputElement,
   email = 'test@example.com',
-  password = 'password123',
+  password = 'Password1',
 ) => {
   fireEvent.change(emailInput, { target: { value: email } });
   fireEvent.change(passwordInput, { target: { value: password } });
@@ -207,7 +207,7 @@ describe('LoginForm', () => {
       const submitButton = screen.getByRole('button', { name: /sign in/i });
 
       fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
-      fireEvent.change(passwordInput, { target: { value: 'password123' } });
+      fireEvent.change(passwordInput, { target: { value: 'Password1' } });
 
       await waitFor(() => {
         expect(submitButton).not.toBeDisabled();
@@ -233,7 +233,7 @@ describe('LoginForm', () => {
       await waitFor(() => {
         expect(signIn).toHaveBeenCalledWith('credentials', {
           email: 'test@example.com',
-          password: 'password123',
+          password: 'Password1',
           redirect: false,
           rememberMe: false,
         });
@@ -261,7 +261,7 @@ describe('LoginForm', () => {
       await waitFor(() => {
         expect(signIn).toHaveBeenCalledWith('credentials', {
           email: 'test@example.com',
-          password: 'password123',
+          password: 'Password1',
           redirect: false,
           rememberMe: true,
         });
