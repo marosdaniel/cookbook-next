@@ -1,4 +1,4 @@
-import { USER_FAVORITE_MESSAGE_KEYS } from '@/lib/graphql/messageKeys';
+import { USER_FAVORITE_MESSAGE_KEYS } from '@/lib/graphql/MESSAGE_KEYS';
 import type { GraphQLContext } from '../../../../../types/graphql/context';
 import type { OperationResponse } from '../../../../../types/graphql/responses';
 

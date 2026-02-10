@@ -98,7 +98,7 @@ model Metadata {
   label String
   type  String // "CATEGORY" | "LABEL" | "DIFFICULTY_LEVEL"
 
-  @@map("metadata")
+  @@map("metadatas")
 }
 
 // Embedded types (not collections, embedded in Recipe)

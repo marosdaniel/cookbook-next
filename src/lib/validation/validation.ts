@@ -1,21 +1,14 @@
 import { z } from 'zod';
 
-// Password regex patterns
-export const PASSWORD_VALIDATOR_REGEX_3_CHAR =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.{3,})/;
-
+/* ─── Constants ───────────────────────────────── */
 // Minimum five characters, at least one letter and one number
 export const WEAK_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.{5,})/;
 
-// Minimum eight characters, at least one letter and one number
-export const PASSWORD_VALIDATOR_REGEX_8_CHAR =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.{8,})/;
+// Minimum eight characters, at least one lowercase, one uppercase, one number
+export const STRONG_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.{8,})/;
 
-// Minimum eight characters, at least one letter, one number and one special character
-export const PASSWORD_VALIDATOR_REGEX_8_CHAR_SPECIAL =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])(?=.{8,})/;
-
-export const nameValidationSchema = z.object({
+/* ─── Shared Schemas ──────────────────────────── */
+const nameFields = {
   firstName: z
     .string()
     .min(2, 'Too Short!')
@@ -24,19 +17,34 @@ export const nameValidationSchema = z.object({
     .string()
     .min(2, 'Too Short!')
     .regex(/^\D+$/, 'should not contain numbers'),
-});
+};
 
-export const loginValidationSchema = z.object({
+const emailField = {
   email: z.email({ error: 'Invalid email address' }),
+};
+
+const passwordField = {
   password: z
     .string()
     .min(5, 'Too Short!')
     .max(20, 'Too Long!')
     .regex(
-      /^(?=.*[A-Za-z])(?=.*\d).{5,}$/,
+      WEAK_PASSWORD_REGEX,
       'Password must contain at least 5 characters, including at least 1 letter and 1 number',
     ),
+};
+
+/* ─── User Validation Schemas ─────────────────── */
+export const nameValidationSchema = z.object(nameFields);
+
+export const loginValidationSchema = z.object({
+  ...emailField,
+  ...passwordField,
 });
+
+export const resetPasswordValidationSchema = z.object(emailField);
+
+/* ─── Password Change Schemas ─────────────────── */
 
 export const newPasswordValidationSchema = z
   .object({
@@ -45,7 +53,7 @@ export const newPasswordValidationSchema = z
       .min(5, 'Too Short!')
       .max(20, 'Too Long!')
       .regex(
-        /^(?=.*[A-Za-z])(?=.*\d).{5,}$/,
+        WEAK_PASSWORD_REGEX,
         'Password must contain at least 5 characters, including at least 1 letter and 1 number',
       ),
     confirmNewPassword: z.string(),
@@ -55,18 +63,12 @@ export const newPasswordValidationSchema = z
     path: ['confirmNewPassword'],
   });
 
-export const resetPasswordValidationSchema = z.object({
-  email: z.email({ error: 'Invalid email address' }),
-});
-
 export const setNewPasswordValidationSchema = z
   .object({
     newPassword: z
       .string()
       .min(8, 'Password must be at least 8 characters')
-      .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-      .regex(/\d/, 'Password must contain at least one number'),
+      .regex(STRONG_PASSWORD_REGEX, 'Password must adhere to strong policy'),
     confirmPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
@@ -76,22 +78,8 @@ export const setNewPasswordValidationSchema = z
 
 export const passwordEditValidationSchema = z
   .object({
-    currentPassword: z
-      .string()
-      .min(5, 'Too Short!')
-      .max(20, 'Too Long!')
-      .regex(
-        /^(?=.*[A-Za-z])(?=.*\d).{5,}$/,
-        'Password must contain at least 5 characters, including at least 1 letter and 1 number',
-      ),
-    newPassword: z
-      .string()
-      .min(5, 'Too Short!')
-      .max(20, 'Too Long!')
-      .regex(
-        /^(?=.*[A-Za-z])(?=.*\d).{5,}$/,
-        'Password must contain at least 5 characters, including at least 1 letter and 1 number',
-      ),
+    currentPassword: passwordField.password,
+    newPassword: passwordField.password,
     confirmNewPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
@@ -99,71 +87,83 @@ export const passwordEditValidationSchema = z
     path: ['confirmNewPassword'],
   });
 
-export const customValidationSchema = z
-  .object({
-    firstName: z
-      .string()
-      .min(2, 'Too Short!')
-      .regex(/^\D+$/, 'should not contain numbers'),
-    lastName: z
-      .string()
-      .min(2, 'Too Short!')
-      .regex(/^\D+$/, 'should not contain numbers'),
-    email: z.email({ error: 'Invalid email address' }),
-    password: z
-      .string()
-      .min(5, 'Too Short!')
-      .max(20, 'Too Long!')
-      .regex(
-        /^(?=.*[A-Za-z])(?=.*\d).{5,}$/,
-        'Password must contain at least 5 characters, including at least 1 letter and 1 number',
-      ),
-    confirmPassword: z.string(),
-    userName: z
-      .string()
-      .min(3, 'Minumum 3 chars needed')
-      .max(20, 'Maximum 20 chars allowed'),
+/* ─── Registration Schemas ────────────────────── */
+const baseUserSchema = z.object({
+  ...nameFields,
+  ...emailField,
+  ...passwordField,
+  confirmPassword: z.string(),
+  userName: z
+    .string()
+    .min(3, 'Minumum 3 chars needed')
+    .max(20, 'Maximum 20 chars allowed'),
+});
+
+export const customValidationSchema = baseUserSchema.refine(
+  (data) => data.password === data.confirmPassword,
+  {
+    message: 'Passwords must match',
+    path: ['confirmPassword'],
+  },
+);
+
+export const signUpValidationSchema = baseUserSchema
+  .extend({
+    privacyAccepted: z.literal(true, {
+      error: 'You must accept the privacy policy',
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords must match',
     path: ['confirmPassword'],
   });
 
-export const signUpValidationSchema = customValidationSchema.safeExtend({
-  privacyAccepted: z.literal(true, {
-    error: 'You must accept the privacy policy',
-  }),
-});
-
+/* ─── Recipe Schema ───────────────────────────── */
 export const recipeFormValidationSchema = z.object({
-  title: z.string().min(1, 'Required'),
-  description: z.string().min(1, 'Required'),
-  imgSrc: z.url({ error: 'Invalid url' }).optional().or(z.literal('')),
-  cookingTime: z.number().positive('Required'),
-  difficultyLevel: z.object({
-    key: z.string().min(1, 'Required'),
-    name: z.string().min(1, 'Required'),
-    label: z.string().min(1, 'Required'),
-  }),
-  category: z.object({
-    key: z.string().min(1, 'Required'),
-    name: z.string().min(1, 'Required'),
-    label: z.string().min(1, 'Required'),
-  }),
-  ingredients: z.array(
-    z.object({
-      name: z.string().min(1, 'Required'),
-      quantity: z.number().positive('Required'),
-      unit: z.string().min(1, 'Required'),
-    }),
-  ),
-  steps: z.array(z.string().min(1, 'Required')),
-  servings: z.number().positive('Required'),
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().min(1, 'Description is required'),
+  imgSrc: z.string().url('Invalid URL').optional().or(z.literal('')),
+  cookingTime: z.coerce.number().positive('Must be positive'),
+  servings: z.coerce.number().positive('Must be positive'),
+  difficultyLevel: z
+    .object({
+      value: z.string(),
+      label: z.string(),
+    })
+    .nullable()
+    .refine((val) => val !== null, { message: 'Difficulty is required' }),
+  category: z
+    .object({
+      value: z.string(),
+      label: z.string(),
+    })
+    .nullable()
+    .refine((val) => val !== null, { message: 'Category is required' }),
+  labels: z.array(z.string()),
+  ingredients: z
+    .array(
+      z.object({
+        localId: z.string(),
+        name: z.string().min(1, 'Name is required'),
+        quantity: z.coerce.number().positive('Must be positive'),
+        unit: z.string().min(1, 'Unit is required'),
+      }),
+    )
+    .min(1, 'At least one ingredient is required'),
+  preparationSteps: z
+    .array(
+      z.object({
+        localId: z.string().optional(),
+        description: z.string().min(1, 'Description is required'),
+        order: z.number(),
+      }),
+    )
+    .min(1, 'At least one step is required'),
   youtubeLink: z
-    .url({ error: 'Invalid url' })
+    .string()
     .regex(
-      /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//,
-      'URL must be a valid YouTube link',
+      /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/,
+      'Invalid YouTube URL',
     )
     .optional()
     .or(z.literal('')),

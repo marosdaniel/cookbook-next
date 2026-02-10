@@ -1,4 +1,4 @@
-import getClient from '../mongodb';
+import getClient from '../mongodb/mongodb';
 
 const DB_NAME = process.env.MONGODB_DB ?? 'cookbook';
 

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma/prisma';
 
 // Mock NextAuth and capture the config
 let capturedConfig: unknown;

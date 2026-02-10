@@ -10,7 +10,7 @@ import { auth } from '@/lib/auth/auth';
 import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma/prisma';
 import type { GraphQLContext } from '../../../types/graphql/context';
 
 /**

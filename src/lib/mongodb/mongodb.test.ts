@@ -16,7 +16,7 @@ describe('mongodb', () => {
   it('should throw error if MONGODB_URI is missing', async () => {
     vi.stubEnv('MONGODB_URI', '');
 
-    await expect(import('./mongodb')).rejects.toThrow(
+    await expect(import('.')).rejects.toThrow(
       'Please add your Mongo URI to .env.local',
     );
     vi.unstubAllEnvs();
@@ -25,7 +25,7 @@ describe('mongodb', () => {
   it('should export mongoClient promise and getClient function', async () => {
     vi.stubEnv('MONGODB_URI', 'mongodb://localhost:27017/test');
 
-    const { mongoClient, getClient } = await import('./mongodb');
+    const { mongoClient, getClient } = await import('.');
 
     expect(mongoClient).toBeInstanceOf(Promise);
     expect(getClient).toBeInstanceOf(Function);
@@ -39,13 +39,13 @@ describe('mongodb', () => {
     vi.stubEnv('NODE_ENV', 'development');
     vi.stubEnv('MONGODB_URI', 'mongodb://localhost:27017/test');
 
-    const { mongoClient } = await import('./mongodb');
+    const { mongoClient } = await import('.');
     expect(
       (globalThis as unknown as Record<string, unknown>)._mongoClientPromise,
     ).toBe(mongoClient);
 
     // Import again should return the same promise
-    const { mongoClient: mongoClient2 } = await import('./mongodb');
+    const { mongoClient: mongoClient2 } = await import('.');
     expect(mongoClient2).toBe(mongoClient);
     vi.unstubAllEnvs();
   });

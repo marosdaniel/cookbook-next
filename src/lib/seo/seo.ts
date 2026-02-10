@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 
 import { getLocaleMessages } from '@/lib/locale/locale';
-import type { AuthMessages } from '../types/common';
-
+import type { AuthMessages } from '../../types/common';
 
 /**
  * Helper to build SEO metadata for auth‑related pages.

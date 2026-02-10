@@ -4,7 +4,7 @@ import {
   generateResetToken,
   sendPasswordResetEmail,
 } from '@/lib/email/nodemailer';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma/prisma';
 
 interface ResetPasswordInput {
   email: string;

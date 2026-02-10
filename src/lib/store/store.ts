@@ -5,10 +5,12 @@ import {
   useSelector,
 } from 'react-redux';
 import { globalReducer } from './global';
+import { metadataReducer } from './metadata';
 
 export const store = configureStore({
   reducer: {
     global: globalReducer,
+    metadata: metadataReducer,
   },
 });
 

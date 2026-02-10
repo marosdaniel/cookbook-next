@@ -1,4 +1,4 @@
-import type { prisma } from '@/lib/prisma';
+import type { prisma } from '@/lib/prisma/prisma';
 import type { UserRole } from '../user';
 
 /**

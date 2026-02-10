@@ -1,5 +1,5 @@
 import { auth } from '@/lib/auth/auth';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma/prisma';
 
 interface UpdateUserInput {
   userUpdateInput: {

@@ -19,52 +19,67 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
   const { data: session } = useSession();
 
   const isAuthPage = isAuthRoute(pathname);
+  const isImmersive = pathname?.startsWith('/recipes/create');
 
   return (
     <AppShell
-      padding="md"
-      header={{ height: 60 }}
+      padding={isImmersive ? 0 : 'md'}
+      header={{ height: 60, collapsed: isImmersive }}
       navbar={{
         width: 300,
         breakpoint: 'sm',
-        collapsed: { mobile: !mobileOpened, desktop: isAuthPage },
+        collapsed: {
+          mobile: !mobileOpened,
+          desktop: isAuthPage || isImmersive,
+        },
       }}
-      withBorder={false}
+      withBorder={!isImmersive}
     >
-      <AppShell.Header>
-        <Group h="100%" px="md" justify="space-between">
-          <Logo
-            variant="icon"
-            width={40}
-            height={40}
-            priority
-            withText
-            hideTextOnMobile
-            href={PUBLIC_ROUTES.HOME}
-          />
-          <Group gap="xs">
-            {!session && !isAuthPage && <AuthButton variant="compact" />}
-            <ThemeSwitcher />
-            <LanguageSelector />
-            {!isAuthPage && (
-              <Burger
-                opened={mobileOpened}
-                onClick={toggleMobile}
-                size="sm"
-                display={{ base: 'block', sm: 'none' }}
-              />
-            )}
+      {!isImmersive && (
+        <AppShell.Header>
+          <Group h="100%" px="md" justify="space-between">
+            <Logo
+              variant="icon"
+              width={40}
+              height={40}
+              priority
+              withText
+              hideTextOnMobile
+              href={PUBLIC_ROUTES.HOME}
+            />
+            <Group gap="xs">
+              {!session && !isAuthPage && <AuthButton variant="compact" />}
+              <ThemeSwitcher />
+              <LanguageSelector />
+              {!isAuthPage && (
+                <Burger
+                  opened={mobileOpened}
+                  onClick={toggleMobile}
+                  size="sm"
+                  display={{ base: 'block', sm: 'none' }}
+                />
+              )}
+            </Group>
           </Group>
-        </Group>
-      </AppShell.Header>
-      <AppShell.Navbar>{!isAuthPage && <Navbar />}</AppShell.Navbar>
-      <AppShell.Main pb={{ base: 100, md: 60 }}>{children}</AppShell.Main>
-      <AppShell.Footer
-        h={{ base: 100, md: 60 }}
-        ml={{ base: 0, sm: isAuthPage ? 0 : 300 }}
-      >
-        <Footer />
-      </AppShell.Footer>
+        </AppShell.Header>
+      )}
+
+      {!isImmersive && (
+        <AppShell.Navbar>{!isAuthPage && <Navbar />}</AppShell.Navbar>
+      )}
+
+      <AppShell.Main pb={isImmersive ? 0 : { base: 100, md: 60 }}>
+        {children}
+      </AppShell.Main>
+
+      {!isImmersive && (
+        <AppShell.Footer
+          h={{ base: 100, md: 60 }}
+          ml={{ base: 0, sm: isAuthPage ? 0 : 300 }}
+        >
+          <Footer />
+        </AppShell.Footer>
+      )}
     </AppShell>
   );
 };

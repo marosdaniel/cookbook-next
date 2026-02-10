@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma/prisma';
 import type { Locale } from '@/types/common';
 import { authConfig } from './auth.config';
 

@@ -2,7 +2,7 @@ import { Box, Container, Stack, Text, Title } from '@mantine/core';
 import type { Metadata } from 'next';
 import { getLocaleMessages } from '@/lib/locale/locale';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
-import { getAuthMetadata } from '@/lib/seo';
+import { getAuthMetadata } from '@/lib/seo/seo';
 import type { LegalMessages } from '@/types/common';
 
 export async function generateMetadata(): Promise<Metadata> {

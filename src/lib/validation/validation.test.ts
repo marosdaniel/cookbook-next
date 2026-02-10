@@ -3,20 +3,12 @@ import {
   loginValidationSchema,
   nameValidationSchema,
   newPasswordValidationSchema,
-  PASSWORD_VALIDATOR_REGEX_3_CHAR,
   recipeFormValidationSchema,
   WEAK_PASSWORD_REGEX,
 } from './validation';
 
 describe('validation', () => {
   describe('Regex Patterns', () => {
-    it('PASSWORD_VALIDATOR_REGEX_3_CHAR should validate correctly', () => {
-      expect(PASSWORD_VALIDATOR_REGEX_3_CHAR.test('Ab1')).toBe(true);
-      expect(PASSWORD_VALIDATOR_REGEX_3_CHAR.test('ab1')).toBe(false); // No uppercase
-      expect(PASSWORD_VALIDATOR_REGEX_3_CHAR.test('AB1')).toBe(false); // No lowercase
-      expect(PASSWORD_VALIDATOR_REGEX_3_CHAR.test('Aa1')).toBe(true);
-    });
-
     it('WEAK_PASSWORD_REGEX should validate correctly', () => {
       expect(WEAK_PASSWORD_REGEX.test('Abc12')).toBe(true);
       expect(WEAK_PASSWORD_REGEX.test('Ab1')).toBe(false); // Too short (min 5)
@@ -91,6 +83,8 @@ describe('validation', () => {
       });
       expect(result.success).toBe(false);
       if (!result.success) {
+        // Warning: Zod error structure might vary, relying on message check
+        // refine issue usually puts error on the path
         expect(result.error.issues[0].message).toBe('Passwords must match');
       }
     });
@@ -101,15 +95,22 @@ describe('validation', () => {
       title: 'Pasta',
       description: 'Delicious pasta',
       cookingTime: 30,
-      difficultyLevel: { key: 'easy', name: 'Easy', label: 'Easy' },
-      category: { key: 'main', name: 'Main', label: 'Main' },
-      ingredients: [{ name: 'Pasta', quantity: 200, unit: 'g' }],
-      steps: ['Boil water', 'Cook pasta'],
       servings: 2,
+      difficultyLevel: { value: 'easy', label: 'Easy' },
+      category: { value: 'main', label: 'Main' },
+      labels: [],
+      ingredients: [{ localId: '1', name: 'Pasta', quantity: 200, unit: 'g' }],
+      preparationSteps: [
+        { description: 'Boil water', order: 1 },
+        { description: 'Cook pasta', order: 2 },
+      ],
     };
 
     it('should accept a valid recipe', () => {
       const result = recipeFormValidationSchema.safeParse(validRecipe);
+      if (!result.success) {
+        console.error(result.error);
+      }
       expect(result.success).toBe(true);
     });
 

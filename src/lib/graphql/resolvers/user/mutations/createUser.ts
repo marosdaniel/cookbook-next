@@ -2,7 +2,7 @@ import { UserRole } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { ZodError } from 'zod';
 import { sendWelcomeEmail } from '@/lib/email/nodemailer';
-import { USER_REGISTER_MESSAGE_KEYS } from '@/lib/graphql/messageKeys';
+import { USER_REGISTER_MESSAGE_KEYS } from '@/lib/graphql/MESSAGE_KEYS';
 
 import { customValidationSchema } from '@/lib/validation/validation';
 import type { GraphQLContext } from '../../../../../types/graphql/context';

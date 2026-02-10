@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
 import { z } from 'zod';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/prisma/prisma';
 
 interface SetNewPasswordInput {
   token: string;
