@@ -19,14 +19,10 @@ import {
   IconX,
 } from '@tabler/icons-react';
 import { getIn, useFormikContext } from 'formik';
-import type { RecipeFormValues } from '../types';
+import type { RecipeFormValues } from '../../types';
+import type { MediaSectionProps } from './types';
 
-interface MediaSectionProps {
-  onBack: () => void;
-  onNext: () => void;
-}
-
-export function MediaSection({ onBack, onNext }: Readonly<MediaSectionProps>) {
+const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
   const { values, setFieldValue, touched, errors } =
     useFormikContext<RecipeFormValues>();
 
@@ -81,7 +77,6 @@ export function MediaSection({ onBack, onNext }: Readonly<MediaSectionProps>) {
           }
         />
 
-        {/* Inline image preview */}
         {values.imgSrc && (
           <Paper radius="md" style={{ overflow: 'hidden' }} withBorder>
             <Image
@@ -123,4 +118,6 @@ export function MediaSection({ onBack, onNext }: Readonly<MediaSectionProps>) {
       </Stack>
     </Paper>
   );
-}
+};
+
+export default MediaSection;

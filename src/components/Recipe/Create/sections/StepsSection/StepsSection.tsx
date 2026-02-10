@@ -20,21 +20,15 @@ import {
   IconWand,
 } from '@tabler/icons-react';
 import { getIn, useFormikContext } from 'formik';
-import type { RecipeFormValues } from '../types';
+import type { RecipeFormValues } from '../../types';
+import type { StepsSectionProps } from './types';
 
-interface StepsSectionProps {
-  onAdd: () => void;
-  onBack: () => void;
-  onSubmit: () => void;
-  isSubmitting: boolean;
-}
-
-export function StepsSection({
+const StepsSection = ({
   onAdd,
   onBack,
   onSubmit,
   isSubmitting,
-}: StepsSectionProps) {
+}: Readonly<StepsSectionProps>) => {
   const { values, setFieldValue, touched, errors } =
     useFormikContext<RecipeFormValues>();
 
@@ -46,7 +40,6 @@ export function StepsSection({
 
   const removeStep = (idx: number) => {
     const next = values.preparationSteps.filter((_, i) => i !== idx);
-    // Re-index orders
     const reordered = next.map((s, i) => ({ ...s, order: i + 1 }));
     setFieldValue('preparationSteps', reordered);
   };
@@ -213,4 +206,6 @@ export function StepsSection({
       </Stack>
     </Paper>
   );
-}
+};
+
+export default StepsSection;

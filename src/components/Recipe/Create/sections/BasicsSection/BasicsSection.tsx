@@ -21,22 +21,16 @@ import {
   IconUsers,
 } from '@tabler/icons-react';
 import { getIn, useFormikContext } from 'formik';
-import type { RecipeFormValues, TMetadataCleaned } from '../types';
-import { DESCRIPTION_MAX_LENGTH, sectionCompletion } from '../utils';
+import type { RecipeFormValues } from '../../types';
+import { DESCRIPTION_MAX_LENGTH, sectionCompletion } from '../../utils';
+import type { BasicsSectionProps } from './types';
 
-interface BasicsSectionProps {
-  categories: TMetadataCleaned[];
-  levels: TMetadataCleaned[];
-  labels: TMetadataCleaned[];
-  onNext: () => void;
-}
-
-export function BasicsSection({
+const BasicsSection = ({
   categories,
   levels,
   labels,
   onNext,
-}: Readonly<BasicsSectionProps>) {
+}: Readonly<BasicsSectionProps>) => {
   const { values, setFieldValue, touched, errors } =
     useFormikContext<RecipeFormValues>();
 
@@ -193,4 +187,6 @@ export function BasicsSection({
       </Stack>
     </Paper>
   );
-}
+};
+
+export default BasicsSection;
