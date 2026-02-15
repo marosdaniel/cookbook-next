@@ -31,3 +31,14 @@ export interface RecipeFormValues {
 }
 
 export type ComposerSection = 'basics' | 'media' | 'ingredients' | 'steps';
+
+export interface UseRecipeFormProps {
+  metadataLoaded: boolean;
+  onSectionChange: (section: ComposerSection) => void;
+  labels: TMetadataCleaned[];
+}
+
+export interface DraftState {
+  updatedAt: number;
+  values: RecipeFormValues;
+}

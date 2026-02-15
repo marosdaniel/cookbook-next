@@ -1,39 +1,27 @@
-import { gql } from '@apollo/client';
 import { useMutation } from '@apollo/client/react';
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconCheck, IconDeviceFloppy } from '@tabler/icons-react';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
+import { CREATE_RECIPE } from '@/lib/graphql/mutations';
 import { recipeFormValidationSchema } from '@/lib/validation/validation';
 import type {
-  ComposerSection,
+  DraftState,
   RecipeFormValues,
   TIngredient,
-  TMetadataCleaned,
   TPreparationStep,
+  UseRecipeFormProps,
 } from '../types';
-import { computeCompletion, DRAFT_STORAGE_KEY } from '../utils';
-
-/* ─── GraphQL ─────────────────────────────────── */
-const CREATE_RECIPE_MUTATION = gql`
-  mutation CreateRecipe($recipeCreateInput: RecipeCreateInput!) {
-    createRecipe(recipeCreateInput: $recipeCreateInput) {
-      id
-      title
-    }
-  }
-`;
-
-interface UseRecipeFormProps {
-  metadataLoaded: boolean;
-  onSectionChange: (section: ComposerSection) => void;
-  // Metadata options needed for transforming form values on submit
-  labels: TMetadataCleaned[];
-}
+import {
+  computeCompletion,
+  DRAFT_STORAGE_KEY,
+  transformValuesToInput,
+} from '../utils';
 
 export function useRecipeForm({
   metadataLoaded,
@@ -41,25 +29,28 @@ export function useRecipeForm({
   labels,
 }: UseRecipeFormProps) {
   const router = useRouter();
+  const t = useTranslations();
 
-  /* Draft persistence */
-  const [draft, setDraft] = useLocalStorage<{
-    updatedAt: number;
-    values: RecipeFormValues;
-  } | null>({
+  /**
+   * Local draft persistence using browser storage.
+   * Prevents data loss on page refresh or accidental navigation.
+   * Chosen over Redux/DB for performance (avoids high-frequency network calls)
+   * and to keep the draft logic local to the recipe creation flow.
+   */
+  const [draft, setDraft] = useLocalStorage<DraftState | null>({
     key: DRAFT_STORAGE_KEY,
     defaultValue: null,
   });
 
   /* Mutation */
   const [createRecipe, { loading: publishLoading }] = useMutation(
-    CREATE_RECIPE_MUTATION,
+    CREATE_RECIPE,
     {
       onCompleted: () => {
         setDraft(null);
         notifications.show({
-          title: 'Published! 🎉',
-          message: 'Your recipe is now live.',
+          title: t('notifications.recipeCreatedTitle'),
+          message: t('notifications.recipeCreatedMessage'),
           color: 'teal',
           icon: <IconCheck size={18} />,
         });
@@ -67,8 +58,9 @@ export function useRecipeForm({
       },
       onError: (error) => {
         notifications.show({
-          title: 'Publish failed',
-          message: error.message || 'Something went wrong.',
+          title: t('notifications.recipeCreateFailedTitle'),
+          message:
+            error.message || t('notifications.recipeCreateFailedMessage'),
           color: 'red',
         });
       },
@@ -96,46 +88,15 @@ export function useRecipeForm({
     onSubmit: async (values) => {
       if (!values.difficultyLevel || !values.category) {
         notifications.show({
-          title: 'Missing fields',
-          message: 'Please fill in Category and Difficulty before publishing.',
+          title: t('notifications.missingFieldsTitle'),
+          message: t('notifications.missingFieldsMessage'),
           color: 'orange',
         });
         onSectionChange('basics');
         return;
       }
 
-      const input = {
-        title: values.title,
-        description: values.description,
-        imgSrc: values.imgSrc,
-        cookingTime: Number(values.cookingTime),
-        servings: Number(values.servings),
-        difficultyLevel: {
-          value: values.difficultyLevel.value,
-          label: values.difficultyLevel.label,
-        },
-        category: {
-          value: values.category.value,
-          label: values.category.label,
-        },
-        labels: values.labels.map((lKey) => {
-          const found = labels.find((l) => l.value === lKey);
-          return found
-            ? { value: found.value, label: found.label }
-            : { value: lKey, label: lKey };
-        }),
-        youtubeLink: values.youtubeLink,
-        ingredients: values.ingredients.map((i) => ({
-          localId: i.localId,
-          name: i.name,
-          quantity: Number(i.quantity),
-          unit: i.unit,
-        })),
-        preparationSteps: values.preparationSteps.map((s, idx) => ({
-          description: s.description,
-          order: s.order || idx + 1,
-        })),
-      };
+      const input = transformValuesToInput(values, labels);
 
       await createRecipe({
         variables: { recipeCreateInput: input },
@@ -157,12 +118,19 @@ export function useRecipeForm({
   }, [debouncedValues, metadataLoaded, setDraft]);
 
   const lastSavedLabel = useMemo(() => {
-    if (!draft?.updatedAt) return 'Unsaved';
+    const unsaved = t('sidebar.unsaved') || 'Unsaved';
+    const justSaved = t('sidebar.justSaved') || 'Just saved';
+    const savedRecently = t('sidebar.savedRecently') || 'Saved recently';
+    const savedAgo = t('sidebar.savedAgo') || 'Saved {minutes}m ago';
+
+    if (!draft?.updatedAt) return unsaved;
     const delta = Date.now() - draft.updatedAt;
-    if (delta < 3_000) return 'Just saved';
-    if (delta < 60_000) return 'Saved recently';
-    return `Saved ${Math.floor(delta / 60_000)}m ago`;
-  }, [draft?.updatedAt]);
+    if (delta < 3_000) return justSaved;
+    if (delta < 60_000) return savedRecently;
+
+    const minutes = Math.floor(delta / 60_000);
+    return savedAgo.replace('{minutes}', minutes.toString());
+  }, [draft?.updatedAt, t]);
 
   /* Actions */
   const saveDraftNow = () => {
@@ -171,7 +139,7 @@ export function useRecipeForm({
       values: formik.values,
     });
     notifications.show({
-      message: 'Draft saved locally',
+      message: t('notifications.draftSavedMessage'),
       color: 'blue',
       icon: <IconDeviceFloppy size={16} />,
       withBorder: true,
@@ -197,8 +165,8 @@ export function useRecipeForm({
     });
     onSectionChange('basics');
     notifications.show({
-      title: 'Draft cleared',
-      message: 'Starting fresh.',
+      title: t('notifications.draftClearedTitle'),
+      message: t('notifications.draftClearedMessage'),
       color: 'gray',
     });
   };

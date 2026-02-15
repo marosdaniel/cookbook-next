@@ -1,6 +1,7 @@
 export * from './auth';
 export * from './general';
 export * from './misc';
+export * from './notifications';
 export * from './recipe';
 export * from './response';
 export * from './seo';

@@ -93,7 +93,11 @@
     "friends": "Barátok",
     "followings": "Követések",
     "allRecipes": "Összes recept",
-    "latestRecipes": "Legfrissebb receptek"
+    "latestRecipes": "Legfrissebb receptek",
+    "unsaved": "Nincs mentve",
+    "justSaved": "Épp most mentve",
+    "savedRecently": "Nemrég mentve",
+    "savedAgo": "Mentve {minutes} perce"
   },
   "recipe": {
     "notRatedYet": "Még nincs értékelve"
@@ -264,5 +268,16 @@
         "content": "Ha kérdése vagy észrevétele van ezzel a szabályzattal kapcsolatban, küldjön e-mailt a support@cookbook.com címre."
       }
     }
+  },
+  "notifications": {
+    "recipeCreatedTitle": "Közzétéve! 🎉",
+    "recipeCreatedMessage": "A recepted mostantól elérhető.",
+    "recipeCreateFailedTitle": "Sikertelen közzététel",
+    "recipeCreateFailedMessage": "Valami hiba történt.",
+    "missingFieldsTitle": "Hiányzó mezők",
+    "missingFieldsMessage": "Kérlek töltsd ki a Kategória és Nehézség mezőket közzététel előtt.",
+    "draftSavedMessage": "Piszkozat helyileg mentve",
+    "draftClearedTitle": "Piszkozat törölve",
+    "draftClearedMessage": "Tiszta lappal indulunk."
   }
 }

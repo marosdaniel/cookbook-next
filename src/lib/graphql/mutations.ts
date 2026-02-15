@@ -60,3 +60,12 @@ export const UPDATE_USER = gql`
     }
   }
 `;
+
+export const CREATE_RECIPE = gql`
+  mutation CreateRecipe($recipeCreateInput: RecipeCreateInput!) {
+    createRecipe(recipeCreateInput: $recipeCreateInput) {
+      id
+      title
+    }
+  }
+`;

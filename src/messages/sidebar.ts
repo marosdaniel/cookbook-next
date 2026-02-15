@@ -14,4 +14,8 @@ export const sidebarMessages = {
   followings: 'Following',
   allRecipes: 'All Recipes',
   latestRecipes: 'Latest Recipes',
+  unsaved: 'Unsaved',
+  justSaved: 'Just saved',
+  savedRecently: 'Saved recently',
+  savedAgo: 'Saved {minutes}m ago',
 };

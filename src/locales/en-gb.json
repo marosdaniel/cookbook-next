@@ -93,7 +93,11 @@
     "friends": "Friends",
     "followings": "Following",
     "allRecipes": "All Recipes",
-    "latestRecipes": "Latest Recipes"
+    "latestRecipes": "Latest Recipes",
+    "unsaved": "Unsaved",
+    "justSaved": "Just saved",
+    "savedRecently": "Saved recently",
+    "savedAgo": "Saved {minutes}m ago"
   },
   "recipe": {
     "notRatedYet": "Not rated yet"
@@ -264,5 +268,16 @@
         "content": "If you have questions or comments about this policy, you may email us at support@cookbook.com."
       }
     }
+  },
+  "notifications": {
+    "recipeCreatedTitle": "Published! 🎉",
+    "recipeCreatedMessage": "Your recipe is now live.",
+    "recipeCreateFailedTitle": "Publish failed",
+    "recipeCreateFailedMessage": "Something went wrong.",
+    "missingFieldsTitle": "Missing fields",
+    "missingFieldsMessage": "Please fill in Category and Difficulty before publishing.",
+    "draftSavedMessage": "Draft saved locally",
+    "draftClearedTitle": "Draft cleared",
+    "draftClearedMessage": "Starting fresh."
   }
 }

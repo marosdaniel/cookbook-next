@@ -75,3 +75,41 @@ export function toCleanedOptions(
     };
   });
 }
+
+export function transformValuesToInput(
+  values: RecipeFormValues,
+  labels: TMetadataCleaned[],
+) {
+  return {
+    title: values.title,
+    description: values.description,
+    imgSrc: values.imgSrc,
+    cookingTime: Number(values.cookingTime),
+    servings: Number(values.servings),
+    difficultyLevel: {
+      value: values.difficultyLevel?.value ?? '',
+      label: values.difficultyLevel?.label ?? '',
+    },
+    category: {
+      value: values.category?.value ?? '',
+      label: values.category?.label ?? '',
+    },
+    labels: values.labels.map((lKey) => {
+      const found = labels.find((l) => l.value === lKey);
+      return found
+        ? { value: found.value, label: found.label }
+        : { value: lKey, label: lKey };
+    }),
+    youtubeLink: values.youtubeLink,
+    ingredients: values.ingredients.map((i) => ({
+      localId: i.localId,
+      name: i.name,
+      quantity: Number(i.quantity),
+      unit: i.unit,
+    })),
+    preparationSteps: values.preparationSteps.map((s, idx) => ({
+      description: s.description,
+      order: s.order || idx + 1,
+    })),
+  };
+}
