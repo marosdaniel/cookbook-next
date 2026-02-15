@@ -1,3 +1,10 @@
+# [1.36.0](https://github.com/marosdaniel/cookbook-next/compare/v1.35.0...v1.36.0) (2026-02-15)
+
+
+### Features
+
+* Introduce recipe creation with GraphQL mutation, local draft saving, and internationalized success/error notifications. ([92afa90](https://github.com/marosdaniel/cookbook-next/commit/92afa907e77380f11f0383c8dd0571aad7b8ef8b))
+
 # [1.35.0](https://github.com/marosdaniel/cookbook-next/compare/v1.34.0...v1.35.0) (2026-02-10)
 
 
