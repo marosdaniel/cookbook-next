@@ -1,21 +1,18 @@
-'use client';
+import type { Metadata } from 'next';
+import { getLocaleFromCookies } from '@/lib/locale/locale.server';
+import { getMetadata } from '@/lib/seo/seo';
+import RecipeCreateClient from './RecipeCreateClient';
 
-import { redirect } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { useEffect } from 'react';
-import { RecipeComposer } from '@/components/Recipe/Create/RecipeComposer';
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocaleFromCookies();
+  return getMetadata(locale, 'seo', {
+    titleKey: 'createRecipeTitle',
+    descriptionKey: 'createRecipeDescription',
+    fallbackTitle: 'Create Recipe',
+    fallbackDescription: 'Share your recipes',
+  });
+}
 
 export default function NewRecipePage() {
-  const { data: session, status } = useSession();
-
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      redirect('/api/auth/signin');
-    }
-  }, [status]);
-
-  if (status === 'loading') return null;
-  if (!session) return null;
-
-  return <RecipeComposer />;
+  return <RecipeCreateClient />;
 }

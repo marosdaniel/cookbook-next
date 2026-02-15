@@ -1,17 +1,17 @@
 import type { Metadata } from 'next';
 import type { FC } from 'react';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
-import { getAuthMetadata } from '@/lib/seo/seo';
+import { getMetadata } from '@/lib/seo/seo';
 import SignUpForm from './SignUpForm';
 
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocaleFromCookies();
-  return getAuthMetadata(locale, {
-    titleKey: 'createAccount',
+  return getMetadata(locale, 'seo', {
+    titleKey: 'signupTitle',
     descriptionKey: 'signupDescription',
-    fallbackTitle: 'Create Account',
+    fallbackTitle: 'Register',
     fallbackDescription: 'Create your account',
   });
 }

@@ -2,12 +2,12 @@ import { Box, Container, Stack, Text, Title } from '@mantine/core';
 import type { Metadata } from 'next';
 import { getLocaleMessages } from '@/lib/locale/locale';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
-import { getAuthMetadata } from '@/lib/seo/seo';
+import { getMetadata } from '@/lib/seo/seo';
 import type { LegalMessages } from '@/types/common';
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocaleFromCookies();
-  return getAuthMetadata(locale, {
+  return getMetadata(locale, 'seo', {
     titleKey: 'privacyPolicyTitle',
     descriptionKey: 'privacyPolicyDescription',
     fallbackTitle: 'Privacy Policy',

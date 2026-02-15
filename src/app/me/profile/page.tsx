@@ -1,28 +1,18 @@
-import { Stack, Title } from '@mantine/core';
 import type { Metadata } from 'next';
-import { useTranslations } from 'next-intl';
-import { getTranslations } from 'next-intl/server';
-import Password from './Password';
-import PersonalData from './PersonalData';
+import { getLocaleFromCookies } from '@/lib/locale/locale.server';
+import { getMetadata } from '@/lib/seo/seo';
+import ProfileClient from './ProfileClient';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('user');
-
-  return {
-    title: t('profileTabTitle'),
-  };
+  const locale = await getLocaleFromCookies();
+  return getMetadata(locale, 'seo', {
+    titleKey: 'profileTitle',
+    descriptionKey: 'profileDescription',
+    fallbackTitle: 'Profile',
+    fallbackDescription: 'Manage your profile',
+  });
 }
 
-const ProfilePage = () => {
-  const translate = useTranslations('user');
-
-  return (
-    <Stack gap="xl">
-      <Title order={2}>{translate('profileTabTitle')}</Title>
-      <PersonalData />
-      <Password />
-    </Stack>
-  );
-};
-
-export default ProfilePage;
+export default function ProfilePage() {
+  return <ProfileClient />;
+}
