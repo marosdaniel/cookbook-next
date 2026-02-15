@@ -15,18 +15,10 @@ import {
   IconEye,
   IconWand,
 } from '@tabler/icons-react';
+import { getProgressColor } from '../../utils';
+import type { ComposerHeaderProps } from './types';
 
-interface ComposerHeaderProps {
-  onBack: () => void;
-  completion: { done: number; total: number; percent: number };
-  lastSavedLabel: string;
-  onSave: () => void;
-  onPreview: () => void;
-  onPublish: () => void;
-  publishLoading: boolean;
-}
-
-export function ComposerHeader({
+const ComposerHeader = ({
   onBack,
   completion,
   lastSavedLabel,
@@ -34,14 +26,8 @@ export function ComposerHeader({
   onPreview,
   onPublish,
   publishLoading,
-}: Readonly<ComposerHeaderProps>) {
-  let ringColor = 'orange';
-
-  if (completion.percent === 100) {
-    ringColor = 'teal';
-  } else if (completion.percent > 50) {
-    ringColor = 'blue';
-  }
+}: Readonly<ComposerHeaderProps>) => {
+  const ringColor = getProgressColor(completion.percent);
 
   return (
     <Paper
@@ -133,4 +119,6 @@ export function ComposerHeader({
       </Group>
     </Paper>
   );
-}
+};
+
+export default ComposerHeader;

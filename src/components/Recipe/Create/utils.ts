@@ -113,3 +113,16 @@ export function transformValuesToInput(
     })),
   };
 }
+
+/* ─── UI Helpers ─────────────────────────────── */
+export function getProgressColor(percent: number): string {
+  if (percent === 100) return 'teal';
+  if (percent > 50) return 'blue';
+  return 'orange';
+}
+
+export function getStatusColor(isComplete: boolean, isActive: boolean): string {
+  if (isComplete) return 'green';
+  if (isActive) return 'blue';
+  return 'gray';
+}

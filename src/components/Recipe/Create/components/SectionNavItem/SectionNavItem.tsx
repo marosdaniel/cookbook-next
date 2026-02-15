@@ -1,18 +1,9 @@
 import { Badge, Box, Group, Paper, Text, ThemeIcon } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
+import { getStatusColor } from '../../utils';
+import type { SectionNavItemProps } from './types';
 
-/* ─── Section Nav Item ────────────────────────── */
-interface SectionNavItemProps {
-  label: string;
-  hint: string;
-  icon: React.ReactNode;
-  active: boolean;
-  completionDone: number;
-  completionTotal: number;
-  onClick: () => void;
-}
-
-export function SectionNavItem({
+const SectionNavItem = ({
   label,
   hint,
   icon,
@@ -20,8 +11,9 @@ export function SectionNavItem({
   completionDone,
   completionTotal,
   onClick,
-}: SectionNavItemProps) {
+}: SectionNavItemProps) => {
   const isComplete = completionDone === completionTotal && completionTotal > 0;
+  const statusColor = getStatusColor(isComplete, active);
 
   return (
     <Paper
@@ -43,7 +35,7 @@ export function SectionNavItem({
           size={36}
           radius="md"
           variant="light"
-          color={isComplete ? 'green' : active ? 'blue' : 'gray'}
+          color={statusColor}
         >
           {isComplete ? <IconCheck size={18} /> : icon}
         </ThemeIcon>
@@ -61,4 +53,6 @@ export function SectionNavItem({
       </Group>
     </Paper>
   );
-}
+};
+
+export default SectionNavItem;

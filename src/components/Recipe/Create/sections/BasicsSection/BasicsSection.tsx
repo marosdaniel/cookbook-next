@@ -20,7 +20,8 @@ import {
   IconSparkles,
   IconUsers,
 } from '@tabler/icons-react';
-import { getIn, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
+import { useFormikError } from '../../hooks/useFormikError';
 import type { RecipeFormValues } from '../../types';
 import { DESCRIPTION_MAX_LENGTH, sectionCompletion } from '../../utils';
 import type { BasicsSectionProps } from './types';
@@ -31,14 +32,8 @@ const BasicsSection = ({
   labels,
   onNext,
 }: Readonly<BasicsSectionProps>) => {
-  const { values, setFieldValue, touched, errors } =
-    useFormikContext<RecipeFormValues>();
-
-  const getFieldError = (path: string): string | undefined => {
-    const isTouched = Boolean(getIn(touched, path));
-    const error = getIn(errors, path);
-    return isTouched && typeof error === 'string' ? error : undefined;
-  };
+  const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
+  const { getFieldError } = useFormikError();
 
   const descLength = values.description?.length ?? 0;
   const completion = sectionCompletion('basics', values);

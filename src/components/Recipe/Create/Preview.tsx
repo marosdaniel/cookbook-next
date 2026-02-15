@@ -31,9 +31,11 @@ interface PreviewProps {
   values: RecipeFormValues;
 }
 
-export const Preview = memo(({ labels, values }: PreviewProps) => {
-  const difficultyLabel = values.difficultyLevel?.label ?? '—';
-  const categoryLabel = values.category?.label ?? '—';
+const NO_VALUE_FALLBACK = '—';
+
+export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
+  const categoryLabel = values.category?.label;
+  const difficultyLabel = values.difficultyLevel?.label;
   const tags = values.labels
     .map((k) => labels.find((l) => l.value === k)?.label ?? k)
     .filter(Boolean);
@@ -104,7 +106,7 @@ export const Preview = memo(({ labels, values }: PreviewProps) => {
             p={{ base: 'md', sm: 'xl' }}
           >
             <Group gap="xs" mb="xs">
-              {categoryLabel !== '—' && (
+              {categoryLabel && (
                 <Badge
                   variant="filled"
                   color="rgba(255,255,255,0.2)"
@@ -115,7 +117,7 @@ export const Preview = memo(({ labels, values }: PreviewProps) => {
                   {categoryLabel}
                 </Badge>
               )}
-              {difficultyLabel !== '—' && (
+              {difficultyLabel && (
                 <Badge
                   variant="filled"
                   color="rgba(255,255,255,0.2)"
@@ -161,7 +163,9 @@ export const Preview = memo(({ labels, values }: PreviewProps) => {
                 <Group gap={6}>
                   <IconClock size={18} color="var(--mantine-color-orange-6)" />
                   <Text fw={700}>
-                    {values.cookingTime ? `${values.cookingTime} m` : '—'}
+                    {values.cookingTime
+                      ? `${values.cookingTime} m`
+                      : NO_VALUE_FALLBACK}
                   </Text>
                 </Group>
               </Stack>
@@ -174,7 +178,9 @@ export const Preview = memo(({ labels, values }: PreviewProps) => {
                 <Group gap={6}>
                   <IconUsers size={18} color="var(--mantine-color-blue-6)" />
                   <Text fw={700}>
-                    {values.servings ? `${values.servings} pp` : '—'}
+                    {values.servings
+                      ? `${values.servings} pp`
+                      : NO_VALUE_FALLBACK}
                   </Text>
                 </Group>
               </Stack>

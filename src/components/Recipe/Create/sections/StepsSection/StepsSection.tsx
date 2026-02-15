@@ -19,7 +19,8 @@ import {
   IconTrash,
   IconWand,
 } from '@tabler/icons-react';
-import { getIn, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
+import { useFormikError } from '../../hooks/useFormikError';
 import type { RecipeFormValues } from '../../types';
 import type { StepsSectionProps } from './types';
 
@@ -29,14 +30,8 @@ const StepsSection = ({
   onSubmit,
   isSubmitting,
 }: Readonly<StepsSectionProps>) => {
-  const { values, setFieldValue, touched, errors } =
-    useFormikContext<RecipeFormValues>();
-
-  const getFieldError = (path: string): string | undefined => {
-    const isTouched = Boolean(getIn(touched, path));
-    const error = getIn(errors, path);
-    return isTouched && typeof error === 'string' ? error : undefined;
-  };
+  const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
+  const { getFieldError } = useFormikError();
 
   const removeStep = (idx: number) => {
     const next = values.preparationSteps.filter((_, i) => i !== idx);

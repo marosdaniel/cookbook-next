@@ -18,19 +18,14 @@ import {
   IconVideo,
   IconX,
 } from '@tabler/icons-react';
-import { getIn, useFormikContext } from 'formik';
+import { useFormikContext } from 'formik';
+import { useFormikError } from '../../hooks/useFormikError';
 import type { RecipeFormValues } from '../../types';
 import type { MediaSectionProps } from './types';
 
 const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
-  const { values, setFieldValue, touched, errors } =
-    useFormikContext<RecipeFormValues>();
-
-  const getFieldError = (path: string): string | undefined => {
-    const isTouched = Boolean(getIn(touched, path));
-    const error = getIn(errors, path);
-    return isTouched && typeof error === 'string' ? error : undefined;
-  };
+  const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
+  const { getFieldError } = useFormikError();
 
   return (
     <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm">

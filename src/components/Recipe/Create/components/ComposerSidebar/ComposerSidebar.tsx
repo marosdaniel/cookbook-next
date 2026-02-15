@@ -15,21 +15,11 @@ import {
   IconToolsKitchen2,
   IconTrash,
 } from '@tabler/icons-react';
-import type { ComposerSection, RecipeFormValues } from '../types';
-import { sectionCompletion } from '../utils';
-import { SectionNavItem } from './SectionNavItem';
+import { getProgressColor, sectionCompletion } from '../../utils';
+import SectionNavItem from '../SectionNavItem';
+import type { ComposerSidebarProps } from './types';
 
-interface ComposerSidebarProps {
-  activeSection: ComposerSection;
-  onSectionChange: (section: ComposerSection) => void;
-  values: RecipeFormValues;
-  completion: { done: number; total: number; percent: number };
-  onAddIngredient: () => void;
-  onAddStep: () => void;
-  onResetDraft: () => void;
-}
-
-export function ComposerSidebar({
+const ComposerSidebar = ({
   activeSection,
   onSectionChange,
   values,
@@ -37,7 +27,7 @@ export function ComposerSidebar({
   onAddIngredient,
   onAddStep,
   onResetDraft,
-}: Readonly<ComposerSidebarProps>) {
+}: Readonly<ComposerSidebarProps>) => {
   const sectionItems = [
     {
       key: 'basics' as const,
@@ -79,15 +69,14 @@ export function ComposerSidebar({
         </Text>
         {sectionItems.map((s) => {
           const sc = sectionCompletion(s.key, values);
-          let hint = `${sc.done}/${sc.total} filled`;
-
-          if (s.key === 'ingredients') {
-            hint = `${values.ingredients.length} items`;
-          } else if (s.key === 'steps') {
-            hint = `${values.preparationSteps.length} steps`;
-          } else if (s.key === 'media') {
-            hint = values.imgSrc ? 'Cover set' : 'Optional';
-          }
+          const hint = (() => {
+            if (s.key === 'ingredients')
+              return `${values.ingredients.length} items`;
+            if (s.key === 'steps')
+              return `${values.preparationSteps.length} steps`;
+            if (s.key === 'media') return values.imgSrc ? 'Cover set' : 'Optional';
+            return `${sc.done}/${sc.total} filled`;
+          })();
 
           return (
             <SectionNavItem
@@ -108,7 +97,7 @@ export function ComposerSidebar({
           value={completion.percent}
           size="sm"
           radius="xl"
-          color={completion.percent === 100 ? 'teal' : 'blue'}
+          color={getProgressColor(completion.percent)}
         />
         <Text size="xs" c="dimmed" ta="center">
           {completion.percent}% complete
@@ -158,4 +147,6 @@ export function ComposerSidebar({
       </Stack>
     </Box>
   );
-}
+};
+
+export default ComposerSidebar;
