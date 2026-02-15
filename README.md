@@ -161,7 +161,6 @@ cookbook-next/
 │   ├── providers/             # React context providers
 │   ├── types/                 # TypeScript type definitions
 │   ├── locales/               # Translation files
-│   ├── messages/              # i18n message keys
 │   └── auth.ts                # NextAuth v5 configuration
 ├── prisma/
 │   └── schema.prisma          # Database schema
