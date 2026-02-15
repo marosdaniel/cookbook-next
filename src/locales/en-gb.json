@@ -279,5 +279,60 @@
     "draftSavedMessage": "Draft saved locally",
     "draftClearedTitle": "Draft cleared",
     "draftClearedMessage": "Starting fresh."
+  },
+  "recipeComposer": {
+    "sections": {
+      "basics": {
+        "title": "Basics",
+        "recipeNamePlaceholder": "Give your recipe a catchy name...",
+        "recipeStoryPlaceholder": "Tell the story behind this dish. What makes it special?",
+        "cookingTime": "Cooking Time (min)",
+        "cookingTimePlaceholder": "e.g. 45",
+        "servings": "Servings",
+        "servingsPlaceholder": "e.g. 4",
+        "category": "Category",
+        "select": "Select...",
+        "difficulty": "Difficulty",
+        "tags": "Tags",
+        "tagsPlaceholder": "Add searchable tags...",
+        "next": "Next: Media"
+      },
+      "media": {
+        "title": "Media",
+        "optional": "Optional",
+        "set": "Set",
+        "description": "A stunning cover image makes your recipe stand out. Paste a URL below or leave it empty for now.",
+        "coverImageUrl": "Cover Image URL",
+        "imageUrlPlaceholder": "https://...",
+        "coverPreview": "Cover preview",
+        "invalidImageUrl": "Invalid Image URL",
+        "youtubeVideo": "YouTube Video (Optional)",
+        "youtubeUrlPlaceholder": "https://youtube.com/watch?v=...",
+        "back": "Back",
+        "next": "Next: Ingredients"
+      },
+      "ingredients": {
+        "title": "Ingredients",
+        "itemsCount": "{count} items",
+        "addIngredient": "Add ingredient",
+        "itemName": "Item name",
+        "qty": "Qty",
+        "unit": "Unit",
+        "noIngredients": "No ingredients yet. Add items that make this dish special.",
+        "addFirst": "Add first ingredient",
+        "back": "Back",
+        "next": "Next: Steps"
+      },
+      "steps": {
+        "title": "Steps",
+        "stepsCount": "{count} steps",
+        "addStep": "Add step",
+        "emptyState": "Start adding the steps to recreate this masterpiece.",
+        "addFirst": "Add first step",
+        "stepPlaceholder": "Describe step {index}...",
+        "back": "Back",
+        "publish": "Publish Recipe"
+      }
+    }
   }
 }

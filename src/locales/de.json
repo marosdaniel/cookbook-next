@@ -278,5 +278,60 @@
     "draftSavedMessage": "Entwurf lokal gespeichert",
     "draftClearedTitle": "Entwurf gelöscht",
     "draftClearedMessage": "Alles auf Anfang."
+  },
+  "recipeComposer": {
+    "sections": {
+      "basics": {
+        "title": "Grundlagen",
+        "recipeNamePlaceholder": "Gib deinem Rezept einen eingängigen Namen...",
+        "recipeStoryPlaceholder": "Erzähle die Geschichte hinter diesem Gericht. Was macht es besonders?",
+        "cookingTime": "Kochzeit (Min)",
+        "cookingTimePlaceholder": "z.B. 45",
+        "servings": "Portionen",
+        "servingsPlaceholder": "z.B. 4",
+        "category": "Kategorie",
+        "select": "Auswählen...",
+        "difficulty": "Schwierigkeit",
+        "tags": "Tags",
+        "tagsPlaceholder": "Suchbare Tags hinzufügen...",
+        "next": "Weiter: Medien"
+      },
+      "media": {
+        "title": "Medien",
+        "optional": "Optional",
+        "set": "Gesetzt",
+        "description": "Ein atemberaubendes Titelbild hebt dein Rezept hervor. Füge unten eine URL ein oder lasse es vorerst leer.",
+        "coverImageUrl": "Titelbild-URL",
+        "imageUrlPlaceholder": "https://...",
+        "coverPreview": "Vorschau Titelbild",
+        "invalidImageUrl": "Ungültige Bild-URL",
+        "youtubeVideo": "YouTube Video (Optional)",
+        "youtubeUrlPlaceholder": "https://youtube.com/watch?v=...",
+        "back": "Zurück",
+        "next": "Weiter: Zutaten"
+      },
+      "ingredients": {
+        "title": "Zutaten",
+        "itemsCount": "{count} Zutaten",
+        "addIngredient": "Zutat hinzufügen",
+        "itemName": "Name",
+        "qty": "Menge",
+        "unit": "Einheit",
+        "noIngredients": "Noch keine Zutaten. Füge Dinge hinzu, die dieses Gericht besonders machen.",
+        "addFirst": "Erste Zutat hinzufügen",
+        "back": "Zurück",
+        "next": "Weiter: Schritte"
+      },
+      "steps": {
+        "title": "Schritte",
+        "stepsCount": "{count} Schritte",
+        "addStep": "Schritt hinzufügen",
+        "emptyState": "Füge Schritte hinzu, um dieses Meisterwerk nachzukochen.",
+        "addFirst": "Ersten Schritt hinzufügen",
+        "stepPlaceholder": "Schritt {index} beschreiben...",
+        "back": "Zurück",
+        "publish": "Rezept veröffentlichen"
+      }
+    }
   }
 }

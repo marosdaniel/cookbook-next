@@ -19,6 +19,7 @@ import {
   IconTrash,
   IconWand,
 } from '@tabler/icons-react';
+import { useTranslations } from 'next-intl';
 import { useFormikContext } from 'formik';
 import { useFormikError } from '../../hooks/useFormikError';
 import type { RecipeFormValues } from '../../types';
@@ -30,6 +31,7 @@ const StepsSection = ({
   onSubmit,
   isSubmitting,
 }: Readonly<StepsSectionProps>) => {
+  const t = useTranslations('recipeComposer.sections.steps');
   const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
   const { getFieldError } = useFormikError();
 
@@ -61,13 +63,13 @@ const StepsSection = ({
             >
               <IconChefHat size={18} />
             </ThemeIcon>
-            <Title order={3}>Steps</Title>
+            <Title order={3}>{t('title')}</Title>
           </Group>
           <Badge
             variant="light"
             color={values.preparationSteps.length ? 'green' : 'red'}
           >
-            {values.preparationSteps.length} steps
+            {t('stepsCount', { count: values.preparationSteps.length })}
           </Badge>
         </Group>
 
@@ -76,7 +78,7 @@ const StepsSection = ({
           leftSection={<IconPlus size={16} />}
           onClick={onAdd}
         >
-          Add step
+          {t('addStep')}
         </Button>
 
         <Stack gap="xs">
@@ -92,7 +94,7 @@ const StepsSection = ({
                   <IconChefHat size={24} />
                 </ThemeIcon>
                 <Text c="dimmed" ta="center" size="sm">
-                  Start adding the steps to recreate this masterpiece.
+                  {t('emptyState')}
                 </Text>
                 <Button
                   variant="light"
@@ -100,7 +102,7 @@ const StepsSection = ({
                   onClick={onAdd}
                   leftSection={<IconPlus size={14} />}
                 >
-                  Add first step
+                  {t('addFirst')}
                 </Button>
               </Stack>
             </Paper>
@@ -123,7 +125,7 @@ const StepsSection = ({
                   </Text>
                 </ThemeIcon>
                 <Textarea
-                  placeholder={`Describe step ${idx + 1}...`}
+                  placeholder={t('stepPlaceholder', { index: idx + 1 })}
                   autosize
                   minRows={2}
                   value={step.description}
@@ -187,7 +189,7 @@ const StepsSection = ({
             onClick={onBack}
             leftSection={<IconArrowLeft size={16} />}
           >
-            Back
+            {t('back')}
           </Button>
           <Button
             color="dark"
@@ -195,7 +197,7 @@ const StepsSection = ({
             onClick={onSubmit}
             leftSection={<IconWand size={16} />}
           >
-            Publish Recipe
+            {t('publish')}
           </Button>
         </Group>
       </Stack>

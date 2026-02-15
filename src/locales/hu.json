@@ -279,5 +279,60 @@
     "draftSavedMessage": "Piszkozat helyileg mentve",
     "draftClearedTitle": "Piszkozat törölve",
     "draftClearedMessage": "Tiszta lappal indulunk."
+  },
+  "recipeComposer": {
+    "sections": {
+      "basics": {
+        "title": "Alapadatok",
+        "recipeNamePlaceholder": "Adj a receptnek egy fülbemászó nevet...",
+        "recipeStoryPlaceholder": "Meséld el az étel történetét. Mitől különleges?",
+        "cookingTime": "Főzési idő (perc)",
+        "cookingTimePlaceholder": "pl. 45",
+        "servings": "Adagok",
+        "servingsPlaceholder": "pl. 4",
+        "category": "Kategória",
+        "select": "Válassz...",
+        "difficulty": "Nehézség",
+        "tags": "Címkék",
+        "tagsPlaceholder": "Adj hozzá kereshető címkéket...",
+        "next": "Következő: Média"
+      },
+      "media": {
+        "title": "Média",
+        "optional": "Opcionális",
+        "set": "Beállítva",
+        "description": "Egy lenyűgöző borítókép kiemeli a receptedet. Illessz be egy URL-t, vagy hagyd üresen egyelőre.",
+        "coverImageUrl": "Borítókép URL",
+        "imageUrlPlaceholder": "https://...",
+        "coverPreview": "Borítókép előnézet",
+        "invalidImageUrl": "Érvénytelen kép URL",
+        "youtubeVideo": "YouTube Videó (Opcionális)",
+        "youtubeUrlPlaceholder": "https://youtube.com/watch?v=...",
+        "back": "Vissza",
+        "next": "Következő: Hozzávalók"
+      },
+      "ingredients": {
+        "title": "Hozzávalók",
+        "itemsCount": "{count} tétel",
+        "addIngredient": "Hozzávaló hozzáadása",
+        "itemName": "Megnevezés",
+        "qty": "Mennyiség",
+        "unit": "Egység",
+        "noIngredients": "Még nincsenek hozzávalók. Adj hozzá tetteket, amik különlegessé teszik ezt az ételt.",
+        "addFirst": "Első hozzávaló hozzáadása",
+        "back": "Vissza",
+        "next": "Következő: Lépések"
+      },
+      "steps": {
+        "title": "Lépések",
+        "stepsCount": "{count} lépés",
+        "addStep": "Lépés hozzáadása",
+        "emptyState": "Kezdd el hozzáadni a lépéseket, hogy újraalkothassák ezt a remekművet.",
+        "addFirst": "Első lépés hozzáadása",
+        "stepPlaceholder": "{index}. lépés leírása...",
+        "back": "Vissza",
+        "publish": "Recept közzététele"
+      }
+    }
   }
 }

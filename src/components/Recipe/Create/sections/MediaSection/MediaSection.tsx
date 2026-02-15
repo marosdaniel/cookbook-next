@@ -18,12 +18,14 @@ import {
   IconVideo,
   IconX,
 } from '@tabler/icons-react';
+import { useTranslations } from 'next-intl';
 import { useFormikContext } from 'formik';
 import { useFormikError } from '../../hooks/useFormikError';
 import type { RecipeFormValues } from '../../types';
 import type { MediaSectionProps } from './types';
 
 const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
+  const t = useTranslations('recipeComposer.sections.media');
   const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
   const { getFieldError } = useFormikError();
 
@@ -40,21 +42,20 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
             >
               <IconPhoto size={18} />
             </ThemeIcon>
-            <Title order={3}>Media</Title>
+            <Title order={3}>{t('title')}</Title>
           </Group>
           <Badge variant="light" color={values.imgSrc ? 'green' : 'gray'}>
-            {values.imgSrc ? 'Set' : 'Optional'}
+            {values.imgSrc ? t('set') : t('optional')}
           </Badge>
         </Group>
 
         <Text c="dimmed" size="sm">
-          A stunning cover image makes your recipe stand out. Paste a URL below
-          or leave it empty for now.
+          {t('description')}
         </Text>
 
         <TextInput
-          label="Cover Image URL"
-          placeholder="https://..."
+          label={t('coverImageUrl')}
+          placeholder={t('imageUrlPlaceholder')}
           leftSection={<IconPhoto size={16} />}
           value={values.imgSrc}
           onChange={(e) => setFieldValue('imgSrc', e.target.value)}
@@ -76,17 +77,17 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
           <Paper radius="md" style={{ overflow: 'hidden' }} withBorder>
             <Image
               src={values.imgSrc}
-              alt="Cover preview"
+              alt={t('coverPreview')}
               h={220}
               fit="cover"
-              fallbackSrc="https://placehold.co/800x400?text=Invalid+Image+URL"
+              fallbackSrc={`https://placehold.co/800x400?text=${t('invalidImageUrl')}`}
             />
           </Paper>
         )}
 
         <TextInput
-          label="YouTube Video (Optional)"
-          placeholder="https://youtube.com/watch?v=..."
+          label={t('youtubeVideo')}
+          placeholder={t('youtubeUrlPlaceholder')}
           leftSection={<IconVideo size={16} />}
           value={values.youtubeLink}
           onChange={(e) => setFieldValue('youtubeLink', e.target.value)}
@@ -100,14 +101,14 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
             onClick={onBack}
             leftSection={<IconArrowLeft size={16} />}
           >
-            Back
+            {t('back')}
           </Button>
           <Button
             variant="light"
             onClick={onNext}
             rightSection={<IconToolsKitchen2 size={16} />}
           >
-            Next: Ingredients
+            {t('next')}
           </Button>
         </Group>
       </Stack>

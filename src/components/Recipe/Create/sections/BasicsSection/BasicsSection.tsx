@@ -20,6 +20,7 @@ import {
   IconSparkles,
   IconUsers,
 } from '@tabler/icons-react';
+import { useTranslations } from 'next-intl';
 import { useFormikContext } from 'formik';
 import { useFormikError } from '../../hooks/useFormikError';
 import type { RecipeFormValues } from '../../types';
@@ -32,6 +33,7 @@ const BasicsSection = ({
   labels,
   onNext,
 }: Readonly<BasicsSectionProps>) => {
+  const t = useTranslations('recipeComposer.sections.basics');
   const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
   const { getFieldError } = useFormikError();
 
@@ -52,7 +54,7 @@ const BasicsSection = ({
             >
               <IconSparkles size={18} />
             </ThemeIcon>
-            <Title order={3}>Basics</Title>
+            <Title order={3}>{t('title')}</Title>
           </Group>
           <Badge variant="light" color={isComplete ? 'green' : 'gray'}>
             {completion.done}/{completion.total}
@@ -60,7 +62,7 @@ const BasicsSection = ({
         </Group>
 
         <TextInput
-          placeholder="Give your recipe a catchy name..."
+          placeholder={t('recipeNamePlaceholder')}
           variant="unstyled"
           size="xl"
           value={values.title}
@@ -78,7 +80,7 @@ const BasicsSection = ({
 
         <Box>
           <Textarea
-            placeholder="Tell the story behind this dish. What makes it special?"
+            placeholder={t('recipeStoryPlaceholder')}
             autosize
             minRows={3}
             variant="unstyled"
@@ -105,11 +107,11 @@ const BasicsSection = ({
             <Text fw={600} size="sm">
               <Group gap={6}>
                 <IconClock size={14} />
-                Cooking Time (min)
+                {t('cookingTime')}
               </Group>
             </Text>
             <TextInput
-              placeholder="e.g. 45"
+              placeholder={t('cookingTimePlaceholder')}
               value={values.cookingTime}
               onChange={(e) => setFieldValue('cookingTime', e.target.value)}
               error={getFieldError('cookingTime')}
@@ -119,11 +121,11 @@ const BasicsSection = ({
             <Text fw={600} size="sm">
               <Group gap={6}>
                 <IconUsers size={14} />
-                Servings
+                {t('servings')}
               </Group>
             </Text>
             <TextInput
-              placeholder="e.g. 4"
+              placeholder={t('servingsPlaceholder')}
               value={values.servings}
               onChange={(e) => setFieldValue('servings', e.target.value)}
               error={getFieldError('servings')}
@@ -133,8 +135,8 @@ const BasicsSection = ({
 
         <Group grow align="flex-start">
           <Select
-            label="Category"
-            placeholder="Select..."
+            label={t('category')}
+            placeholder={t('select')}
             searchable
             data={categories}
             value={values.category?.value ?? null}
@@ -145,8 +147,8 @@ const BasicsSection = ({
             error={getFieldError('category')}
           />
           <Select
-            label="Difficulty"
-            placeholder="Select..."
+            label={t('difficulty')}
+            placeholder={t('select')}
             searchable
             data={levels}
             value={values.difficultyLevel?.value ?? null}
@@ -159,8 +161,8 @@ const BasicsSection = ({
         </Group>
 
         <MultiSelect
-          label="Tags"
-          placeholder="Add searchable tags..."
+          label={t('tags')}
+          placeholder={t('tagsPlaceholder')}
           searchable
           clearable
           data={labels}
@@ -176,7 +178,7 @@ const BasicsSection = ({
             onClick={onNext}
             rightSection={<IconPhoto size={16} />}
           >
-            Next: Media
+            {t('next')}
           </Button>
         </Group>
       </Stack>
