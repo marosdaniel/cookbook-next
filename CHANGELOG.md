@@ -1,3 +1,10 @@
+# [1.37.0](https://github.com/marosdaniel/cookbook-next/compare/v1.36.0...v1.37.0) (2026-02-15)
+
+
+### Features
+
+* Add i18n support to recipe composer sections by introducing new translation keys and integrating `next-intl`. ([1b0800c](https://github.com/marosdaniel/cookbook-next/commit/1b0800ce71a30cee1625073beeb24fee77c1f1d0))
+
 # [1.36.0](https://github.com/marosdaniel/cookbook-next/compare/v1.35.0...v1.36.0) (2026-02-15)
 
 
