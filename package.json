@@ -24,7 +24,7 @@
     "deps:update": "pnpm dlx npm-check-updates -u --reject prisma,@prisma/client"
   },
   "dependencies": {
-    "@apollo/client": "^4.1.4",
+    "@apollo/client": "^4.1.5",
     "@apollo/server": "^5.4.0",
     "@as-integrations/next": "^4.1.0",
     "@auth/mongodb-adapter": "^3.11.1",
@@ -36,7 +36,7 @@
     "@mantine/nprogress": "^8.3.15",
     "@prisma/client": "6.19.1",
     "@reduxjs/toolkit": "^2.11.2",
-    "@tabler/icons-react": "^3.36.1",
+    "@tabler/icons-react": "^3.37.1",
     "@types/uuid": "^11.0.0",
     "bcrypt": "^6.0.0",
     "clsx": "^2.1.1",
@@ -60,7 +60,7 @@
     "zod-formik-adapter": "^2.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.2",
+    "@biomejs/biome": "2.4.3",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^12.0.6",
