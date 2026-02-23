@@ -138,7 +138,7 @@ export function useRecipeForm({
     const unsaved = t('sidebar.unsaved') || 'Unsaved';
     const justSaved = t('sidebar.justSaved') || 'Just saved';
     const savedRecently = t('sidebar.savedRecently') || 'Saved recently';
-    const savedAgo = t('sidebar.savedAgo') || 'Saved {minutes}m ago';
+    const savedAgoTemplate = 'Saved {minutes}m ago';
 
     if (!draft?.updatedAt) return unsaved;
     const delta = Date.now() - draft.updatedAt;
@@ -146,7 +146,13 @@ export function useRecipeForm({
     if (delta < 60_000) return savedRecently;
 
     const minutes = Math.floor(delta / 60_000);
-    return savedAgo.replace('{minutes}', minutes.toString());
+    try {
+      // Provide the required formatting variable when calling the translator.
+      return t('sidebar.savedAgo', { minutes });
+    } catch (e) {
+      console.error(e);
+      return savedAgoTemplate.replace('{minutes}', minutes.toString());
+    }
   }, [draft?.updatedAt, t]);
 
   /* Actions */
