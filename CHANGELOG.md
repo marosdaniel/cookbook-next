@@ -1,3 +1,10 @@
+# [1.38.0](https://github.com/marosdaniel/cookbook-next/compare/v1.37.0...v1.38.0) (2026-02-23)
+
+
+### Features
+
+* Improve translation of "Saved X minutes ago" by passing minutes as a variable to the translation function and adding error handling. ([fb0f000](https://github.com/marosdaniel/cookbook-next/commit/fb0f0009e56a549d1a9773aa9d7df85071f715b3))
+
 # [1.37.0](https://github.com/marosdaniel/cookbook-next/compare/v1.36.0...v1.37.0) (2026-02-15)
 
 
