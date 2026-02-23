@@ -79,12 +79,12 @@ export const createRecipe = async (
     assertPresent(user, 'User not found', ErrorTypes.UNAUTHORIZED);
 
     // Fetch Metadata
-    const categoryFromDb = await prisma.metadata.findFirst({
-      where: { key: category.value, type: 'CATEGORY' },
+    const categoryFromDb = await prisma.metadata.findUnique({
+      where: { key: category.value },
     });
 
-    const difficultyLevelFromDb = await prisma.metadata.findFirst({
-      where: { key: difficultyLevel.value, type: 'DIFFICULTY_LEVEL' },
+    const difficultyLevelFromDb = await prisma.metadata.findUnique({
+      where: { key: difficultyLevel.value },
     });
 
     assertPresent(
@@ -103,7 +103,6 @@ export const createRecipe = async (
       labelsFromDb = await prisma.metadata.findMany({
         where: {
           key: { in: labels.map((l) => l.value) },
-          type: 'LABEL',
         },
       });
     }

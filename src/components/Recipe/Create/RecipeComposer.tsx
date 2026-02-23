@@ -8,10 +8,11 @@ import {
   LoadingOverlay,
   ScrollArea,
 } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { FormikProvider } from 'formik';
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import ComposerHeader from './components/ComposerHeader';
 import ComposerSidebar from './components/ComposerSidebar';
 import { useRecipeForm } from './hooks/useRecipeForm';
@@ -40,10 +41,10 @@ export const RecipeComposer = () => {
     metadataLoaded,
   } = useRecipeMetadata();
 
-  const goToSection = (section: ComposerSection) => {
+  const goToSection = useCallback((section: ComposerSection) => {
     setActiveSection(section);
     scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, []);
 
   /* 2. Form Logic */
   const {
@@ -60,6 +61,21 @@ export const RecipeComposer = () => {
     onSectionChange: goToSection,
     labels, // Used for transform on submit
   });
+
+  /* Debounced values for Preview – avoids heavy re-render on every keystroke */
+  const [debouncedPreviewValues] = useDebouncedValue(formik.values, 300);
+
+  /* Stable navigation callbacks */
+  const handleBack = useCallback(() => router.back(), [router]);
+  const handleOpenPreview = useCallback(() => setPreviewOpen(true), []);
+  const handleClosePreview = useCallback(() => setPreviewOpen(false), []);
+  const goToBasics = useCallback(() => goToSection('basics'), [goToSection]);
+  const goToMedia = useCallback(() => goToSection('media'), [goToSection]);
+  const goToIngredients = useCallback(
+    () => goToSection('ingredients'),
+    [goToSection],
+  );
+  const goToSteps = useCallback(() => goToSection('steps'), [goToSection]);
 
   /* Loading gate */
   if (!metadataLoaded && metadataLoading) {
@@ -85,11 +101,11 @@ export const RecipeComposer = () => {
 
         {/* ═══ HEADER ═══ */}
         <ComposerHeader
-          onBack={() => router.back()}
+          onBack={handleBack}
           completion={completion}
           lastSavedLabel={lastSavedLabel}
           onSave={saveDraftNow}
-          onPreview={() => setPreviewOpen(true)}
+          onPreview={handleOpenPreview}
           onPublish={formik.submitForm}
           publishLoading={publishLoading}
         />
@@ -133,30 +149,27 @@ export const RecipeComposer = () => {
                   categories={categories}
                   levels={levels}
                   labels={labels}
-                  onNext={() => goToSection('media')}
+                  onNext={goToMedia}
                 />
               )}
 
               {activeSection === 'media' && (
-                <MediaSection
-                  onBack={() => goToSection('basics')}
-                  onNext={() => goToSection('ingredients')}
-                />
+                <MediaSection onBack={goToBasics} onNext={goToIngredients} />
               )}
 
               {activeSection === 'ingredients' && (
                 <IngredientsSection
                   unitSuggestions={unitSuggestions}
                   onAdd={addIngredient}
-                  onBack={() => goToSection('media')}
-                  onNext={() => goToSection('steps')}
+                  onBack={goToMedia}
+                  onNext={goToSteps}
                 />
               )}
 
               {activeSection === 'steps' && (
                 <StepsSection
                   onAdd={addStep}
-                  onBack={() => goToSection('ingredients')}
+                  onBack={goToIngredients}
                   onSubmit={formik.submitForm}
                   isSubmitting={publishLoading}
                 />
@@ -173,25 +186,25 @@ export const RecipeComposer = () => {
               flexShrink: 0,
             }}
           >
-            <Preview labels={labels} values={formik.values} />
+            <Preview labels={labels} values={debouncedPreviewValues} />
           </Box>
         </Group>
 
         <Drawer
           opened={previewOpen}
-          onClose={() => setPreviewOpen(false)}
+          onClose={handleClosePreview}
           position="right"
           size="lg"
           withCloseButton={false}
           styles={{ body: { height: '100%', padding: 0 } }}
         >
-          <Preview labels={labels} values={formik.values} />
+          <Preview labels={labels} values={debouncedPreviewValues} />
           <ActionIcon
             variant="filled"
             color="dark"
             radius="xl"
             size="lg"
-            onClick={() => setPreviewOpen(false)}
+            onClick={handleClosePreview}
             style={{
               position: 'absolute',
               top: 16,

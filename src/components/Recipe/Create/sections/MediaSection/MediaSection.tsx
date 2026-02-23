@@ -18,8 +18,8 @@ import {
   IconVideo,
   IconX,
 } from '@tabler/icons-react';
-import { useTranslations } from 'next-intl';
 import { useFormikContext } from 'formik';
+import { useTranslations } from 'next-intl';
 import { useFormikError } from '../../hooks/useFormikError';
 import type { RecipeFormValues } from '../../types';
 import type { MediaSectionProps } from './types';
@@ -27,7 +27,7 @@ import type { MediaSectionProps } from './types';
 const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
   const t = useTranslations('recipeComposer.sections.media');
   const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
-  const { getFieldError } = useFormikError();
+  const { getFieldError, revalidateOnChange } = useFormikError();
 
   return (
     <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm">
@@ -58,14 +58,20 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
           placeholder={t('imageUrlPlaceholder')}
           leftSection={<IconPhoto size={16} />}
           value={values.imgSrc}
-          onChange={(e) => setFieldValue('imgSrc', e.target.value)}
+          onChange={(e) => {
+            setFieldValue('imgSrc', e.target.value);
+            revalidateOnChange('imgSrc');
+          }}
           error={getFieldError('imgSrc')}
           rightSection={
             values.imgSrc ? (
               <ActionIcon
                 variant="subtle"
                 color="gray"
-                onClick={() => setFieldValue('imgSrc', '')}
+                onClick={() => {
+                  setFieldValue('imgSrc', '');
+                  revalidateOnChange('imgSrc');
+                }}
               >
                 <IconX size={14} />
               </ActionIcon>
@@ -90,7 +96,10 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
           placeholder={t('youtubeUrlPlaceholder')}
           leftSection={<IconVideo size={16} />}
           value={values.youtubeLink}
-          onChange={(e) => setFieldValue('youtubeLink', e.target.value)}
+          onChange={(e) => {
+            setFieldValue('youtubeLink', e.target.value);
+            revalidateOnChange('youtubeLink');
+          }}
           error={getFieldError('youtubeLink')}
         />
 

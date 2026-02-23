@@ -18,8 +18,8 @@ import {
   IconToolsKitchen2,
   IconTrash,
 } from '@tabler/icons-react';
-import { useTranslations } from 'next-intl';
 import { useFormikContext } from 'formik';
+import { useTranslations } from 'next-intl';
 import { useFormikError } from '../../hooks/useFormikError';
 import type { RecipeFormValues } from '../../types';
 import type { IngredientsSectionProps } from './types';
@@ -32,7 +32,7 @@ const IngredientsSection = ({
 }: Readonly<IngredientsSectionProps>) => {
   const t = useTranslations('recipeComposer.sections.ingredients');
   const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
-  const { getFieldError } = useFormikError();
+  const { getFieldError, revalidateOnChange } = useFormikError();
 
   const removeIngredient = (idx: number) => {
     const next = values.ingredients.filter((_, i) => i !== idx);
@@ -88,9 +88,11 @@ const IngredientsSection = ({
                 <TextInput
                   placeholder={t('itemName')}
                   value={ing.name}
-                  onChange={(e) =>
-                    setFieldValue(`ingredients[${idx}].name`, e.target.value)
-                  }
+                  onChange={(e) => {
+                    const path = `ingredients[${idx}].name`;
+                    setFieldValue(path, e.target.value);
+                    revalidateOnChange(path);
+                  }}
                   error={getFieldError(`ingredients[${idx}].name`)}
                   style={{ flex: 2 }}
                   size="sm"
@@ -98,12 +100,11 @@ const IngredientsSection = ({
                 <TextInput
                   placeholder={t('qty')}
                   value={ing.quantity}
-                  onChange={(e) =>
-                    setFieldValue(
-                      `ingredients[${idx}].quantity`,
-                      e.target.value,
-                    )
-                  }
+                  onChange={(e) => {
+                    const path = `ingredients[${idx}].quantity`;
+                    setFieldValue(path, e.target.value);
+                    revalidateOnChange(path);
+                  }}
                   error={getFieldError(`ingredients[${idx}].quantity`)}
                   style={{ width: 70 }}
                   size="sm"
@@ -112,9 +113,11 @@ const IngredientsSection = ({
                   placeholder={t('unit')}
                   data={unitSuggestions}
                   value={ing.unit}
-                  onChange={(val) =>
-                    setFieldValue(`ingredients[${idx}].unit`, val)
-                  }
+                  onChange={(val) => {
+                    const path = `ingredients[${idx}].unit`;
+                    setFieldValue(path, val);
+                    revalidateOnChange(path);
+                  }}
                   error={getFieldError(`ingredients[${idx}].unit`)}
                   style={{ width: 100 }}
                   size="sm"

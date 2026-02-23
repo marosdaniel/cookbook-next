@@ -5,7 +5,7 @@ import { IconCheck, IconDeviceFloppy } from '@tabler/icons-react';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { CREATE_RECIPE } from '@/lib/graphql/mutations';
@@ -104,8 +104,25 @@ export function useRecipeForm({
     },
   });
 
-  /* Completion */
-  const completion = computeCompletion(formik.values);
+  /* Stable ref so callbacks don't depend on the formik object */
+  const formikRef = useRef(formik);
+  formikRef.current = formik;
+
+  /* Completion – only recompute when meaningful fields change */
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional granular deps for perf
+  const completion = useMemo(
+    () => computeCompletion(formik.values),
+    [
+      formik.values.title,
+      formik.values.description,
+      formik.values.cookingTime,
+      formik.values.servings,
+      formik.values.category,
+      formik.values.difficultyLevel,
+      formik.values.ingredients.length,
+      formik.values.preparationSteps.length,
+    ],
+  );
   const [debouncedValues] = useDebouncedValue(formik.values, 800);
 
   /* Auto-save draft */
@@ -133,10 +150,10 @@ export function useRecipeForm({
   }, [draft?.updatedAt, t]);
 
   /* Actions */
-  const saveDraftNow = () => {
+  const saveDraftNow = useCallback(() => {
     setDraft({
       updatedAt: Date.now(),
-      values: formik.values,
+      values: formikRef.current.values,
     });
     notifications.show({
       message: t('notifications.draftSavedMessage'),
@@ -144,11 +161,11 @@ export function useRecipeForm({
       icon: <IconDeviceFloppy size={16} />,
       withBorder: true,
     });
-  };
+  }, [setDraft, t]);
 
-  const resetDraft = () => {
+  const resetDraft = useCallback(() => {
     setDraft(null);
-    formik.resetForm({
+    formikRef.current.resetForm({
       values: {
         title: '',
         description: '',
@@ -169,32 +186,31 @@ export function useRecipeForm({
       message: t('notifications.draftClearedMessage'),
       color: 'gray',
     });
-  };
+  }, [setDraft, onSectionChange, t]);
 
   const addIngredient = useCallback(() => {
+    const f = formikRef.current;
     const newIngredient: TIngredient = {
       localId: uuidv4(),
       name: '',
       quantity: '',
       unit: '',
     };
-    formik.setFieldValue('ingredients', [
-      ...formik.values.ingredients,
-      newIngredient,
-    ]);
-  }, [formik]);
+    f.setFieldValue('ingredients', [...f.values.ingredients, newIngredient]);
+  }, []);
 
   const addStep = useCallback(() => {
+    const f = formikRef.current;
     const newStep: TPreparationStep = {
       localId: uuidv4(),
       description: '',
-      order: formik.values.preparationSteps.length + 1,
+      order: f.values.preparationSteps.length + 1,
     };
-    formik.setFieldValue('preparationSteps', [
-      ...formik.values.preparationSteps,
+    f.setFieldValue('preparationSteps', [
+      ...f.values.preparationSteps,
       newStep,
     ]);
-  }, [formik]);
+  }, []);
 
   return {
     formik,

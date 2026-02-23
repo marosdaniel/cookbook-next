@@ -20,12 +20,15 @@ import {
   IconSparkles,
   IconUsers,
 } from '@tabler/icons-react';
-import { useTranslations } from 'next-intl';
 import { useFormikContext } from 'formik';
+import { useTranslations } from 'next-intl';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFormikError } from '../../hooks/useFormikError';
 import type { RecipeFormValues } from '../../types';
 import { DESCRIPTION_MAX_LENGTH, sectionCompletion } from '../../utils';
 import type { BasicsSectionProps } from './types';
+
+const DEBOUNCE_MS = 300;
 
 const BasicsSection = ({
   categories,
@@ -35,9 +38,78 @@ const BasicsSection = ({
 }: Readonly<BasicsSectionProps>) => {
   const t = useTranslations('recipeComposer.sections.basics');
   const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
-  const { getFieldError } = useFormikError();
+  const { getFieldError, revalidateOnChange } = useFormikError();
 
-  const descLength = values.description?.length ?? 0;
+  /* ── Local state for high-frequency text inputs ── */
+  const [localTitle, setLocalTitle] = useState(values.title);
+  const [localDescription, setLocalDescription] = useState(values.description);
+
+  // Debounce timers
+  const titleTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const descTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  // Sync FROM formik → local when formik resets (e.g. draft clear)
+  const prevTitleRef = useRef(values.title);
+  const prevDescRef = useRef(values.description);
+  useEffect(() => {
+    // Only sync if the formik value changed from outside (not from our debounce)
+    if (values.title !== prevTitleRef.current && values.title !== localTitle) {
+      setLocalTitle(values.title);
+    }
+    prevTitleRef.current = values.title;
+  }, [values.title, localTitle]);
+
+  useEffect(() => {
+    if (
+      values.description !== prevDescRef.current &&
+      values.description !== localDescription
+    ) {
+      setLocalDescription(values.description);
+    }
+    prevDescRef.current = values.description;
+  }, [values.description, localDescription]);
+
+  // Cleanup timers
+  useEffect(() => {
+    return () => {
+      clearTimeout(titleTimerRef.current);
+      clearTimeout(descTimerRef.current);
+    };
+  }, []);
+
+  const handleTitleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = e.target.value;
+      setLocalTitle(val);
+      clearTimeout(titleTimerRef.current);
+      // If there's already an error, sync immediately so the error clears at once
+      const delay = getFieldError('title') ? 0 : DEBOUNCE_MS;
+      titleTimerRef.current = setTimeout(async () => {
+        await setFieldValue('title', val);
+        revalidateOnChange('title');
+      }, delay);
+    },
+    [setFieldValue, getFieldError, revalidateOnChange],
+  );
+
+  const handleDescriptionChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const val = e.target.value;
+      if (val.length <= DESCRIPTION_MAX_LENGTH) {
+        setLocalDescription(val);
+        clearTimeout(descTimerRef.current);
+        // If there's already an error, sync immediately so the error clears at once
+        const delay = getFieldError('description') ? 0 : DEBOUNCE_MS;
+        descTimerRef.current = setTimeout(async () => {
+          await setFieldValue('description', val);
+          revalidateOnChange('description');
+        }, delay);
+      }
+    },
+    [setFieldValue, getFieldError, revalidateOnChange],
+  );
+
+  const descLength = localDescription?.length ?? 0;
   const completion = sectionCompletion('basics', values);
   const isComplete = completion.done === completion.total;
 
@@ -65,8 +137,8 @@ const BasicsSection = ({
           placeholder={t('recipeNamePlaceholder')}
           variant="unstyled"
           size="xl"
-          value={values.title}
-          onChange={(e) => setFieldValue('title', e.target.value)}
+          value={localTitle}
+          onChange={handleTitleChange}
           styles={{
             input: {
               fontSize: '1.8rem',
@@ -85,12 +157,8 @@ const BasicsSection = ({
             minRows={3}
             variant="unstyled"
             size="lg"
-            value={values.description}
-            onChange={(e) => {
-              if (e.target.value.length <= DESCRIPTION_MAX_LENGTH) {
-                setFieldValue('description', e.target.value);
-              }
-            }}
+            value={localDescription}
+            onChange={handleDescriptionChange}
             error={getFieldError('description')}
           />
           <Text
@@ -113,7 +181,10 @@ const BasicsSection = ({
             <TextInput
               placeholder={t('cookingTimePlaceholder')}
               value={values.cookingTime}
-              onChange={(e) => setFieldValue('cookingTime', e.target.value)}
+              onChange={(e) => {
+                setFieldValue('cookingTime', e.target.value);
+                revalidateOnChange('cookingTime');
+              }}
               error={getFieldError('cookingTime')}
             />
           </Stack>
@@ -127,7 +198,10 @@ const BasicsSection = ({
             <TextInput
               placeholder={t('servingsPlaceholder')}
               value={values.servings}
-              onChange={(e) => setFieldValue('servings', e.target.value)}
+              onChange={(e) => {
+                setFieldValue('servings', e.target.value);
+                revalidateOnChange('servings');
+              }}
               error={getFieldError('servings')}
             />
           </Stack>
@@ -143,6 +217,7 @@ const BasicsSection = ({
             onChange={(value) => {
               const next = categories.find((c) => c.value === value) ?? null;
               setFieldValue('category', next);
+              revalidateOnChange('category');
             }}
             error={getFieldError('category')}
           />
@@ -155,6 +230,7 @@ const BasicsSection = ({
             onChange={(value) => {
               const next = levels.find((l) => l.value === value) ?? null;
               setFieldValue('difficultyLevel', next);
+              revalidateOnChange('difficultyLevel');
             }}
             error={getFieldError('difficultyLevel')}
           />
