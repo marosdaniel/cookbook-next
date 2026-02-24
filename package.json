@@ -24,7 +24,7 @@
     "deps:update": "pnpm dlx npm-check-updates -u --reject prisma,@prisma/client"
   },
   "dependencies": {
-    "@apollo/client": "^4.1.5",
+    "@apollo/client": "^4.1.6",
     "@apollo/server": "^5.4.0",
     "@as-integrations/next": "^4.1.0",
     "@auth/mongodb-adapter": "^3.11.1",
