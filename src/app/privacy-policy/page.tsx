@@ -19,42 +19,46 @@ const PrivacyPolicyPage = async () => {
   const locale = await getLocaleFromCookies();
   const messages = await getLocaleMessages(locale);
   const legalMessages = messages.legal as unknown as LegalMessages;
-  const t = legalMessages?.privacyPolicy;
+  const privacyPolicyMessages = legalMessages?.privacyPolicy;
 
-  if (!t) return null;
+  if (!privacyPolicyMessages) return null;
 
   return (
     <Container size="md" py="xl">
       <Stack gap="lg">
-        <Title order={1}>{t.title}</Title>
+        <Title order={1}>{privacyPolicyMessages.title}</Title>
         <Text size="sm" c="dimmed">
-          {t.lastUpdated}
+          {privacyPolicyMessages.lastUpdated}
           {new Date().toLocaleDateString(locale)}
         </Text>
 
         <Stack gap="md">
           <Title order={2} size="h3">
-            {t.introduction.title}
+            {privacyPolicyMessages.introduction.title}
           </Title>
-          <Text>{t.introduction.content}</Text>
+          <Text>{privacyPolicyMessages.introduction.content}</Text>
         </Stack>
 
         <Stack gap="md">
           <Title order={2} size="h3">
-            {t.infoCollect.title}
+            {privacyPolicyMessages.infoCollect.title}
           </Title>
-          <Text>{t.infoCollect.content}</Text>
+          <Text>{privacyPolicyMessages.infoCollect.content}</Text>
           <Box component="ul" pl="xl" mt="xs">
             <Box component="li" mb="xs">
               <Text component="span">
-                <strong>{t.infoCollect.list.personalTitle}</strong>{' '}
-                {t.infoCollect.list.personalContent}
+                <strong>
+                  {privacyPolicyMessages.infoCollect.list.personalTitle}
+                </strong>{' '}
+                {privacyPolicyMessages.infoCollect.list.personalContent}
               </Text>
             </Box>
             <Box component="li" mb="xs">
               <Text component="span">
-                <strong>{t.infoCollect.list.usageTitle}</strong>{' '}
-                {t.infoCollect.list.usageContent}
+                <strong>
+                  {privacyPolicyMessages.infoCollect.list.usageTitle}
+                </strong>{' '}
+                {privacyPolicyMessages.infoCollect.list.usageContent}
               </Text>
             </Box>
           </Box>
@@ -62,11 +66,11 @@ const PrivacyPolicyPage = async () => {
 
         <Stack gap="md">
           <Title order={2} size="h3">
-            {t.howUse.title}
+            {privacyPolicyMessages.howUse.title}
           </Title>
-          <Text>{t.howUse.content}</Text>
+          <Text>{privacyPolicyMessages.howUse.content}</Text>
           <Box component="ul" pl="xl" mt="xs">
-            {t.howUse.list.map((item) => (
+            {privacyPolicyMessages.howUse.list.map((item) => (
               <Box key={item} component="li" mb="xs">
                 <Text component="span">{item}</Text>
               </Box>
@@ -76,9 +80,9 @@ const PrivacyPolicyPage = async () => {
 
         <Stack gap="md">
           <Title order={2} size="h3">
-            {t.contact.title}
+            {privacyPolicyMessages.contact.title}
           </Title>
-          <Text>{t.contact.content}</Text>
+          <Text>{privacyPolicyMessages.contact.content}</Text>
         </Stack>
       </Stack>
     </Container>

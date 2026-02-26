@@ -31,7 +31,7 @@ const StepsSection = ({
   onSubmit,
   isSubmitting,
 }: Readonly<StepsSectionProps>) => {
-  const t = useTranslations('recipeComposer.sections.steps');
+  const translate = useTranslations('recipeComposer.sections.steps');
   const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
   const { getFieldError, revalidateOnChange } = useFormikError();
 
@@ -63,13 +63,13 @@ const StepsSection = ({
             >
               <IconChefHat size={18} />
             </ThemeIcon>
-            <Title order={3}>{t('title')}</Title>
+            <Title order={3}>{translate('title')}</Title>
           </Group>
           <Badge
             variant="light"
             color={values.preparationSteps.length ? 'green' : 'red'}
           >
-            {t('stepsCount', { count: values.preparationSteps.length })}
+            {translate('stepsCount', { count: values.preparationSteps.length })}
           </Badge>
         </Group>
 
@@ -78,7 +78,7 @@ const StepsSection = ({
           leftSection={<IconPlus size={16} />}
           onClick={onAdd}
         >
-          {t('addStep')}
+          {translate('addStep')}
         </Button>
 
         <Stack gap="xs">
@@ -94,7 +94,7 @@ const StepsSection = ({
                   <IconChefHat size={24} />
                 </ThemeIcon>
                 <Text c="dimmed" ta="center" size="sm">
-                  {t('emptyState')}
+                  {translate('emptyState')}
                 </Text>
                 <Button
                   variant="light"
@@ -102,7 +102,7 @@ const StepsSection = ({
                   onClick={onAdd}
                   leftSection={<IconPlus size={14} />}
                 >
-                  {t('addFirst')}
+                  {translate('addFirst')}
                 </Button>
               </Stack>
             </Paper>
@@ -125,7 +125,7 @@ const StepsSection = ({
                   </Text>
                 </ThemeIcon>
                 <Textarea
-                  placeholder={t('stepPlaceholder', { index: idx + 1 })}
+                  placeholder={translate('stepPlaceholder', { index: idx + 1 })}
                   autosize
                   minRows={2}
                   value={step.description}
@@ -188,7 +188,7 @@ const StepsSection = ({
             onClick={onBack}
             leftSection={<IconArrowLeft size={16} />}
           >
-            {t('back')}
+            {translate('back')}
           </Button>
           <Button
             color="dark"
@@ -196,7 +196,7 @@ const StepsSection = ({
             onClick={onSubmit}
             leftSection={<IconWand size={16} />}
           >
-            {t('publish')}
+            {translate('publish')}
           </Button>
         </Group>
       </Stack>

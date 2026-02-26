@@ -6,11 +6,11 @@ import Password from './Password';
 import PersonalData from './PersonalData';
 
 export default function ProfileClient() {
-  const t = useTranslations('user');
+  const translate = useTranslations('user');
 
   return (
     <Stack gap="xl">
-      <Title order={2}>{t('profileTabTitle')}</Title>
+      <Title order={2}>{translate('profileTabTitle')}</Title>
       <PersonalData />
       <Password />
     </Stack>

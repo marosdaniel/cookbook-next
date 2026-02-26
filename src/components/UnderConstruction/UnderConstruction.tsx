@@ -9,13 +9,13 @@ import StyledText from '../StyledText';
 import classes from './UnderConstruction.module.css';
 
 const UnderConstruction = () => {
-  const t = useTranslations('underConstruction');
+  const translate = useTranslations('underConstruction');
 
   return (
     <Container className={classes.container}>
       <div className={classes.iconWrapper}>
         <svg width="0" height="0">
-          <title>{t('gradientIconTitle')}</title>
+          <title>{translate('gradientIconTitle')}</title>
           <linearGradient id="pot-gradient" x1="100%" y1="100%" x2="0%" y2="0%">
             <stop stopColor="var(--mantine-color-pink-6)" offset="0%" />
             <stop stopColor="var(--mantine-color-violet-6)" offset="100%" />
@@ -29,17 +29,17 @@ const UnderConstruction = () => {
         className={classes.title}
         order={1}
       >
-        {t('title')}
+        {translate('title')}
       </StyledText>
       <Text size="xl" fw={500} mt="md" mb="xs">
-        {t('subtitle')}
+        {translate('subtitle')}
       </Text>
       <Text c="dimmed" size="lg" maw={600} mx="auto" mb={40}>
-        {t('description')}
+        {translate('description')}
       </Text>
 
       <NavButton
-        label={t('backButton')}
+        label={translate('backButton')}
         href="/"
         icon={<FiArrowLeft size={20} />}
       />

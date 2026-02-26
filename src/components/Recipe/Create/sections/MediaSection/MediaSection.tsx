@@ -25,7 +25,7 @@ import type { RecipeFormValues } from '../../types';
 import type { MediaSectionProps } from './types';
 
 const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
-  const t = useTranslations('recipeComposer.sections.media');
+  const translate = useTranslations('recipeComposer.sections.media');
   const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
   const { getFieldError, revalidateOnChange } = useFormikError();
 
@@ -42,20 +42,20 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
             >
               <IconPhoto size={18} />
             </ThemeIcon>
-            <Title order={3}>{t('title')}</Title>
+            <Title order={3}>{translate('title')}</Title>
           </Group>
           <Badge variant="light" color={values.imgSrc ? 'green' : 'gray'}>
-            {values.imgSrc ? t('set') : t('optional')}
+            {values.imgSrc ? translate('set') : translate('optional')}
           </Badge>
         </Group>
 
         <Text c="dimmed" size="sm">
-          {t('description')}
+          {translate('description')}
         </Text>
 
         <TextInput
-          label={t('coverImageUrl')}
-          placeholder={t('imageUrlPlaceholder')}
+          label={translate('coverImageUrl')}
+          placeholder={translate('imageUrlPlaceholder')}
           leftSection={<IconPhoto size={16} />}
           value={values.imgSrc}
           onChange={(e) => {
@@ -83,17 +83,17 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
           <Paper radius="md" style={{ overflow: 'hidden' }} withBorder>
             <Image
               src={values.imgSrc}
-              alt={t('coverPreview')}
+              alt={translate('coverPreview')}
               h={220}
               fit="cover"
-              fallbackSrc={`https://placehold.co/800x400?text=${t('invalidImageUrl')}`}
+              fallbackSrc={`https://placehold.co/800x400?text=${translate('invalidImageUrl')}`}
             />
           </Paper>
         )}
 
         <TextInput
-          label={t('youtubeVideo')}
-          placeholder={t('youtubeUrlPlaceholder')}
+          label={translate('youtubeVideo')}
+          placeholder={translate('youtubeUrlPlaceholder')}
           leftSection={<IconVideo size={16} />}
           value={values.youtubeLink}
           onChange={(e) => {
@@ -110,14 +110,14 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
             onClick={onBack}
             leftSection={<IconArrowLeft size={16} />}
           >
-            {t('back')}
+            {translate('back')}
           </Button>
           <Button
             variant="light"
             onClick={onNext}
             rightSection={<IconToolsKitchen2 size={16} />}
           >
-            {t('next')}
+            {translate('next')}
           </Button>
         </Group>
       </Stack>

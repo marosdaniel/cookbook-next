@@ -19,48 +19,54 @@ const CookiePolicyPage = async () => {
   const locale = await getLocaleFromCookies();
   const messages = await getLocaleMessages(locale);
   const legalMessages = messages.legal as unknown as LegalMessages;
-  const t = legalMessages?.cookiePolicy;
+  const cookiePolicyMessage = legalMessages?.cookiePolicy;
 
-  if (!t) return null;
+  if (!cookiePolicyMessage) return null;
 
   return (
     <Container size="md" py="xl">
       <Stack gap="lg">
-        <Title order={1}>{t.title}</Title>
+        <Title order={1}>{cookiePolicyMessage.title}</Title>
         <Text size="sm" c="dimmed">
-          {t.lastUpdated}
+          {cookiePolicyMessage.lastUpdated}
           {new Date().toLocaleDateString(locale)}
         </Text>
 
         <Stack gap="md">
           <Title order={2} size="h3">
-            {t.whatAreCookies.title}
+            {cookiePolicyMessage.whatAreCookies.title}
           </Title>
-          <Text>{t.whatAreCookies.content}</Text>
+          <Text>{cookiePolicyMessage.whatAreCookies.content}</Text>
         </Stack>
 
         <Stack gap="md">
           <Title order={2} size="h3">
-            {t.howWeUse.title}
+            {cookiePolicyMessage.howWeUse.title}
           </Title>
-          <Text>{t.howWeUse.content}</Text>
+          <Text>{cookiePolicyMessage.howWeUse.content}</Text>
           <Box component="ul" pl="xl" mt="xs">
             <Box component="li" mb="xs">
               <Text component="span">
-                <strong>{t.howWeUse.list.necessaryTitle}</strong>{' '}
-                {t.howWeUse.list.necessaryContent}
+                <strong>
+                  {cookiePolicyMessage.howWeUse.list.necessaryTitle}
+                </strong>{' '}
+                {cookiePolicyMessage.howWeUse.list.necessaryContent}
               </Text>
             </Box>
             <Box component="li" mb="xs">
               <Text component="span">
-                <strong>{t.howWeUse.list.functionalityTitle}</strong>{' '}
-                {t.howWeUse.list.functionalityContent}
+                <strong>
+                  {cookiePolicyMessage.howWeUse.list.functionalityTitle}
+                </strong>{' '}
+                {cookiePolicyMessage.howWeUse.list.functionalityContent}
               </Text>
             </Box>
             <Box component="li" mb="xs">
               <Text component="span">
-                <strong>{t.howWeUse.list.performanceTitle}</strong>{' '}
-                {t.howWeUse.list.performanceContent}
+                <strong>
+                  {cookiePolicyMessage.howWeUse.list.performanceTitle}
+                </strong>{' '}
+                {cookiePolicyMessage.howWeUse.list.performanceContent}
               </Text>
             </Box>
           </Box>
@@ -68,11 +74,11 @@ const CookiePolicyPage = async () => {
 
         <Stack gap="md">
           <Title order={2} size="h3">
-            {t.detailedUsage.title}
+            {cookiePolicyMessage.detailedUsage.title}
           </Title>
-          <Text>{t.detailedUsage.content}</Text>
+          <Text>{cookiePolicyMessage.detailedUsage.content}</Text>
           <Box component="ul" pl="xl" mt="xs">
-            {t.detailedUsage.list.map((item) => (
+            {cookiePolicyMessage.detailedUsage.list.map((item) => (
               <Box key={item} component="li" mb="xs">
                 <Text component="span">{item}</Text>
               </Box>
@@ -82,9 +88,9 @@ const CookiePolicyPage = async () => {
 
         <Stack gap="md">
           <Title order={2} size="h3">
-            {t.managing.title}
+            {cookiePolicyMessage.managing.title}
           </Title>
-          <Text>{t.managing.content}</Text>
+          <Text>{cookiePolicyMessage.managing.content}</Text>
         </Stack>
       </Stack>
     </Container>

@@ -30,7 +30,7 @@ const IngredientsSection = ({
   onBack,
   onNext,
 }: Readonly<IngredientsSectionProps>) => {
-  const t = useTranslations('recipeComposer.sections.ingredients');
+  const translate = useTranslations('recipeComposer.sections.ingredients');
   const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
   const { getFieldError, revalidateOnChange } = useFormikError();
 
@@ -52,13 +52,13 @@ const IngredientsSection = ({
             >
               <IconToolsKitchen2 size={18} />
             </ThemeIcon>
-            <Title order={3}>{t('title')}</Title>
+            <Title order={3}>{translate('title')}</Title>
           </Group>
           <Badge
             variant="light"
             color={values.ingredients.length ? 'green' : 'red'}
           >
-            {t('itemsCount', { count: values.ingredients.length })}
+            {translate('itemsCount', { count: values.ingredients.length })}
           </Badge>
         </Group>
 
@@ -67,7 +67,7 @@ const IngredientsSection = ({
           leftSection={<IconPlus size={16} />}
           onClick={onAdd}
         >
-          {t('addIngredient')}
+          {translate('addIngredient')}
         </Button>
 
         <Stack gap="xs">
@@ -86,7 +86,7 @@ const IngredientsSection = ({
             >
               <Group gap="xs" align="flex-start" wrap="nowrap">
                 <TextInput
-                  placeholder={t('itemName')}
+                  placeholder={translate('itemName')}
                   value={ing.name}
                   onChange={(e) => {
                     const path = `ingredients[${idx}].name`;
@@ -98,7 +98,7 @@ const IngredientsSection = ({
                   size="sm"
                 />
                 <TextInput
-                  placeholder={t('qty')}
+                  placeholder={translate('qty')}
                   value={ing.quantity}
                   onChange={(e) => {
                     const path = `ingredients[${idx}].quantity`;
@@ -110,7 +110,7 @@ const IngredientsSection = ({
                   size="sm"
                 />
                 <Autocomplete
-                  placeholder={t('unit')}
+                  placeholder={translate('unit')}
                   data={unitSuggestions}
                   value={ing.unit}
                   onChange={(val) => {
@@ -146,7 +146,7 @@ const IngredientsSection = ({
                   <IconToolsKitchen2 size={24} />
                 </ThemeIcon>
                 <Text c="dimmed" ta="center" size="sm">
-                  {t('noIngredients')}
+                  {translate('noIngredients')}
                 </Text>
                 <Button
                   variant="light"
@@ -154,7 +154,7 @@ const IngredientsSection = ({
                   onClick={onAdd}
                   leftSection={<IconPlus size={14} />}
                 >
-                  {t('addFirst')}
+                  {translate('addFirst')}
                 </Button>
               </Stack>
             </Paper>
@@ -182,14 +182,14 @@ const IngredientsSection = ({
             onClick={onBack}
             leftSection={<IconArrowLeft size={16} />}
           >
-            {t('back')}
+            {translate('back')}
           </Button>
           <Button
             variant="light"
             onClick={onNext}
             rightSection={<IconChefHat size={16} />}
           >
-            {t('next')}
+            {translate('next')}
           </Button>
         </Group>
       </Stack>

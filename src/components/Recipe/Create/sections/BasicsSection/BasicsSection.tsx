@@ -36,7 +36,7 @@ const BasicsSection = ({
   labels,
   onNext,
 }: Readonly<BasicsSectionProps>) => {
-  const t = useTranslations('recipeComposer.sections.basics');
+  const translate = useTranslations('recipeComposer.sections.basics');
   const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
   const { getFieldError, revalidateOnChange } = useFormikError();
 
@@ -126,7 +126,7 @@ const BasicsSection = ({
             >
               <IconSparkles size={18} />
             </ThemeIcon>
-            <Title order={3}>{t('title')}</Title>
+            <Title order={3}>{translate('title')}</Title>
           </Group>
           <Badge variant="light" color={isComplete ? 'green' : 'gray'}>
             {completion.done}/{completion.total}
@@ -134,7 +134,7 @@ const BasicsSection = ({
         </Group>
 
         <TextInput
-          placeholder={t('recipeNamePlaceholder')}
+          placeholder={translate('recipeNamePlaceholder')}
           variant="unstyled"
           size="xl"
           value={localTitle}
@@ -152,7 +152,7 @@ const BasicsSection = ({
 
         <Box>
           <Textarea
-            placeholder={t('recipeStoryPlaceholder')}
+            placeholder={translate('recipeStoryPlaceholder')}
             autosize
             minRows={3}
             variant="unstyled"
@@ -175,11 +175,11 @@ const BasicsSection = ({
             <Text fw={600} size="sm">
               <Group gap={6}>
                 <IconClock size={14} />
-                {t('cookingTime')}
+                {translate('cookingTime')}
               </Group>
             </Text>
             <TextInput
-              placeholder={t('cookingTimePlaceholder')}
+              placeholder={translate('cookingTimePlaceholder')}
               value={values.cookingTime}
               onChange={(e) => {
                 setFieldValue('cookingTime', e.target.value);
@@ -192,11 +192,11 @@ const BasicsSection = ({
             <Text fw={600} size="sm">
               <Group gap={6}>
                 <IconUsers size={14} />
-                {t('servings')}
+                {translate('servings')}
               </Group>
             </Text>
             <TextInput
-              placeholder={t('servingsPlaceholder')}
+              placeholder={translate('servingsPlaceholder')}
               value={values.servings}
               onChange={(e) => {
                 setFieldValue('servings', e.target.value);
@@ -209,8 +209,8 @@ const BasicsSection = ({
 
         <Group grow align="flex-start">
           <Select
-            label={t('category')}
-            placeholder={t('select')}
+            label={translate('category')}
+            placeholder={translate('select')}
             searchable
             data={categories}
             value={values.category?.value ?? null}
@@ -222,8 +222,8 @@ const BasicsSection = ({
             error={getFieldError('category')}
           />
           <Select
-            label={t('difficulty')}
-            placeholder={t('select')}
+            label={translate('difficulty')}
+            placeholder={translate('select')}
             searchable
             data={levels}
             value={values.difficultyLevel?.value ?? null}
@@ -237,8 +237,8 @@ const BasicsSection = ({
         </Group>
 
         <MultiSelect
-          label={t('tags')}
-          placeholder={t('tagsPlaceholder')}
+          label={translate('tags')}
+          placeholder={translate('tagsPlaceholder')}
           searchable
           clearable
           data={labels}
@@ -254,7 +254,7 @@ const BasicsSection = ({
             onClick={onNext}
             rightSection={<IconPhoto size={16} />}
           >
-            {t('next')}
+            {translate('next')}
           </Button>
         </Group>
       </Stack>

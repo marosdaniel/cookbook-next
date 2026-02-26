@@ -29,7 +29,7 @@ export function useRecipeForm({
   labels,
 }: UseRecipeFormProps) {
   const router = useRouter();
-  const t = useTranslations();
+  const translate = useTranslations();
 
   /**
    * Local draft persistence using browser storage.
@@ -49,8 +49,8 @@ export function useRecipeForm({
       onCompleted: () => {
         setDraft(null);
         notifications.show({
-          title: t('notifications.recipeCreatedTitle'),
-          message: t('notifications.recipeCreatedMessage'),
+          title: translate('notifications.recipeCreatedTitle'),
+          message: translate('notifications.recipeCreatedMessage'),
           color: 'teal',
           icon: <IconCheck size={18} />,
         });
@@ -58,9 +58,10 @@ export function useRecipeForm({
       },
       onError: (error) => {
         notifications.show({
-          title: t('notifications.recipeCreateFailedTitle'),
+          title: translate('notifications.recipeCreateFailedTitle'),
           message:
-            error.message || t('notifications.recipeCreateFailedMessage'),
+            error.message ||
+            translate('notifications.recipeCreateFailedMessage'),
           color: 'red',
         });
       },
@@ -88,8 +89,8 @@ export function useRecipeForm({
     onSubmit: async (values) => {
       if (!values.difficultyLevel || !values.category) {
         notifications.show({
-          title: t('notifications.missingFieldsTitle'),
-          message: t('notifications.missingFieldsMessage'),
+          title: translate('notifications.missingFieldsTitle'),
+          message: translate('notifications.missingFieldsMessage'),
           color: 'orange',
         });
         onSectionChange('basics');
@@ -135,9 +136,10 @@ export function useRecipeForm({
   }, [debouncedValues, metadataLoaded, setDraft]);
 
   const lastSavedLabel = useMemo(() => {
-    const unsaved = t('sidebar.unsaved') || 'Unsaved';
-    const justSaved = t('sidebar.justSaved') || 'Just saved';
-    const savedRecently = t('sidebar.savedRecently') || 'Saved recently';
+    const unsaved = translate('sidebar.unsaved') || 'Unsaved';
+    const justSaved = translate('sidebar.justSaved') || 'Just saved';
+    const savedRecently =
+      translate('sidebar.savedRecently') || 'Saved recently';
     const savedAgoTemplate = 'Saved {minutes}m ago';
 
     if (!draft?.updatedAt) return unsaved;
@@ -148,12 +150,12 @@ export function useRecipeForm({
     const minutes = Math.floor(delta / 60_000);
     try {
       // Provide the required formatting variable when calling the translator.
-      return t('sidebar.savedAgo', { minutes });
+      return translate('sidebar.savedAgo', { minutes });
     } catch (e) {
       console.error(e);
       return savedAgoTemplate.replace('{minutes}', minutes.toString());
     }
-  }, [draft?.updatedAt, t]);
+  }, [draft?.updatedAt, translate]);
 
   /* Actions */
   const saveDraftNow = useCallback(() => {
@@ -162,12 +164,12 @@ export function useRecipeForm({
       values: formikRef.current.values,
     });
     notifications.show({
-      message: t('notifications.draftSavedMessage'),
+      message: translate('notifications.draftSavedMessage'),
       color: 'blue',
       icon: <IconDeviceFloppy size={16} />,
       withBorder: true,
     });
-  }, [setDraft, t]);
+  }, [setDraft, translate]);
 
   const resetDraft = useCallback(() => {
     setDraft(null);
@@ -188,11 +190,11 @@ export function useRecipeForm({
     });
     onSectionChange('basics');
     notifications.show({
-      title: t('notifications.draftClearedTitle'),
-      message: t('notifications.draftClearedMessage'),
+      title: translate('notifications.draftClearedTitle'),
+      message: translate('notifications.draftClearedMessage'),
       color: 'gray',
     });
-  }, [setDraft, onSectionChange, t]);
+  }, [setDraft, onSectionChange, translate]);
 
   const addIngredient = useCallback(() => {
     const f = formikRef.current;
