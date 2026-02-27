@@ -7,5 +7,6 @@ export interface ComposerSidebarProps {
   completion: { done: number; total: number; percent: number };
   onAddIngredient: () => void;
   onAddStep: () => void;
-  onResetDraft: () => void;
+  onReset: () => void;
+  resetLabel: string;
 }

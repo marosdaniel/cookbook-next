@@ -30,6 +30,8 @@ export interface RecipeFormValues {
   preparationSteps: TPreparationStep[];
 }
 
+export type ComposerMode = 'create' | 'edit';
+
 export type ComposerSection = 'basics' | 'media' | 'ingredients' | 'steps';
 
 export interface UseRecipeFormProps {

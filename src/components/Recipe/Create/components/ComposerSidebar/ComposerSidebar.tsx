@@ -28,7 +28,8 @@ const ComposerSidebar = memo(
     completion,
     onAddIngredient,
     onAddStep,
-    onResetDraft,
+    onReset,
+    resetLabel,
   }: Readonly<ComposerSidebarProps>) => {
     const sectionItems = [
       {
@@ -142,10 +143,10 @@ const ComposerSidebar = memo(
             variant="subtle"
             color="red"
             leftSection={<IconTrash size={14} />}
-            onClick={onResetDraft}
+            onClick={onReset}
             fullWidth
           >
-            Clear draft
+            {resetLabel}
           </Button>
         </Stack>
       </Box>

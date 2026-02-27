@@ -30,6 +30,7 @@ const StepsSection = ({
   onBack,
   onSubmit,
   isSubmitting,
+  submitLabel,
 }: Readonly<StepsSectionProps>) => {
   const translate = useTranslations('recipeComposer.sections.steps');
   const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
@@ -196,7 +197,7 @@ const StepsSection = ({
             onClick={onSubmit}
             leftSection={<IconWand size={16} />}
           >
-            {translate('publish')}
+            {submitLabel ?? translate('publish')}
           </Button>
         </Group>
       </Stack>

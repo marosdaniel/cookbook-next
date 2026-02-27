@@ -3,4 +3,5 @@ export interface StepsSectionProps {
   onBack: () => void;
   onSubmit: () => void;
   isSubmitting: boolean;
+  submitLabel?: string;
 }

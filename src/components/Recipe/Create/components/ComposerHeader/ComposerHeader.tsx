@@ -21,6 +21,7 @@ import type { ComposerHeaderProps } from './types';
 
 const ComposerHeader = memo(
   ({
+    title,
     onBack,
     completion,
     lastSavedLabel,
@@ -28,6 +29,7 @@ const ComposerHeader = memo(
     onPreview,
     onPublish,
     publishLoading,
+    submitLabel,
   }: Readonly<ComposerHeaderProps>) => {
     const ringColor = getProgressColor(completion.percent);
 
@@ -53,7 +55,7 @@ const ComposerHeader = memo(
               <IconArrowLeft size={20} />
             </ActionIcon>
             <Group gap="xs" visibleFrom="xs">
-              <Title order={4}>Create Recipe</Title>
+              <Title order={4}>{title}</Title>
             </Group>
           </Group>
 
@@ -120,7 +122,7 @@ const ComposerHeader = memo(
               leftSection={<IconWand size={16} />}
               radius="xl"
             >
-              Publish
+              {submitLabel}
             </Button>
           </Group>
         </Group>

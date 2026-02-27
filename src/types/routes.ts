@@ -25,6 +25,7 @@ export const AUTH_ROUTES = {
 export const PROTECTED_ROUTES = {
   PROFILE: '/me/profile',
   RECIPES_CREATE: '/recipes/create',
+  RECIPES_EDIT: '/recipes/:id/edit',
   RECIPES_MY: '/me/my-recipes',
   RECIPES_FAVORITES: '/me/favorite-recipes',
   FOLLOWING: '/me/following',

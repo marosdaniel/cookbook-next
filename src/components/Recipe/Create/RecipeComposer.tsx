@@ -10,28 +10,65 @@ import {
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconArrowLeft } from '@tabler/icons-react';
+import type { FormikProps } from 'formik';
 import { FormikProvider } from 'formik';
 import { useRouter } from 'next/navigation';
-import { useCallback, useRef, useState } from 'react';
+import { type RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import ComposerHeader from './components/ComposerHeader';
 import ComposerSidebar from './components/ComposerSidebar';
-import { useRecipeForm } from './hooks/useRecipeForm';
 import { useRecipeMetadata } from './hooks/useRecipeMetadata';
 import { Preview } from './Preview';
 import BasicsSection from './sections/BasicsSection';
 import IngredientsSection from './sections/IngredientsSection';
 import MediaSection from './sections/MediaSection';
 import StepsSection from './sections/StepsSection';
-import type { ComposerSection } from './types';
+import type { ComposerMode, ComposerSection, RecipeFormValues } from './types';
+
+/* ─── Props ───────────────────────────────────── */
+export interface RecipeComposerProps {
+  mode: ComposerMode;
+  formik: FormikProps<RecipeFormValues>;
+  submitLoading: boolean;
+  completion: { done: number; total: number; percent: number };
+  lastSavedLabel: string;
+  onSave: () => void;
+  onReset: () => void;
+  addIngredient: () => void;
+  addStep: () => void;
+  /** Header title (e.g. "Create Recipe" | "Edit Recipe") */
+  headerTitle: string;
+  /** Submit button label (e.g. "Publish" | "Save Changes") */
+  submitLabel: string;
+  /** Reset button label (e.g. "Clear draft" | "Reset changes") */
+  resetLabel: string;
+  /**
+   * Optional ref that parent components can use to imperatively
+   * navigate to a specific section (e.g. on validation failure).
+   */
+  goToSectionRef?: RefObject<((section: ComposerSection) => void) | null>;
+}
 
 /* ─── Main Component ──────────────────────────── */
-export const RecipeComposer = () => {
+export const RecipeComposer = ({
+  formik,
+  submitLoading,
+  completion,
+  lastSavedLabel,
+  onSave,
+  onReset,
+  addIngredient,
+  addStep,
+  headerTitle,
+  submitLabel,
+  resetLabel,
+  goToSectionRef,
+}: Readonly<RecipeComposerProps>) => {
   const router = useRouter();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState<ComposerSection>('basics');
   const [previewOpen, setPreviewOpen] = useState(false);
 
-  /* 1. Data & Metadata */
+  /* Metadata */
   const {
     categories,
     levels,
@@ -46,21 +83,12 @@ export const RecipeComposer = () => {
     scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  /* 2. Form Logic */
-  const {
-    formik,
-    publishLoading,
-    completion,
-    lastSavedLabel,
-    saveDraftNow,
-    resetDraft,
-    addIngredient,
-    addStep,
-  } = useRecipeForm({
-    metadataLoaded,
-    onSectionChange: goToSection,
-    labels, // Used for transform on submit
-  });
+  /* Expose goToSection to parent via ref */
+  useEffect(() => {
+    if (goToSectionRef) {
+      goToSectionRef.current = goToSection;
+    }
+  }, [goToSection, goToSectionRef]);
 
   /* Debounced values for Preview – avoids heavy re-render on every keystroke */
   const [debouncedPreviewValues] = useDebouncedValue(formik.values, 300);
@@ -94,20 +122,22 @@ export const RecipeComposer = () => {
         style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}
       >
         <LoadingOverlay
-          visible={publishLoading || metadataLoading}
+          visible={submitLoading || metadataLoading}
           zIndex={1000}
           overlayProps={{ blur: 2, radius: 'sm' }}
         />
 
         {/* ═══ HEADER ═══ */}
         <ComposerHeader
+          title={headerTitle}
           onBack={handleBack}
           completion={completion}
           lastSavedLabel={lastSavedLabel}
-          onSave={saveDraftNow}
+          onSave={onSave}
           onPreview={handleOpenPreview}
           onPublish={formik.submitForm}
-          publishLoading={publishLoading}
+          publishLoading={submitLoading}
+          submitLabel={submitLabel}
         />
 
         {/* ═══ WORKSPACE ═══ */}
@@ -124,7 +154,8 @@ export const RecipeComposer = () => {
             completion={completion}
             onAddIngredient={addIngredient}
             onAddStep={addStep}
-            onResetDraft={resetDraft}
+            onReset={onReset}
+            resetLabel={resetLabel}
           />
 
           {/* ── EDITOR (center) ── */}
@@ -171,7 +202,8 @@ export const RecipeComposer = () => {
                   onAdd={addStep}
                   onBack={goToIngredients}
                   onSubmit={formik.submitForm}
-                  isSubmitting={publishLoading}
+                  isSubmitting={submitLoading}
+                  submitLabel={submitLabel}
                 />
               )}
             </Box>

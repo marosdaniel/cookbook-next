@@ -69,3 +69,12 @@ export const CREATE_RECIPE = gql`
     }
   }
 `;
+
+export const EDIT_RECIPE = gql`
+  mutation EditRecipe($id: ID!, $recipeEditInput: RecipeEditInput!) {
+    editRecipe(id: $id, recipeEditInput: $recipeEditInput) {
+      id
+      title
+    }
+  }
+`;

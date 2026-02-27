@@ -148,6 +148,8 @@
     "followingDescription": "Anzeigen der Personen, denen Sie folgen",
     "createRecipeTitle": "Rezept erstellen",
     "createRecipeDescription": "Teilen Sie Ihre kulinarischen Kreationen mit der Welt",
+    "editRecipeTitle": "Rezept bearbeiten",
+    "editRecipeDescription": "Aktualisieren Sie Ihre Rezeptdetails",
     "recipeDetailTitle": "{title} - Rezept von {createdBy} | Kochbuch",
     "recipeDetailDescription": "{title} Rezept, erstellt von {createdBy}. Dieses Rezept gehört zur {category} Kategorie und kann in {cookingTime} Minuten zubereitet werden. Schauen Sie sich die genauen Zutaten und detaillierten Kochanweisungen an!",
     "recipeDetailKeywords": "Rezept, {title}, {category}, Kochen, {createdBy}, Zutaten, Mahlzeit"
@@ -277,7 +279,13 @@
     "missingFieldsMessage": "Bitte fülle Kategorie und Schwierigkeitsgrad aus, bevor du veröffentlichst.",
     "draftSavedMessage": "Entwurf lokal gespeichert",
     "draftClearedTitle": "Entwurf gelöscht",
-    "draftClearedMessage": "Alles auf Anfang."
+    "draftClearedMessage": "Alles auf Anfang.",
+    "recipeUpdatedTitle": "Aktualisiert! ✅",
+    "recipeUpdatedMessage": "Ihre Änderungen wurden gespeichert.",
+    "recipeUpdateFailedTitle": "Aktualisierung fehlgeschlagen",
+    "recipeUpdateFailedMessage": "Beim Speichern ist etwas schief gelaufen.",
+    "changesResetTitle": "Änderungen zurückgesetzt",
+    "changesResetMessage": "Auf das Originalrezept zurückgesetzt."
   },
   "recipeComposer": {
     "sections": {

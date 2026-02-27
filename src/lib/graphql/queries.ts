@@ -37,3 +37,40 @@ export const GET_METADATA_BY_TYPE = gql`
     }
   }
 `;
+
+export const GET_RECIPE_BY_ID = gql`
+  query getRecipeById($id: ID!) {
+    getRecipeById(id: $id) {
+      id
+      title
+      description
+      imgSrc
+      cookingTime
+      servings
+      youtubeLink
+      createdBy
+      category {
+        key
+        label
+      }
+      difficultyLevel {
+        key
+        label
+      }
+      labels {
+        key
+        label
+      }
+      ingredients {
+        localId
+        name
+        quantity
+        unit
+      }
+      preparationSteps {
+        description
+        order
+      }
+    }
+  }
+`;

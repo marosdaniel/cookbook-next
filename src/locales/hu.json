@@ -149,6 +149,8 @@
     "followingDescription": "Az általad követett személyek megtekintése",
     "createRecipeTitle": "Recept létrehozása",
     "createRecipeDescription": "Oszd meg kulináris alkotásaidat a világgal",
+    "editRecipeTitle": "Recept szerkesztése",
+    "editRecipeDescription": "Frissítsd a recepted részleteit",
     "recipeDetailTitle": "{title} - Recept tőle: {createdBy} | Receptkönyv",
     "recipeDetailDescription": "{title} recept, készítette: {createdBy}. Ez a recept a {category} kategóriába tartozik és {cookingTime} perc alatt elkészíthető. Nézze meg a pontos hozzávalókat és a részletes elkészítési útmutatót!",
     "recipeDetailKeywords": "recept, {title}, {category}, főzés, {createdBy}, hozzávalók, étel"
@@ -278,7 +280,13 @@
     "missingFieldsMessage": "Kérlek töltsd ki a Kategória és Nehézség mezőket közzététel előtt.",
     "draftSavedMessage": "Piszkozat helyileg mentve",
     "draftClearedTitle": "Piszkozat törölve",
-    "draftClearedMessage": "Tiszta lappal indulunk."
+    "draftClearedMessage": "Tiszta lappal indulunk.",
+    "recipeUpdatedTitle": "Frissítve! ✅",
+    "recipeUpdatedMessage": "A módosításaid mentésre kerültek.",
+    "recipeUpdateFailedTitle": "Frissítés sikertelen",
+    "recipeUpdateFailedMessage": "Valami hiba történt mentés közben.",
+    "changesResetTitle": "Módosítások visszaállítva",
+    "changesResetMessage": "Visszaállt az eredeti receptre."
   },
   "recipeComposer": {
     "sections": {

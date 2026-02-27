@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import type {
   ComposerSection,
   RecipeFormValues,
@@ -125,4 +126,55 @@ export function getStatusColor(isComplete: boolean, isActive: boolean): string {
   if (isComplete) return 'green';
   if (isActive) return 'blue';
   return 'gray';
+}
+
+/* ─── Server → Form Mapping ──────────────────── */
+
+/**
+ * Transforms a recipe fetched from the server (GraphQL response)
+ * into `RecipeFormValues` suitable for Formik.
+ */
+export function recipeToFormValues(recipe: {
+  title: string;
+  description?: string | null;
+  imgSrc?: string | null;
+  cookingTime: number;
+  servings: number;
+  youtubeLink?: string | null;
+  category: { key: string; label: string };
+  difficultyLevel: { key: string; label: string };
+  labels: { key: string; label: string }[];
+  ingredients: {
+    localId: string;
+    name: string;
+    quantity: number;
+    unit: string;
+  }[];
+  preparationSteps: { description: string; order: number }[];
+}): RecipeFormValues {
+  return {
+    title: recipe.title,
+    description: recipe.description ?? '',
+    imgSrc: recipe.imgSrc ?? '',
+    cookingTime: recipe.cookingTime,
+    servings: recipe.servings,
+    youtubeLink: recipe.youtubeLink ?? '',
+    category: { value: recipe.category.key, label: recipe.category.label },
+    difficultyLevel: {
+      value: recipe.difficultyLevel.key,
+      label: recipe.difficultyLevel.label,
+    },
+    labels: recipe.labels.map((l) => l.key),
+    ingredients: recipe.ingredients.map((i) => ({
+      localId: i.localId,
+      name: i.name,
+      quantity: i.quantity,
+      unit: i.unit,
+    })),
+    preparationSteps: recipe.preparationSteps.map((s) => ({
+      localId: uuidv4(),
+      description: s.description,
+      order: s.order,
+    })),
+  };
 }
