@@ -1,3 +1,10 @@
+# [1.39.0](https://github.com/marosdaniel/cookbook-next/compare/v1.38.0...v1.39.0) (2026-02-27)
+
+
+### Features
+
+* Implement recipe editing functionality and refactor the recipe composer to support both creation and editing. ([acd2328](https://github.com/marosdaniel/cookbook-next/commit/acd2328c729e0205f426b89008c0082876909c61))
+
 # [1.38.0](https://github.com/marosdaniel/cookbook-next/compare/v1.37.0...v1.38.0) (2026-02-23)
 
 
