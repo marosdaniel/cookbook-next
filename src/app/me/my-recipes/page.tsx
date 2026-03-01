@@ -13,6 +13,8 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default function MyRecipesPage() {
+const MyRecipesPage = () => {
   return <UnderConstruction />;
-}
+};
+
+export default MyRecipesPage;

@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import Password from './Password';
 import PersonalData from './PersonalData';
 
-export default function ProfileClient() {
+const ProfileClient = () => {
   const translate = useTranslations('user');
 
   return (
@@ -15,4 +15,6 @@ export default function ProfileClient() {
       <Password />
     </Stack>
   );
-}
+};
+
+export default ProfileClient;

@@ -13,6 +13,8 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default function FavoriteRecipesPage() {
+const FavoriteRecipesPage = () => {
   return <UnderConstruction />;
-}
+};
+
+export default FavoriteRecipesPage;

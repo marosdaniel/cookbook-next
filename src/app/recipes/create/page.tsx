@@ -13,6 +13,8 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default function NewRecipePage() {
+const NewRecipePage = () => {
   return <RecipeCreateClient />;
-}
+};
+
+export default NewRecipePage;

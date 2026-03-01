@@ -11,37 +11,11 @@ import { RecipeComposer } from '@/components/Recipe/Create/RecipeComposer';
 import type { ComposerSection } from '@/components/Recipe/Create/types';
 import { recipeToFormValues } from '@/components/Recipe/Create/utils';
 import { GET_RECIPE_BY_ID } from '@/lib/graphql/queries';
+import type { RecipeByIdData, RecipeEditClientProps } from './types';
 
-interface RecipeByIdData {
-  getRecipeById: {
-    id: string;
-    title: string;
-    description?: string | null;
-    imgSrc?: string | null;
-    cookingTime: number;
-    servings: number;
-    youtubeLink?: string | null;
-    createdBy: string;
-    category: { key: string; label: string };
-    difficultyLevel: { key: string; label: string };
-    labels: { key: string; label: string }[];
-    ingredients: {
-      localId: string;
-      name: string;
-      quantity: number;
-      unit: string;
-    }[];
-    preparationSteps: { description: string; order: number }[];
-  };
-}
-
-interface RecipeEditClientProps {
-  recipeId: string;
-}
-
-export default function RecipeEditClient({
+const RecipeEditClient = ({
   recipeId,
-}: Readonly<RecipeEditClientProps>) {
+}: Readonly<RecipeEditClientProps>) => {
   const { data: session, status: authStatus } = useSession();
 
   /* Auth guard */
@@ -156,4 +130,6 @@ export default function RecipeEditClient({
       goToSectionRef={goToSectionRef}
     />
   );
-}
+};
+
+export default RecipeEditClient;

@@ -8,7 +8,7 @@ import { useRecipeMetadata } from '@/components/Recipe/Create/hooks/useRecipeMet
 import { RecipeComposer } from '@/components/Recipe/Create/RecipeComposer';
 import type { ComposerSection } from '@/components/Recipe/Create/types';
 
-export default function RecipeCreateClient() {
+const RecipeCreateClient = () => {
   const { data: session, status } = useSession();
 
   const { labels, metadataLoaded } = useRecipeMetadata();
@@ -64,4 +64,6 @@ export default function RecipeCreateClient() {
       goToSectionRef={goToSectionRef}
     />
   );
-}
+};
+
+export default RecipeCreateClient;

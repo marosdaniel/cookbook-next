@@ -13,6 +13,8 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default function ProfilePage() {
+const ProfilePage = () => {
   return <ProfileClient />;
-}
+};
+
+export default ProfilePage;
