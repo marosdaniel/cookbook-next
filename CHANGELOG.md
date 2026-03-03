@@ -1,3 +1,10 @@
+# [1.40.0](https://github.com/marosdaniel/cookbook-next/compare/v1.39.0...v1.40.0) (2026-03-03)
+
+
+### Features
+
+* update `@tabler/icons-react` and `@semantic-release/npm` dependencies ([10546a9](https://github.com/marosdaniel/cookbook-next/commit/10546a90911d2c72cfb94a076e938e0c6ee2dfde))
+
 # [1.39.0](https://github.com/marosdaniel/cookbook-next/compare/v1.38.0...v1.39.0) (2026-02-27)
 
 
