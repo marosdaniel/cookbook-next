@@ -1,3 +1,10 @@
+## [1.40.1](https://github.com/marosdaniel/cookbook-next/compare/v1.40.0...v1.40.1) (2026-03-05)
+
+
+### Bug Fixes
+
+* Update Mantine packages to version 8.3.16. ([465cfdf](https://github.com/marosdaniel/cookbook-next/commit/465cfdf4e7d4ad99ebec10e3f54119eef7e9c1e4))
+
 # [1.40.0](https://github.com/marosdaniel/cookbook-next/compare/v1.39.0...v1.40.0) (2026-03-03)
 
 
