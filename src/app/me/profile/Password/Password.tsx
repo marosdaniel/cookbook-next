@@ -70,6 +70,7 @@ const Password = () => {
       newPassword: '',
       confirmNewPassword: '',
     },
+    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
     validate: zodResolver(passwordEditValidationSchema) as any,
     validateInputOnBlur: true,
   });

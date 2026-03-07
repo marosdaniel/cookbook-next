@@ -72,11 +72,12 @@ const PersonalData = () => {
       firstName: user?.firstName ?? '',
       lastName: user?.lastName ?? '',
     },
+    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
     validate: zodResolver(nameValidationSchema) as any,
     validateInputOnBlur: true,
   });
 
-  // Reinitialize form when user data is fetched (replaces Formik's enableReinitialize)
+  // Manual reinitialization when user data is fetched
   useEffect(() => {
     if (user) {
       form.setValues({

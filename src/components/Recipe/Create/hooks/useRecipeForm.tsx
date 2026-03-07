@@ -76,6 +76,7 @@ export function useRecipeForm({
       ingredients: [],
       preparationSteps: [],
     },
+    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
     validate: zodResolver(recipeFormValidationSchema) as any,
     validateInputOnBlur: true,
   });
@@ -108,22 +109,12 @@ export function useRecipeForm({
   // Since we use the debounced value to save state, let's just observe `form.getValues()` when needed,
   // or switch form mode if we need `form.values` to react properly.
   // Let's keep `form.getValues()` for completion right now.
-  const currentValues = form.getValues();
   const completion = useMemo(
-    () => computeCompletion(currentValues),
-    [
-      currentValues.title,
-      currentValues.description,
-      currentValues.cookingTime,
-      currentValues.servings,
-      currentValues.category,
-      currentValues.difficultyLevel,
-      currentValues.ingredients.length,
-      currentValues.preparationSteps.length,
-    ],
+    () => computeCompletion(form.values),
+    [form.values],
   );
 
-  const [debouncedValues] = useDebouncedValue(currentValues, 800);
+  const [debouncedValues] = useDebouncedValue(form.values, 800);
 
   useEffect(() => {
     if (!metadataLoaded) return;

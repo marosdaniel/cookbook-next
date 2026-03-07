@@ -43,6 +43,7 @@ export const SetNewPasswordForm: FC = () => {
       newPassword: '',
       confirmPassword: '',
     },
+    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
     validate: zodResolver(setNewPasswordValidationSchema) as any,
     validateInputOnBlur: true,
   });

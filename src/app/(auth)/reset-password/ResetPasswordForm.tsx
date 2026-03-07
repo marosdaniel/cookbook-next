@@ -41,6 +41,7 @@ export const ResetPasswordForm: FC = () => {
     initialValues: {
       email: '',
     },
+    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
     validate: zodResolver(resetPasswordValidationSchema) as any,
     validateInputOnBlur: true,
   });

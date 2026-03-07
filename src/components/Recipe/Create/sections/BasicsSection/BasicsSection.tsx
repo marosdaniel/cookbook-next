@@ -48,11 +48,11 @@ const BasicsSection = ({
   const titleTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const descTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // Sync FROM formik → local when formik resets (e.g. draft clear)
+  // Sync FROM form → local when form values change from outside (e.g. draft clear)
   const prevTitleRef = useRef(values.title);
   const prevDescRef = useRef(values.description);
   useEffect(() => {
-    // Only sync if the formik value changed from outside (not from our debounce)
+    // Only sync if the value changed from outside (not from our debounce)
     if (values.title !== prevTitleRef.current && values.title !== localTitle) {
       setLocalTitle(values.title);
     }
@@ -84,8 +84,8 @@ const BasicsSection = ({
       clearTimeout(titleTimerRef.current);
       // If there's already an error, sync immediately so the error clears at once
       const delay = getFieldError('title') ? 0 : DEBOUNCE_MS;
-      titleTimerRef.current = setTimeout(async () => {
-        await setFieldValue('title', val);
+      titleTimerRef.current = setTimeout(() => {
+        setFieldValue('title', val);
         revalidateOnChange('title');
       }, delay);
     },
@@ -100,8 +100,8 @@ const BasicsSection = ({
         clearTimeout(descTimerRef.current);
         // If there's already an error, sync immediately so the error clears at once
         const delay = getFieldError('description') ? 0 : DEBOUNCE_MS;
-        descTimerRef.current = setTimeout(async () => {
-          await setFieldValue('description', val);
+        descTimerRef.current = setTimeout(() => {
+          setFieldValue('description', val);
           revalidateOnChange('description');
         }, delay);
       }

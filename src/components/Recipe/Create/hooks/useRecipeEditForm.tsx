@@ -57,6 +57,7 @@ export function useRecipeEditForm({
   const form = useRecipeFormHook({
     mode: 'controlled',
     initialValues,
+    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
     validate: zodResolver(recipeFormValidationSchema) as any,
     validateInputOnBlur: true,
   });
@@ -65,8 +66,7 @@ export function useRecipeEditForm({
   useEffect(() => {
     form.setValues(initialValues);
     form.resetDirty(initialValues);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues]);
+  }, [initialValues, form]);
 
   const handlePublish = async (values: RecipeFormValues) => {
     if (!values.difficultyLevel || !values.category) {
@@ -89,19 +89,9 @@ export function useRecipeEditForm({
   const formRef = useRef(form);
   formRef.current = form;
 
-  const currentValues = form.getValues();
   const completion = useMemo(
-    () => computeCompletion(currentValues),
-    [
-      currentValues.title,
-      currentValues.description,
-      currentValues.cookingTime,
-      currentValues.servings,
-      currentValues.category,
-      currentValues.difficultyLevel,
-      currentValues.ingredients.length,
-      currentValues.preparationSteps.length,
-    ],
+    () => computeCompletion(form.values),
+    [form.values],
   );
 
   const resetToOriginal = useCallback(() => {

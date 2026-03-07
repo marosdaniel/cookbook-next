@@ -46,6 +46,7 @@ const SignUpForm: FC = () => {
       confirmPassword: '',
       privacyAccepted: false as boolean,
     },
+    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
     validate: zodResolver(signUpValidationSchema) as any,
     validateInputOnBlur: true,
   });

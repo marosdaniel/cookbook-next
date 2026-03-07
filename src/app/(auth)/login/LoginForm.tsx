@@ -37,6 +37,7 @@ export const LoginForm: FC = () => {
       email: '',
       password: '',
     },
+    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
     validate: zodResolver(loginValidationSchema) as any,
     validateInputOnBlur: true,
   });

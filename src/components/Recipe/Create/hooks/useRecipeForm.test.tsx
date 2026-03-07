@@ -31,7 +31,7 @@ vi.mock('@mantine/notifications', () => ({
 }));
 
 vi.mock('../FormContext', () => ({
-  useRecipeFormHook: vi.fn(() => mockFormik),
+  useRecipeFormHook: vi.fn(() => mockForm),
 }));
 
 vi.mock('uuid', () => ({
@@ -56,7 +56,7 @@ vi.mock('mantine-form-zod-resolver', () => ({
   zodResolver: vi.fn(() => ({})),
 }));
 
-const mockFormik = {
+const mockForm = {
   getValues: () => ({
     title: '',
     description: '',
@@ -124,7 +124,7 @@ describe('useRecipeForm', () => {
       _result.current.addIngredient();
     });
 
-    expect(mockFormik.insertListItem).toHaveBeenCalledWith(
+    expect(mockForm.insertListItem).toHaveBeenCalledWith(
       'ingredients',
       expect.objectContaining({
         localId: 'mock-uuid',
@@ -142,7 +142,7 @@ describe('useRecipeForm', () => {
       _result.current.addStep();
     });
 
-    expect(mockFormik.insertListItem).toHaveBeenCalledWith(
+    expect(mockForm.insertListItem).toHaveBeenCalledWith(
       'preparationSteps',
       expect.objectContaining({
         localId: 'mock-uuid',
@@ -164,7 +164,7 @@ describe('useRecipeForm', () => {
 
     expect(setDraft).toHaveBeenCalledWith({
       updatedAt: expect.any(Number),
-      values: mockFormik.getValues(),
+      values: mockForm.getValues(),
     });
     expect(notifications.show).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -185,8 +185,8 @@ describe('useRecipeForm', () => {
     });
 
     expect(setDraft).toHaveBeenCalledWith(null);
-    expect(mockFormik.reset).toHaveBeenCalled();
-    expect(mockFormik.setValues).toHaveBeenCalledWith(
+    expect(mockForm.reset).toHaveBeenCalled();
+    expect(mockForm.setValues).toHaveBeenCalledWith(
       expect.objectContaining({
         title: '',
         ingredients: [],
