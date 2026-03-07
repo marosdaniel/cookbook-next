@@ -1,3 +1,19 @@
+# [2.0.0](https://github.com/marosdaniel/cookbook-next/compare/v1.40.1...v2.0.0) (2026-03-07)
+
+
+* feat!: migrate database from MongoDB to Neon PostgreSQL and Prisma 7 ([285ce49](https://github.com/marosdaniel/cookbook-next/commit/285ce490444a631ade63f21064bfb45d77c38275))
+
+
+### BREAKING CHANGES
+
+* Complete database provider shift.
+- Replaced MongoDB with Neon PostgreSQL (Frankfurt region).
+- Upgraded Prisma to v7.4.2 and implemented the Neon serverless adapter.
+- Redesigned the schema: Ingredients and PreparationSteps are now relational tables.
+- Switched IDs from MongoDB ObjectIDs to CUIDs across the entire system.
+- Moved Metadata model offline to JSON for better flexibility.
+- Removed all MongoDB-related dependencies and utilities.
+
 ## [1.40.1](https://github.com/marosdaniel/cookbook-next/compare/v1.40.0...v1.40.1) (2026-03-05)
 
 
