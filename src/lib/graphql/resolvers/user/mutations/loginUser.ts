@@ -15,7 +15,7 @@ export const loginUser = async (
 ) => {
   const { email, password } = userLoginInput;
 
-  // Keressük meg a usert email alapján
+  // Find user by email
   const user = await prisma.user.findUnique({
     where: {
       email: email,
@@ -23,21 +23,21 @@ export const loginUser = async (
   });
 
   if (!user) {
-    throw new GraphQLError('Hibás email cím vagy jelszó', {
+    throw new GraphQLError('Invalid email address or password', {
       extensions: { code: 'UNAUTHENTICATED' },
     });
   }
 
-  // Jelszó ellenőrzése
+  // Check password
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
-    throw new GraphQLError('Hibás email cím vagy jelszó', {
+    throw new GraphQLError('Invalid email address or password', {
       extensions: { code: 'UNAUTHENTICATED' },
     });
   }
 
-  // JWT token generálása
+  // Generate JWT token
   const token = jwt.sign(
     {
       userId: user.id,
@@ -49,7 +49,7 @@ export const loginUser = async (
     { expiresIn: JWT_EXPIRES_IN },
   );
 
-  // AuthPayload visszaadása
+  // Return AuthPayload
   return {
     token,
     userId: user.id,

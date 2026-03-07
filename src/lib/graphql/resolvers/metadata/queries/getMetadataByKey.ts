@@ -1,3 +1,4 @@
+import { METADATA } from '@/lib/data/metadata';
 import type { GraphQLContext } from '@/types/graphql/context';
 
 interface GetMetadataByKeyArgs {
@@ -10,8 +11,7 @@ interface GetMetadataByKeyArgs {
 export const getMetadataByKey = async (
   _parent: unknown,
   args: GetMetadataByKeyArgs,
-  context: GraphQLContext,
+  _context: GraphQLContext,
 ) => {
-  // Metadata is handled offline for now
-  return null;
+  return METADATA.find((m) => m.key === args.key) || null;
 };

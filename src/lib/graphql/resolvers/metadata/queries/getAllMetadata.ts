@@ -1,3 +1,4 @@
+import { METADATA } from '@/lib/data/metadata';
 import type { GraphQLContext } from '@/types/graphql/context';
 
 /**
@@ -6,10 +7,7 @@ import type { GraphQLContext } from '@/types/graphql/context';
 export const getAllMetadata = async (
   _parent: unknown,
   _args: unknown,
-  context: GraphQLContext,
+  _context: GraphQLContext,
 ) => {
-  // Metadata is currently handled offline
-  const metadata: any[] = [];
-
-  return metadata;
+  return METADATA;
 };

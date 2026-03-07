@@ -1,3 +1,4 @@
+import { METADATA } from '@/lib/data/metadata';
 import type { GraphQLContext } from '@/types/graphql/context';
 
 interface GetMetadataByTypeArgs {
@@ -10,8 +11,9 @@ interface GetMetadataByTypeArgs {
 export const getMetadataByType = async (
   _parent: unknown,
   args: GetMetadataByTypeArgs,
-  context: GraphQLContext,
+  _context: GraphQLContext,
 ) => {
-  // Metadata is handled offline for now
-  return [];
+  return METADATA.filter(
+    (m) => m.type.toLowerCase() === args.type.toLowerCase(),
+  );
 };

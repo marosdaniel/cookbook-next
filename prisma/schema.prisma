@@ -44,11 +44,11 @@ model Recipe {
   id               String            @id @default(cuid())
   title            String
   description      String?
-  category         Json?             // Továbbá a metadata_offline.json-ban leírt struktúra szerint
-  labels           Json?             // Továbbá a metadata_offline.json-ban leírt struktúra szerint
+  category         Json?             // Based on the structure described in metadata_offline.json
+  labels           Json?             // Based on the structure described in metadata_offline.json
   imgSrc           String?
   cookingTime      Int
-  difficultyLevel  Json?             // Továbbá a metadata_offline.json-ban leírt struktúra szerint
+  difficultyLevel  Json?             // Based on the structure described in metadata_offline.json
   servings         Int
   youtubeLink      String?
   createdAt        DateTime          @default(now())

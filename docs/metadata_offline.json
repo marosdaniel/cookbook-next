@@ -1,5 +1,5 @@
 {
-  "description": "Ez a fájl tartalmazza a korábbi Metadata modell struktúráját, amit leválasztottunk az adatbázisról.",
+  "description": "This file contains the structure of the previous Metadata model, which was decoupled from the database.",
   "originalModel": {
     "name": "Metadata",
     "fields": {
@@ -9,6 +9,6 @@
       "label": "String",
       "type": "String (CATEGORY | LABEL | DIFFICULTY_LEVEL)"
     },
-    "purpose": "A receptekhez tartozó fix kategóriák, címkék és nehézségi szintek tárolása volt."
+    "purpose": "Used for storing fixed categories, labels, and difficulty levels for recipes."
   }
 }

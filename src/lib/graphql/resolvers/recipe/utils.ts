@@ -1,3 +1,4 @@
+import { METADATA } from '@/lib/data/metadata';
 import { prisma } from '@/lib/prisma/prisma';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
@@ -67,9 +68,9 @@ export function validateRequiredFields(input: RecipeInputBase) {
 /* ─── Metadata Resolution ────────────────────── */
 
 /**
- * Mivel a Metadata modellt kivezettük az adatbázisból, 
- * mostantól közvetlenül az inputból vesszük az adatokat 
- * és JSON-ként tároljuk őket a receptben.
+ * Since the Metadata model was removed from the database,
+ * metadata is now taken directly from input
+ * and stored as JSON within the recipe.
  */
 export async function resolveRecipeMetadata(input: RecipeInputBase) {
   const { category, difficultyLevel, labels = [] } = input;
@@ -84,12 +85,17 @@ export async function resolveRecipeMetadata(input: RecipeInputBase) {
 /* ─── Data Mapping ───────────────────────────── */
 
 function mapMetadataToJson(m: MetaInputPartial, type: string) {
-  return { 
-    id: null, 
-    name: m.value, 
-    key: m.value, 
-    label: m.label, 
-    type 
+  const existing = METADATA.find(
+    (entry) =>
+      entry.type === type && (entry.key === m.value || entry.name === m.value),
+  );
+
+  return {
+    id: existing?.id || null,
+    name: m.value,
+    key: existing?.key || m.value,
+    label: m.label,
+    type,
   };
 }
 
@@ -97,14 +103,18 @@ export function buildRecipeData(
   input: RecipeInputBase,
   metadata: Awaited<ReturnType<typeof resolveRecipeMetadata>>,
 ) {
-  const { categoryFromInput, difficultyLevelFromInput, labelsFromInput } = metadata;
+  const { categoryFromInput, difficultyLevelFromInput, labelsFromInput } =
+    metadata;
 
   return {
     title: input.title,
     description: input.description,
     category: mapMetadataToJson(categoryFromInput, 'CATEGORY'),
-    difficultyLevel: mapMetadataToJson(difficultyLevelFromInput, 'DIFFICULTY_LEVEL'),
-    labels: labelsFromInput.map(l => mapMetadataToJson(l, 'LABEL')),
+    difficultyLevel: mapMetadataToJson(
+      difficultyLevelFromInput,
+      'DIFFICULTY_LEVEL',
+    ),
+    labels: labelsFromInput.map((l) => mapMetadataToJson(l, 'LABEL')),
     imgSrc: input.imgSrc,
     cookingTime: input.cookingTime,
     servings: input.servings,

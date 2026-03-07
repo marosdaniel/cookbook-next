@@ -5,7 +5,7 @@ export type ErrorTypeDefinition = {
   errorStatus: number;
 };
 
-// Előre definiált hiba kategóriák
+// Predefined error categories
 export const ErrorTypes = {
   BAD_REQUEST: {
     errorCode: 'BAD_REQUEST',
@@ -28,8 +28,8 @@ export const ErrorTypes = {
     errorStatus: 404,
   },
   CONFLICT: {
-    errorCode: 'CONFLICT', // Pl. már létező email
-    errorStatus: 409, // 409 Conflict a helyes HTTP kód duplikációra
+    errorCode: 'CONFLICT', // e.g. email already exists
+    errorStatus: 409, // 409 Conflict is the correct HTTP code for duplicates
   },
   INTERNAL_SERVER_ERROR: {
     errorCode: 'INTERNAL_SERVER_ERROR',
@@ -37,5 +37,5 @@ export const ErrorTypes = {
   },
 } as const;
 
-// Típus a kulcsokhoz (opcionális, ha szigorúbb akarsz lenni)
+// Type for keys (optional, for stricter typing)
 export type ErrorTypeKey = keyof typeof ErrorTypes;

@@ -1,0 +1,256 @@
+export interface MetadataEntry {
+  id: string;
+  key: string;
+  label: string;
+  type: string;
+  name: string;
+}
+
+/**
+ * Since the Metadata model was removed from the database,
+ * pre-defined categories, labels, and other metadata are stored here.
+ */
+export const METADATA: MetadataEntry[] = [
+  // Categories
+  {
+    id: '659c5c4cbe8ba2f2058cf92b',
+    key: 'category-soup',
+    label: 'Soup',
+    type: 'CATEGORY',
+    name: 'soup',
+  },
+  {
+    id: '659c5c55be8ba2f2058cf92f',
+    key: 'category-salad',
+    label: 'Salad',
+    type: 'CATEGORY',
+    name: 'salad',
+  },
+  {
+    id: '659c5c61be8ba2f2058cf933',
+    key: 'category-appetizer',
+    label: 'Appetizer',
+    type: 'CATEGORY',
+    name: 'appetizer',
+  },
+  {
+    id: '659c5c6dbe8ba2f2058cf937',
+    key: 'category-bakery',
+    label: 'Bakery',
+    type: 'CATEGORY',
+    name: 'bakery',
+  },
+  {
+    id: 'cat-main-course',
+    key: 'category-main-course',
+    label: 'Main Course',
+    type: 'CATEGORY',
+    name: 'main-course',
+  },
+  {
+    id: 'cat-dessert',
+    key: 'category-dessert',
+    label: 'Dessert',
+    type: 'CATEGORY',
+    name: 'dessert',
+  },
+  {
+    id: 'cat-breakfast',
+    key: 'category-breakfast',
+    label: 'Breakfast',
+    type: 'CATEGORY',
+    name: 'breakfast',
+  },
+  {
+    id: 'cat-drink',
+    key: 'category-drink',
+    label: 'Drink',
+    type: 'CATEGORY',
+    name: 'drink',
+  },
+  {
+    id: 'cat-side-dish',
+    key: 'category-side-dish',
+    label: 'Side Dish',
+    type: 'CATEGORY',
+    name: 'side-dish',
+  },
+  // Labels (Diets & Features)
+  {
+    id: '659d061e6e1056af89d85907',
+    key: 'label-vegan',
+    label: 'Vegan',
+    type: 'LABEL',
+    name: 'vegan',
+  },
+  {
+    id: '659d062d6e1056af89d8590b',
+    key: 'label-vegetarian',
+    label: 'Vegetarian',
+    type: 'LABEL',
+    name: 'vegetarian',
+  },
+  {
+    id: 'label-gluten-free',
+    key: 'label-gluten-free',
+    label: 'Gluten-free',
+    type: 'LABEL',
+    name: 'gluten-free',
+  },
+  {
+    id: 'label-lactose-free',
+    key: 'label-lactose-free',
+    label: 'Lactose-free',
+    type: 'LABEL',
+    name: 'lactose-free',
+  },
+  {
+    id: 'label-sugar-free',
+    key: 'label-sugar-free',
+    label: 'Sugar-free',
+    type: 'LABEL',
+    name: 'sugar-free',
+  },
+  {
+    id: 'label-keto',
+    key: 'label-keto',
+    label: 'Keto',
+    type: 'LABEL',
+    name: 'keto',
+  },
+  {
+    id: 'label-paleo',
+    key: 'label-paleo',
+    label: 'Paleo',
+    type: 'LABEL',
+    name: 'paleo',
+  },
+  {
+    id: 'label-spicy',
+    key: 'label-spicy',
+    label: 'Spicy',
+    type: 'LABEL',
+    name: 'spicy',
+  },
+  {
+    id: 'label-kid-friendly',
+    key: 'label-kid-friendly',
+    label: 'Kid Friendly',
+    type: 'LABEL',
+    name: 'kid-friendly',
+  },
+  {
+    id: 'label-quick',
+    key: 'label-quick',
+    label: 'Quick & Easy',
+    type: 'LABEL',
+    name: 'quick',
+  },
+  // Difficulty levels
+  {
+    id: 'diff-easy',
+    key: 'difficulty-easy',
+    label: 'Easy',
+    type: 'DIFFICULTY_LEVEL',
+    name: 'easy',
+  },
+  {
+    id: 'diff-medium',
+    key: 'difficulty-medium',
+    label: 'Medium',
+    type: 'DIFFICULTY_LEVEL',
+    name: 'medium',
+  },
+  {
+    id: 'diff-hard',
+    key: 'difficulty-hard',
+    label: 'Hard',
+    type: 'DIFFICULTY_LEVEL',
+    name: 'hard',
+  },
+  // Units
+  {
+    id: 'unit-g',
+    key: 'unit-g',
+    label: 'g',
+    type: 'UNIT',
+    name: 'gram',
+  },
+  {
+    id: 'unit-kg',
+    key: 'unit-kg',
+    label: 'kg',
+    type: 'UNIT',
+    name: 'kilogram',
+  },
+  {
+    id: 'unit-ml',
+    key: 'unit-ml',
+    label: 'ml',
+    type: 'UNIT',
+    name: 'milliliter',
+  },
+  {
+    id: 'unit-l',
+    key: 'unit-l',
+    label: 'l',
+    type: 'UNIT',
+    name: 'liter',
+  },
+  {
+    id: 'unit-pcs',
+    key: 'unit-pcs',
+    label: 'pcs',
+    type: 'UNIT',
+    name: 'piece',
+  },
+  {
+    id: 'unit-tsp',
+    key: 'unit-tsp',
+    label: 'tsp',
+    type: 'UNIT',
+    name: 'teaspoon',
+  },
+  {
+    id: 'unit-tbsp',
+    key: 'unit-tbsp',
+    label: 'tbsp',
+    type: 'UNIT',
+    name: 'tablespoon',
+  },
+  {
+    id: 'unit-cup',
+    key: 'unit-cup',
+    label: 'cup',
+    type: 'UNIT',
+    name: 'cup',
+  },
+  {
+    id: 'unit-pinch',
+    key: 'unit-pinch',
+    label: 'pinch',
+    type: 'UNIT',
+    name: 'pinch',
+  },
+  {
+    id: 'unit-clove',
+    key: 'unit-clove',
+    label: 'clove',
+    type: 'UNIT',
+    name: 'clove',
+  },
+  {
+    id: 'unit-slice',
+    key: 'unit-slice',
+    label: 'slice',
+    type: 'UNIT',
+    name: 'slice',
+  },
+  {
+    id: 'unit-can',
+    key: 'unit-can',
+    label: 'can',
+    type: 'UNIT',
+    name: 'can',
+  },
+];
