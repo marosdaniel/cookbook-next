@@ -47,12 +47,16 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Run Biome Lint
         run: pnpm biome lint
 
       - name: Run Type Check
-        run: pnpm tsc --noEmit
+        run: pnpm run typecheck
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Run Unit Tests
         run: pnpm test:unit
@@ -102,6 +106,8 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Run Coverage
         run: pnpm test:coverage
@@ -212,6 +218,16 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Install dependencies
+        run: pnpm install
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Run Prisma Migrate Deploy
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Build Project Artifacts
         run: vercel build --prod --token="$VERCEL_TOKEN"
