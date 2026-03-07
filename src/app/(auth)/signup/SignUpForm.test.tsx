@@ -7,6 +7,23 @@ import { signIn } from 'next-auth/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import SignUpForm from './SignUpForm';
 
+// Mock mantine-form-zod-resolver
+vi.mock('mantine-form-zod-resolver', () => ({
+  zodResolver: vi.fn(() => (values: any) => {
+    const errors: Record<string, string> = {};
+    if (!values.firstName) errors.firstName = 'Required';
+    if (!values.lastName) errors.lastName = 'Required';
+    if (!values.userName) errors.userName = 'Required';
+    if (!values.email) errors.email = 'Required';
+    if (!values.password) errors.password = 'Required';
+    if (!values.confirmPassword) errors.confirmPassword = 'Required';
+    if (values.password !== values.confirmPassword)
+      errors.confirmPassword = 'Mismatch';
+    if (!values.privacyAccepted) errors.privacyAccepted = 'Required';
+    return errors;
+  }),
+}));
+
 // Mock next/navigation
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),

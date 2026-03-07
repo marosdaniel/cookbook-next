@@ -8,6 +8,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AUTH_ROUTES } from '../../../types/routes';
 import { LoginForm } from './LoginForm';
 
+// Mock mantine-form-zod-resolver
+vi.mock('mantine-form-zod-resolver', () => ({
+  zodResolver: vi.fn(() => (values: any) => {
+    const errors: Record<string, string> = {};
+    if (!values.email) errors.email = 'Required';
+    if (!values.password) errors.password = 'Required';
+    return errors;
+  }),
+}));
+
 // Mock next/navigation
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
