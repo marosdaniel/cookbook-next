@@ -21,7 +21,7 @@
     "test:coverage": "vitest run --coverage",
     "test:unit": "vitest run",
     "test:integration": "vitest run",
-    "deps:update": "pnpm dlx npm-check-updates -u --reject prisma,@prisma/client"
+    "deps:update": "pnpm dlx npm-check-updates -u"
   },
   "dependencies": {
     "@apollo/client": "^4.1.6",

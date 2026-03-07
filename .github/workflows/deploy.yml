@@ -30,6 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     # Skip job if commit message contains [skip ci] or [ci skip]
     if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[ci skip]')"
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -47,16 +49,12 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Run Biome Lint
         run: pnpm biome lint
 
       - name: Run Type Check
         run: pnpm run typecheck
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Run Unit Tests
         run: pnpm test:unit
@@ -89,6 +87,8 @@ jobs:
   test-coverage:
     needs: quality-checks
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -106,8 +106,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Run Coverage
         run: pnpm test:coverage
