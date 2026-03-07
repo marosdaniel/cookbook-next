@@ -19,10 +19,9 @@ import {
   IconTrash,
   IconWand,
 } from '@tabler/icons-react';
-import { useFormikContext } from 'formik';
 import { useTranslations } from 'next-intl';
-import { useFormikError } from '../../hooks/useFormikError';
-import type { RecipeFormValues } from '../../types';
+import { useRecipeFormContext } from '../../FormContext';
+import { useFormError } from '../../hooks/useFormError';
 import type { StepsSectionProps } from './types';
 
 const StepsSection = ({
@@ -33,8 +32,9 @@ const StepsSection = ({
   submitLabel,
 }: Readonly<StepsSectionProps>) => {
   const translate = useTranslations('recipeComposer.sections.steps');
-  const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
-  const { getFieldError, revalidateOnChange } = useFormikError();
+  const form = useRecipeFormContext();
+  const { values, setFieldValue } = form;
+  const { getFieldError, revalidateOnChange } = useFormError(form);
 
   const removeStep = (idx: number) => {
     const next = values.preparationSteps.filter((_, i) => i !== idx);

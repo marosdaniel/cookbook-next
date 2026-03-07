@@ -12,15 +12,15 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { useFormik } from 'formik';
+import { zodResolver } from 'mantine-form-zod-resolver';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 import { useState } from 'react';
-import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { CREATE_USER } from '@/lib/graphql/mutations';
 import { signUpValidationSchema } from '@/lib/validation/validation';
 import PrivacyPolicyLink from '../../../components/PrivacyPolicyLink';
@@ -35,9 +35,22 @@ const SignUpForm: FC = () => {
     CREATE_USER,
   );
 
-  const handleSignUp = async (
-    values: CreateUserVars['userRegisterInput'] & { privacyAccepted: boolean },
-  ) => {
+  const form = useForm({
+    mode: 'uncontrolled',
+    initialValues: {
+      firstName: '',
+      lastName: '',
+      userName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      privacyAccepted: false as boolean,
+    },
+    validate: zodResolver(signUpValidationSchema) as any,
+    validateInputOnBlur: true,
+  });
+
+  const handleSignUp = async (values: typeof form.values) => {
     try {
       const {
         privacyAccepted: _,
@@ -94,22 +107,8 @@ const SignUpForm: FC = () => {
     }
   };
 
-  const formik = useFormik({
-    initialValues: {
-      firstName: '',
-      lastName: '',
-      userName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      privacyAccepted: false,
-    },
-    validationSchema: toFormikValidationSchema(signUpValidationSchema),
-    onSubmit: handleSignUp,
-  });
-
   const isSubmitDisabled =
-    loading || isLoggingIn || !formik.isValid || !formik.dirty;
+    loading || isLoggingIn || !form.isValid() || !form.isDirty();
 
   return (
     <Container maw={520} my={40} id="sign-up-page">
@@ -137,18 +136,15 @@ const SignUpForm: FC = () => {
         p={30}
         mt={30}
         radius="md"
-        onSubmit={formik.handleSubmit}
+        onSubmit={form.onSubmit(handleSignUp)}
       >
         <TextInput
           required
           id="first-name"
           placeholder={translate('user.firstName')}
           label={translate('user.firstName')}
-          name="firstName"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.firstName}
-          error={formik.touched.firstName && formik.errors.firstName}
+          key={form.key('firstName')}
+          {...form.getInputProps('firstName')}
         />
         <TextInput
           required
@@ -156,11 +152,8 @@ const SignUpForm: FC = () => {
           placeholder={translate('user.lastName')}
           mt="md"
           label={translate('user.lastName')}
-          name="lastName"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.lastName}
-          error={formik.touched.lastName && formik.errors.lastName}
+          key={form.key('lastName')}
+          {...form.getInputProps('lastName')}
         />
         <TextInput
           required
@@ -168,11 +161,8 @@ const SignUpForm: FC = () => {
           placeholder={translate('user.userName')}
           mt="md"
           label={translate('user.userName')}
-          name="userName"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.userName}
-          error={formik.touched.userName && formik.errors.userName}
+          key={form.key('userName')}
+          {...form.getInputProps('userName')}
         />
         <TextInput
           label={translate('user.email')}
@@ -180,11 +170,8 @@ const SignUpForm: FC = () => {
           required
           mt="md"
           id="email"
-          name="email"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.email}
-          error={formik.touched.email && formik.errors.email}
+          key={form.key('email')}
+          {...form.getInputProps('email')}
         />
         <PasswordInput
           placeholder={translate('user.password')}
@@ -192,11 +179,8 @@ const SignUpForm: FC = () => {
           mt="md"
           id="password"
           label={translate('user.password')}
-          name="password"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.password}
-          error={formik.touched.password && formik.errors.password}
+          key={form.key('password')}
+          {...form.getInputProps('password')}
         />
         <PasswordInput
           placeholder={translate('user.confirmPassword')}
@@ -204,25 +188,16 @@ const SignUpForm: FC = () => {
           mt="md"
           id="confirm-password"
           label={translate('user.confirmPassword')}
-          name="confirmPassword"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.confirmPassword}
-          error={
-            formik.touched.confirmPassword && formik.errors.confirmPassword
-          }
+          key={form.key('confirmPassword')}
+          {...form.getInputProps('confirmPassword')}
         />
 
         <Checkbox
           size="md"
           label={<PrivacyPolicyLink />}
           mt="xl"
-          name="privacyAccepted"
-          checked={formik.values.privacyAccepted}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.privacyAccepted && formik.errors.privacyAccepted
-          }
+          key={form.key('privacyAccepted')}
+          {...form.getInputProps('privacyAccepted', { type: 'checkbox' })}
         />
 
         <Button

@@ -18,10 +18,9 @@ import {
   IconToolsKitchen2,
   IconTrash,
 } from '@tabler/icons-react';
-import { useFormikContext } from 'formik';
 import { useTranslations } from 'next-intl';
-import { useFormikError } from '../../hooks/useFormikError';
-import type { RecipeFormValues } from '../../types';
+import { useRecipeFormContext } from '../../FormContext';
+import { useFormError } from '../../hooks/useFormError';
 import type { IngredientsSectionProps } from './types';
 
 const IngredientsSection = ({
@@ -31,8 +30,9 @@ const IngredientsSection = ({
   onNext,
 }: Readonly<IngredientsSectionProps>) => {
   const translate = useTranslations('recipeComposer.sections.ingredients');
-  const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
-  const { getFieldError, revalidateOnChange } = useFormikError();
+  const form = useRecipeFormContext();
+  const { values, setFieldValue } = form;
+  const { getFieldError, revalidateOnChange } = useFormError(form);
 
   const removeIngredient = (idx: number) => {
     const next = values.ingredients.filter((_, i) => i !== idx);

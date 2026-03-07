@@ -10,12 +10,12 @@ import {
   Text,
   Title,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { useFormik } from 'formik';
+import { zodResolver } from 'mantine-form-zod-resolver';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import type { z } from 'zod';
-import { toFormikValidationSchema } from 'zod-formik-adapter';
 
 import { CHANGE_PASSWORD } from '@/lib/graphql/mutations';
 import { passwordEditValidationSchema } from '@/lib/validation/validation';
@@ -39,7 +39,7 @@ const Password = () => {
         if (data?.changePassword?.success) {
           notifications.show({
             title: translate('response.success'),
-            message: translate('auth.passwordChangedSuccess'), // Ensure this key exists or use a generic one
+            message: translate('auth.passwordChangedSuccess'),
             color: 'teal',
           });
           handleCancelPasswordEdit();
@@ -63,6 +63,17 @@ const Password = () => {
     },
   );
 
+  const form = useForm<z.infer<typeof passwordEditValidationSchema>>({
+    mode: 'uncontrolled',
+    initialValues: {
+      currentPassword: '',
+      newPassword: '',
+      confirmNewPassword: '',
+    },
+    validate: zodResolver(passwordEditValidationSchema) as any,
+    validateInputOnBlur: true,
+  });
+
   const onSubmit = async (
     values: z.infer<typeof passwordEditValidationSchema>,
   ) => {
@@ -81,25 +92,15 @@ const Password = () => {
     }
   };
 
-  const formik = useFormik({
-    initialValues: {
-      currentPassword: '',
-      newPassword: '',
-      confirmNewPassword: '',
-    },
-    validationSchema: toFormikValidationSchema(passwordEditValidationSchema),
-    onSubmit,
-  });
-
   const handleCancelPasswordEdit = () => {
-    formik.resetForm();
+    form.reset();
     setIsEditMode(false);
   };
 
   return (
     <Paper
       component="form"
-      onSubmit={formik.handleSubmit}
+      onSubmit={form.onSubmit(onSubmit)}
       shadow="md"
       radius="lg"
       p={{
@@ -126,18 +127,8 @@ const Password = () => {
               placeholder={translate('user.password')}
               mt="md"
               label={translate('user.currentPassword')}
-              name="currentPassword"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.currentPassword}
-              error={
-                formik.touched.currentPassword && formik.errors.currentPassword
-              }
-              description={
-                formik.touched.currentPassword && formik.errors.currentPassword
-                  ? formik.errors.currentPassword
-                  : ''
-              }
+              key={form.key('currentPassword')}
+              {...form.getInputProps('currentPassword')}
             />
             <PasswordInput
               required
@@ -145,16 +136,8 @@ const Password = () => {
               placeholder={translate('user.newPassword')}
               mt="md"
               label={translate('user.newPassword')}
-              name="newPassword"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.newPassword}
-              error={formik.touched.newPassword && formik.errors.newPassword}
-              description={
-                formik.touched.newPassword && formik.errors.newPassword
-                  ? formik.errors.newPassword
-                  : ''
-              }
+              key={form.key('newPassword')}
+              {...form.getInputProps('newPassword')}
             />
             <PasswordInput
               required
@@ -162,20 +145,8 @@ const Password = () => {
               placeholder={translate('user.confirmPassword')}
               mt="md"
               label={translate('user.confirmPassword')}
-              name="confirmNewPassword"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.confirmNewPassword}
-              error={
-                formik.touched.confirmNewPassword &&
-                formik.errors.confirmNewPassword
-              }
-              description={
-                formik.touched.confirmNewPassword &&
-                formik.errors.confirmNewPassword
-                  ? formik.errors.confirmNewPassword
-                  : ''
-              }
+              key={form.key('confirmNewPassword')}
+              {...form.getInputProps('confirmNewPassword')}
             />
           </Box>
           <Group mt="xl" justify="flex-end">
@@ -189,7 +160,7 @@ const Password = () => {
             <Button
               size="sm"
               type="submit"
-              disabled={!formik.isValid || !formik.dirty}
+              disabled={!form.isValid() || !form.isDirty()}
               loading={loading}
               loaderProps={{ type: 'dots' }}
             >

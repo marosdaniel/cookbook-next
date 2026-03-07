@@ -1,8 +1,8 @@
 import { useLocalStorage } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { act, renderHook } from '@testing-library/react';
-import { useFormik } from 'formik';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { useRecipeFormHook } from '../FormContext';
 import type { UseRecipeFormProps } from '../types';
 import { useRecipeForm } from './useRecipeForm';
 
@@ -30,8 +30,8 @@ vi.mock('@mantine/notifications', () => ({
   },
 }));
 
-vi.mock('formik', () => ({
-  useFormik: vi.fn(() => mockFormik),
+vi.mock('../FormContext', () => ({
+  useRecipeFormHook: vi.fn(() => mockFormik),
 }));
 
 vi.mock('uuid', () => ({
@@ -52,12 +52,12 @@ vi.mock('@/lib/validation/validation', () => ({
   recipeFormValidationSchema: {},
 }));
 
-vi.mock('zod-formik-adapter', () => ({
-  toFormikValidationSchema: vi.fn(() => ({})),
+vi.mock('mantine-form-zod-resolver', () => ({
+  zodResolver: vi.fn(() => ({})),
 }));
 
 const mockFormik = {
-  values: {
+  getValues: () => ({
     title: '',
     description: '',
     imgSrc: '',
@@ -69,10 +69,11 @@ const mockFormik = {
     youtubeLink: '',
     ingredients: [],
     preparationSteps: [],
-  },
-  setFieldValue: vi.fn(),
-  resetForm: vi.fn(),
-  submitForm: vi.fn(),
+  }),
+  setValues: vi.fn(),
+  reset: vi.fn(),
+  onSubmit: vi.fn(),
+  insertListItem: vi.fn(),
 };
 
 describe('useRecipeForm', () => {
@@ -89,7 +90,7 @@ describe('useRecipeForm', () => {
   it('should initialize with default values when no draft', () => {
     const { result: _result } = renderHook(() => useRecipeForm(mockProps));
 
-    expect(vi.mocked(useFormik)).toHaveBeenCalledWith(
+    expect(vi.mocked(useRecipeFormHook)).toHaveBeenCalledWith(
       expect.objectContaining({
         initialValues: expect.objectContaining({
           title: '',
@@ -109,7 +110,7 @@ describe('useRecipeForm', () => {
 
     renderHook(() => useRecipeForm(mockProps));
 
-    expect(vi.mocked(useFormik)).toHaveBeenCalledWith(
+    expect(vi.mocked(useRecipeFormHook)).toHaveBeenCalledWith(
       expect.objectContaining({
         initialValues: draftValues,
       }),
@@ -123,14 +124,15 @@ describe('useRecipeForm', () => {
       _result.current.addIngredient();
     });
 
-    expect(mockFormik.setFieldValue).toHaveBeenCalledWith('ingredients', [
+    expect(mockFormik.insertListItem).toHaveBeenCalledWith(
+      'ingredients',
       expect.objectContaining({
         localId: 'mock-uuid',
         name: '',
         quantity: '',
         unit: '',
       }),
-    ]);
+    );
   });
 
   it('should add step', () => {
@@ -140,13 +142,14 @@ describe('useRecipeForm', () => {
       _result.current.addStep();
     });
 
-    expect(mockFormik.setFieldValue).toHaveBeenCalledWith('preparationSteps', [
+    expect(mockFormik.insertListItem).toHaveBeenCalledWith(
+      'preparationSteps',
       expect.objectContaining({
         localId: 'mock-uuid',
         description: '',
         order: 1,
       }),
-    ]);
+    );
   });
 
   it('should save draft now', () => {
@@ -161,7 +164,7 @@ describe('useRecipeForm', () => {
 
     expect(setDraft).toHaveBeenCalledWith({
       updatedAt: expect.any(Number),
-      values: mockFormik.values,
+      values: mockFormik.getValues(),
     });
     expect(notifications.show).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -182,12 +185,13 @@ describe('useRecipeForm', () => {
     });
 
     expect(setDraft).toHaveBeenCalledWith(null);
-    expect(mockFormik.resetForm).toHaveBeenCalledWith({
-      values: expect.objectContaining({
+    expect(mockFormik.reset).toHaveBeenCalled();
+    expect(mockFormik.setValues).toHaveBeenCalledWith(
+      expect.objectContaining({
         title: '',
         ingredients: [],
       }),
-    });
+    );
     expect(mockProps.onSectionChange).toHaveBeenCalledWith('basics');
     expect(notifications.show).toHaveBeenCalledWith(
       expect.objectContaining({

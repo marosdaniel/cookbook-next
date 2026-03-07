@@ -11,7 +11,8 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import { useFormik } from 'formik';
+import { useForm } from '@mantine/form';
+import { zodResolver } from 'mantine-form-zod-resolver';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -19,7 +20,6 @@ import type { FC } from 'react';
 import { useState } from 'react';
 import { CiCircleCheck } from 'react-icons/ci';
 import { IoArrowBackOutline } from 'react-icons/io5';
-import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { SET_NEW_PASSWORD } from '@/lib/graphql/mutations';
 import { setNewPasswordValidationSchema } from '@/lib/validation/validation';
 import { AUTH_ROUTES } from '../../../../types/routes';
@@ -36,6 +36,16 @@ export const SetNewPasswordForm: FC = () => {
   const [setNewPassword, { loading }] =
     useMutation<SetNewPasswordResponse>(SET_NEW_PASSWORD);
   const [isPasswordReset, setIsPasswordReset] = useState(false);
+
+  const form = useForm<SetNewPasswordFormValues>({
+    mode: 'uncontrolled',
+    initialValues: {
+      newPassword: '',
+      confirmPassword: '',
+    },
+    validate: zodResolver(setNewPasswordValidationSchema) as any,
+    validateInputOnBlur: true,
+  });
 
   const handleSetNewPassword = async (values: SetNewPasswordFormValues) => {
     if (!token) {
@@ -56,7 +66,7 @@ export const SetNewPasswordForm: FC = () => {
 
       if (result.data?.setNewPassword?.success) {
         setIsPasswordReset(true);
-        formik.resetForm();
+        form.reset();
 
         // Redirect to login after delay
         setTimeout(() => {
@@ -71,15 +81,6 @@ export const SetNewPasswordForm: FC = () => {
       );
     }
   };
-
-  const formik = useFormik<SetNewPasswordFormValues>({
-    initialValues: {
-      newPassword: '',
-      confirmPassword: '',
-    },
-    validationSchema: toFormikValidationSchema(setNewPasswordValidationSchema),
-    onSubmit: handleSetNewPassword,
-  });
 
   if (isPasswordReset) {
     return (
@@ -115,7 +116,7 @@ export const SetNewPasswordForm: FC = () => {
 
       <Paper
         component="form"
-        onSubmit={formik.handleSubmit}
+        onSubmit={form.onSubmit(handleSetNewPassword)}
         withBorder
         shadow="md"
         p={30}
@@ -123,31 +124,23 @@ export const SetNewPasswordForm: FC = () => {
       >
         <PasswordInput
           id="newPassword"
-          name="newPassword"
           label={translate('auth.newPassword')}
           placeholder={translate('auth.enterNewPassword')}
           required
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.newPassword}
-          error={formik.touched.newPassword && formik.errors.newPassword}
           description={translate('response.passwordRequirements')}
           mb="md"
+          key={form.key('newPassword')}
+          {...form.getInputProps('newPassword')}
         />
 
         <PasswordInput
           id="confirmPassword"
-          name="confirmPassword"
           label={translate('auth.confirmPassword')}
           placeholder={translate('auth.confirmNewPassword')}
           required
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.confirmPassword}
-          error={
-            formik.touched.confirmPassword && formik.errors.confirmPassword
-          }
           mb="lg"
+          key={form.key('confirmPassword')}
+          {...form.getInputProps('confirmPassword')}
         />
 
         <Button
@@ -155,7 +148,7 @@ export const SetNewPasswordForm: FC = () => {
           loading={loading}
           loaderProps={{ type: 'dots' }}
           fullWidth
-          disabled={!formik.isValid || !formik.dirty}
+          disabled={!form.isValid() || !form.isDirty()}
         >
           {translate('auth.setNewPasswordButton')}
         </Button>

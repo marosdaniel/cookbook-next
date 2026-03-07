@@ -2,14 +2,14 @@ import { useMutation } from '@apollo/client/react';
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconCheck, IconDeviceFloppy } from '@tabler/icons-react';
-import { useFormik } from 'formik';
+import { zodResolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { CREATE_RECIPE } from '@/lib/graphql/mutations';
 import { recipeFormValidationSchema } from '@/lib/validation/validation';
+import { useRecipeFormHook } from '../FormContext';
 import type {
   DraftState,
   RecipeFormValues,
@@ -31,18 +31,11 @@ export function useRecipeForm({
   const router = useRouter();
   const translate = useTranslations();
 
-  /**
-   * Local draft persistence using browser storage.
-   * Prevents data loss on page refresh or accidental navigation.
-   * Chosen over Redux/DB for performance (avoids high-frequency network calls)
-   * and to keep the draft logic local to the recipe creation flow.
-   */
   const [draft, setDraft] = useLocalStorage<DraftState | null>({
     key: DRAFT_STORAGE_KEY,
     defaultValue: null,
   });
 
-  /* Mutation */
   const [createRecipe, { loading: publishLoading }] = useMutation(
     CREATE_RECIPE,
     {
@@ -68,8 +61,8 @@ export function useRecipeForm({
     },
   );
 
-  /* Formik */
-  const formik = useFormik<RecipeFormValues>({
+  const form = useRecipeFormHook({
+    mode: 'controlled',
     initialValues: draft?.values ?? {
       title: '',
       description: '',
@@ -83,50 +76,55 @@ export function useRecipeForm({
       ingredients: [],
       preparationSteps: [],
     },
-    validationSchema: toFormikValidationSchema(recipeFormValidationSchema),
-    validateOnBlur: true,
-    validateOnChange: false,
-    onSubmit: async (values) => {
-      if (!values.difficultyLevel || !values.category) {
-        notifications.show({
-          title: translate('notifications.missingFieldsTitle'),
-          message: translate('notifications.missingFieldsMessage'),
-          color: 'orange',
-        });
-        onSectionChange('basics');
-        return;
-      }
-
-      const input = transformValuesToInput(values, labels);
-
-      await createRecipe({
-        variables: { recipeCreateInput: input },
-      });
-    },
+    validate: zodResolver(recipeFormValidationSchema) as any,
+    validateInputOnBlur: true,
   });
 
-  /* Stable ref so callbacks don't depend on the formik object */
-  const formikRef = useRef(formik);
-  formikRef.current = formik;
+  const handlePublish = async (values: RecipeFormValues) => {
+    if (!values.difficultyLevel || !values.category) {
+      notifications.show({
+        title: translate('notifications.missingFieldsTitle'),
+        message: translate('notifications.missingFieldsMessage'),
+        color: 'orange',
+      });
+      onSectionChange('basics');
+      return;
+    }
 
-  /* Completion – only recompute when meaningful fields change */
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional granular deps for perf
+    const input = transformValuesToInput(values, labels);
+
+    await createRecipe({
+      variables: { recipeCreateInput: input },
+    });
+  };
+
+  const formRef = useRef(form);
+  formRef.current = form;
+
+  // Reactivity note: using getValues() in an uncontrolled form might not trigger updates for `useMemo` dependencies the same way.
+  // We'll track controlled updates via `form.getValues()` or Mantine form events if needed, but for completion percentage,
+  // we can read it directly from values when triggered or pass `form.values` instead if `mode: 'controlled'` is preferable.
+  // Actually, Mantine's uncontrolled mode doesn't re-render on every keystroke, but `form.getValues()` gets the current data.
+  // Since we use the debounced value to save state, let's just observe `form.getValues()` when needed,
+  // or switch form mode if we need `form.values` to react properly.
+  // Let's keep `form.getValues()` for completion right now.
+  const currentValues = form.getValues();
   const completion = useMemo(
-    () => computeCompletion(formik.values),
+    () => computeCompletion(currentValues),
     [
-      formik.values.title,
-      formik.values.description,
-      formik.values.cookingTime,
-      formik.values.servings,
-      formik.values.category,
-      formik.values.difficultyLevel,
-      formik.values.ingredients.length,
-      formik.values.preparationSteps.length,
+      currentValues.title,
+      currentValues.description,
+      currentValues.cookingTime,
+      currentValues.servings,
+      currentValues.category,
+      currentValues.difficultyLevel,
+      currentValues.ingredients.length,
+      currentValues.preparationSteps.length,
     ],
   );
-  const [debouncedValues] = useDebouncedValue(formik.values, 800);
 
-  /* Auto-save draft */
+  const [debouncedValues] = useDebouncedValue(currentValues, 800);
+
   useEffect(() => {
     if (!metadataLoaded) return;
     setDraft({
@@ -149,7 +147,6 @@ export function useRecipeForm({
 
     const minutes = Math.floor(delta / 60_000);
     try {
-      // Provide the required formatting variable when calling the translator.
       return translate('sidebar.savedAgo', { minutes });
     } catch (e) {
       console.error(e);
@@ -157,11 +154,10 @@ export function useRecipeForm({
     }
   }, [draft?.updatedAt, translate]);
 
-  /* Actions */
   const saveDraftNow = useCallback(() => {
     setDraft({
       updatedAt: Date.now(),
-      values: formikRef.current.values,
+      values: formRef.current.getValues(),
     });
     notifications.show({
       message: translate('notifications.draftSavedMessage'),
@@ -173,20 +169,19 @@ export function useRecipeForm({
 
   const resetDraft = useCallback(() => {
     setDraft(null);
-    formikRef.current.resetForm({
-      values: {
-        title: '',
-        description: '',
-        imgSrc: '',
-        cookingTime: '',
-        servings: '',
-        difficultyLevel: null,
-        category: null,
-        labels: [],
-        youtubeLink: '',
-        ingredients: [],
-        preparationSteps: [],
-      },
+    formRef.current.reset();
+    formRef.current.setValues({
+      title: '',
+      description: '',
+      imgSrc: '',
+      cookingTime: '',
+      servings: '',
+      difficultyLevel: null,
+      category: null,
+      labels: [],
+      youtubeLink: '',
+      ingredients: [],
+      preparationSteps: [],
     });
     onSectionChange('basics');
     notifications.show({
@@ -197,31 +192,29 @@ export function useRecipeForm({
   }, [setDraft, onSectionChange, translate]);
 
   const addIngredient = useCallback(() => {
-    const f = formikRef.current;
+    const f = formRef.current;
     const newIngredient: TIngredient = {
       localId: uuidv4(),
       name: '',
       quantity: '',
       unit: '',
     };
-    f.setFieldValue('ingredients', [...f.values.ingredients, newIngredient]);
+    f.insertListItem('ingredients', newIngredient);
   }, []);
 
   const addStep = useCallback(() => {
-    const f = formikRef.current;
+    const f = formRef.current;
     const newStep: TPreparationStep = {
       localId: uuidv4(),
       description: '',
-      order: f.values.preparationSteps.length + 1,
+      order: f.getValues().preparationSteps.length + 1,
     };
-    f.setFieldValue('preparationSteps', [
-      ...f.values.preparationSteps,
-      newStep,
-    ]);
+    f.insertListItem('preparationSteps', newStep);
   }, []);
 
   return {
-    formik,
+    form,
+    handlePublish,
     publishLoading,
     completion,
     lastSavedLabel,

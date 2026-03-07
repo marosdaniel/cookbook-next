@@ -12,15 +12,15 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { useFormik } from 'formik';
+import { zodResolver } from 'mantine-form-zod-resolver';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 import { useState } from 'react';
-import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { loginValidationSchema } from '../../../lib/validation';
 import { AUTH_ROUTES } from '../../../types/routes';
 import type { LoginFormValues } from './types';
@@ -30,6 +30,16 @@ export const LoginForm: FC = () => {
   const router = useRouter();
   const [rememberMe, setRememberMe] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
+
+  const form = useForm<LoginFormValues>({
+    mode: 'uncontrolled',
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validate: zodResolver(loginValidationSchema) as any,
+    validateInputOnBlur: true,
+  });
 
   const handleLogin = async (values: LoginFormValues) => {
     try {
@@ -71,17 +81,8 @@ export const LoginForm: FC = () => {
     }
   };
 
-  const formik = useFormik<LoginFormValues>({
-    initialValues: {
-      email: '',
-      password: '',
-    },
-    validationSchema: toFormikValidationSchema(loginValidationSchema),
-    onSubmit: handleLogin,
-  });
-
   const isLoginDisabled =
-    formik.isSubmitting || isSigningIn || !formik.isValid || !formik.dirty;
+    form.submitting || isSigningIn || !form.isValid() || !form.isDirty();
 
   return (
     <Container maw={520} my={40} id="login-page">
@@ -108,20 +109,17 @@ export const LoginForm: FC = () => {
         p={30}
         mt={30}
         radius="md"
-        onSubmit={formik.handleSubmit}
+        onSubmit={form.onSubmit(handleLogin)}
       >
         <TextInput
           label={translate('user.email')}
           placeholder="your@email.com"
           required
           id="email"
-          name="email"
           type="email"
           autoComplete="email"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.email}
-          error={formik.touched.email && formik.errors.email}
+          key={form.key('email')}
+          {...form.getInputProps('email')}
         />
         <PasswordInput
           placeholder={translate('user.password')}
@@ -129,12 +127,9 @@ export const LoginForm: FC = () => {
           mt="md"
           id="password"
           label={translate('user.password')}
-          name="password"
           autoComplete="current-password"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.password}
-          error={formik.touched.password && formik.errors.password}
+          key={form.key('password')}
+          {...form.getInputProps('password')}
         />
         <Group justify="space-between" mt="lg">
           <Checkbox
@@ -158,7 +153,7 @@ export const LoginForm: FC = () => {
           mt="xl"
           type="submit"
           disabled={isLoginDisabled}
-          loading={formik.isSubmitting || isSigningIn}
+          loading={form.submitting || isSigningIn}
           loaderProps={{ type: 'dots' }}
         >
           {translate('auth.signIn')}

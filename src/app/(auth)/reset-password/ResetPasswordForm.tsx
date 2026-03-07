@@ -12,14 +12,14 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import { useFormik } from 'formik';
+import { useForm } from '@mantine/form';
+import { zodResolver } from 'mantine-form-zod-resolver';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 import { useState } from 'react';
 import { CiCircleInfo } from 'react-icons/ci';
 import { IoArrowBackOutline } from 'react-icons/io5';
-import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { RESET_PASSWORD } from '@/lib/graphql/mutations';
 import { resetPasswordValidationSchema } from '@/lib/validation/validation';
 import { AUTH_ROUTES } from '../../../types/routes';
@@ -36,6 +36,15 @@ export const ResetPasswordForm: FC = () => {
   const [isResetPasswordEmailSent, setIsResetPasswordEmailSent] =
     useState(false);
 
+  const form = useForm<ResetPasswordFormValues>({
+    mode: 'uncontrolled',
+    initialValues: {
+      email: '',
+    },
+    validate: zodResolver(resetPasswordValidationSchema) as any,
+    validateInputOnBlur: true,
+  });
+
   const handleResetPassword = async (values: ResetPasswordFormValues) => {
     try {
       const result = await resetPassword({
@@ -44,7 +53,7 @@ export const ResetPasswordForm: FC = () => {
 
       if (result.data?.resetPassword?.success) {
         setIsResetPasswordEmailSent(true);
-        formik.resetForm();
+        form.reset();
 
         showSuccessNotification(
           translate('response.success'),
@@ -60,14 +69,6 @@ export const ResetPasswordForm: FC = () => {
     }
   };
 
-  const formik = useFormik<ResetPasswordFormValues>({
-    initialValues: {
-      email: '',
-    },
-    validationSchema: toFormikValidationSchema(resetPasswordValidationSchema),
-    onSubmit: handleResetPassword,
-  });
-
   return (
     <Container size={460} my={30} id="reset-password-page">
       <Title ta="center" mb="xs">
@@ -79,7 +80,7 @@ export const ResetPasswordForm: FC = () => {
 
       <Paper
         component="form"
-        onSubmit={formik.handleSubmit}
+        onSubmit={form.onSubmit(handleResetPassword)}
         withBorder
         shadow="md"
         p={30}
@@ -113,19 +114,11 @@ export const ResetPasswordForm: FC = () => {
           <Stack gap="md">
             <TextInput
               id="email"
-              name="email"
               label={translate('user.email')}
               placeholder="your@email.com"
               required
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.email}
-              error={formik.touched.email && formik.errors.email}
-              description={
-                formik.touched.email && formik.errors.email
-                  ? translate('response.shouldBeValidEmail')
-                  : ''
-              }
+              key={form.key('email')}
+              {...form.getInputProps('email')}
             />
 
             <Button
@@ -133,7 +126,7 @@ export const ResetPasswordForm: FC = () => {
               loading={loading}
               loaderProps={{ type: 'dots' }}
               fullWidth
-              disabled={!formik.isValid || !formik.dirty}
+              disabled={!form.isValid() || !form.isDirty()}
             >
               {translate('auth.sendResetLink')}
             </Button>

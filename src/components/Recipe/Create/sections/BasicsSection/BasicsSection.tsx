@@ -20,11 +20,10 @@ import {
   IconSparkles,
   IconUsers,
 } from '@tabler/icons-react';
-import { useFormikContext } from 'formik';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useFormikError } from '../../hooks/useFormikError';
-import type { RecipeFormValues } from '../../types';
+import { useRecipeFormContext } from '../../FormContext';
+import { useFormError } from '../../hooks/useFormError';
 import { DESCRIPTION_MAX_LENGTH, sectionCompletion } from '../../utils';
 import type { BasicsSectionProps } from './types';
 
@@ -37,8 +36,9 @@ const BasicsSection = ({
   onNext,
 }: Readonly<BasicsSectionProps>) => {
   const translate = useTranslations('recipeComposer.sections.basics');
-  const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
-  const { getFieldError, revalidateOnChange } = useFormikError();
+  const form = useRecipeFormContext();
+  const { values, setFieldValue } = form;
+  const { getFieldError, revalidateOnChange } = useFormError(form);
 
   /* ── Local state for high-frequency text inputs ── */
   const [localTitle, setLocalTitle] = useState(values.title);
@@ -182,7 +182,8 @@ const BasicsSection = ({
               placeholder={translate('cookingTimePlaceholder')}
               value={values.cookingTime}
               onChange={(e) => {
-                setFieldValue('cookingTime', e.target.value);
+                const val = e.target.value ? Number(e.target.value) : '';
+                setFieldValue('cookingTime', val);
                 revalidateOnChange('cookingTime');
               }}
               error={getFieldError('cookingTime')}
@@ -199,7 +200,8 @@ const BasicsSection = ({
               placeholder={translate('servingsPlaceholder')}
               value={values.servings}
               onChange={(e) => {
-                setFieldValue('servings', e.target.value);
+                const val = e.target.value ? Number(e.target.value) : '';
+                setFieldValue('servings', val);
                 revalidateOnChange('servings');
               }}
               error={getFieldError('servings')}

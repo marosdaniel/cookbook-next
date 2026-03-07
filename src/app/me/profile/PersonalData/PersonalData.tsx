@@ -11,13 +11,13 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { useFormik } from 'formik';
+import { zodResolver } from 'mantine-form-zod-resolver';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { z } from 'zod';
-import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { UPDATE_USER } from '@/lib/graphql/mutations';
 import { GET_USER_BY_ID } from '@/lib/graphql/queries';
 import { nameValidationSchema } from '@/lib/validation/validation';
@@ -66,6 +66,30 @@ const PersonalData = () => {
   const [updateUser, { loading: updateLoading }] =
     useMutation<UpdateUserData>(UPDATE_USER);
 
+  const form = useForm<z.infer<typeof nameValidationSchema>>({
+    mode: 'uncontrolled',
+    initialValues: {
+      firstName: user?.firstName ?? '',
+      lastName: user?.lastName ?? '',
+    },
+    validate: zodResolver(nameValidationSchema) as any,
+    validateInputOnBlur: true,
+  });
+
+  // Reinitialize form when user data is fetched (replaces Formik's enableReinitialize)
+  useEffect(() => {
+    if (user) {
+      form.setValues({
+        firstName: user.firstName,
+        lastName: user.lastName,
+      });
+      form.resetDirty({
+        firstName: user.firstName,
+        lastName: user.lastName,
+      });
+    }
+  }, [user, form]);
+
   const onSubmit = async (values: z.infer<typeof nameValidationSchema>) => {
     try {
       const { data } = await updateUser({
@@ -103,22 +127,12 @@ const PersonalData = () => {
     }
   };
 
-  const formik = useFormik({
-    initialValues: {
-      firstName: user?.firstName ?? '',
-      lastName: user?.lastName ?? '',
-    },
-    enableReinitialize: true, // This is crucial to update form when user data is fetched
-    validationSchema: toFormikValidationSchema(nameValidationSchema),
-    onSubmit,
-  });
-
   const handlePersonalDataEditable = () => {
     setIsEditMode((prev) => !prev);
   };
 
   const handleCancelPersonalData = () => {
-    formik.resetForm();
+    form.reset();
     setIsEditMode(false);
   };
 
@@ -140,7 +154,7 @@ const PersonalData = () => {
   return (
     <Paper
       component="form"
-      onSubmit={formik.handleSubmit}
+      onSubmit={form.onSubmit(onSubmit)}
       shadow="md"
       radius="lg"
       p={{
@@ -169,18 +183,8 @@ const PersonalData = () => {
               placeholder={translate('user.firstName')}
               mt="md"
               label={translate('user.firstName')}
-              name="firstName"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.firstName}
-              error={
-                formik.touched.firstName && (formik.errors.firstName as string)
-              }
-              description={
-                formik.touched.firstName && formik.errors.firstName
-                  ? 'Type here your first name'
-                  : ''
-              }
+              key={form.key('firstName')}
+              {...form.getInputProps('firstName')}
             />
             <TextInput
               required
@@ -188,18 +192,8 @@ const PersonalData = () => {
               placeholder={translate('user.lastName')}
               mt="md"
               label={translate('user.lastName')}
-              name="lastName"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.lastName}
-              error={
-                formik.touched.lastName && (formik.errors.lastName as string)
-              }
-              description={
-                formik.touched.lastName && formik.errors.lastName
-                  ? 'Type here your last name'
-                  : ''
-              }
+              key={form.key('lastName')}
+              {...form.getInputProps('lastName')}
             />
           </Box>
           <Group mt="xl" justify="flex-end">
@@ -213,7 +207,7 @@ const PersonalData = () => {
             <Button
               size="sm"
               type="submit"
-              disabled={!formik.isValid || !formik.dirty}
+              disabled={!form.isValid() || !form.isDirty()}
               loading={updateLoading}
               loaderProps={{ type: 'dots' }}
             >

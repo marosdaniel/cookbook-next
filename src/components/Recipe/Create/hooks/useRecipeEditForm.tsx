@@ -1,14 +1,14 @@
 import { useMutation } from '@apollo/client/react';
 import { notifications } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
-import { useFormik } from 'formik';
+import { zodResolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { toFormikValidationSchema } from 'zod-formik-adapter';
 import { EDIT_RECIPE } from '@/lib/graphql/mutations';
 import { recipeFormValidationSchema } from '@/lib/validation/validation';
+import { useRecipeFormHook } from '../FormContext';
 import type {
   ComposerSection,
   RecipeFormValues,
@@ -18,16 +18,12 @@ import type {
 } from '../types';
 import { computeCompletion, transformValuesToInput } from '../utils';
 
-/* ─── Types ───────────────────────────────────── */
-
 export interface UseRecipeEditFormProps {
   recipeId: string;
   initialValues: RecipeFormValues;
   onSectionChange: (section: ComposerSection) => void;
   labels: TMetadataCleaned[];
 }
-
-/* ─── Hook ────────────────────────────────────── */
 
 export function useRecipeEditForm({
   recipeId,
@@ -38,7 +34,6 @@ export function useRecipeEditForm({
   const router = useRouter();
   const translate = useTranslations();
 
-  /* Mutation */
   const [editRecipe, { loading: submitLoading }] = useMutation(EDIT_RECIPE, {
     onCompleted: () => {
       notifications.show({
@@ -59,55 +54,59 @@ export function useRecipeEditForm({
     },
   });
 
-  /* Formik */
-  const formik = useFormik<RecipeFormValues>({
+  const form = useRecipeFormHook({
+    mode: 'controlled',
     initialValues,
-    enableReinitialize: true,
-    validationSchema: toFormikValidationSchema(recipeFormValidationSchema),
-    validateOnBlur: true,
-    validateOnChange: false,
-    onSubmit: async (values) => {
-      if (!values.difficultyLevel || !values.category) {
-        notifications.show({
-          title: translate('notifications.missingFieldsTitle'),
-          message: translate('notifications.missingFieldsMessage'),
-          color: 'orange',
-        });
-        onSectionChange('basics');
-        return;
-      }
-
-      const input = transformValuesToInput(values, labels);
-
-      await editRecipe({
-        variables: { id: recipeId, recipeEditInput: input },
-      });
-    },
+    validate: zodResolver(recipeFormValidationSchema) as any,
+    validateInputOnBlur: true,
   });
 
-  /* Stable ref so callbacks don't depend on the formik object */
-  const formikRef = useRef(formik);
-  formikRef.current = formik;
+  // Since it's uncontrolled, to handle initial values loading async, we use `useEffect`
+  useEffect(() => {
+    form.setValues(initialValues);
+    form.resetDirty(initialValues);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialValues]);
 
-  /* Completion */
-  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional granular deps for perf
+  const handlePublish = async (values: RecipeFormValues) => {
+    if (!values.difficultyLevel || !values.category) {
+      notifications.show({
+        title: translate('notifications.missingFieldsTitle'),
+        message: translate('notifications.missingFieldsMessage'),
+        color: 'orange',
+      });
+      onSectionChange('basics');
+      return;
+    }
+
+    const input = transformValuesToInput(values, labels);
+
+    await editRecipe({
+      variables: { id: recipeId, recipeEditInput: input },
+    });
+  };
+
+  const formRef = useRef(form);
+  formRef.current = form;
+
+  const currentValues = form.getValues();
   const completion = useMemo(
-    () => computeCompletion(formik.values),
+    () => computeCompletion(currentValues),
     [
-      formik.values.title,
-      formik.values.description,
-      formik.values.cookingTime,
-      formik.values.servings,
-      formik.values.category,
-      formik.values.difficultyLevel,
-      formik.values.ingredients.length,
-      formik.values.preparationSteps.length,
+      currentValues.title,
+      currentValues.description,
+      currentValues.cookingTime,
+      currentValues.servings,
+      currentValues.category,
+      currentValues.difficultyLevel,
+      currentValues.ingredients.length,
+      currentValues.preparationSteps.length,
     ],
   );
 
-  /* Reset to original values */
   const resetToOriginal = useCallback(() => {
-    formikRef.current.resetForm({ values: initialValues });
+    formRef.current.reset();
+    formRef.current.setValues(initialValues);
     onSectionChange('basics');
     notifications.show({
       title: translate('notifications.changesResetTitle'),
@@ -116,33 +115,30 @@ export function useRecipeEditForm({
     });
   }, [initialValues, onSectionChange, translate]);
 
-  /* Actions */
   const addIngredient = useCallback(() => {
-    const f = formikRef.current;
+    const f = formRef.current;
     const newIngredient: TIngredient = {
       localId: uuidv4(),
       name: '',
       quantity: '',
       unit: '',
     };
-    f.setFieldValue('ingredients', [...f.values.ingredients, newIngredient]);
+    f.insertListItem('ingredients', newIngredient);
   }, []);
 
   const addStep = useCallback(() => {
-    const f = formikRef.current;
+    const f = formRef.current;
     const newStep: TPreparationStep = {
       localId: uuidv4(),
       description: '',
-      order: f.values.preparationSteps.length + 1,
+      order: f.getValues().preparationSteps.length + 1,
     };
-    f.setFieldValue('preparationSteps', [
-      ...f.values.preparationSteps,
-      newStep,
-    ]);
+    f.insertListItem('preparationSteps', newStep);
   }, []);
 
   return {
-    formik,
+    form,
+    handlePublish,
     submitLoading,
     completion,
     resetToOriginal,

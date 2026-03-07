@@ -18,16 +18,16 @@ import {
   IconVideo,
   IconX,
 } from '@tabler/icons-react';
-import { useFormikContext } from 'formik';
 import { useTranslations } from 'next-intl';
-import { useFormikError } from '../../hooks/useFormikError';
-import type { RecipeFormValues } from '../../types';
+import { useRecipeFormContext } from '../../FormContext';
+import { useFormError } from '../../hooks/useFormError';
 import type { MediaSectionProps } from './types';
 
 const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
   const translate = useTranslations('recipeComposer.sections.media');
-  const { values, setFieldValue } = useFormikContext<RecipeFormValues>();
-  const { getFieldError, revalidateOnChange } = useFormikError();
+  const form = useRecipeFormContext();
+  const { values, setFieldValue } = form;
+  const { getFieldError, revalidateOnChange } = useFormError(form);
 
   return (
     <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm">

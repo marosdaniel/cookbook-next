@@ -8,14 +8,20 @@ import {
   LoadingOverlay,
   ScrollArea,
 } from '@mantine/core';
+import type { UseFormReturnType } from '@mantine/form';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconArrowLeft } from '@tabler/icons-react';
-import type { FormikProps } from 'formik';
-import { FormikProvider } from 'formik';
 import { useRouter } from 'next/navigation';
-import { type RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  type RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import ComposerHeader from './components/ComposerHeader';
 import ComposerSidebar from './components/ComposerSidebar';
+import { RecipeFormProvider } from './FormContext';
 import { useRecipeMetadata } from './hooks/useRecipeMetadata';
 import { Preview } from './Preview';
 import BasicsSection from './sections/BasicsSection';
@@ -27,7 +33,8 @@ import type { ComposerMode, ComposerSection, RecipeFormValues } from './types';
 /* ─── Props ───────────────────────────────────── */
 export interface RecipeComposerProps {
   mode: ComposerMode;
-  formik: FormikProps<RecipeFormValues>;
+  form: UseFormReturnType<RecipeFormValues>;
+  handlePublish: (values: RecipeFormValues) => void;
   submitLoading: boolean;
   completion: { done: number; total: number; percent: number };
   lastSavedLabel: string;
@@ -50,7 +57,8 @@ export interface RecipeComposerProps {
 
 /* ─── Main Component ──────────────────────────── */
 export const RecipeComposer = ({
-  formik,
+  form,
+  handlePublish,
   submitLoading,
   completion,
   lastSavedLabel,
@@ -91,7 +99,7 @@ export const RecipeComposer = ({
   }, [goToSection, goToSectionRef]);
 
   /* Debounced values for Preview – avoids heavy re-render on every keystroke */
-  const [debouncedPreviewValues] = useDebouncedValue(formik.values, 300);
+  const [debouncedPreviewValues] = useDebouncedValue(form.values, 300);
 
   /* Stable navigation callbacks */
   const handleBack = useCallback(() => router.back(), [router]);
@@ -117,7 +125,7 @@ export const RecipeComposer = ({
   }
 
   return (
-    <FormikProvider value={formik}>
+    <RecipeFormProvider form={form}>
       <Box
         style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}
       >
@@ -135,7 +143,7 @@ export const RecipeComposer = ({
           lastSavedLabel={lastSavedLabel}
           onSave={onSave}
           onPreview={handleOpenPreview}
-          onPublish={formik.submitForm}
+          onPublish={form.onSubmit(handlePublish)}
           publishLoading={submitLoading}
           submitLabel={submitLabel}
         />
@@ -150,7 +158,7 @@ export const RecipeComposer = ({
           <ComposerSidebar
             activeSection={activeSection}
             onSectionChange={goToSection}
-            values={formik.values}
+            values={form.values}
             completion={completion}
             onAddIngredient={addIngredient}
             onAddStep={addStep}
@@ -201,7 +209,7 @@ export const RecipeComposer = ({
                 <StepsSection
                   onAdd={addStep}
                   onBack={goToIngredients}
-                  onSubmit={formik.submitForm}
+                  onSubmit={form.onSubmit(handlePublish)}
                   isSubmitting={submitLoading}
                   submitLabel={submitLabel}
                 />
@@ -248,6 +256,6 @@ export const RecipeComposer = ({
           </ActionIcon>
         </Drawer>
       </Box>
-    </FormikProvider>
+    </RecipeFormProvider>
   );
 };

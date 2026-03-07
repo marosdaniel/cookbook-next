@@ -13,9 +13,7 @@ import { recipeToFormValues } from '@/components/Recipe/Create/utils';
 import { GET_RECIPE_BY_ID } from '@/lib/graphql/queries';
 import type { RecipeByIdData, RecipeEditClientProps } from './types';
 
-const RecipeEditClient = ({
-  recipeId,
-}: Readonly<RecipeEditClientProps>) => {
+const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
   const { data: session, status: authStatus } = useSession();
 
   /* Auth guard */
@@ -116,11 +114,12 @@ const RecipeEditClient = ({
   return (
     <RecipeComposer
       mode="edit"
-      formik={editForm.formik}
+      form={editForm.form}
+      handlePublish={editForm.handlePublish}
       submitLoading={editForm.submitLoading}
       completion={editForm.completion}
       lastSavedLabel="Editing"
-      onSave={editForm.formik.submitForm}
+      onSave={() => editForm.form.onSubmit(editForm.handlePublish)()}
       onReset={editForm.resetToOriginal}
       addIngredient={editForm.addIngredient}
       addStep={editForm.addStep}

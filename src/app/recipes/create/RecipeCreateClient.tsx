@@ -24,7 +24,8 @@ const RecipeCreateClient = () => {
   );
 
   const {
-    formik,
+    form,
+    handlePublish,
     publishLoading,
     completion,
     lastSavedLabel,
@@ -50,7 +51,8 @@ const RecipeCreateClient = () => {
   return (
     <RecipeComposer
       mode="create"
-      formik={formik}
+      form={form}
+      handlePublish={handlePublish}
       submitLoading={publishLoading}
       completion={completion}
       lastSavedLabel={lastSavedLabel}
