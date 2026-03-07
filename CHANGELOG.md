@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/marosdaniel/cookbook-next/compare/v2.1.0...v2.2.0) (2026-03-07)
+
+
+### Features
+
+* migrate metadata from database to static in-memory data structure and update related resolvers and utilities ([b186333](https://github.com/marosdaniel/cookbook-next/commit/b186333dea86af7dbd1813150acff3d1c2c67898))
+
 # [2.1.0](https://github.com/marosdaniel/cookbook-next/compare/v2.0.0...v2.1.0) (2026-03-07)
 
 
