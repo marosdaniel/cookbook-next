@@ -9,6 +9,20 @@ export const getUserById = async (
 
   const user = await prisma.user.findUnique({
     where: { id },
+    include: {
+      recipes: {
+        include: {
+          ingredients: true,
+          preparationSteps: true,
+        },
+      },
+      favoriteRecipes: {
+        include: {
+          ingredients: true,
+          preparationSteps: true,
+        },
+      },
+    },
   });
 
   if (!user) {

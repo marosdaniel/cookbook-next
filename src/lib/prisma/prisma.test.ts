@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
+vi.mock('@prisma/adapter-neon', () => ({
+  PrismaNeon: class {},
+}));
+
 vi.mock('@prisma/client', () => {
   return {
     PrismaClient: class {

@@ -7,8 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("MONGODB_URI")
+  provider = "postgresql"
 }
 
 enum UserRole {
@@ -19,7 +18,7 @@ enum UserRole {
 
 // User model
 model User {
-  id                   String    @id @default(auto()) @map("_id") @db.ObjectId
+  id                   String    @id @default(cuid())
   firstName            String
   lastName             String
   userName             String    @unique
@@ -34,8 +33,7 @@ model User {
 
   // Relations
   recipes           Recipe[] @relation("UserRecipes")
-  favoriteRecipeIds String[] @db.ObjectId
-  favoriteRecipes   Recipe[] @relation("FavoriteRecipes", fields: [favoriteRecipeIds], references: [id])
+  favoriteRecipes   Recipe[] @relation("UserFavorites")
   ratings           Rating[]
 
   @@map("users")
@@ -43,28 +41,29 @@ model User {
 
 // Recipe model
 model Recipe {
-  id               String            @id @default(auto()) @map("_id") @db.ObjectId
+  id               String            @id @default(cuid())
   title            String
   description      String?
-  ingredients      Ingredient[]
-  preparationSteps PreparationStep[]
-  category         Category
-  labels           Label[]
+  category         Json?             // Továbbá a metadata_offline.json-ban leírt struktúra szerint
+  labels           Json?             // Továbbá a metadata_offline.json-ban leírt struktúra szerint
   imgSrc           String?
   cookingTime      Int
-  difficultyLevel  DifficultyLevel
+  difficultyLevel  Json?             // Továbbá a metadata_offline.json-ban leírt struktúra szerint
   servings         Int
   youtubeLink      String?
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 
+  // Relations
+  ingredients      Ingredient[]
+  preparationSteps PreparationStep[]
+  
   // Author relation
-  createdBy String @db.ObjectId
+  createdBy String
   author    User   @relation("UserRecipes", fields: [createdBy], references: [id])
 
   // Favorite relation
-  favoritedByIds String[] @db.ObjectId
-  favoritedBy    User[]   @relation("FavoriteRecipes", fields: [favoritedByIds], references: [id])
+  favoritedBy    User[]   @relation("UserFavorites")
 
   // Ratings
   ratings Rating[]
@@ -72,71 +71,48 @@ model Recipe {
   @@map("recipes")
 }
 
+// Ingredient model (New Model for SQL)
+model Ingredient {
+  id       String  @id @default(cuid())
+  localId  String
+  name     String
+  quantity Float
+  unit     String
+  
+  // Relation back to Recipe
+  recipeId String
+  recipe   Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("ingredients")
+}
+
+// PreparationStep model (New Model for SQL)
+model PreparationStep {
+  id          String @id @default(cuid())
+  description String
+  order       Int
+  
+  // Relation back to Recipe
+  recipeId String
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@map("preparation_steps")
+}
+
 // Rating model
 model Rating {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(cuid())
   ratingValue Float
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
-  recipeId String @db.ObjectId
+  recipeId String
   recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
-  userId String @db.ObjectId
+  userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([recipeId, userId])
   @@map("ratings")
-}
-
-// Metadata model
-model Metadata {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  name  String
-  key   String @unique
-  label String
-  type  String // "CATEGORY" | "LABEL" | "DIFFICULTY_LEVEL"
-
-  @@map("metadatas")
-}
-
-// Embedded types (not collections, embedded in Recipe)
-
-type Ingredient {
-  id       String? @map("_id") @db.ObjectId
-  localId  String
-  name     String
-  quantity Float
-  unit     String
-}
-
-type PreparationStep {
-  id          String? @map("_id") @db.ObjectId
-  description String
-  order       Int
-}
-
-type Category {
-  id    String? @map("_id") @db.ObjectId
-  name  String
-  key   String
-  label String
-  type  String
-}
-
-type Label {
-  id    String? @map("_id") @db.ObjectId
-  name  String
-  key   String
-  label String
-  type  String
-}
-
-type DifficultyLevel {
-  id    String? @map("_id") @db.ObjectId
-  name  String
-  key   String
-  label String
-  type  String
 }

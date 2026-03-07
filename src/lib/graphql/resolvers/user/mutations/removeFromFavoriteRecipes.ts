@@ -43,7 +43,13 @@ export const removeFromFavoriteRecipes = async (
       statusCode: 404,
     };
 
-  const alreadyFavorite = user.favoriteRecipeIds?.includes(recipeId);
+  const alreadyFavorite = await prisma.user.findFirst({
+    where: {
+      id: userId,
+      favoriteRecipes: { some: { id: recipeId } },
+    },
+  });
+
   if (!alreadyFavorite)
     return {
       success: false,
@@ -52,27 +58,14 @@ export const removeFromFavoriteRecipes = async (
       statusCode: 400,
     };
 
-  // Remove recipeId from favoriteRecipeIds array
-  const updatedFavoriteRecipeIds = user.favoriteRecipeIds.filter(
-    (id) => id !== recipeId,
-  );
-
-  await prisma.$transaction([
-    prisma.user.update({
-      where: { id: userId },
-      data: {
-        favoriteRecipeIds: { set: updatedFavoriteRecipeIds },
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      favoriteRecipes: {
+        disconnect: { id: recipeId },
       },
-    }),
-    prisma.recipe.update({
-      where: { id: recipeId },
-      data: {
-        favoritedByIds: {
-          set: recipe.favoritedByIds.filter((id) => id !== userId),
-        },
-      },
-    }),
-  ]);
+    },
+  });
 
   return {
     success: true,

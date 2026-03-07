@@ -12,18 +12,6 @@ export const getMetadataByKey = async (
   args: GetMetadataByKeyArgs,
   context: GraphQLContext,
 ) => {
-  const { prisma } = context;
-  const { key } = args;
-
-  const metadata = await prisma.metadata.findUnique({
-    where: {
-      key,
-    },
-  });
-
-  if (!metadata) {
-    throw new Error(`Metadata with key "${key}" not found`);
-  }
-
-  return metadata;
+  // Metadata is handled offline for now
+  return null;
 };

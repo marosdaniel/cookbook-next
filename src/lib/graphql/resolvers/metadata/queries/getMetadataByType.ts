@@ -12,15 +12,6 @@ export const getMetadataByType = async (
   args: GetMetadataByTypeArgs,
   context: GraphQLContext,
 ) => {
-  const { prisma } = context;
-  const { type } = args;
-
-  const metadata = await prisma.metadata.findMany({
-    where: {
-      type: type.toUpperCase(),
-    },
-    orderBy: { label: 'asc' },
-  });
-
-  return metadata;
+  // Metadata is handled offline for now
+  return [];
 };

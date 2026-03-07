@@ -8,11 +8,8 @@ export const getAllMetadata = async (
   _args: unknown,
   context: GraphQLContext,
 ) => {
-  const { prisma } = context;
-
-  const metadata = await prisma.metadata.findMany({
-    orderBy: [{ type: 'asc' }, { label: 'asc' }],
-  });
+  // Metadata is currently handled offline
+  const metadata: any[] = [];
 
   return metadata;
 };

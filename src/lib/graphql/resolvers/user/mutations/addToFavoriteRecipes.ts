@@ -21,8 +21,6 @@ export const addToFavoriteRecipes = async (
     };
   }
 
-  // Prisma handles ObjectId validation automatically
-
   const user = await prisma.user.findUnique({
     where: { id: userId },
   });
@@ -44,7 +42,13 @@ export const addToFavoriteRecipes = async (
       statusCode: 404,
     };
 
-  const alreadyFavorite = user.favoriteRecipeIds?.includes(recipeId);
+  const alreadyFavorite = await prisma.user.findFirst({
+    where: {
+      id: userId,
+      favoriteRecipes: { some: { id: recipeId } },
+    },
+  });
+
   if (alreadyFavorite)
     return {
       success: false,
@@ -53,20 +57,14 @@ export const addToFavoriteRecipes = async (
       statusCode: 400,
     };
 
-  await prisma.$transaction([
-    prisma.user.update({
-      where: { id: userId },
-      data: {
-        favoriteRecipeIds: { push: recipeId },
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      favoriteRecipes: {
+        connect: { id: recipeId },
       },
-    }),
-    prisma.recipe.update({
-      where: { id: recipeId },
-      data: {
-        favoritedByIds: { push: userId },
-      },
-    }),
-  ]);
+    },
+  });
 
   return {
     success: true,

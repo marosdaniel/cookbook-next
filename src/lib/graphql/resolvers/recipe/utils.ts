@@ -1,10 +1,9 @@
-import type { Metadata } from '@prisma/client';
 import { prisma } from '@/lib/prisma/prisma';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
 import type { GraphQLContext } from '@/types/graphql/context';
 
-import type { RecipeInputBase } from './types';
+import type { MetaInputPartial, RecipeInputBase } from './types';
 
 /* ─── Assertion Helper ───────────────────────── */
 
@@ -67,59 +66,45 @@ export function validateRequiredFields(input: RecipeInputBase) {
 
 /* ─── Metadata Resolution ────────────────────── */
 
+/**
+ * Mivel a Metadata modellt kivezettük az adatbázisból, 
+ * mostantól közvetlenül az inputból vesszük az adatokat 
+ * és JSON-ként tároljuk őket a receptben.
+ */
 export async function resolveRecipeMetadata(input: RecipeInputBase) {
-  const { category, difficultyLevel, labels } = input;
+  const { category, difficultyLevel, labels = [] } = input;
 
-  const [categoryFromDb, difficultyLevelFromDb] = await Promise.all([
-    prisma.metadata.findUnique({ where: { key: category.value } }),
-    prisma.metadata.findUnique({ where: { key: difficultyLevel.value } }),
-  ]);
-
-  assertPresent(categoryFromDb, 'Invalid category', ErrorTypes.BAD_REQUEST);
-  assertPresent(
-    difficultyLevelFromDb,
-    'Invalid difficulty level',
-    ErrorTypes.BAD_REQUEST,
-  );
-
-  let labelsFromDb: Metadata[] = [];
-  if (labels && labels.length > 0) {
-    labelsFromDb = await prisma.metadata.findMany({
-      where: { key: { in: labels.map((l) => l.value) } },
-    });
-  }
-
-  return { categoryFromDb, difficultyLevelFromDb, labelsFromDb };
+  return {
+    categoryFromInput: category,
+    difficultyLevelFromInput: difficultyLevel,
+    labelsFromInput: labels,
+  };
 }
 
 /* ─── Data Mapping ───────────────────────────── */
 
-function mapMetadata(m: Metadata) {
-  return { name: m.name, key: m.key, label: m.label, type: m.type, id: m.id };
+function mapMetadataToJson(m: MetaInputPartial, type: string) {
+  return { 
+    id: null, 
+    name: m.value, 
+    key: m.value, 
+    label: m.label, 
+    type 
+  };
 }
 
 export function buildRecipeData(
   input: RecipeInputBase,
   metadata: Awaited<ReturnType<typeof resolveRecipeMetadata>>,
 ) {
-  const { categoryFromDb, difficultyLevelFromDb, labelsFromDb } = metadata;
+  const { categoryFromInput, difficultyLevelFromInput, labelsFromInput } = metadata;
 
   return {
     title: input.title,
     description: input.description,
-    ingredients: input.ingredients.map((i) => ({
-      localId: i.localId,
-      name: i.name,
-      quantity: i.quantity,
-      unit: i.unit,
-    })),
-    preparationSteps: input.preparationSteps.map((s, index) => ({
-      description: s.description,
-      order: s.order || index + 1,
-    })),
-    category: mapMetadata(categoryFromDb),
-    difficultyLevel: mapMetadata(difficultyLevelFromDb),
-    labels: labelsFromDb.map(mapMetadata),
+    category: mapMetadataToJson(categoryFromInput, 'CATEGORY'),
+    difficultyLevel: mapMetadataToJson(difficultyLevelFromInput, 'DIFFICULTY_LEVEL'),
+    labels: labelsFromInput.map(l => mapMetadataToJson(l, 'LABEL')),
     imgSrc: input.imgSrc,
     cookingTime: input.cookingTime,
     servings: input.servings,

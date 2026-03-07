@@ -6,6 +6,11 @@ export const getRecipeById = async (_: unknown, { id }: { id: string }) => {
   try {
     const existingRecipe = await prisma.recipe.findUnique({
       where: { id },
+      include: {
+        ingredients: true,
+        preparationSteps: true,
+        author: true,
+      },
     });
 
     if (!existingRecipe) {

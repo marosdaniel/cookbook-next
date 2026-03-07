@@ -76,13 +76,21 @@ export const resolvers = {
       );
       return rating?.ratingValue || null;
     },
-    isFavorite: (
-      parent: { favoritedByIds: string[] },
+    isFavorite: async (
+      parent: { id: string },
       _: unknown,
       context: import('@/types/graphql/context').GraphQLContext,
     ) => {
       if (!context.userId) return false;
-      return parent.favoritedByIds?.includes(context.userId) || false;
+      const count = await import('@/lib/prisma/prisma').then((m) =>
+        m.prisma.recipe.count({
+          where: {
+            id: parent.id,
+            favoritedBy: { some: { id: context.userId } },
+          },
+        }),
+      );
+      return count > 0;
     },
   },
 };

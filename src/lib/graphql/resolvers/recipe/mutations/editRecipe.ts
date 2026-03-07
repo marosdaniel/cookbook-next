@@ -41,7 +41,30 @@ export const editRecipe = async (
 
     const updatedRecipe = await prisma.recipe.update({
       where: { id },
-      data,
+      data: {
+        ...data,
+        ingredients: {
+          deleteMany: {},
+          create: recipeEditInput.ingredients.map((i) => ({
+            localId: i.localId,
+            name: i.name,
+            quantity: i.quantity,
+            unit: i.unit,
+          })),
+        },
+        preparationSteps: {
+          deleteMany: {},
+          create: recipeEditInput.preparationSteps.map((s, index) => ({
+            description: s.description,
+            order: s.order || index + 1,
+          })),
+        },
+      },
+      include: {
+        ingredients: true,
+        preparationSteps: true,
+        author: true,
+      },
     });
 
     return updatedRecipe;

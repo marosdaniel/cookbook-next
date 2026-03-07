@@ -25,7 +25,25 @@ export const createRecipe = async (
       data: {
         ...data,
         createdBy: user.id,
-        ratings: { create: [] },
+        ingredients: {
+          create: recipeCreateInput.ingredients.map((i) => ({
+            localId: i.localId,
+            name: i.name,
+            quantity: i.quantity,
+            unit: i.unit,
+          })),
+        },
+        preparationSteps: {
+          create: recipeCreateInput.preparationSteps.map((s, index) => ({
+            description: s.description,
+            order: s.order || index + 1,
+          })),
+        },
+      },
+      include: {
+        ingredients: true,
+        preparationSteps: true,
+        author: true,
       },
     });
 
