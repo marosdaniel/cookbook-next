@@ -36,7 +36,7 @@
     "@mantine/nprogress": "^8.3.16",
     "@prisma/client": "6.19.1",
     "@reduxjs/toolkit": "^2.11.2",
-    "@tabler/icons-react": "^3.39.0",
+    "@tabler/icons-react": "^3.40.0",
     "@types/uuid": "^11.0.0",
     "bcrypt": "^6.0.0",
     "clsx": "^2.1.1",
