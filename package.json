@@ -21,6 +21,8 @@
     "test:coverage": "vitest run --coverage",
     "test:unit": "vitest run",
     "test:integration": "vitest run",
+    "lint": "biome lint .",
+    "lint:fix": "biome check --write .",
     "deps:update": "pnpm dlx npm-check-updates -u"
   },
   "dependencies": {

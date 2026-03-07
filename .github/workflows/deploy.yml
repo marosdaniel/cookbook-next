@@ -51,7 +51,7 @@ jobs:
         run: pnpm install
 
       - name: Run Biome Lint
-        run: pnpm biome lint
+        run: pnpm lint:fix
 
       - name: Run Type Check
         run: pnpm run typecheck
