@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/marosdaniel/cookbook-next/compare/v2.0.0...v2.1.0) (2026-03-07)
+
+
+### Features
+
+* Configure DATABASE_URL for build and test steps, update typecheck command, and add Prisma migration to deploy workflow. ([51fb70f](https://github.com/marosdaniel/cookbook-next/commit/51fb70f63f45fb21603fd688a7ad81117411d1b0))
+
 # [2.0.0](https://github.com/marosdaniel/cookbook-next/compare/v1.40.1...v2.0.0) (2026-03-07)
 
 
