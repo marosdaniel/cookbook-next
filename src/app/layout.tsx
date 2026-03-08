@@ -5,6 +5,7 @@ import { getLocaleMessages } from '@/lib/locale/locale';
 import { ServerProviders } from '@/providers/server';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/carousel/styles.css';
 import './globals.css';
 import type { PropsWithChildren } from 'react';
 import Shell from '@/components/Shell';
