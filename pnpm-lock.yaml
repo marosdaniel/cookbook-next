@@ -38,6 +38,9 @@ importers:
       '@mantine/nprogress':
         specifier: 9.0.0-alpha.4
         version: 9.0.0-alpha.4(@mantine/core@9.0.0-alpha.4(@mantine/hooks@9.0.0-alpha.4(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/hooks@9.0.0-alpha.4(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@mantine/spotlight':
+        specifier: ^8.3.16
+        version: 8.3.16(@mantine/core@9.0.0-alpha.4(@mantine/hooks@9.0.0-alpha.4(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/hooks@9.0.0-alpha.4(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@neondatabase/serverless':
         specifier: ^1.0.2
         version: 1.0.2
@@ -991,6 +994,19 @@ packages:
       '@mantine/hooks': 9.0.0-alpha.4
       react: ^18.x || ^19.x
       react-dom: ^18.x || ^19.x
+
+  '@mantine/spotlight@8.3.16':
+    resolution: {integrity: sha512-kS384mqm8VjLkB19FEjsEgo3IHQOCfhzcek9o6mSA5Xlc2K9Piy2pQ81eV+RoTQIIAlIqmQRAbo6x7IEFYLh9A==}
+    peerDependencies:
+      '@mantine/core': 8.3.16
+      '@mantine/hooks': 8.3.16
+      react: ^18.x || ^19.x
+      react-dom: ^18.x || ^19.x
+
+  '@mantine/store@8.3.16':
+    resolution: {integrity: sha512-BLbAw5z3aAxO82LwICw6FEHq53dgn7CqKYYiwr+Gm2nHYlyvwg15q9ByfM44LiKY7R0YpDPHfCJcJP37MHHDSQ==}
+    peerDependencies:
+      react: ^18.x || ^19.x
 
   '@mantine/store@9.0.0-alpha.4':
     resolution: {integrity: sha512-noPBIvxpy6nC83h/D5AOAWC5w+9bYo9qm9wKDzM0Yok+ecasNzJtr+jroKBE6j/L4fVPjqczfTD2f0SR7TDOVA==}
@@ -4902,6 +4918,18 @@ snapshots:
       '@mantine/store': 9.0.0-alpha.4(react@19.2.4)
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
+
+  '@mantine/spotlight@8.3.16(@mantine/core@9.0.0-alpha.4(@mantine/hooks@9.0.0-alpha.4(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/hooks@9.0.0-alpha.4(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+    dependencies:
+      '@mantine/core': 9.0.0-alpha.4(@mantine/hooks@9.0.0-alpha.4(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@mantine/hooks': 9.0.0-alpha.4(react@19.2.4)
+      '@mantine/store': 8.3.16(react@19.2.4)
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+
+  '@mantine/store@8.3.16(react@19.2.4)':
+    dependencies:
+      react: 19.2.4
 
   '@mantine/store@9.0.0-alpha.4(react@19.2.4)':
     dependencies:

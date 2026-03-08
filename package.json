@@ -36,6 +36,7 @@
     "@mantine/modals": "9.0.0-alpha.4",
     "@mantine/notifications": "9.0.0-alpha.4",
     "@mantine/nprogress": "9.0.0-alpha.4",
+    "@mantine/spotlight": "^8.3.16",
     "@neondatabase/serverless": "^1.0.2",
     "@prisma/adapter-neon": "^7.4.2",
     "@prisma/client": "7.4.2",

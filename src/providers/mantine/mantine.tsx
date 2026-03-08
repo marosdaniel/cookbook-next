@@ -1,6 +1,7 @@
 'use client';
 
 import { localStorageColorSchemeManager, MantineProvider } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import NextTopLoader from 'nextjs-toploader';
 import type { PropsWithChildren } from 'react';
@@ -31,7 +32,7 @@ export function MantineProviderWrapper({
         easing="ease-in-out"
         key="top-loader"
       />
-      {children}
+      <ModalsProvider>{children}</ModalsProvider>
     </MantineProvider>
   );
 }
