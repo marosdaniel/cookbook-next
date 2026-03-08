@@ -1,3 +1,11 @@
+# [2.5.0](https://github.com/marosdaniel/cookbook-next/compare/v2.4.0...v2.5.0) (2026-03-08)
+
+
+### Features
+
+* Add German translations for recipe rating messages. ([00da173](https://github.com/marosdaniel/cookbook-next/commit/00da17332e252c1acdf96b03e4e6de0657f8bb6b))
+* implement recipe rating functionality with new UI component, GraphQL mutations, and resolvers ([e07a928](https://github.com/marosdaniel/cookbook-next/commit/e07a9280022355de82e14f065d045bda7aa9bdec))
+
 # [2.4.0](https://github.com/marosdaniel/cookbook-next/compare/v2.3.0...v2.4.0) (2026-03-08)
 
 
