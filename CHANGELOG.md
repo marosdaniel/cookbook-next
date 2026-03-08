@@ -1,3 +1,10 @@
+# [2.4.0](https://github.com/marosdaniel/cookbook-next/compare/v2.3.0...v2.4.0) (2026-03-08)
+
+
+### Features
+
+* Integrate Mantine Spotlight and ModalsProvider, including new styles and dependencies. ([347dbdf](https://github.com/marosdaniel/cookbook-next/commit/347dbdf0bd00d7894a2a01eb1e63afb9f671d318))
+
 # [2.3.0](https://github.com/marosdaniel/cookbook-next/compare/v2.2.0...v2.3.0) (2026-03-08)
 
 
