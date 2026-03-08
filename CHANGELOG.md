@@ -1,3 +1,10 @@
+# [2.6.0](https://github.com/marosdaniel/cookbook-next/compare/v2.5.0...v2.6.0) (2026-03-08)
+
+
+### Features
+
+* Standardize user mutation error handling and validation, introduce dedicated input types, and remove specific metadata GraphQL queries. ([3d59cf9](https://github.com/marosdaniel/cookbook-next/commit/3d59cf90615c6b5dd7c7ee35ecbf605b8b74f8df))
+
 # [2.5.0](https://github.com/marosdaniel/cookbook-next/compare/v2.4.0...v2.5.0) (2026-03-08)
 
 
