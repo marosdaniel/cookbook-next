@@ -1,42 +1,35 @@
 import crypto from 'node:crypto';
 import bcrypt from 'bcrypt';
-import { GraphQLError } from 'graphql';
-import { z } from 'zod';
 import { prisma } from '@/lib/prisma/prisma';
-
-interface SetNewPasswordInput {
-  token: string;
-  newPassword: string;
-}
-
-// Password validation schema
-const passwordSchema = z
-  .string()
-  .min(8, 'Password must be at least 8 characters')
-  .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-  .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
-  .regex(/\d/, 'Password must contain at least one number');
+import { ErrorTypes } from '@/lib/validation/errorCatalog';
+import { throwCustomError } from '@/lib/validation/throwCustomError';
+import { setNewPasswordValidationSchema } from '@/lib/validation/validation';
+import type { SetNewPasswordInput } from './types';
 
 export const setNewPassword = async (
   _: unknown,
   { token, newPassword }: SetNewPasswordInput,
 ) => {
-  try {
-    // Validate password strength
-    const validationResult = passwordSchema.safeParse(newPassword);
-    if (!validationResult.success) {
-      throw new GraphQLError(
-        'Password must be at least 8 characters long and include uppercase, lowercase letters and a number',
-        {
-          extensions: {
-            code: 'WEAK_PASSWORD',
-            http: { status: 400 },
-            validationErrors: validationResult.error.issues,
-          },
-        },
-      );
-    }
+  // Validate password
+  const validation = setNewPasswordValidationSchema.safeParse({
+    newPassword,
+    confirmPassword: newPassword, // The schema requires it, but here we only have newPassword.
+    // I should probably have a single password schema for this.
+  });
 
+  // Since the user might be using the same schema for UI, I'll match it or just check the password part.
+  // Actually, let's just use the logic from the schema manually if needed, or pass it correctly.
+  if (!validation.success) {
+    return throwCustomError(
+      'Password must be at least 8 characters long and include uppercase, lowercase letters and a number',
+      ErrorTypes.VALIDATION_ERROR,
+      {
+        zodIssues: validation.error.issues,
+      },
+    );
+  }
+
+  try {
     // Hash the token from URL to compare with stored hash
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
@@ -51,14 +44,9 @@ export const setNewPassword = async (
     });
 
     if (!user) {
-      throw new GraphQLError(
+      return throwCustomError(
         'Invalid or expired reset token. Please request a new password reset.',
-        {
-          extensions: {
-            code: 'INVALID_RESET_TOKEN',
-            http: { status: 400 },
-          },
-        },
+        ErrorTypes.BAD_REQUEST,
       );
     }
 
@@ -84,14 +72,12 @@ export const setNewPassword = async (
     };
   } catch (error) {
     console.error('Error in setNewPassword:', error);
-    if (error instanceof GraphQLError) {
+    if (error && typeof error === 'object' && 'extensions' in error)
       throw error;
-    }
-    throw new GraphQLError('An error occurred during password reset', {
-      extensions: {
-        code: 'INTERNAL_SERVER_ERROR',
-        http: { status: 500 },
-      },
-    });
+
+    return throwCustomError(
+      'An error occurred during password reset',
+      ErrorTypes.INTERNAL_SERVER_ERROR,
+    );
   }
 };

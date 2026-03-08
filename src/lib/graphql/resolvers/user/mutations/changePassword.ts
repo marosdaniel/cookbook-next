@@ -1,65 +1,44 @@
 import bcrypt from 'bcrypt';
-import { auth } from '@/lib/auth/auth';
-import { prisma } from '@/lib/prisma/prisma';
-
-interface ChangePasswordInput {
-  passwordEditInput: {
-    currentPassword: string;
-    newPassword: string;
-    confirmNewPassword: string;
-  };
-}
+import { ErrorTypes } from '@/lib/validation/errorCatalog';
+import { throwCustomError } from '@/lib/validation/throwCustomError';
+import { passwordEditValidationSchema } from '@/lib/validation/validation';
+import type { GraphQLContext } from '../../../../../types/graphql/context';
+import type { ChangePasswordInput } from './types';
 
 export const changePassword = async (
   _: unknown,
   { passwordEditInput }: ChangePasswordInput,
-) => {
-  const { currentPassword, newPassword, confirmNewPassword } =
-    passwordEditInput;
+  { prisma, userId }: GraphQLContext,
+): Promise<boolean> => {
+  if (!userId) {
+    return throwCustomError('Unauthorized', ErrorTypes.UNAUTHORIZED);
+  }
+
+  // Validate input
+  const validation = passwordEditValidationSchema.safeParse(passwordEditInput);
+  if (!validation.success) {
+    return throwCustomError('Invalid input data', ErrorTypes.VALIDATION_ERROR, {
+      zodIssues: validation.error.issues,
+    });
+  }
+
+  const { currentPassword, newPassword } = passwordEditInput;
 
   try {
-    const session = await auth();
-
-    if (!session || !session.user || !session.user.id) {
-      return {
-        success: false,
-        message: 'Unauthorized',
-      };
-    }
-
-    const userId = session.user.id;
-
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
-      return {
-        success: false,
-        message: 'Please fill in all fields',
-      };
-    }
-
-    if (newPassword !== confirmNewPassword) {
-      return {
-        success: false,
-        message: 'Passwords do not match',
-      };
-    }
-
     const user = await prisma.user.findUnique({
       where: { id: userId },
     });
 
     if (!user) {
-      return {
-        success: false,
-        message: 'User not found',
-      };
+      return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
     }
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
-      return {
-        success: false,
-        message: 'Invalid current password',
-      };
+      return throwCustomError(
+        'Invalid current password',
+        ErrorTypes.BAD_REQUEST,
+      );
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -71,15 +50,15 @@ export const changePassword = async (
       },
     });
 
-    return {
-      success: true,
-      message: 'Password changed successfully',
-    };
+    return true;
   } catch (error) {
     console.error('Error changing password:', error);
-    return {
-      success: false,
-      message: 'An error occurred while changing the password',
-    };
+    if (error && typeof error === 'object' && 'extensions' in error)
+      throw error;
+
+    return throwCustomError(
+      'An error occurred while changing the password',
+      ErrorTypes.INTERNAL_SERVER_ERROR,
+    );
   }
 };

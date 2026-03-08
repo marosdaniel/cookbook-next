@@ -3,12 +3,11 @@ import bcrypt from 'bcrypt';
 import { ZodError } from 'zod';
 import { sendWelcomeEmail } from '@/lib/email/nodemailer';
 import { USER_REGISTER_MESSAGE_KEYS } from '@/lib/graphql/MESSAGE_KEYS';
-
+import { ErrorTypes } from '@/lib/validation/errorCatalog';
+import { throwCustomError } from '@/lib/validation/throwCustomError';
 import { customValidationSchema } from '@/lib/validation/validation';
 import type { GraphQLContext } from '../../../../../types/graphql/context';
 import type { CreateUserArgs } from '../../../../../types/user';
-import { ErrorTypes } from '../../../../validation/errorCatalog';
-import { throwCustomError } from '../../../../validation/throwCustomError';
 
 export const createUser = async (
   _parent: unknown,
@@ -37,20 +36,16 @@ export const createUser = async (
   } catch (error) {
     if (error instanceof ZodError) {
       const firstErrorMessage = error.issues[0]?.message || 'Validation failed';
-      const zodIssues = error.issues.map((issue) => ({
-        path: issue.path.map((segment) =>
-          typeof segment === 'symbol' ? segment.toString() : segment,
-        ),
-        message: issue.message,
-      }));
-
-      throwCustomError(firstErrorMessage, ErrorTypes.VALIDATION_ERROR, {
+      return throwCustomError(firstErrorMessage, ErrorTypes.VALIDATION_ERROR, {
         messageKey: USER_REGISTER_MESSAGE_KEYS.VALIDATION_ERROR,
-        zodIssues,
+        zodIssues: error.issues,
         originalError: error,
       });
     }
-    throwCustomError('Unexpected validation error', ErrorTypes.BAD_REQUEST);
+    return throwCustomError(
+      'Unexpected validation error',
+      ErrorTypes.BAD_REQUEST,
+    );
   }
 
   const existingUser = await prisma.user.findFirst({
@@ -60,13 +55,17 @@ export const createUser = async (
   });
 
   if (existingUser) {
-    if (existingUser.userName === userName) {
-      throwCustomError('This username is already taken', ErrorTypes.CONFLICT, {
-        messageKey: USER_REGISTER_MESSAGE_KEYS.USERNAME_TAKEN,
-      });
+    if (existingUser.userName.toLowerCase() === userName.toLowerCase()) {
+      return throwCustomError(
+        'This username is already taken',
+        ErrorTypes.CONFLICT,
+        {
+          messageKey: USER_REGISTER_MESSAGE_KEYS.USERNAME_TAKEN,
+        },
+      );
     }
-    if (existingUser.email === email) {
-      throwCustomError(
+    if (existingUser.email.toLowerCase() === email.toLowerCase()) {
+      return throwCustomError(
         'This email address is already registered',
         ErrorTypes.CONFLICT,
         { messageKey: USER_REGISTER_MESSAGE_KEYS.EMAIL_TAKEN },
@@ -82,7 +81,7 @@ export const createUser = async (
       firstName,
       lastName,
       userName,
-      email,
+      email: email.toLowerCase(),
       password: hashedPassword,
       locale: locale || 'en-gb',
       role: UserRole.USER,
@@ -92,7 +91,6 @@ export const createUser = async (
   // Send welcome email (non-blocking)
   sendWelcomeEmail(newUser.email, newUser.firstName).catch((error) => {
     console.error('Failed to send welcome email:', error);
-    // Don't fail the registration if email fails
   });
 
   return {

@@ -1,29 +1,43 @@
 import crypto from 'node:crypto';
-import { GraphQLError } from 'graphql';
 import {
   generateResetToken,
   sendPasswordResetEmail,
 } from '@/lib/email/nodemailer';
 import { prisma } from '@/lib/prisma/prisma';
-
-interface ResetPasswordInput {
-  email: string;
-}
+import { ErrorTypes } from '@/lib/validation/errorCatalog';
+import { throwCustomError } from '@/lib/validation/throwCustomError';
+import { resetPasswordValidationSchema } from '@/lib/validation/validation';
+import type { ResetPasswordInput } from './types';
 
 export const resetPassword = async (
   _: unknown,
   { email }: ResetPasswordInput,
 ) => {
+  // Validate email
+  const validation = resetPasswordValidationSchema.safeParse({ email });
+  if (!validation.success) {
+    return throwCustomError(
+      'Invalid email address',
+      ErrorTypes.VALIDATION_ERROR,
+      {
+        zodIssues: validation.error.issues,
+      },
+    );
+  }
+
   try {
+    const normalizedEmail = email.toLowerCase();
+
     // Find user by email
     const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase() },
+      where: { email: normalizedEmail },
     });
 
     // For security, always return success even if user not found
-    // This prevents email enumeration attacks
     if (!user) {
-      console.log(`Password reset requested for non-existent email: ${email}`);
+      console.log(
+        `Password reset requested for non-existent email: ${normalizedEmail}`,
+      );
       return {
         success: true,
         message:
@@ -45,7 +59,7 @@ export const resetPassword = async (
 
     // Update user with hashed token and expiry time
     await prisma.user.update({
-      where: { email: email.toLowerCase() },
+      where: { email: normalizedEmail },
       data: {
         resetPasswordToken: hashedToken,
         resetPasswordExpires: resetExpires,
@@ -57,12 +71,10 @@ export const resetPassword = async (
       await sendPasswordResetEmail(user.email, resetToken);
     } catch (error) {
       console.error('Error sending reset email:', error);
-      throw new GraphQLError('Failed to send password reset email', {
-        extensions: {
-          code: 'EMAIL_SEND_FAILED',
-          http: { status: 500 },
-        },
-      });
+      return throwCustomError(
+        'Failed to send password reset email',
+        ErrorTypes.INTERNAL_SERVER_ERROR,
+      );
     }
 
     return {
@@ -72,14 +84,12 @@ export const resetPassword = async (
     };
   } catch (error) {
     console.error('Error in resetPassword:', error);
-    if (error instanceof GraphQLError) {
+    if (error && typeof error === 'object' && 'extensions' in error)
       throw error;
-    }
-    throw new GraphQLError('An error occurred during password reset', {
-      extensions: {
-        code: 'INTERNAL_SERVER_ERROR',
-        http: { status: 500 },
-      },
-    });
+
+    return throwCustomError(
+      'An error occurred during password reset',
+      ErrorTypes.INTERNAL_SERVER_ERROR,
+    );
   }
 };

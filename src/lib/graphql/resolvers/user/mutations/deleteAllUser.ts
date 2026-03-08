@@ -1,14 +1,17 @@
+import { ErrorTypes } from '@/lib/validation/errorCatalog';
+import { throwCustomError } from '@/lib/validation/throwCustomError';
 import type { GraphQLContext } from '../../../../../types/graphql/context';
 
 export const deleteAllUser = async (
   _: unknown,
   __: unknown,
-  context: GraphQLContext,
-) => {
-  const { userId: currentUserId, role: currentUserRole, prisma } = context;
-
+  { userId: currentUserId, role: currentUserRole, prisma }: GraphQLContext,
+): Promise<number> => {
   if (!currentUserId || currentUserRole !== 'ADMIN') {
-    throw new Error('Unauthorized operation - admin rights required');
+    return throwCustomError(
+      'Unauthorized operation - admin rights required',
+      ErrorTypes.FORBIDDEN,
+    );
   }
 
   try {
@@ -23,6 +26,12 @@ export const deleteAllUser = async (
     return result.count;
   } catch (error) {
     console.error('Error deleting all users:', error);
-    throw new Error('Could not delete all users');
+    if (error && typeof error === 'object' && 'extensions' in error)
+      throw error;
+
+    return throwCustomError(
+      'Could not delete all users',
+      ErrorTypes.INTERNAL_SERVER_ERROR,
+    );
   }
 };

@@ -1,10 +1,4 @@
-export interface MetadataEntry {
-  id: string;
-  key: string;
-  label: string;
-  type: string;
-  name: string;
-}
+import type { MetadataEntry } from './types';
 
 /**
  * Since the Metadata model was removed from the database,

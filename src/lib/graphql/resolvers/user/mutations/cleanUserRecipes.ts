@@ -1,12 +1,12 @@
+import { ErrorTypes } from '@/lib/validation/errorCatalog';
+import { throwCustomError } from '@/lib/validation/throwCustomError';
 import type { GraphQLContext } from '../../../../../types/graphql/context';
 
 export const cleanUserRecipes = async (
   _: unknown,
   { userId }: { userId: string },
-  context: GraphQLContext,
-) => {
-  const { prisma } = context;
-
+  { prisma }: GraphQLContext,
+): Promise<boolean> => {
   // This logic seems redundant with Prisma relations, but keeping it for compatibility
   // In a relational DB with foreign keys, this kind of cleanup is strictly enforced or cascaded
   const user = await prisma.user.findUnique({
@@ -15,7 +15,7 @@ export const cleanUserRecipes = async (
   });
 
   if (!user) {
-    throw new Error('User not found');
+    return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
   }
 
   // Prisma ensures integrity, so logic is essentially checking existence

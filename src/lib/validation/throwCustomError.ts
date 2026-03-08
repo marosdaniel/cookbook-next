@@ -1,20 +1,19 @@
 import { GraphQLError } from 'graphql';
 import type { ErrorTypeDefinition } from './errorCatalog';
+import type { ErrorOptions, ZodIssueMinimal } from './types';
 
-interface ErrorOptions {
-  messageKey?: string;
-  originalError?: unknown;
-  details?: Record<string, unknown>;
-  zodIssues?: Array<{ path: (string | number)[]; message: string }>;
-}
-
-const buildFieldErrorsFromZodIssues = (
-  issues: Array<{ path: (string | number)[]; message: string }>,
-) => {
+const buildFieldErrorsFromZodIssues = (issues: ZodIssueMinimal[]) => {
   const fieldErrors: Record<string, string[]> = {};
 
   for (const issue of issues) {
-    const path = issue.path.join('.') || '_root';
+    // Safely handle path segments (converting symbols to strings if any)
+    const path =
+      issue.path
+        .map((segment) =>
+          typeof segment === 'symbol' ? segment.toString() : segment,
+        )
+        .join('.') || '_root';
+
     if (!fieldErrors[path]) {
       fieldErrors[path] = [];
     }

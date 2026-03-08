@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
-import { GraphQLError } from 'graphql';
 import jwt from 'jsonwebtoken';
+import { ErrorTypes } from '@/lib/validation/errorCatalog';
+import { throwCustomError } from '@/lib/validation/throwCustomError';
+import { loginValidationSchema } from '@/lib/validation/validation';
 import type { GraphQLContext } from '../../../../../types/graphql/context';
 import type { LoginUserArgs } from '../../../../../types/user';
 
@@ -15,26 +17,36 @@ export const loginUser = async (
 ) => {
   const { email, password } = userLoginInput;
 
+  // Validate input
+  const validation = loginValidationSchema.safeParse(userLoginInput);
+  if (!validation.success) {
+    throwCustomError('Invalid input data', ErrorTypes.VALIDATION_ERROR, {
+      zodIssues: validation.error.issues,
+    });
+  }
+
   // Find user by email
   const user = await prisma.user.findUnique({
     where: {
-      email: email,
+      email: email.toLowerCase(),
     },
   });
 
   if (!user) {
-    throw new GraphQLError('Invalid email address or password', {
-      extensions: { code: 'UNAUTHENTICATED' },
-    });
+    return throwCustomError(
+      'Invalid email address or password',
+      ErrorTypes.UNAUTHORIZED,
+    );
   }
 
   // Check password
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
-    throw new GraphQLError('Invalid email address or password', {
-      extensions: { code: 'UNAUTHENTICATED' },
-    });
+    throwCustomError(
+      'Invalid email address or password',
+      ErrorTypes.UNAUTHORIZED,
+    );
   }
 
   // Generate JWT token
