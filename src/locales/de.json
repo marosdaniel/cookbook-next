@@ -99,7 +99,13 @@
     "savedAgo": "Vor {minutes}m gespeichert"
   },
   "recipe": {
-    "notRatedYet": "Noch nicht bewertet"
+    "notRatedYet": "Noch nicht bewertet",
+    "ratingsCount": "Bewertungen",
+    "yourRating": "Deine Bewertung",
+    "ratingSuccess": "Bewertung erfolgreich!",
+    "ratingSuccessMessage": "Vielen Dank für deine Bewertung!",
+    "ratingError": "Bewertungsfehler",
+    "ratingErrorMessage": "Deine Bewertung konnte nicht gespeichert werden."
   },
   "response": {
     "success": "Erfolg",
