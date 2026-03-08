@@ -100,7 +100,13 @@
     "savedAgo": "Mentve {minutes} perce"
   },
   "recipe": {
-    "notRatedYet": "Még nincs értékelve"
+    "notRatedYet": "Még nincs értékelve",
+    "ratingsCount": "értékelés",
+    "yourRating": "Saját értékelésed",
+    "ratingSuccess": "Sikeres értékelés!",
+    "ratingSuccessMessage": "Köszönjük az értékelést!",
+    "ratingError": "Hiba történt",
+    "ratingErrorMessage": "Nem sikerült menteni az értékelést."
   },
   "response": {
     "success": "Siker",

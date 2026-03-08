@@ -32,3 +32,8 @@ export interface RecipeInputBase {
 export interface RecipeCreateInput extends RecipeInputBase {}
 
 export interface RecipeEditInput extends RecipeInputBase {}
+
+export interface RatingInput {
+  recipeId: string;
+  ratingValue: number;
+}

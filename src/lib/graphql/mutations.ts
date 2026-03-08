@@ -78,3 +78,20 @@ export const EDIT_RECIPE = gql`
     }
   }
 `;
+
+export const RATE_RECIPE = gql`
+  mutation RateRecipe($ratingInput: RatingInput!) {
+    rateRecipe(ratingInput: $ratingInput) {
+      id
+      averageRating
+      ratingsCount
+      userRating
+    }
+  }
+`;
+
+export const DELETE_RATING = gql`
+  mutation DeleteRating($recipeId: ID!) {
+    deleteRating(recipeId: $recipeId)
+  }
+`;

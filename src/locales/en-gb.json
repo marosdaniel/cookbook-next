@@ -100,7 +100,13 @@
     "savedAgo": "Saved {minutes}m ago"
   },
   "recipe": {
-    "notRatedYet": "Not rated yet"
+    "notRatedYet": "Not rated yet",
+    "ratingsCount": "ratings",
+    "yourRating": "Your rating",
+    "ratingSuccess": "Rating success!",
+    "ratingSuccessMessage": "Thank you for your rating!",
+    "ratingError": "Rating error",
+    "ratingErrorMessage": "Failed to save your rating."
   },
   "response": {
     "success": "Success",
