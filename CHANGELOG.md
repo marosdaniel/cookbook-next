@@ -1,3 +1,10 @@
+# [2.3.0](https://github.com/marosdaniel/cookbook-next/compare/v2.2.0...v2.3.0) (2026-03-08)
+
+
+### Features
+
+* Upgrade Mantine packages to v9 alpha, updating Collapse component prop and importing carousel styles. ([8364906](https://github.com/marosdaniel/cookbook-next/commit/83649069c39a83486fb0e4e97e5070e3b66a8ae1))
+
 # [2.2.0](https://github.com/marosdaniel/cookbook-next/compare/v2.1.0...v2.2.0) (2026-03-07)
 
 
