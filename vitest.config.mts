@@ -14,7 +14,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
     coverage: {
-      reporter: ['text', 'html'],
+      reporter: ['text', 'html', 'json-summary'],
       include: ['src/**/*.{ts,tsx}'],
       exclude: ['**/*.test.{ts,tsx}', 'node_modules'],
     },
