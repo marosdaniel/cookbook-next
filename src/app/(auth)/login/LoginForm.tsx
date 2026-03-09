@@ -82,8 +82,9 @@ export const LoginForm: FC = () => {
     }
   };
 
-  const isLoginDisabled =
-    form.submitting || isSigningIn || !form.isValid() || !form.isDirty();
+  // Keep submit disabled while an auth request is in flight.
+  // Field-level validation still runs on blur and on submit.
+  const isLoginDisabled = form.submitting || isSigningIn;
 
   return (
     <Container maw={520} my={40} id="login-page">

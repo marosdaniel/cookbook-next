@@ -15,12 +15,15 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
+    "start": "next start",
     "build": "prisma generate && next build",
     "typecheck": "prisma generate && tsc --noEmit",
     "postinstall": "prisma generate",
     "test:coverage": "vitest run --coverage",
     "test:unit": "vitest run",
     "test:integration": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "lint": "biome lint .",
     "lint:fix": "biome check --write .",
     "deps:update": "pnpm dlx npm-check-updates -u"
@@ -64,6 +67,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.6",
+    "@playwright/test": "^1.58.2",
     "@prisma/config": "^7.4.2",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",

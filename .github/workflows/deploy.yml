@@ -62,27 +62,44 @@ jobs:
       - name: Run Integration Tests
         run: pnpm test:integration
 
-  # e2e:
-  #   needs: checks
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #     - name: Setup pnpm
-  #       uses: pnpm/action-setup@v4
-  #       with:
-  #         version: 9
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: '22'
-  #         cache: 'pnpm'
-  #     - name: Install dependencies
-  #       run: pnpm install
-  #     - name: Install Playwright Browsers
-  #       run: pnpm exec playwright install --with-deps
-  #     - name: Run Playwright tests
-  #       run: pnpm exec playwright test
+  e2e:
+    needs: quality-checks
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
 
   test-coverage:
     needs: quality-checks
@@ -178,7 +195,7 @@ jobs:
         uses: actions/deploy-pages@v4
 
   deploy-production:
-    needs: quality-checks
+    needs: [quality-checks, e2e]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
