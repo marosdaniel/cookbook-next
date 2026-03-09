@@ -8,6 +8,8 @@ export default defineConfig({
     environment: 'happy-dom',
     setupFiles: ['./vitest.setup.mts'],
     globals: true,
+    include: ['src/**/*.test.{ts,tsx}'],
+    exclude: ['node_modules/**', 'e2e/**', 'playwright.config.ts'],
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
