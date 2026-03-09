@@ -18,7 +18,10 @@ import { useState } from 'react';
 import type { z } from 'zod';
 
 import { CHANGE_PASSWORD } from '@/lib/graphql/mutations';
-import { passwordEditValidationSchema } from '@/lib/validation/validation';
+import {
+  isFormSubmitDisabled,
+  passwordEditValidationSchema,
+} from '@/lib/validation';
 
 const Password = () => {
   const translate = useTranslations();
@@ -161,7 +164,7 @@ const Password = () => {
             <Button
               size="sm"
               type="submit"
-              disabled={!form.isValid() || !form.isDirty()}
+              disabled={isFormSubmitDisabled(form, loading)}
               loading={loading}
               loaderProps={{ type: 'dots' }}
             >

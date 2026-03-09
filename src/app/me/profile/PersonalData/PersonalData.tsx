@@ -20,7 +20,7 @@ import { useEffect, useState } from 'react';
 import type { z } from 'zod';
 import { UPDATE_USER } from '@/lib/graphql/mutations';
 import { GET_USER_BY_ID } from '@/lib/graphql/queries';
-import { nameValidationSchema } from '@/lib/validation/validation';
+import { isFormSubmitDisabled, nameValidationSchema } from '@/lib/validation';
 
 const PersonalData = () => {
   const translate = useTranslations();
@@ -208,7 +208,7 @@ const PersonalData = () => {
             <Button
               size="sm"
               type="submit"
-              disabled={!form.isValid() || !form.isDirty()}
+              disabled={isFormSubmitDisabled(form, updateLoading)}
               loading={updateLoading}
               loaderProps={{ type: 'dots' }}
             >

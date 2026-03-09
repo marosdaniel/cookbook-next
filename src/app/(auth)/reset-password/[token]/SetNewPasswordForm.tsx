@@ -21,7 +21,10 @@ import { useState } from 'react';
 import { CiCircleCheck } from 'react-icons/ci';
 import { IoArrowBackOutline } from 'react-icons/io5';
 import { SET_NEW_PASSWORD } from '@/lib/graphql/mutations';
-import { setNewPasswordValidationSchema } from '@/lib/validation/validation';
+import {
+  isFormSubmitDisabled,
+  setNewPasswordValidationSchema,
+} from '@/lib/validation';
 import { AUTH_ROUTES } from '../../../../types/routes';
 import { showErrorNotification } from '../../../../utils/notifications';
 import { AUTH_CONSTANTS } from '../../consts';
@@ -82,6 +85,8 @@ export const SetNewPasswordForm: FC = () => {
       );
     }
   };
+
+  const isSubmitDisabled = isFormSubmitDisabled(form, loading);
 
   if (isPasswordReset) {
     return (
@@ -149,7 +154,7 @@ export const SetNewPasswordForm: FC = () => {
           loading={loading}
           loaderProps={{ type: 'dots' }}
           fullWidth
-          disabled={!form.isValid() || !form.isDirty()}
+          disabled={isSubmitDisabled}
         >
           {translate('auth.setNewPasswordButton')}
         </Button>

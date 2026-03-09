@@ -21,7 +21,10 @@ import { useState } from 'react';
 import { CiCircleInfo } from 'react-icons/ci';
 import { IoArrowBackOutline } from 'react-icons/io5';
 import { RESET_PASSWORD } from '@/lib/graphql/mutations';
-import { resetPasswordValidationSchema } from '@/lib/validation/validation';
+import {
+  isFormSubmitDisabled,
+  resetPasswordValidationSchema,
+} from '@/lib/validation';
 import { AUTH_ROUTES } from '../../../types/routes';
 import {
   showErrorNotification,
@@ -70,8 +73,7 @@ export const ResetPasswordForm: FC = () => {
     }
   };
 
-  const isSubmitDisabled =
-    loading || Object.keys(form.errors).length > 0 || !form.isDirty();
+  const isSubmitDisabled = isFormSubmitDisabled(form, loading);
 
   return (
     <Container size={460} my={30} id="reset-password-page">

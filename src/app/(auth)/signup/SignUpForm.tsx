@@ -22,7 +22,7 @@ import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 import { useState } from 'react';
 import { CREATE_USER } from '@/lib/graphql/mutations';
-import { signUpValidationSchema } from '@/lib/validation/validation';
+import { isFormSubmitDisabled, signUpValidationSchema } from '@/lib/validation';
 import PrivacyPolicyLink from '../../../components/PrivacyPolicyLink';
 import { AUTH_ROUTES } from '../../../types/routes';
 import type { CreateUserData, CreateUserVars } from './types';
@@ -108,8 +108,7 @@ const SignUpForm: FC = () => {
     }
   };
 
-  const isSubmitDisabled =
-    loading || isLoggingIn || !form.isValid() || !form.isDirty();
+  const isSubmitDisabled = isFormSubmitDisabled(form, loading, isLoggingIn);
 
   return (
     <Container maw={520} my={40} id="sign-up-page">

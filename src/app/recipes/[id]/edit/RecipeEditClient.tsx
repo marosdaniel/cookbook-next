@@ -111,6 +111,8 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
 
   if (!initialValues) return null;
 
+  const handleSave = () => editForm.form.onSubmit(editForm.handlePublish)();
+
   return (
     <RecipeComposer
       mode="edit"
@@ -119,7 +121,7 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
       submitLoading={editForm.submitLoading}
       completion={editForm.completion}
       lastSavedLabel="Editing"
-      onSave={() => editForm.form.onSubmit(editForm.handlePublish)()}
+      onSave={handleSave}
       onReset={editForm.resetToOriginal}
       addIngredient={editForm.addIngredient}
       addStep={editForm.addStep}

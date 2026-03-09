@@ -8,17 +8,10 @@ import {
   LoadingOverlay,
   ScrollArea,
 } from '@mantine/core';
-import type { UseFormReturnType } from '@mantine/form';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import {
-  type RefObject,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import ComposerHeader from './components/ComposerHeader';
 import ComposerSidebar from './components/ComposerSidebar';
 import { RecipeFormProvider } from './FormContext';
@@ -28,32 +21,9 @@ import BasicsSection from './sections/BasicsSection';
 import IngredientsSection from './sections/IngredientsSection';
 import MediaSection from './sections/MediaSection';
 import StepsSection from './sections/StepsSection';
-import type { ComposerMode, ComposerSection, RecipeFormValues } from './types';
+import type { ComposerSection, RecipeComposerProps } from './types';
 
 /* ─── Props ───────────────────────────────────── */
-export interface RecipeComposerProps {
-  mode: ComposerMode;
-  form: UseFormReturnType<RecipeFormValues>;
-  handlePublish: (values: RecipeFormValues) => void;
-  submitLoading: boolean;
-  completion: { done: number; total: number; percent: number };
-  lastSavedLabel: string;
-  onSave: () => void;
-  onReset: () => void;
-  addIngredient: () => void;
-  addStep: () => void;
-  /** Header title (e.g. "Create Recipe" | "Edit Recipe") */
-  headerTitle: string;
-  /** Submit button label (e.g. "Publish" | "Save Changes") */
-  submitLabel: string;
-  /** Reset button label (e.g. "Clear draft" | "Reset changes") */
-  resetLabel: string;
-  /**
-   * Optional ref that parent components can use to imperatively
-   * navigate to a specific section (e.g. on validation failure).
-   */
-  goToSectionRef?: RefObject<((section: ComposerSection) => void) | null>;
-}
 
 /* ─── Main Component ──────────────────────────── */
 export const RecipeComposer = ({
