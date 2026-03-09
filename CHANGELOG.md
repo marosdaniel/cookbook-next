@@ -1,3 +1,10 @@
+# [2.9.0](https://github.com/marosdaniel/cookbook-next/compare/v2.8.0...v2.9.0) (2026-03-09)
+
+
+### Features
+
+* Add documentation for Neon (Postgres) integration and Playwright E2E tests, updating the README. ([9bd81f0](https://github.com/marosdaniel/cookbook-next/commit/9bd81f0f851f7259a01cc123802b95e07330f1d2))
+
 # [2.8.0](https://github.com/marosdaniel/cookbook-next/compare/v2.7.0...v2.8.0) (2026-03-09)
 
 
