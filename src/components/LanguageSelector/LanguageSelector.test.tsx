@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { fireEvent, render, screen, waitFor } from '@/utils/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@/utils/test-utils';
 import LanguageSelector from './LanguageSelector';
 
 // Mock next/navigation

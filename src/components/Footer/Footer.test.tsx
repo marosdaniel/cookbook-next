@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@/utils/test-utils';
 import { describe, expect, it, vi } from 'vitest';
+import { render, screen } from '@/utils/test-utils';
 import Footer from './Footer';
 
 // Mock Next.js Link component
@@ -52,7 +52,6 @@ vi.mock('../../types/routes', () => ({
 }));
 
 describe('Footer', () => {
-
   describe('Basic rendering', () => {
     it('renders the footer component', () => {
       const { container } = render(<Footer />);

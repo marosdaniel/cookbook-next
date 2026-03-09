@@ -1,7 +1,7 @@
 import type React from 'react';
 import '@testing-library/jest-dom';
-import { render, screen } from '@/utils/test-utils';
 import { describe, expect, it, vi } from 'vitest';
+import { render, screen } from '@/utils/test-utils';
 import { PUBLIC_ROUTES } from '../../types/routes';
 import PrivacyPolicyLink from './PrivacyPolicyLink';
 

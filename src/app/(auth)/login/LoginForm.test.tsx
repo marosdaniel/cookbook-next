@@ -12,8 +12,8 @@ import { LoginForm } from './LoginForm';
 vi.mock('mantine-form-zod-resolver', () => ({
   zodResolver: vi.fn(() => (values: Record<string, unknown>) => {
     const errors: Record<string, string> = {};
-    if (!values['email']) errors['email'] = 'Required';
-    if (!values['password']) errors['password'] = 'Required'; // NOSONAR
+    if (!values.email) errors.email = 'Required';
+    if (!values.password) errors.password = 'Required'; // NOSONAR
     return errors;
   }),
 }));

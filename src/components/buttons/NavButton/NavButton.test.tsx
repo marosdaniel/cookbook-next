@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@/utils/test-utils';
 import type { Route } from 'next';
 import { describe, expect, it, vi } from 'vitest';
+import { render, screen } from '@/utils/test-utils';
 import { PROTECTED_ROUTES, PUBLIC_ROUTES } from '../../../types/routes';
 import NavButton from './NavButton';
 
@@ -17,7 +17,6 @@ vi.mock('next/link', () => ({
 }));
 
 describe('NavButton', () => {
-
   describe('Basic rendering', () => {
     it('renders with label text', () => {
       render(<NavButton label="Test Button" href="/" />);
@@ -31,9 +30,7 @@ describe('NavButton', () => {
     });
 
     it('renders as a link element', () => {
-      render(
-        <NavButton label="Navigate" href={PUBLIC_ROUTES.HOME} />,
-      );
+      render(<NavButton label="Navigate" href={PUBLIC_ROUTES.HOME} />);
       const link = screen.getByRole('link');
       expect(link).toBeInTheDocument();
     });
@@ -52,9 +49,7 @@ describe('NavButton', () => {
 
     it('renders with icon when icon prop is provided', () => {
       const testIcon = <svg data-testid="test-icon" />;
-      render(
-        <NavButton label="With Icon" href="/" icon={testIcon} />,
-      );
+      render(<NavButton label="With Icon" href="/" icon={testIcon} />);
       expect(screen.getByTestId('test-icon')).toBeInTheDocument();
     });
 
@@ -107,16 +102,12 @@ describe('NavButton', () => {
     });
 
     it('applies full width when fullWidth is true', () => {
-      render(
-        <NavButton label="Full Width" href="/" fullWidth={true} />,
-      );
+      render(<NavButton label="Full Width" href="/" fullWidth={true} />);
       expect(screen.getByText('Full Width')).toBeInTheDocument();
     });
 
     it('is not full width when fullWidth is explicitly false', () => {
-      render(
-        <NavButton label="Not Full" href="/" fullWidth={false} />,
-      );
+      render(<NavButton label="Not Full" href="/" fullWidth={false} />);
       expect(screen.getByText('Not Full')).toBeInTheDocument();
     });
   });
@@ -141,17 +132,13 @@ describe('NavButton', () => {
     });
 
     it('renders with nested path', () => {
-      render(
-        <NavButton label="About" href={PUBLIC_ROUTES.ABOUT as Route} />,
-      );
+      render(<NavButton label="About" href={PUBLIC_ROUTES.ABOUT as Route} />);
       const link = screen.getByRole('link');
       expect(link).toHaveAttribute('href', PUBLIC_ROUTES.ABOUT);
     });
 
     it('renders with deep nested path', () => {
-      render(
-        <NavButton label="Profile" href={PROTECTED_ROUTES.PROFILE} />,
-      );
+      render(<NavButton label="Profile" href={PROTECTED_ROUTES.PROFILE} />);
       const link = screen.getByRole('link');
       expect(link).toHaveAttribute('href', PROTECTED_ROUTES.PROFILE);
     });
@@ -186,9 +173,7 @@ describe('NavButton', () => {
 
     it('renders with custom size and icon', () => {
       const icon = <svg data-testid="icon-size" />;
-      render(
-        <NavButton label="Size Icon" href="/" icon={icon} size="sm" />,
-      );
+      render(<NavButton label="Size Icon" href="/" icon={icon} size="sm" />);
       expect(screen.getByTestId('icon-size')).toBeInTheDocument();
       expect(screen.getByText('Size Icon')).toBeInTheDocument();
     });
@@ -202,9 +187,7 @@ describe('NavButton', () => {
     });
 
     it('renders as accessible link element', () => {
-      render(
-        <NavButton label="Link Button" href={PUBLIC_ROUTES.HOME} />,
-      );
+      render(<NavButton label="Link Button" href={PUBLIC_ROUTES.HOME} />);
       expect(screen.getByRole('link')).toBeInTheDocument();
     });
 

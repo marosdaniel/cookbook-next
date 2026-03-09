@@ -44,7 +44,7 @@ export function isFormSubmitDisabled(
     const validResult = form.isValid();
     // Safely unwrap: async validators (Promise) count as "not yet valid".
     isFormValid = validResult instanceof Promise ? false : validResult;
-  } catch (err) {
+  } catch (_err) {
     // Some Mantine versions may expect internal structures (like rules)
     // to exist when `isValid()` is called; in those cases fall back to a
     // conservative behaviour: treat the form as invalid so the submit stays

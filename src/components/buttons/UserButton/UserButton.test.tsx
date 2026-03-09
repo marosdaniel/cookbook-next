@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@/utils/test-utils';
 import { useSession } from 'next-auth/react';
 import { describe, expect, it, vi } from 'vitest';
+import { render, screen } from '@/utils/test-utils';
 import UserButton from './UserButton';
 
 // Mock next-auth/react

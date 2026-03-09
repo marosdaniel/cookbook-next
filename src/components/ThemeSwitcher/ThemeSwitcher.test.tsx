@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
-import { fireEvent, render, screen } from '@/utils/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen } from '@/utils/test-utils';
 import ThemeSwitcher from './ThemeSwitcher';
 
 // Mock next-intl

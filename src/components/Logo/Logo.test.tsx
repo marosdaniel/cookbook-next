@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@/utils/test-utils';
 import type { ComponentProps } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { render, screen } from '@/utils/test-utils';
 import { LOGO_SRC_DARK, LOGO_SRC_LIGHT } from './consts';
 import { Logo, LogoIcon } from './Logo';
 
