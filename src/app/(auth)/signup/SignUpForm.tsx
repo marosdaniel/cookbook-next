@@ -125,6 +125,7 @@ const SignUpForm: FC = () => {
           size="sm"
           component={Link}
           href={AUTH_ROUTES.LOGIN}
+          data-testid="login-link"
         >
           {translate('auth.login')}
         </Button>
@@ -194,6 +195,7 @@ const SignUpForm: FC = () => {
         />
 
         <Checkbox
+          data-testid="privacy-accepted"
           size="md"
           label={<PrivacyPolicyLink />}
           mt="xl"
@@ -203,6 +205,7 @@ const SignUpForm: FC = () => {
 
         <Button
           id="submit-button"
+          data-testid="submit-button"
           fullWidth
           mt="xl"
           type="submit"

@@ -1,34 +1,27 @@
 import '@testing-library/jest-dom';
-import { MantineProvider } from '@mantine/core';
-import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { render, screen } from '@/utils/test-utils';
 import { StyledText } from './StyledText';
 
 describe('StyledText', () => {
-  const renderWithMantine = (component: React.ReactElement) => {
-    return render(<MantineProvider>{component}</MantineProvider>);
-  };
-
   describe('Text component type', () => {
     it('renders as Text component by default', () => {
-      renderWithMantine(<StyledText>Test content</StyledText>);
+      render(<StyledText>Test content</StyledText>);
       expect(screen.getByText('Test content')).toBeInTheDocument();
     });
 
     it('renders as Text component when componentType is explicitly "text"', () => {
-      renderWithMantine(
-        <StyledText componentType="text">Test content</StyledText>,
-      );
+      render(<StyledText componentType="text">Test content</StyledText>);
       expect(screen.getByText('Test content')).toBeInTheDocument();
     });
 
     it('renders text content correctly', () => {
-      renderWithMantine(<StyledText>Hello World</StyledText>);
+      render(<StyledText>Hello World</StyledText>);
       expect(screen.getByText('Hello World')).toBeInTheDocument();
     });
 
     it('applies Text component props correctly', () => {
-      renderWithMantine(
+      render(
         <StyledText size="xl" fw={700} c="blue">
           Styled text
         </StyledText>,
@@ -40,7 +33,7 @@ describe('StyledText', () => {
 
   describe('Title component type', () => {
     it('renders as Title component when componentType is "title"', () => {
-      const { container } = renderWithMantine(
+      const { container } = render(
         <StyledText componentType="title">Test Title</StyledText>,
       );
       expect(screen.getByText('Test Title')).toBeInTheDocument();
@@ -49,14 +42,12 @@ describe('StyledText', () => {
     });
 
     it('renders title content correctly', () => {
-      renderWithMantine(
-        <StyledText componentType="title">Main Title</StyledText>,
-      );
+      render(<StyledText componentType="title">Main Title</StyledText>);
       expect(screen.getByText('Main Title')).toBeInTheDocument();
     });
 
     it('applies Title component props correctly', () => {
-      renderWithMantine(
+      render(
         <StyledText componentType="title" order={1} c="red">
           Page Title
         </StyledText>,
@@ -66,7 +57,7 @@ describe('StyledText', () => {
     });
 
     it('applies different title orders', () => {
-      renderWithMantine(
+      render(
         <>
           <StyledText componentType="title" order={1}>
             H1 Title
@@ -87,19 +78,19 @@ describe('StyledText', () => {
 
   describe('Gradient styling', () => {
     it('does not apply gradient class by default', () => {
-      renderWithMantine(<StyledText>No gradient</StyledText>);
+      render(<StyledText>No gradient</StyledText>);
       const element = screen.getByText('No gradient');
       expect(element.className).not.toContain('gradientText');
     });
 
     it('applies gradient class when gradient prop is true for Text', () => {
-      renderWithMantine(<StyledText gradient={true}>Gradient text</StyledText>);
+      render(<StyledText gradient={true}>Gradient text</StyledText>);
       const element = screen.getByText('Gradient text');
       expect(element.className).toContain('gradientText');
     });
 
     it('applies gradient class when gradient prop is true for Title', () => {
-      renderWithMantine(
+      render(
         <StyledText componentType="title" gradient={true}>
           Gradient title
         </StyledText>,
@@ -109,7 +100,7 @@ describe('StyledText', () => {
     });
 
     it('does not apply gradient class when gradient is false', () => {
-      renderWithMantine(<StyledText gradient={false}>No gradient</StyledText>);
+      render(<StyledText gradient={false}>No gradient</StyledText>);
       const element = screen.getByText('No gradient');
       expect(element.className).not.toContain('gradientText');
     });
@@ -117,15 +108,13 @@ describe('StyledText', () => {
 
   describe('Custom className', () => {
     it('applies custom className to Text component', () => {
-      renderWithMantine(
-        <StyledText className="custom-class">Custom styled</StyledText>,
-      );
+      render(<StyledText className="custom-class">Custom styled</StyledText>);
       const element = screen.getByText('Custom styled');
       expect(element.className).toContain('custom-class');
     });
 
     it('applies custom className to Title component', () => {
-      renderWithMantine(
+      render(
         <StyledText componentType="title" className="custom-title">
           Custom title
         </StyledText>,
@@ -135,7 +124,7 @@ describe('StyledText', () => {
     });
 
     it('combines custom className with gradient class', () => {
-      renderWithMantine(
+      render(
         <StyledText gradient={true} className="custom-class">
           Combined classes
         </StyledText>,
@@ -146,7 +135,7 @@ describe('StyledText', () => {
     });
 
     it('applies multiple custom classes', () => {
-      renderWithMantine(
+      render(
         <StyledText className="class-one class-two">
           Multiple classes
         </StyledText>,
@@ -159,7 +148,7 @@ describe('StyledText', () => {
 
   describe('Combined props', () => {
     it('combines all props correctly for Text', () => {
-      renderWithMantine(
+      render(
         <StyledText
           componentType="text"
           gradient={true}
@@ -177,7 +166,7 @@ describe('StyledText', () => {
     });
 
     it('combines all props correctly for Title', () => {
-      renderWithMantine(
+      render(
         <StyledText
           componentType="title"
           gradient={true}
@@ -196,17 +185,17 @@ describe('StyledText', () => {
 
   describe('Children rendering', () => {
     it('renders string children', () => {
-      renderWithMantine(<StyledText>String content</StyledText>);
+      render(<StyledText>String content</StyledText>);
       expect(screen.getByText('String content')).toBeInTheDocument();
     });
 
     it('renders number children', () => {
-      renderWithMantine(<StyledText>{42}</StyledText>);
+      render(<StyledText>{42}</StyledText>);
       expect(screen.getByText('42')).toBeInTheDocument();
     });
 
     it('renders multiple children', () => {
-      renderWithMantine(
+      render(
         <StyledText>
           Multiple <strong>children</strong> elements
         </StyledText>,
@@ -218,18 +207,18 @@ describe('StyledText', () => {
 
   describe('Edge cases', () => {
     it('handles empty children', () => {
-      const { container } = renderWithMantine(<StyledText></StyledText>);
+      const { container } = render(<StyledText></StyledText>);
       const textElement = container.querySelector('.mantine-Text-root');
       expect(textElement).toBeInTheDocument();
     });
 
     it('handles null className gracefully', () => {
-      renderWithMantine(<StyledText className={undefined}>Text</StyledText>);
+      render(<StyledText className={undefined}>Text</StyledText>);
       expect(screen.getByText('Text')).toBeInTheDocument();
     });
 
     it('renders with all default props', () => {
-      renderWithMantine(<StyledText>Default props</StyledText>);
+      render(<StyledText>Default props</StyledText>);
       expect(screen.getByText('Default props')).toBeInTheDocument();
     });
   });

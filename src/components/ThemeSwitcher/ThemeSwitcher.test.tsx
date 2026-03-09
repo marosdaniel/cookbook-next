@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom';
-import { MantineProvider } from '@mantine/core';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@/utils/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import ThemeSwitcher from './ThemeSwitcher';
 
@@ -60,26 +59,18 @@ describe('ThemeSwitcher', () => {
     it('renders the theme switcher button', () => {
       mockIsDarkMode.mockReturnValue(false);
 
-      render(
-        <MantineProvider>
-          <ThemeSwitcher />
-        </MantineProvider>,
-      );
+      render(<ThemeSwitcher />);
 
-      const button = screen.getByRole('button', { name: /toggle theme/i });
+      const button = screen.getByTestId('theme-toggle');
       expect(button).toBeInTheDocument();
     });
 
     it('shows moon icon when in light mode', () => {
       mockIsDarkMode.mockReturnValue(false);
 
-      const { container } = render(
-        <MantineProvider>
-          <ThemeSwitcher />
-        </MantineProvider>,
-      );
+      const { container } = render(<ThemeSwitcher />);
 
-      const button = screen.getByRole('button', { name: /toggle theme/i });
+      const button = screen.getByTestId('theme-toggle');
       expect(button).toHaveAttribute('title', 'Dark mode');
 
       // Check that the moon icon is rendered (FiMoon)
@@ -90,13 +81,9 @@ describe('ThemeSwitcher', () => {
     it('shows sun icon when in dark mode', () => {
       mockIsDarkMode.mockReturnValue(true);
 
-      const { container } = render(
-        <MantineProvider>
-          <ThemeSwitcher />
-        </MantineProvider>,
-      );
+      const { container } = render(<ThemeSwitcher />);
 
-      const button = screen.getByRole('button', { name: /toggle theme/i });
+      const button = screen.getByTestId('theme-toggle');
       expect(button).toHaveAttribute('title', 'Light mode');
 
       // Check that the sun icon is rendered (FiSun)
@@ -109,13 +96,9 @@ describe('ThemeSwitcher', () => {
     it('dispatches setDarkMode action when clicked in light mode', () => {
       mockIsDarkMode.mockReturnValue(false);
 
-      render(
-        <MantineProvider>
-          <ThemeSwitcher />
-        </MantineProvider>,
-      );
+      render(<ThemeSwitcher />);
 
-      const button = screen.getByRole('button', { name: /toggle theme/i });
+      const button = screen.getByTestId('theme-toggle');
       fireEvent.click(button);
 
       expect(mockDispatch).toHaveBeenCalledWith({
@@ -127,13 +110,9 @@ describe('ThemeSwitcher', () => {
     it('dispatches setDarkMode action when clicked in dark mode', () => {
       mockIsDarkMode.mockReturnValue(true);
 
-      render(
-        <MantineProvider>
-          <ThemeSwitcher />
-        </MantineProvider>,
-      );
+      render(<ThemeSwitcher />);
 
-      const button = screen.getByRole('button', { name: /toggle theme/i });
+      const button = screen.getByTestId('theme-toggle');
       fireEvent.click(button);
 
       expect(mockDispatch).toHaveBeenCalledWith({
@@ -145,13 +124,9 @@ describe('ThemeSwitcher', () => {
     it('calls setColorScheme with correct value when toggling to dark mode', () => {
       mockIsDarkMode.mockReturnValue(false);
 
-      render(
-        <MantineProvider>
-          <ThemeSwitcher />
-        </MantineProvider>,
-      );
+      render(<ThemeSwitcher />);
 
-      const button = screen.getByRole('button', { name: /toggle theme/i });
+      const button = screen.getByTestId('theme-toggle');
       fireEvent.click(button);
 
       expect(mockSetColorScheme).toHaveBeenCalledWith('dark');
@@ -160,13 +135,9 @@ describe('ThemeSwitcher', () => {
     it('calls setColorScheme with correct value when toggling to light mode', () => {
       mockIsDarkMode.mockReturnValue(true);
 
-      render(
-        <MantineProvider>
-          <ThemeSwitcher />
-        </MantineProvider>,
-      );
+      render(<ThemeSwitcher />);
 
-      const button = screen.getByRole('button', { name: /toggle theme/i });
+      const button = screen.getByTestId('theme-toggle');
       fireEvent.click(button);
 
       expect(mockSetColorScheme).toHaveBeenCalledWith('light');
@@ -177,39 +148,27 @@ describe('ThemeSwitcher', () => {
     it('has correct aria-label', () => {
       mockIsDarkMode.mockReturnValue(false);
 
-      render(
-        <MantineProvider>
-          <ThemeSwitcher />
-        </MantineProvider>,
-      );
+      render(<ThemeSwitcher />);
 
-      const button = screen.getByRole('button', { name: /toggle theme/i });
+      const button = screen.getByTestId('theme-toggle');
       expect(button).toHaveAttribute('aria-label', 'Toggle theme');
     });
 
     it('has correct title attribute in light mode', () => {
       mockIsDarkMode.mockReturnValue(false);
 
-      render(
-        <MantineProvider>
-          <ThemeSwitcher />
-        </MantineProvider>,
-      );
+      render(<ThemeSwitcher />);
 
-      const button = screen.getByRole('button', { name: /toggle theme/i });
+      const button = screen.getByTestId('theme-toggle');
       expect(button).toHaveAttribute('title', 'Dark mode');
     });
 
     it('has correct title attribute in dark mode', () => {
       mockIsDarkMode.mockReturnValue(true);
 
-      render(
-        <MantineProvider>
-          <ThemeSwitcher />
-        </MantineProvider>,
-      );
+      render(<ThemeSwitcher />);
 
-      const button = screen.getByRole('button', { name: /toggle theme/i });
+      const button = screen.getByTestId('theme-toggle');
       expect(button).toHaveAttribute('title', 'Light mode');
     });
   });
@@ -219,11 +178,7 @@ describe('ThemeSwitcher', () => {
       mockIsDarkMode.mockReturnValue(false);
       mockColorScheme.current = 'dark'; // Simulate mismatch to trigger sync
 
-      render(
-        <MantineProvider>
-          <ThemeSwitcher />
-        </MantineProvider>,
-      );
+      render(<ThemeSwitcher />);
 
       expect(mockSetColorScheme).toHaveBeenCalledWith('light');
     });
@@ -232,11 +187,7 @@ describe('ThemeSwitcher', () => {
       mockIsDarkMode.mockReturnValue(true);
       mockColorScheme.current = 'light'; // Simulate mismatch to trigger sync
 
-      render(
-        <MantineProvider>
-          <ThemeSwitcher />
-        </MantineProvider>,
-      );
+      render(<ThemeSwitcher />);
 
       expect(mockSetColorScheme).toHaveBeenCalledWith('dark');
     });
@@ -245,11 +196,7 @@ describe('ThemeSwitcher', () => {
       mockIsDarkMode.mockReturnValue(false);
       mockColorScheme.current = 'light'; // Already in sync
 
-      render(
-        <MantineProvider>
-          <ThemeSwitcher />
-        </MantineProvider>,
-      );
+      render(<ThemeSwitcher />);
 
       expect(mockSetColorScheme).not.toHaveBeenCalled();
     });

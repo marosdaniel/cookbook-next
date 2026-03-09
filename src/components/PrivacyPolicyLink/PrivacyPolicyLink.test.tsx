@@ -1,7 +1,6 @@
 import type React from 'react';
 import '@testing-library/jest-dom';
-import { MantineProvider } from '@mantine/core';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@/utils/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { PUBLIC_ROUTES } from '../../types/routes';
 import PrivacyPolicyLink from './PrivacyPolicyLink';
@@ -37,41 +36,25 @@ vi.mock('next/link', () => {
 
 describe('PrivacyPolicyLink', () => {
   it('renders the privacy policy link text', () => {
-    render(
-      <MantineProvider>
-        <PrivacyPolicyLink />
-      </MantineProvider>,
-    );
+    render(<PrivacyPolicyLink />);
     expect(screen.getByText('I accept the Privacy Policy')).toBeInTheDocument();
   });
 
   it('renders as a link with correct href', () => {
-    render(
-      <MantineProvider>
-        <PrivacyPolicyLink />
-      </MantineProvider>,
-    );
+    render(<PrivacyPolicyLink />);
     const link = screen.getByText('I accept the Privacy Policy');
     expect(link).toHaveAttribute('href', PUBLIC_ROUTES.PRIVACY_POLICY);
   });
 
   it('opens in a new tab with correct security attributes', () => {
-    render(
-      <MantineProvider>
-        <PrivacyPolicyLink />
-      </MantineProvider>,
-    );
+    render(<PrivacyPolicyLink />);
     const link = screen.getByText('I accept the Privacy Policy');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
   it('renders as an Anchor component with gradient variant', () => {
-    render(
-      <MantineProvider>
-        <PrivacyPolicyLink />
-      </MantineProvider>,
-    );
+    render(<PrivacyPolicyLink />);
     const link = screen.getByText('I accept the Privacy Policy');
     expect(link.tagName).toBe('A');
   });

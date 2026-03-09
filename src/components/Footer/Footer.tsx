@@ -27,7 +27,7 @@ const Footer: FC = () => {
           withText
           href={PUBLIC_ROUTES.HOME}
         />
-        <Text size="xs" c="dimmed">
+        <Text size="xs" c="dimmed" data-testid="footer-copyright">
           &copy; {currentYear} Cookbook. All rights reserved.
         </Text>
         <Group gap="md">
@@ -37,6 +37,7 @@ const Footer: FC = () => {
             size="xs"
             c="dimmed"
             underline="hover"
+            data-testid="footer-privacy"
           >
             Privacy Policy
           </Anchor>
@@ -47,6 +48,7 @@ const Footer: FC = () => {
             size="xs"
             c="dimmed"
             underline="hover"
+            data-testid="footer-cookie"
           >
             Cookie Policy
           </Anchor>
@@ -69,7 +71,7 @@ const Footer: FC = () => {
             withText
             href={PUBLIC_ROUTES.HOME}
           />
-          <Text size="xs" c="dimmed">
+          <Text size="xs" c="dimmed" data-testid="footer-copyright">
             &copy; {currentYear} Cookbook. All rights reserved.
           </Text>
         </Group>
@@ -81,6 +83,7 @@ const Footer: FC = () => {
             size="xs"
             c="dimmed"
             underline="hover"
+            data-testid="footer-privacy"
           >
             Privacy Policy
           </Anchor>
@@ -91,6 +94,7 @@ const Footer: FC = () => {
             c="dimmed"
             underline="hover"
             variant="subtle"
+            data-testid="footer-cookie"
           >
             Cookie Policy
           </Anchor>

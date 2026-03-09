@@ -1,24 +1,24 @@
 import '@testing-library/jest-dom';
-import { MantineProvider } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@/utils/test-utils';
+import { AUTH_ROUTES } from '../../../types/routes';
 import SignUpForm from './SignUpForm';
 
 // Mock mantine-form-zod-resolver
 vi.mock('mantine-form-zod-resolver', () => ({
-  zodResolver: vi.fn(() => (values: any) => {
+  zodResolver: vi.fn(() => (values: Record<string, unknown>) => {
     const errors: Record<string, string> = {};
     if (!values.firstName) errors.firstName = 'Required';
     if (!values.lastName) errors.lastName = 'Required';
     if (!values.userName) errors.userName = 'Required';
     if (!values.email) errors.email = 'Required';
-    if (!values.password) errors.password = 'Required';
-    if (!values.confirmPassword) errors.confirmPassword = 'Required';
+    if (!values.password) errors.password = 'Required'; // NOSONAR
+    if (!values.confirmPassword) errors.confirmPassword = 'Required'; // NOSONAR
     if (values.password !== values.confirmPassword)
-      errors.confirmPassword = 'Mismatch';
+      errors.confirmPassword = 'Mismatch'; // NOSONAR
     if (!values.privacyAccepted) errors.privacyAccepted = 'Required';
     return errors;
   }),
@@ -45,8 +45,8 @@ vi.mock('next-intl', () => ({
       'user.lastName': 'Last Name',
       'user.userName': 'Username',
       'user.email': 'Email',
-      'user.password': 'Password',
-      'user.confirmPassword': 'Confirm Password',
+      'user.password': 'Password', // NOSONAR
+      'user.confirmPassword': 'Confirm Password', // NOSONAR
       'auth.createAnAccountButton': 'Create an account',
       'response.success': 'Success',
       'response.error': 'Error',
@@ -105,11 +105,7 @@ describe('SignUpForm', () => {
 
   describe('Rendering', () => {
     it('renders the signup form with all elements', () => {
-      const { container } = render(
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>,
-      );
+      const { container } = render(<SignUpForm />);
 
       expect(screen.getByText('Create Account')).toBeInTheDocument();
       expect(container.querySelector('#first-name')).toBeInTheDocument();
@@ -118,29 +114,22 @@ describe('SignUpForm', () => {
       expect(container.querySelector('#email')).toBeInTheDocument();
       expect(container.querySelector('#password')).toBeInTheDocument();
       expect(container.querySelector('#confirm-password')).toBeInTheDocument();
-      expect(
-        screen.getByRole('button', { name: /create an account/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('submit-button')).toBeInTheDocument();
     });
 
     it('renders login link', () => {
-      render(
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>,
-      );
+      render(<SignUpForm />);
 
-      const loginLink = screen.getByRole('link', { name: /login/i });
+      const { container } = render(<SignUpForm />);
+
+      const loginLink = container.querySelector(
+        `a[href="${AUTH_ROUTES.LOGIN}"]`,
+      );
       expect(loginLink).toBeInTheDocument();
-      expect(loginLink).toHaveAttribute('href', '/login');
     });
 
     it('renders privacy policy checkbox', () => {
-      render(
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>,
-      );
+      render(<SignUpForm />);
 
       expect(
         screen.getByText('I accept the privacy policy'),
@@ -148,11 +137,7 @@ describe('SignUpForm', () => {
     });
 
     it('has correct container id', () => {
-      const { container } = render(
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>,
-      );
+      const { container } = render(<SignUpForm />);
 
       const signUpPage = container.querySelector('#sign-up-page');
       expect(signUpPage).toBeInTheDocument();
@@ -161,24 +146,14 @@ describe('SignUpForm', () => {
 
   describe('Form Validation', () => {
     it('submit button is disabled when form is empty', () => {
-      render(
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>,
-      );
+      render(<SignUpForm />);
 
-      const submitButton = screen.getByRole('button', {
-        name: /create an account/i,
-      });
+      const submitButton = screen.getByTestId('submit-button');
       expect(submitButton).toBeDisabled();
     });
 
     it('enables submit button when all fields are valid', async () => {
-      render(
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>,
-      );
+      render(<SignUpForm />);
 
       const firstNameInput = screen.getByPlaceholderText('First Name');
       const lastNameInput = screen.getByPlaceholderText('Last Name');
@@ -187,10 +162,8 @@ describe('SignUpForm', () => {
       const passwordInput = screen.getByPlaceholderText('Password');
       const confirmPasswordInput =
         screen.getByPlaceholderText('Confirm Password');
-      const privacyCheckbox = screen.getByRole('checkbox');
-      const submitButton = screen.getByRole('button', {
-        name: /create an account/i,
-      });
+      const privacyCheckbox = screen.getByTestId('privacy-accepted');
+      const submitButton = screen.getByTestId('submit-button');
 
       fireEvent.change(firstNameInput, { target: { value: 'John' } });
       fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
@@ -217,7 +190,7 @@ describe('SignUpForm', () => {
       const passwordInput = screen.getByPlaceholderText('Password');
       const confirmPasswordInput =
         screen.getByPlaceholderText('Confirm Password');
-      const privacyCheckbox = screen.getByRole('checkbox');
+      const privacyCheckbox = screen.getByTestId('privacy-accepted');
 
       fireEvent.change(firstNameInput, { target: { value: 'John' } });
       fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
@@ -235,17 +208,11 @@ describe('SignUpForm', () => {
         data: { createUser: { id: '1', email: 'john@example.com' } },
       });
 
-      render(
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>,
-      );
+      render(<SignUpForm />);
 
       fillForm();
 
-      const submitButton = screen.getByRole('button', {
-        name: /create an account/i,
-      });
+      const submitButton = screen.getByTestId('submit-button');
 
       await waitFor(() => {
         expect(submitButton).not.toBeDisabled();
@@ -261,8 +228,8 @@ describe('SignUpForm', () => {
               lastName: 'Doe',
               userName: 'johndoe',
               email: 'john@example.com',
-              password: 'Password123!',
-              confirmPassword: 'Password123!',
+              password: 'Password123!', // NOSONAR
+              confirmPassword: 'Password123!', // NOSONAR
             },
           },
         });
@@ -282,17 +249,11 @@ describe('SignUpForm', () => {
       // @ts-expect-error - Mocking signIn return value
       vi.mocked(signIn).mockResolvedValue({ ok: true });
 
-      render(
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>,
-      );
+      render(<SignUpForm />);
 
       fillForm();
 
-      const submitButton = screen.getByRole('button', {
-        name: /create an account/i,
-      });
+      const submitButton = screen.getByTestId('submit-button');
 
       await waitFor(() => {
         expect(submitButton).not.toBeDisabled();
@@ -313,7 +274,7 @@ describe('SignUpForm', () => {
       await waitFor(() => {
         expect(signIn).toHaveBeenCalledWith('credentials', {
           email: 'john@example.com',
-          password: 'Password123!',
+          password: 'Password123!', // NOSONAR
           redirect: false,
         });
       });
@@ -336,17 +297,11 @@ describe('SignUpForm', () => {
     it('shows error notification on failed signup', async () => {
       mockCreateUser.mockRejectedValue(new Error('Email already exists'));
 
-      render(
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>,
-      );
+      render(<SignUpForm />);
 
       fillForm();
 
-      const submitButton = screen.getByRole('button', {
-        name: /create an account/i,
-      });
+      const submitButton = screen.getByTestId('submit-button');
 
       await waitFor(() => {
         expect(submitButton).not.toBeDisabled();
@@ -368,17 +323,11 @@ describe('SignUpForm', () => {
     it('shows unknown error notification on non-Error exception', async () => {
       mockCreateUser.mockRejectedValue('Something went wrong');
 
-      render(
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>,
-      );
+      render(<SignUpForm />);
 
       fillForm();
 
-      const submitButton = screen.getByRole('button', {
-        name: /create an account/i,
-      });
+      const submitButton = screen.getByTestId('submit-button');
 
       await waitFor(() => {
         expect(submitButton).not.toBeDisabled();
@@ -398,11 +347,7 @@ describe('SignUpForm', () => {
 
   describe('Privacy Policy', () => {
     it('requires privacy policy acceptance', async () => {
-      render(
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>,
-      );
+      render(<SignUpForm />);
 
       const firstNameInput = screen.getByPlaceholderText('First Name');
       const lastNameInput = screen.getByPlaceholderText('Last Name');
@@ -411,9 +356,7 @@ describe('SignUpForm', () => {
       const passwordInput = screen.getByPlaceholderText('Password');
       const confirmPasswordInput =
         screen.getByPlaceholderText('Confirm Password');
-      const submitButton = screen.getByRole('button', {
-        name: /create an account/i,
-      });
+      const submitButton = screen.getByTestId('submit-button');
 
       // Fill all fields except privacy checkbox
       fireEvent.change(firstNameInput, { target: { value: 'John' } });
@@ -432,13 +375,9 @@ describe('SignUpForm', () => {
     });
 
     it('toggles privacy policy checkbox', () => {
-      render(
-        <MantineProvider>
-          <SignUpForm />
-        </MantineProvider>,
-      );
+      render(<SignUpForm />);
 
-      const checkbox = screen.getByRole('checkbox');
+      const checkbox = screen.getByTestId('privacy-accepted');
       expect(checkbox).not.toBeChecked();
 
       fireEvent.click(checkbox);

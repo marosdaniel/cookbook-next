@@ -29,12 +29,25 @@ const UnderConstruction = () => {
         className={classes.title}
         order={1}
       >
-        {translate('title')}
+        <span data-testid="underconstruction-title">{translate('title')}</span>
       </StyledText>
-      <Text size="xl" fw={500} mt="md" mb="xs">
+      <Text
+        size="xl"
+        fw={500}
+        mt="md"
+        mb="xs"
+        data-testid="underconstruction-subtitle"
+      >
         {translate('subtitle')}
       </Text>
-      <Text c="dimmed" size="lg" maw={600} mx="auto" mb={40}>
+      <Text
+        c="dimmed"
+        size="lg"
+        maw={600}
+        mx="auto"
+        mb={40}
+        data-testid="underconstruction-description"
+      >
         {translate('description')}
       </Text>
 
@@ -42,6 +55,7 @@ const UnderConstruction = () => {
         label={translate('backButton')}
         href="/"
         icon={<FiArrowLeft size={20} />}
+        dataTestId="underconstruction-back"
       />
     </Container>
   );

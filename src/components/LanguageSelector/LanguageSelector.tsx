@@ -42,6 +42,7 @@ const LanguageSelector: FC = () => {
           size="lg"
           loading={isPending}
           aria-label={translate('languageSelector')}
+          data-testid="language-selector-button"
         >
           <FiGlobe size={20} />
         </ActionIcon>
@@ -52,6 +53,7 @@ const LanguageSelector: FC = () => {
         {LANGUAGES.map((lang) => (
           <Menu.Item
             key={lang.code}
+            data-testid={`language-item-${lang.code}`}
             leftSection={<span style={{ fontSize: 18 }}>{lang.flag}</span>}
             rightSection={
               lang.code === locale ? (

@@ -18,16 +18,16 @@ const UserButton = () => {
 
   return (
     <Group wrap="nowrap">
-      <Avatar color="pink" radius="xl">
-        {userInitials}
+      <Avatar color="pink" radius="xl" data-testid="user-initials-avatar">
+        <span data-testid="user-initials">{userInitials}</span>
       </Avatar>
 
       <div style={{ flex: 1, minWidth: 0 }}>
-        <Text size="sm" fw={500} truncate>
+        <Text size="sm" fw={500} truncate data-testid="user-name">
           {userName}
         </Text>
 
-        <Text c="dimmed" size="xs" truncate>
+        <Text c="dimmed" size="xs" truncate data-testid="user-email">
           {session.user?.email}
         </Text>
       </div>

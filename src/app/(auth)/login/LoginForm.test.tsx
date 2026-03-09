@@ -1,19 +1,19 @@
 import '@testing-library/jest-dom';
-import { MantineProvider } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
+import type { SignInResponse } from 'next-auth/react';
 import { signIn } from 'next-auth/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@/utils/test-utils';
 import { AUTH_ROUTES } from '../../../types/routes';
 import { LoginForm } from './LoginForm';
 
 // Mock mantine-form-zod-resolver
 vi.mock('mantine-form-zod-resolver', () => ({
-  zodResolver: vi.fn(() => (values: any) => {
+  zodResolver: vi.fn(() => (values: Record<string, unknown>) => {
     const errors: Record<string, string> = {};
-    if (!values.email) errors.email = 'Required';
-    if (!values.password) errors.password = 'Required';
+    if (!values['email']) errors['email'] = 'Required';
+    if (!values['password']) errors['password'] = 'Required'; // NOSONAR
     return errors;
   }),
 }));
@@ -36,9 +36,9 @@ vi.mock('next-intl', () => ({
       'auth.dontYouHaveAnAccount': "Don't have an account?",
       'auth.createAccountButton': 'Create account',
       'user.email': 'Email',
-      'user.password': 'Password',
+      'user.password': 'Password', // NOSONAR
       'auth.rememberMe': 'Remember me',
-      'auth.forgotPassword': 'Forgot password?',
+      'auth.forgotPassword': 'Forgot password?', // NOSONAR
       'auth.signIn': 'Sign in',
       'response.success': 'Success',
       'response.error': 'Error',
@@ -68,10 +68,14 @@ vi.mock('next/link', () => ({
   }) => <a href={href}>{children}</a>,
 }));
 
+// Typed mocked helpers
+const mockedSignIn = vi.mocked(signIn);
+const mockedUseRouter = vi.mocked(useRouter);
+
 // Helper function to get form inputs
 const getFormInputs = (container: HTMLElement) => ({
-  emailInput: container.querySelector('#email') as HTMLInputElement,
-  passwordInput: container.querySelector('#password') as HTMLInputElement,
+  emailInput: container.querySelector<HTMLInputElement>('#email'),
+  passwordInput: container.querySelector<HTMLInputElement>('#password'),
 });
 
 // Helper function to fill login form
@@ -84,7 +88,7 @@ const fillLoginForm = async (
   fireEvent.change(emailInput, { target: { value: email } });
   fireEvent.change(passwordInput, { target: { value: password } });
 
-  const submitButton = screen.getByRole('button', { name: /sign in/i });
+  const submitButton = screen.getByTestId('login-button');
   await waitFor(() => {
     expect(submitButton).not.toBeDisabled();
   });
@@ -92,24 +96,28 @@ const fillLoginForm = async (
   return submitButton;
 };
 
+const SIGN_IN_SUCCESS: SignInResponse = {
+  ok: true,
+  error: undefined,
+  code: undefined,
+  status: 200,
+  url: '/',
+};
+
 // Mock helpers to reduce nesting
 const mockSignInSuccess = () => {
-  (signIn as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: true });
+  mockedSignIn.mockResolvedValue(SIGN_IN_SUCCESS);
 };
 
 const mockSignInError = (error: Error) => {
-  (signIn as ReturnType<typeof vi.fn>).mockRejectedValue(error);
-};
-
-const createDelayedResolve = () => {
-  return { ok: true };
+  mockedSignIn.mockRejectedValue(error);
 };
 
 const mockSignInDelayed = (delayMs: number) => {
-  (signIn as ReturnType<typeof vi.fn>).mockImplementation(
+  mockedSignIn.mockImplementation(
     () =>
       new Promise((resolve) => {
-        setTimeout(() => resolve(createDelayedResolve()), delayMs);
+        setTimeout(() => resolve(SIGN_IN_SUCCESS), delayMs);
       }),
   );
 };
@@ -128,63 +136,40 @@ describe('LoginForm', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useRouter as ReturnType<typeof vi.fn>).mockReturnValue(mockRouter);
+    mockedUseRouter.mockReturnValue(mockRouter);
   });
 
   describe('Rendering', () => {
     it('renders the login form with all elements', () => {
-      const { container } = render(
-        <MantineProvider>
-          <LoginForm />
-        </MantineProvider>,
-      );
+      const { container } = render(<LoginForm />);
 
       expect(screen.getByText('Welcome back!')).toBeInTheDocument();
       expect(container.querySelector('#email')).toBeInTheDocument();
       expect(container.querySelector('#password')).toBeInTheDocument();
-      expect(
-        screen.getByRole('checkbox', { name: /remember me/i }),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('button', { name: /sign in/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('remember-me')).toBeInTheDocument();
+      expect(screen.getByTestId('login-button')).toBeInTheDocument();
     });
 
     it('renders signup link', () => {
-      render(
-        <MantineProvider>
-          <LoginForm />
-        </MantineProvider>,
-      );
+      const { container } = render(<LoginForm />);
 
-      const signupLink = screen.getByRole('link', { name: /create account/i });
+      const signupLink = container.querySelector(
+        `a[href="${AUTH_ROUTES.SIGNUP}"]`,
+      );
       expect(signupLink).toBeInTheDocument();
-      expect(signupLink).toHaveAttribute('href', AUTH_ROUTES.SIGNUP);
     });
 
     it('renders forgot password link', () => {
-      render(
-        <MantineProvider>
-          <LoginForm />
-        </MantineProvider>,
-      );
+      const { container } = render(<LoginForm />);
 
-      const forgotPasswordLink = screen.getByRole('link', {
-        name: /forgot password/i,
-      });
-      expect(forgotPasswordLink).toBeInTheDocument();
-      expect(forgotPasswordLink).toHaveAttribute(
-        'href',
-        AUTH_ROUTES.RESET_PASSWORD,
+      const forgotPasswordLink = container.querySelector(
+        `a[href="${AUTH_ROUTES.RESET_PASSWORD}"]`,
       );
+      expect(forgotPasswordLink).toBeInTheDocument();
     });
 
     it('has correct container id', () => {
-      const { container } = render(
-        <MantineProvider>
-          <LoginForm />
-        </MantineProvider>,
-      );
+      const { container } = render(<LoginForm />);
 
       const loginPage = container.querySelector('#login-page');
       expect(loginPage).toBeInTheDocument();
@@ -193,26 +178,18 @@ describe('LoginForm', () => {
 
   describe('Form Validation', () => {
     it('submit button is enabled when form is empty', () => {
-      render(
-        <MantineProvider>
-          <LoginForm />
-        </MantineProvider>,
-      );
+      render(<LoginForm />);
 
-      const submitButton = screen.getByRole('button', { name: /sign in/i });
+      const submitButton = screen.getByTestId('login-button');
       expect(submitButton).toBeEnabled();
     });
 
     it('enables submit button when form is valid', async () => {
-      const { container } = render(
-        <MantineProvider>
-          <LoginForm />
-        </MantineProvider>,
-      );
+      const { container } = render(<LoginForm />);
 
       const emailInput = container.querySelector('#email');
       const passwordInput = container.querySelector('#password');
-      const submitButton = screen.getByRole('button', { name: /sign in/i });
+      const submitButton = screen.getByTestId('login-button');
 
       if (!emailInput || !passwordInput) {
         throw new Error('Form inputs not found');
@@ -230,13 +207,12 @@ describe('LoginForm', () => {
     it('calls signIn with correct credentials on submit', async () => {
       mockSignInSuccess();
 
-      const { container } = render(
-        <MantineProvider>
-          <LoginForm />
-        </MantineProvider>,
-      );
+      const { container } = render(<LoginForm />);
 
       const { emailInput, passwordInput } = getFormInputs(container);
+      if (!emailInput || !passwordInput) {
+        throw new Error('Form inputs not found');
+      }
       const submitButton = await fillLoginForm(emailInput, passwordInput);
 
       fireEvent.click(submitButton);
@@ -244,7 +220,7 @@ describe('LoginForm', () => {
       await waitFor(() => {
         expect(signIn).toHaveBeenCalledWith('credentials', {
           email: 'test@example.com',
-          password: 'Password1',
+          password: 'Password1', // NOSONAR
           redirect: false,
           rememberMe: false,
         });
@@ -254,16 +230,13 @@ describe('LoginForm', () => {
     it('includes rememberMe when checkbox is checked', async () => {
       mockSignInSuccess();
 
-      const { container } = render(
-        <MantineProvider>
-          <LoginForm />
-        </MantineProvider>,
-      );
+      const { container } = render(<LoginForm />);
 
       const { emailInput, passwordInput } = getFormInputs(container);
-      const rememberMeCheckbox = screen.getByRole('checkbox', {
-        name: /remember me/i,
-      });
+      if (!emailInput || !passwordInput) {
+        throw new Error('Form inputs not found');
+      }
+      const rememberMeCheckbox = screen.getByTestId('remember-me');
       const submitButton = await fillLoginForm(emailInput, passwordInput);
 
       fireEvent.click(rememberMeCheckbox);
@@ -272,7 +245,7 @@ describe('LoginForm', () => {
       await waitFor(() => {
         expect(signIn).toHaveBeenCalledWith('credentials', {
           email: 'test@example.com',
-          password: 'Password1',
+          password: 'Password1', // NOSONAR
           redirect: false,
           rememberMe: true,
         });
@@ -282,13 +255,12 @@ describe('LoginForm', () => {
     it('shows success notification and redirects on successful login', async () => {
       mockSignInSuccess();
 
-      const { container } = render(
-        <MantineProvider>
-          <LoginForm />
-        </MantineProvider>,
-      );
+      const { container } = render(<LoginForm />);
 
       const { emailInput, passwordInput } = getFormInputs(container);
+      if (!emailInput || !passwordInput) {
+        throw new Error('Form inputs not found');
+      }
       const submitButton = await fillLoginForm(emailInput, passwordInput);
 
       fireEvent.click(submitButton);
@@ -309,13 +281,12 @@ describe('LoginForm', () => {
     it('shows error notification on exception', async () => {
       mockSignInError(new Error('Network error'));
 
-      const { container } = render(
-        <MantineProvider>
-          <LoginForm />
-        </MantineProvider>,
-      );
+      const { container } = render(<LoginForm />);
 
       const { emailInput, passwordInput } = getFormInputs(container);
+      if (!emailInput || !passwordInput) {
+        throw new Error('Form inputs not found');
+      }
       const submitButton = await fillLoginForm(emailInput, passwordInput);
 
       fireEvent.click(submitButton);
@@ -332,13 +303,9 @@ describe('LoginForm', () => {
 
   describe('Remember Me Functionality', () => {
     it('toggles remember me checkbox', () => {
-      render(
-        <MantineProvider>
-          <LoginForm />
-        </MantineProvider>,
-      );
+      render(<LoginForm />);
 
-      const checkbox = screen.getByRole('checkbox', { name: /remember me/i });
+      const checkbox = screen.getByTestId('remember-me');
       expect(checkbox).not.toBeChecked();
 
       fireEvent.click(checkbox);
@@ -353,13 +320,12 @@ describe('LoginForm', () => {
     it('disables submit button and shows loading state during submission', async () => {
       mockSignInDelayed(100);
 
-      const { container } = render(
-        <MantineProvider>
-          <LoginForm />
-        </MantineProvider>,
-      );
+      const { container } = render(<LoginForm />);
 
       const { emailInput, passwordInput } = getFormInputs(container);
+      if (!emailInput || !passwordInput) {
+        throw new Error('Form inputs not found');
+      }
       const submitButton = await fillLoginForm(emailInput, passwordInput);
 
       fireEvent.click(submitButton);

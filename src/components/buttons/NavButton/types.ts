@@ -7,4 +7,5 @@ export type NavButtonProps = {
   icon?: React.ReactNode;
   size?: ButtonProps['size'];
   fullWidth?: boolean;
+  dataTestId?: string;
 };

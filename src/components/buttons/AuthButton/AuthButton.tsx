@@ -30,6 +30,7 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
           size="lg"
           onClick={handleClick}
           aria-label={translate('login')}
+          data-testid="auth-login"
           hiddenFrom="sm"
           loading={isPending}
         >
@@ -51,6 +52,7 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
               fontWeight: 600,
             },
           }}
+          data-testid="auth-login"
         >
           {translate('login')}
         </Button>
@@ -71,6 +73,7 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
           fontWeight: 600,
         },
       }}
+      data-testid="auth-login"
     >
       {translate('login')}
     </Button>

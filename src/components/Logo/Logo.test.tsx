@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom';
-import { MantineProvider } from '@mantine/core';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@/utils/test-utils';
 import type { ComponentProps } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { LOGO_SRC_DARK, LOGO_SRC_LIGHT } from './consts';
@@ -47,65 +46,41 @@ describe('Logo', () => {
 
   describe('Logo Component', () => {
     it('renders with correct alt text for default variant', () => {
-      render(
-        <MantineProvider>
-          <Logo />
-        </MantineProvider>,
-      );
+      render(<Logo />);
       const image = screen.getByAltText('Cookbook Logo');
       expect(image).toBeInTheDocument();
     });
 
     it('uses light logo in light mode', () => {
       mockComputedColorScheme.mockReturnValue('light');
-      render(
-        <MantineProvider>
-          <Logo />
-        </MantineProvider>,
-      );
+      render(<Logo />);
       const image = screen.getByTestId('logo-image');
       expect(image).toHaveAttribute('src', LOGO_SRC_LIGHT);
     });
 
     it('uses dark logo in dark mode', () => {
       mockComputedColorScheme.mockReturnValue('dark');
-      render(
-        <MantineProvider>
-          <Logo />
-        </MantineProvider>,
-      );
+      render(<Logo />);
       const image = screen.getByTestId('logo-image');
       expect(image).toHaveAttribute('src', LOGO_SRC_DARK);
     });
 
     it('renders with default size (120x120) when no dimensions provided', () => {
-      render(
-        <MantineProvider>
-          <Logo />
-        </MantineProvider>,
-      );
+      render(<Logo />);
       const image = screen.getByTestId('logo-image');
       expect(image).toHaveAttribute('width', '120');
       expect(image).toHaveAttribute('height', '120');
     });
 
     it('renders with custom width and height', () => {
-      render(
-        <MantineProvider>
-          <Logo width={80} height={80} />
-        </MantineProvider>,
-      );
+      render(<Logo width={80} height={80} />);
       const image = screen.getByTestId('logo-image');
       expect(image).toHaveAttribute('width', '80');
       expect(image).toHaveAttribute('height', '80');
     });
 
     it('renders icon variant with correct size (40x40)', () => {
-      render(
-        <MantineProvider>
-          <Logo variant="icon" />
-        </MantineProvider>,
-      );
+      render(<Logo variant="icon" />);
       const image = screen.getByAltText('Cookbook');
       expect(image).toHaveAttribute('width', '40');
       expect(image).toHaveAttribute('height', '40');
@@ -114,32 +89,20 @@ describe('Logo', () => {
 
   describe('LogoIcon Component', () => {
     it('renders with correct alt text', () => {
-      render(
-        <MantineProvider>
-          <LogoIcon />
-        </MantineProvider>,
-      );
+      render(<LogoIcon />);
       const image = screen.getByAltText('Cookbook');
       expect(image).toBeInTheDocument();
     });
 
     it('renders with icon variant size (40x40) by default', () => {
-      render(
-        <MantineProvider>
-          <LogoIcon />
-        </MantineProvider>,
-      );
+      render(<LogoIcon />);
       const image = screen.getByTestId('logo-image');
       expect(image).toHaveAttribute('width', '40');
       expect(image).toHaveAttribute('height', '40');
     });
 
     it('allows custom dimensions to override default', () => {
-      render(
-        <MantineProvider>
-          <LogoIcon width={32} height={32} />
-        </MantineProvider>,
-      );
+      render(<LogoIcon width={32} height={32} />);
       const image = screen.getByTestId('logo-image');
       expect(image).toHaveAttribute('width', '32');
       expect(image).toHaveAttribute('height', '32');
@@ -147,22 +110,14 @@ describe('Logo', () => {
 
     it('uses light logo in light mode', () => {
       mockComputedColorScheme.mockReturnValue('light');
-      render(
-        <MantineProvider>
-          <LogoIcon />
-        </MantineProvider>,
-      );
+      render(<LogoIcon />);
       const image = screen.getByTestId('logo-image');
       expect(image).toHaveAttribute('src', LOGO_SRC_LIGHT);
     });
 
     it('uses dark logo in dark mode', () => {
       mockComputedColorScheme.mockReturnValue('dark');
-      render(
-        <MantineProvider>
-          <LogoIcon />
-        </MantineProvider>,
-      );
+      render(<LogoIcon />);
       const image = screen.getByTestId('logo-image');
       expect(image).toHaveAttribute('src', LOGO_SRC_DARK);
     });

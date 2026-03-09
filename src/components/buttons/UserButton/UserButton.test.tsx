@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom';
-import { MantineProvider } from '@mantine/core';
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '@/utils/test-utils';
 import { useSession } from 'next-auth/react';
 import { describe, expect, it, vi } from 'vitest';
 import UserButton from './UserButton';
@@ -17,11 +16,7 @@ describe('UserButton', () => {
       update: vi.fn(),
       status: 'unauthenticated',
     } as unknown as ReturnType<typeof useSession>);
-    const { container } = render(
-      <MantineProvider>
-        <UserButton />
-      </MantineProvider>,
-    );
+    const { container } = render(<UserButton />);
     // Use querySelector to check for the Group component that UserButton returns
     expect(
       container.querySelector('.mantine-Group-root'),
@@ -46,15 +41,12 @@ describe('UserButton', () => {
       status: 'authenticated',
     } as unknown as ReturnType<typeof useSession>);
 
-    render(
-      <MantineProvider>
-        <UserButton />
-      </MantineProvider>,
+    render(<UserButton />);
+    expect(screen.getByTestId('user-name')).toHaveTextContent('John Doe');
+    expect(screen.getByTestId('user-email')).toHaveTextContent(
+      'john@example.com',
     );
-
-    expect(screen.getByText('John Doe')).toBeInTheDocument();
-    expect(screen.getByText('john@example.com')).toBeInTheDocument();
-    expect(screen.getByText('JD')).toBeInTheDocument();
+    expect(screen.getByTestId('user-initials')).toHaveTextContent('JD');
   });
 
   it('falls back to email and calculates initials correctly when userName is missing', () => {
@@ -75,16 +67,12 @@ describe('UserButton', () => {
       status: 'authenticated',
     } as unknown as ReturnType<typeof useSession>);
 
-    render(
-      <MantineProvider>
-        <UserButton />
-      </MantineProvider>,
-    );
+    render(<UserButton />);
 
-    // One for "userName" text (falls back to email), one for "email" text
-    const emailElements = screen.getAllByText('john@example.com');
-    expect(emailElements.length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText('J')).toBeInTheDocument();
+    expect(screen.getByTestId('user-email')).toHaveTextContent(
+      'john@example.com',
+    );
+    expect(screen.getByTestId('user-initials')).toHaveTextContent('J');
   });
 
   it('calculates initials correctly for multiple names', () => {
@@ -105,13 +93,9 @@ describe('UserButton', () => {
       status: 'authenticated',
     } as unknown as ReturnType<typeof useSession>);
 
-    render(
-      <MantineProvider>
-        <UserButton />
-      </MantineProvider>,
-    );
+    render(<UserButton />);
 
-    expect(screen.getByText('JM')).toBeInTheDocument();
+    expect(screen.getByTestId('user-initials')).toHaveTextContent('JM');
   });
 
   it('handles single name initials correctly', () => {
@@ -132,13 +116,9 @@ describe('UserButton', () => {
       status: 'authenticated',
     } as unknown as ReturnType<typeof useSession>);
 
-    render(
-      <MantineProvider>
-        <UserButton />
-      </MantineProvider>,
-    );
+    render(<UserButton />);
 
-    expect(screen.getByText('M')).toBeInTheDocument();
+    expect(screen.getByTestId('user-initials')).toHaveTextContent('M');
   });
 
   it('renders with pink avatar color', () => {
@@ -159,13 +139,11 @@ describe('UserButton', () => {
       status: 'authenticated',
     } as unknown as ReturnType<typeof useSession>);
 
-    render(
-      <MantineProvider>
-        <UserButton />
-      </MantineProvider>,
-    );
+    render(<UserButton />);
 
-    const avatar = screen.getByText('JD').closest('.mantine-Avatar-root');
+    const avatar = screen
+      .getByTestId('user-initials')
+      .closest('.mantine-Avatar-root');
     expect(avatar).toBeInTheDocument();
     expect(avatar).toHaveClass('mantine-Avatar-root');
   });

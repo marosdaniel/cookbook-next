@@ -40,6 +40,7 @@ const ThemeSwitcher: FC = () => {
         color="gray"
         size="lg"
         aria-label={translate('toggleTheme')}
+        data-testid="theme-toggle"
       >
         <div style={{ width: 20, height: 20 }} />
       </ActionIcon>
@@ -53,6 +54,7 @@ const ThemeSwitcher: FC = () => {
       size="lg"
       onClick={handleToggleTheme}
       aria-label={translate('toggleTheme')}
+      data-testid="theme-toggle"
       title={isDarkMode ? translate('lightMode') : translate('darkMode')}
     >
       {isDarkMode ? <FiSun size={20} /> : <FiMoon size={20} />}

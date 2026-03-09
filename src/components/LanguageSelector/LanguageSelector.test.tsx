@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom';
-import { MantineProvider } from '@mantine/core';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@/utils/test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import LanguageSelector from './LanguageSelector';
 
@@ -48,23 +47,15 @@ describe('LanguageSelector', () => {
   });
 
   it('renders the language selector button', () => {
-    render(
-      <MantineProvider>
-        <LanguageSelector />
-      </MantineProvider>,
-    );
-    const button = screen.getByLabelText('languageSelector');
+    render(<LanguageSelector />);
+    const button = screen.getByTestId('language-selector-button');
     expect(button).toBeInTheDocument();
   });
 
   it('opens menu when clicked', async () => {
-    render(
-      <MantineProvider>
-        <LanguageSelector />
-      </MantineProvider>,
-    );
+    render(<LanguageSelector />);
 
-    const button = screen.getByLabelText('languageSelector');
+    const button = screen.getByTestId('language-selector-button');
     fireEvent.click(button);
 
     await waitFor(() => {
@@ -75,13 +66,9 @@ describe('LanguageSelector', () => {
   });
 
   it('displays all available languages with flags', async () => {
-    render(
-      <MantineProvider>
-        <LanguageSelector />
-      </MantineProvider>,
-    );
+    render(<LanguageSelector />);
 
-    const button = screen.getByLabelText('languageSelector');
+    const button = screen.getByTestId('language-selector-button');
     fireEvent.click(button);
 
     await waitFor(() => {
@@ -95,13 +82,9 @@ describe('LanguageSelector', () => {
   });
 
   it('shows checkmark for currently selected language', async () => {
-    render(
-      <MantineProvider>
-        <LanguageSelector />
-      </MantineProvider>,
-    );
+    render(<LanguageSelector />);
 
-    const button = screen.getByLabelText('languageSelector');
+    const button = screen.getByTestId('language-selector-button');
     fireEvent.click(button);
 
     await waitFor(() => {
@@ -112,13 +95,9 @@ describe('LanguageSelector', () => {
   });
 
   it('calls setStoredLocale and router.refresh when language is changed', async () => {
-    render(
-      <MantineProvider>
-        <LanguageSelector />
-      </MantineProvider>,
-    );
+    render(<LanguageSelector />);
 
-    const button = screen.getByLabelText('languageSelector');
+    const button = screen.getByTestId('language-selector-button');
     fireEvent.click(button);
 
     await waitFor(() => {
@@ -135,11 +114,7 @@ describe('LanguageSelector', () => {
   });
 
   it('does not call setStoredLocale when clicking the current language', async () => {
-    render(
-      <MantineProvider>
-        <LanguageSelector />
-      </MantineProvider>,
-    );
+    render(<LanguageSelector />);
 
     const button = screen.getByLabelText('languageSelector');
     fireEvent.click(button);
@@ -157,11 +132,7 @@ describe('LanguageSelector', () => {
   });
 
   it('displays menu label', async () => {
-    render(
-      <MantineProvider>
-        <LanguageSelector />
-      </MantineProvider>,
-    );
+    render(<LanguageSelector />);
 
     const button = screen.getByLabelText('languageSelector');
     fireEvent.click(button);

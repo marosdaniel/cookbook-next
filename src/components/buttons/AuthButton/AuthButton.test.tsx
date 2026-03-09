@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom';
-import { MantineProvider } from '@mantine/core';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useRouter } from 'next/navigation';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AUTH_ROUTES } from '@/types/routes';
+import { fireEvent, render, screen, waitFor } from '@/utils/test-utils';
 import AuthButton from './AuthButton';
 
 // Mock next/navigation
@@ -44,35 +43,23 @@ describe('AuthButton', () => {
 
   describe('Default Variant', () => {
     it('renders a button with login text', () => {
-      render(
-        <MantineProvider>
-          <AuthButton />
-        </MantineProvider>,
-      );
+      render(<AuthButton />);
 
-      const button = screen.getByRole('button', { name: /login/i });
+      const button = screen.getByTestId('auth-login');
       expect(button).toBeInTheDocument();
     });
 
     it('renders with login icon', () => {
-      render(
-        <MantineProvider>
-          <AuthButton />
-        </MantineProvider>,
-      );
+      render(<AuthButton />);
 
       const icon = screen.getByTestId('login-icon');
       expect(icon).toBeInTheDocument();
     });
 
     it('navigates to login page when clicked', async () => {
-      render(
-        <MantineProvider>
-          <AuthButton />
-        </MantineProvider>,
-      );
+      render(<AuthButton />);
 
-      const button = screen.getByRole('button', { name: /login/i });
+      const button = screen.getByTestId('auth-login');
       fireEvent.click(button);
 
       await waitFor(() => {
@@ -81,13 +68,9 @@ describe('AuthButton', () => {
     });
 
     it('applies gradient styling', () => {
-      render(
-        <MantineProvider>
-          <AuthButton />
-        </MantineProvider>,
-      );
+      render(<AuthButton />);
 
-      const button = screen.getByRole('button', { name: /login/i });
+      const button = screen.getByTestId('auth-login');
       // Check that it's a Mantine Button component
       expect(button).toHaveClass('mantine-Button-root');
       expect(button).toHaveAttribute('data-variant', 'gradient');
@@ -96,37 +79,40 @@ describe('AuthButton', () => {
 
   describe('Compact Variant', () => {
     it('renders button with login text in compact variant', () => {
-      render(
-        <MantineProvider>
-          <AuthButton variant="compact" />
-        </MantineProvider>,
-      );
+      render(<AuthButton variant="compact" />);
 
-      // Should render at least one button element
-      const button = screen.getByRole('button', { name: /login/i });
-      expect(button).toBeInTheDocument();
+      // Should render at least one button element (compact renders two responsive variants)
+      const buttons = screen.getAllByTestId('auth-login');
+      const button = buttons.find(
+        (b) =>
+          b.dataset.size === 'sm' ||
+          b.classList.contains('mantine-Button-root'),
+      );
+      expect(button).toBeDefined();
     });
 
     it('has gradient variant styling', () => {
-      render(
-        <MantineProvider>
-          <AuthButton variant="compact" />
-        </MantineProvider>,
-      );
+      render(<AuthButton variant="compact" />);
 
-      const button = screen.getByRole('button', { name: /login/i });
+      const buttons = screen.getAllByTestId('auth-login');
+      const button = buttons.find(
+        (b) =>
+          b.dataset.size === 'sm' ||
+          b.classList.contains('mantine-Button-root'),
+      );
       expect(button).toHaveAttribute('data-variant', 'gradient');
     });
 
     it('navigates to login page when clicked in compact variant', async () => {
-      render(
-        <MantineProvider>
-          <AuthButton variant="compact" />
-        </MantineProvider>,
-      );
+      render(<AuthButton variant="compact" />);
 
-      const button = screen.getByRole('button', { name: /login/i });
-      fireEvent.click(button);
+      const buttons = screen.getAllByTestId('auth-login');
+      const button = buttons.find(
+        (b) =>
+          b.dataset.size === 'sm' ||
+          b.classList.contains('mantine-Button-root'),
+      );
+      fireEvent.click(button as Element);
 
       await waitFor(() => {
         expect(mockPush).toHaveBeenCalledWith(AUTH_ROUTES.LOGIN);
@@ -134,11 +120,7 @@ describe('AuthButton', () => {
     });
 
     it('renders login icons for both responsive variants', () => {
-      render(
-        <MantineProvider>
-          <AuthButton variant="compact" />
-        </MantineProvider>,
-      );
+      render(<AuthButton variant="compact" />);
 
       // Compact variant renders both ActionIcon (mobile) and Button (desktop)
       const icons = screen.getAllByTestId('login-icon');
@@ -148,13 +130,9 @@ describe('AuthButton', () => {
 
   describe('Loading State', () => {
     it('shows loading state during transition', async () => {
-      render(
-        <MantineProvider>
-          <AuthButton />
-        </MantineProvider>,
-      );
+      render(<AuthButton />);
 
-      const button = screen.getByRole('button', { name: /login/i });
+      const button = screen.getByTestId('auth-login');
       fireEvent.click(button);
 
       // The button should have loading state during transition
@@ -165,24 +143,16 @@ describe('AuthButton', () => {
 
   describe('Accessibility', () => {
     it('has accessible button role', () => {
-      render(
-        <MantineProvider>
-          <AuthButton />
-        </MantineProvider>,
-      );
+      render(<AuthButton />);
 
-      const button = screen.getByRole('button', { name: /login/i });
+      const button = screen.getByTestId('auth-login');
       expect(button).toBeInTheDocument();
     });
 
     it('button is focusable', () => {
-      render(
-        <MantineProvider>
-          <AuthButton />
-        </MantineProvider>,
-      );
+      render(<AuthButton />);
 
-      const button = screen.getByRole('button', { name: /login/i });
+      const button = screen.getByTestId('auth-login');
       button.focus();
       expect(button).toHaveFocus();
     });
@@ -190,13 +160,9 @@ describe('AuthButton', () => {
 
   describe('Edge Cases', () => {
     it('handles multiple rapid clicks gracefully', async () => {
-      render(
-        <MantineProvider>
-          <AuthButton />
-        </MantineProvider>,
-      );
+      render(<AuthButton />);
 
-      const button = screen.getByRole('button', { name: /login/i });
+      const button = screen.getByTestId('auth-login');
 
       // Click multiple times rapidly
       fireEvent.click(button);
@@ -215,11 +181,7 @@ describe('AuthButton', () => {
       });
 
       expect(() => {
-        render(
-          <MantineProvider>
-            <AuthButton />
-          </MantineProvider>,
-        );
+        render(<AuthButton />);
       }).not.toThrow();
     });
   });

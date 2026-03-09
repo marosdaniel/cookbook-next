@@ -100,6 +100,7 @@ export const LoginForm: FC = () => {
           size="sm"
           component={Link}
           href={AUTH_ROUTES.SIGNUP}
+          data-testid="create-account"
         >
           {translate('auth.createAccountButton')}
         </Button>
@@ -135,6 +136,7 @@ export const LoginForm: FC = () => {
         />
         <Group justify="space-between" mt="lg">
           <Checkbox
+            data-testid="remember-me"
             label={translate('auth.rememberMe')}
             checked={rememberMe}
             onChange={(e) => setRememberMe(e.currentTarget.checked)}
@@ -145,12 +147,14 @@ export const LoginForm: FC = () => {
             component={Link}
             size="sm"
             href={AUTH_ROUTES.RESET_PASSWORD}
+            data-testid="forgot-password"
           >
             {translate('auth.forgotPassword')}
           </Anchor>
         </Group>
         <Button
           id="login-button"
+          data-testid="login-button"
           fullWidth
           mt="xl"
           type="submit"
