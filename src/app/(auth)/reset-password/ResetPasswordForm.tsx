@@ -70,6 +70,9 @@ export const ResetPasswordForm: FC = () => {
     }
   };
 
+  const isSubmitDisabled =
+    loading || Object.keys(form.errors).length > 0 || !form.isDirty();
+
   return (
     <Container size={460} my={30} id="reset-password-page">
       <Title ta="center" mb="xs">
@@ -127,7 +130,7 @@ export const ResetPasswordForm: FC = () => {
               loading={loading}
               loaderProps={{ type: 'dots' }}
               fullWidth
-              disabled={!form.isValid() || !form.isDirty()}
+              disabled={isSubmitDisabled}
             >
               {translate('auth.sendResetLink')}
             </Button>
