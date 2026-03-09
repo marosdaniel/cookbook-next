@@ -1,3 +1,11 @@
+# [2.8.0](https://github.com/marosdaniel/cookbook-next/compare/v2.7.0...v2.8.0) (2026-03-09)
+
+
+### Features
+
+* Add `json-summary` reporter to Vitest and enhance coverage report parsing in the deploy workflow. ([d2cbe6e](https://github.com/marosdaniel/cookbook-next/commit/d2cbe6e81d6016a0e197ebbd00464b63d028f491))
+* Validate empty body for GraphQL API requests and configure allowed development origins. ([01810d0](https://github.com/marosdaniel/cookbook-next/commit/01810d0ac75e1329e3daad82cc2858430279abb3))
+
 # [2.7.0](https://github.com/marosdaniel/cookbook-next/compare/v2.6.0...v2.7.0) (2026-03-09)
 
 
