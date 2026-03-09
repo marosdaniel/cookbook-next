@@ -45,7 +45,7 @@
 
 ### Backend
 - **API:** Apollo Server + GraphQL
-- **Database:** MongoDB 7.0
+- **Database:** MongoDB 7.0 (primary). Serverless Postgres is also supported via Neon (`@neondatabase/serverless`) for deployments that prefer Postgres.
 - **ORM:** Prisma 6.19
 - **Authentication:** NextAuth v5 (beta)
 - **Password:** bcrypt
@@ -187,6 +187,32 @@ open coverage/index.html
 ```
 
 **Latest Coverage:** [View Full Report](https://marosdaniel.github.io/cookbook-next/)
+
+### End-to-end (E2E) tests
+
+This repository uses Playwright for end-to-end tests. E2E tests are placed under the `e2e/` folder and are split into reusable "test-cases" and higher-level "suites". See the dedicated documentation for details and examples: [E2E Test Documentation](docs/E2E.md).
+
+Quick commands:
+
+```bash
+# Install Playwright browsers (first time or CI)
+pnpm exec playwright install --with-deps chromium
+
+# Run E2E headless
+pnpm test:e2e
+
+# Run Playwright UI runner
+pnpm test:e2e:ui
+
+# Run E2E in CI-clean mode (forces fresh webserver)
+CI=1 pnpm test:e2e
+```
+
+Where reports and artifacts are written:
+
+- `playwright-report/` — HTML report (local)
+- `test-results/` — raw results and traces/videos (CI artifact)
+- On CI the reports are uploaded and published to GitHub Pages under the project (see `.github/workflows/deploy.yml`).
 
 ---
 
