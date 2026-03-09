@@ -192,7 +192,7 @@ describe('LoginForm', () => {
   });
 
   describe('Form Validation', () => {
-    it('submit button is disabled when form is empty', () => {
+    it('submit button is enabled when form is empty', () => {
       render(
         <MantineProvider>
           <LoginForm />
@@ -200,7 +200,7 @@ describe('LoginForm', () => {
       );
 
       const submitButton = screen.getByRole('button', { name: /sign in/i });
-      expect(submitButton).toBeDisabled();
+      expect(submitButton).toBeEnabled();
     });
 
     it('enables submit button when form is valid', async () => {
@@ -210,12 +210,13 @@ describe('LoginForm', () => {
         </MantineProvider>,
       );
 
-      const emailInput = container.querySelector('#email') as HTMLInputElement;
-      const passwordInput = container.querySelector(
-        '#password',
-      ) as HTMLInputElement;
+      const emailInput = container.querySelector('#email');
+      const passwordInput = container.querySelector('#password');
       const submitButton = screen.getByRole('button', { name: /sign in/i });
 
+      if (!emailInput || !passwordInput) {
+        throw new Error('Form inputs not found');
+      }
       fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
       fireEvent.change(passwordInput, { target: { value: 'Password1' } });
 

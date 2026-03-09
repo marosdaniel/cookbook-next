@@ -13,7 +13,11 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI
-    ? [['html', { open: 'never' }], ['github']]
+    ? [
+        ['html', { open: 'never' }],
+        ['github'],
+        ['json', { outputFile: 'test-results/e2e-results.json' }],
+      ]
     : [['html', { open: 'never' }]],
   use: {
     baseURL: `http://127.0.0.1:${PORT}`,

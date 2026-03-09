@@ -91,6 +91,32 @@ jobs:
       - name: Run Playwright tests
         run: pnpm test:e2e
 
+      - name: Generate E2E Summary
+        if: always()
+        run: |
+          echo "## E2E Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f test-results/e2e-results.json ]; then
+            PASSED=$(jq -r '.stats.expected // 0' test-results/e2e-results.json)
+            FAILED=$(jq -r '.stats.unexpected // 0' test-results/e2e-results.json)
+            FLAKY=$(jq -r '.stats.flaky // 0' test-results/e2e-results.json)
+            SKIPPED=$(jq -r '.stats.skipped // 0' test-results/e2e-results.json)
+            TOTAL=$((PASSED + FAILED + FLAKY + SKIPPED))
+
+            echo "| Metric | Count |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+            echo "| Total | ${TOTAL} |" >> $GITHUB_STEP_SUMMARY
+            echo "| Passed | ${PASSED} |" >> $GITHUB_STEP_SUMMARY
+            echo "| Failed | ${FAILED} |" >> $GITHUB_STEP_SUMMARY
+            echo "| Flaky | ${FLAKY} |" >> $GITHUB_STEP_SUMMARY
+            echo "| Skipped | ${SKIPPED} |" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "[View Full E2E Report](https://marosdaniel.github.io/cookbook-next/e2e/)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "E2E JSON report was not generated." >> $GITHUB_STEP_SUMMARY
+          fi
+
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v4
@@ -145,7 +171,7 @@ jobs:
           echo "| Functions | ${FUNCTIONS}% |" >> $GITHUB_STEP_SUMMARY
           echo "| Branches | ${BRANCHES}% |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "[View Full Report](https://marosdaniel.github.io/cookbook-next/)" >> $GITHUB_STEP_SUMMARY
+          echo "[View Full Coverage Report](https://marosdaniel.github.io/cookbook-next/coverage/)" >> $GITHUB_STEP_SUMMARY
           
           echo "lines=$LINES" >> $GITHUB_OUTPUT
 
@@ -156,7 +182,7 @@ jobs:
           path: coverage
 
   deploy-coverage-report:
-    needs: test-coverage
+    needs: [test-coverage, e2e]
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -180,15 +206,58 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: coverage-report
-          path: coverage
+          path: artifacts/coverage
 
-      - name: Copy coverage summary to root
-        run: cp coverage/coverage-summary.json coverage/coverage-summary.json || echo "Summary already in place"
+      - name: Download E2E artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-report
+          path: artifacts/e2e
+
+      - name: Build reports site
+        run: |
+          mkdir -p reports
+          cp -R artifacts/coverage reports/coverage
+
+          if [ -d artifacts/e2e/playwright-report ]; then
+            cp -R artifacts/e2e/playwright-report reports/e2e
+          fi
+
+          cat > reports/index.html << 'EOF'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Test Reports</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; line-height: 1.5; }
+              h1 { margin-bottom: 1rem; }
+              ul { padding-left: 1.2rem; }
+              li { margin-bottom: 0.5rem; }
+            </style>
+          </head>
+          <body>
+            <h1>Cookbook Next Test Reports</h1>
+            <ul>
+              <li><a href="./coverage/">Coverage Report</a></li>
+              <li><a href="./e2e/">E2E Playwright Report</a></li>
+            </ul>
+          </body>
+          </html>
+          EOF
+
+      - name: Add published links to summary
+        run: |
+          echo "## Published Reports" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- [Coverage](https://marosdaniel.github.io/cookbook-next/coverage/)" >> $GITHUB_STEP_SUMMARY
+          echo "- [E2E](https://marosdaniel.github.io/cookbook-next/e2e/)" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload to GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: coverage
+          path: reports
 
       - name: Deploy to GitHub Pages
         id: deployment
