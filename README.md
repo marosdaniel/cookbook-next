@@ -43,7 +43,7 @@
 - **Icons:** React Icons
 - **i18n:** next-intl
 
--### Backend
+### Backend
 -**API:** Apollo Server + GraphQL
 -**Database:** Serverless Postgres via Neon (primary).
 - **ORM:** Prisma 6.19

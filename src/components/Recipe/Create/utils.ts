@@ -128,8 +128,6 @@ export function getStatusColor(isComplete: boolean, isActive: boolean): string {
   return 'gray';
 }
 
-/* ─── Server → Form Mapping ──────────────────── */
-
 /**
  * Transforms a recipe fetched from the server (GraphQL response)
  * into `RecipeFormValues` suitable for Formik.

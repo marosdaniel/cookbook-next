@@ -79,3 +79,8 @@ export interface RecipeComposerProps {
    */
   goToSectionRef?: RefObject<((section: ComposerSection) => void) | null>;
 }
+
+export interface PreviewProps {
+  labels: TMetadataCleaned[];
+  values: RecipeFormValues;
+}

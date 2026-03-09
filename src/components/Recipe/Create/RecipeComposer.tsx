@@ -23,9 +23,6 @@ import MediaSection from './sections/MediaSection';
 import StepsSection from './sections/StepsSection';
 import type { ComposerSection, RecipeComposerProps } from './types';
 
-/* ─── Props ───────────────────────────────────── */
-
-/* ─── Main Component ──────────────────────────── */
 export const RecipeComposer = ({
   form,
   handlePublish,

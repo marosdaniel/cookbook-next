@@ -24,12 +24,7 @@ import {
   IconUsers,
 } from '@tabler/icons-react';
 import { memo } from 'react';
-import type { RecipeFormValues, TMetadataCleaned } from './types';
-
-interface PreviewProps {
-  labels: TMetadataCleaned[];
-  values: RecipeFormValues;
-}
+import type { PreviewProps } from './types';
 
 const NO_VALUE_FALLBACK = '—';
 
