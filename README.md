@@ -2,7 +2,7 @@
 
 # 🍳 Cookbook Next
 
-**A modern recipe sharing platform built with Next.js, Apollo Server, and MongoDB**
+**A modern recipe sharing platform built with Next.js, Apollo Server, and Neon (Serverless Postgres)**
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.0.8-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.2.1-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
@@ -22,7 +22,7 @@
 - 🎨 **Modern UI** - Mantine UI components with dark/light theme
 - 📱 **Responsive Design** - Mobile-first approach
 - 🔍 **GraphQL API** - Apollo Server with type-safe operations
-- 🗄️ **Database** - MongoDB with Prisma ORM
+- 🗄️ **Database** - Serverless Postgres (Neon) with Prisma ORM
 - ✅ **Type Safety** - Full TypeScript coverage
 - 🧪 **Testing** - Comprehensive unit & integration tests with Vitest
 - 🚀 **Performance** - Next.js App Router with Turbopack
@@ -43,9 +43,9 @@
 - **Icons:** React Icons
 - **i18n:** next-intl
 
-### Backend
-- **API:** Apollo Server + GraphQL
-- **Database:** MongoDB 7.0 (primary). Serverless Postgres is also supported via Neon (`@neondatabase/serverless`) for deployments that prefer Postgres.
+-### Backend
+-**API:** Apollo Server + GraphQL
+-**Database:** Serverless Postgres via Neon (primary).
 - **ORM:** Prisma 6.19
 - **Authentication:** NextAuth v5 (beta)
 - **Password:** bcrypt
@@ -67,7 +67,7 @@
 
 - **Node.js** 22.x
 - **pnpm** 10.x
-- **MongoDB** 7.x
+- **Postgres / Neon** (Postgres-compatible, e.g. Neon serverless)
 
 ### Installation
 
@@ -83,18 +83,18 @@ pnpm install
 cp .env.example .env.local
 
 # Set up your environment variables in .env.local
-# - MONGODB_URI
+# - DATABASE_URL
 # - NEXTAUTH_SECRET
 # - NEXTAUTH_URL
 ```
 
 ### Environment Variables
 
-Create a `.env.local` file with the following:
+Create a `.env.local` file with the following (example for Neon/Postgres):
 
 ```env
-# Database
-MONGODB_URI=mongodb://localhost:27017/cookbook
+# Database (Postgres / Neon)
+DATABASE_URL=postgresql://username:password@db-host:5432/cookbook
 
 # NextAuth
 NEXTAUTH_URL=http://localhost:3000
@@ -156,8 +156,7 @@ cookbook-next/
 │   │   ├── graphql/           # GraphQL schema & resolvers
 │   │   ├── locale/            # i18n utilities
 │   │   ├── store/             # Redux store
-│   │   ├── mongodb.ts         # MongoDB client
-│   │   └── prisma.ts          # Prisma client
+│   │   └── prisma.ts          # Prisma client (Neon/Postgres)
 │   ├── providers/             # React context providers
 │   ├── types/                 # TypeScript type definitions
 │   ├── locales/               # Translation files
@@ -280,27 +279,28 @@ Theme configurations:
 
 ## 📦 Database Schema
 
-### User Model
+The Prisma schema is located at `prisma/schema.prisma`. Below is a Postgres-friendly example `User` model suitable for Neon/Postgres:
+
 ```prisma
 model User {
-  id                    String    @id @default(auto()) @map("_id") @db.ObjectId
-  firstName             String
-  lastName              String
-  userName              String    @unique
-  email                 String    @unique
-  password              String
-  locale                String    @default("en")
-  role                  UserRole  @default(USER)
-  resetPasswordToken    String?
-  resetPasswordExpires  DateTime?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+   id                   String   @id @default(uuid())
+   firstName            String
+   lastName             String
+   userName             String   @unique
+   email                String   @unique
+   password             String
+   locale               String   @default("en")
+   role                 UserRole @default(USER)
+   resetPasswordToken   String?
+   resetPasswordExpires DateTime?
+   createdAt            DateTime @default(now())
+   updatedAt            DateTime @updatedAt
 }
 
 enum UserRole {
-  ADMIN
-  USER
-  BLOGGER
+   ADMIN
+   USER
+   BLOGGER
 }
 ```
 
@@ -336,7 +336,7 @@ vercel --prod
 
 ### Environment Variables
 Set these in your Vercel project settings:
-- `MONGODB_URI`
+- `DATABASE_URL`
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL`
 

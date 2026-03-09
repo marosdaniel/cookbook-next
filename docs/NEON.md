@@ -1,9 +1,9 @@
 Neon (serverless Postgres) quickstart — Cookbook Next
 =====================================================
 
-This project uses MongoDB by default, but also includes support for serverless Postgres via Neon. The `@neondatabase/serverless` package is included in `package.json` as an example integration.
+This project now uses Neon (serverless Postgres) as the primary database. The `@neondatabase/serverless` package is included in `package.json` as an example integration.
 
-When you prefer Postgres (Neon) instead of MongoDB, these notes help you configure Prisma and deployment.
+These notes help you configure Prisma and deployment when using Neon/Postgres.
 
 Prerequisites
 -------------
@@ -18,7 +18,7 @@ Add the Neon connection string to your environment. Example env vars (in Vercel 
 # Neon Postgres connection (recommended to store in VERCEL/Secrets)
 NEON_DATABASE_URL=postgresql://<user>:<password>@<host>/<db>?sslmode=require
 
-# If you use this instead of MongoDB, set DATABASE_URL to the same value
+# If you need to mirror another env var, set `DATABASE_URL` to the same value
 DATABASE_URL=${NEON_DATABASE_URL}
 ```
 
@@ -81,7 +81,7 @@ Notes & caveats
 ---------------
 - Neon is serverless-first; cold starts and connection management differ from a traditional Postgres instance. Use Neon docs for advanced tuning.
 - Prisma works with Neon, but you should validate connection settings and pooling strategy for your specific workload.
-- This repo's default DB is MongoDB; switching to Neon/Postgres may require adapting some GraphQL resolvers and prisma queries.
+- This repo's default DB is Neon/Postgres; legacy MongoDB-specific code or docs may remain in the repository and could require updates when migrating.
 
 Need help?
 ----------

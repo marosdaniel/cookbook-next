@@ -4,6 +4,8 @@
 
 The add-recipe (createRecipe) functionality allows authenticated users to create new recipes in the system. This is a GraphQL mutation with comprehensive validation, authentication, and database relationships.
 
+> NOTE: This document describes the legacy MongoDB / Mongoose implementation. The codebase has been migrated to Neon (Postgres) with Prisma — consult `docs/NEON.md` for migration notes and the updated schema.
+
 ---
 
 ## 1. GraphQL Schema Definition
@@ -40,7 +42,7 @@ input RecipeCreateInput {
 
 ```graphql
 input IngredientInput {
-  _id: ID # Optional - MongoDB ObjectId
+  _id: ID # Optional - previously MongoDB ObjectId (Postgres uses UUID/CUID)
   localId: String! # Required - Client-side identifier
   name: String! # Required - Ingredient name
   quantity: Float! # Required - Quantity
@@ -52,7 +54,7 @@ input IngredientInput {
 
 ```graphql
 input PreparationStepInput {
-  _id: ID # Optional - MongoDB ObjectId
+  _id: ID # Optional - previously MongoDB ObjectId (Postgres uses UUID/CUID)
   description: String! # Required - Step description
   order: Int! # Required - Order/sequence
 }
@@ -336,7 +338,7 @@ const context = async ({ req }) => {
 
 ```typescript
 export interface IContext {
-  _id?: string; // MongoDB ObjectId
+  _id?: string; // previously MongoDB ObjectId (use UUID/CUID in Postgres)
   role?: string; // USER, ADMIN, BLOGGER
   userName?: string;
   email?: string;
@@ -704,7 +706,7 @@ The Recipe model's `pre-save` hook automatically updates the `updatedAt` field b
    - **Fix**: More detailed error reporting and logging
 
 3. **Missing Transaction**: If user.save() fails, orphan recipe remains
-   - **Fix**: Use MongoDB transactions
+  - **Fix**: Use DB transactions (Postgres transactions recommended for Neon)
 
 ### Suggested Improvements
 
