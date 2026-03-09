@@ -5,20 +5,25 @@
  * ─────────────────────
  * Mantine Form v9 (alpha) changed the return type of `form.isValid()` to
  * `boolean | Promise<boolean>` when async validation rules are possible.
- * Using that return value directly in a boolean conditional triggers the
- * SonarQube rule typescript:S6544 ("Expected non-Promise value in a boolean
- * conditional") and can also silently produce incorrect results at runtime,
- * because a Promise object is always truthy — meaning `!form.isValid()` would
- * always evaluate to `false` when async rules are present.
+ * Putting that value directly into a boolean conditional (e.g. `!form.isValid()`)
+ * triggers SonarQube rule typescript:S6544 ("Expected non-Promise value in a
+ * boolean conditional") and is also subtly wrong at runtime: a Promise object
+ * is always truthy, so `!form.isValid()` would always be `false` when async
+ * rules resolve to a Promise.
  *
- * Instead, we check `form.errors` which is always a plain synchronous
- * `Record<string, ReactNode>` object, making the guard type-safe and
- * free of any implicit Promise coercion.
+ * We unwrap the result explicitly with an `instanceof Promise` guard:
+ *   - Sync validator  → plain `boolean` → use directly
+ *   - Async validator → `Promise`       → treat as "not yet valid" (disabled)
+ *
+ * This is safer than checking `Object.keys(form.errors)`, which only reflects
+ * errors that have already been surfaced via a blur/submit event – meaning the
+ * button could incorrectly appear enabled before the user interacts with the form.
  */
 
 type FormLike = {
   errors: Record<string, unknown>;
   isDirty: (path?: string) => boolean;
+  isValid: () => boolean | Promise<boolean>;
 };
 
 /**
@@ -33,7 +38,11 @@ export function isFormSubmitDisabled(
   loading: boolean,
   ...extra: boolean[]
 ): boolean {
-  const hasErrors = Object.keys(form.errors).length > 0;
+  const validResult = form.isValid();
+  // Safely unwrap: async validators (Promise) count as "not yet valid".
+  const isFormValid: boolean =
+    validResult instanceof Promise ? false : validResult;
+
   const isLoading = loading || extra.some(Boolean);
-  return isLoading || hasErrors || !form.isDirty();
+  return isLoading || !isFormValid || !form.isDirty();
 }
