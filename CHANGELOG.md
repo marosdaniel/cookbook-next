@@ -1,3 +1,16 @@
+# [2.10.0](https://github.com/marosdaniel/cookbook-next/compare/v2.9.0...v2.10.0) (2026-03-09)
+
+
+### Bug Fixes
+
+* Correct form submission disabling by using `form.isValid()` and handling async results, rather than `form.errors`. ([8b39cab](https://github.com/marosdaniel/cookbook-next/commit/8b39caba81fc4b5d9e38e422c3afb55ccd940b24))
+* Set `NEXTAUTH_SECRET` for Playwright's dev server and add error handling to `isFormSubmitDisabled` to prevent crashes. ([796a5c5](https://github.com/marosdaniel/cookbook-next/commit/796a5c55693f9b433edfdb85101e50a01cec5508))
+
+
+### Features
+
+* Implement `isFormSubmitDisabled` utility to standardize form submission button disabling logic and refactor recipe composer types. ([0b0a3c8](https://github.com/marosdaniel/cookbook-next/commit/0b0a3c8da425c29d653aa01ca0be41f1bce47d08))
+
 # [2.9.0](https://github.com/marosdaniel/cookbook-next/compare/v2.8.0...v2.9.0) (2026-03-09)
 
 
