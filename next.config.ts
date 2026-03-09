@@ -4,6 +4,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const nextConfig: NextConfig = {
   cacheComponents: false, // change to true once cookie-based locale detection is implemented
   typedRoutes: true,
+  allowedDevOrigins: ['127.0.0.1', 'localhost'],
 };
 
 const withNextIntl = createNextIntlPlugin();

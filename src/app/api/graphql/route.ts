@@ -100,6 +100,20 @@ async function wrappedHandler(
     );
   }
 
+  const requestBody = await request.clone().text();
+  if (!requestBody.trim()) {
+    return new Response(
+      JSON.stringify({
+        error: 'Empty request body',
+        message: 'GraphQL POST requests must include a JSON body.',
+      }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+  }
+
   return handler(request);
 }
 
