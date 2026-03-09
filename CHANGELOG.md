@@ -1,3 +1,11 @@
+# [2.7.0](https://github.com/marosdaniel/cookbook-next/compare/v2.6.0...v2.7.0) (2026-03-09)
+
+
+### Features
+
+* add Playwright for end-to-end testing and integrate into the CI pipeline. ([0ec8a5c](https://github.com/marosdaniel/cookbook-next/commit/0ec8a5c7c580e6cafc57a9a42d24bbb31871e104))
+* Restructure Playwright E2E tests, add JSON reporting, and enhance CI deployment of all test reports while fixing a LoginForm test. ([1eca9a6](https://github.com/marosdaniel/cookbook-next/commit/1eca9a6350fddbfaf807b83570ed1ba715b32bd1))
+
 # [2.6.0](https://github.com/marosdaniel/cookbook-next/compare/v2.5.0...v2.6.0) (2026-03-08)
 
 
