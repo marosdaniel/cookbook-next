@@ -151,8 +151,8 @@ importers:
         specifier: ^9.0.10
         version: 9.0.10
       '@types/node':
-        specifier: ^25.3.5
-        version: 25.3.5
+        specifier: ^25.4.0
+        version: 25.4.0
       '@types/nodemailer':
         specifier: ^7.0.11
         version: 7.0.11
@@ -164,10 +164,10 @@ importers:
         version: 19.2.3(@types/react@19.2.14)
       '@vitejs/plugin-react':
         specifier: ^5.1.4
-        version: 5.1.4(vite@7.2.4(@types/node@25.3.5)(jiti@2.6.1))
+        version: 5.1.4(vite@7.2.4(@types/node@25.4.0)(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.0.18
-        version: 4.0.18(vitest@4.0.18(@types/node@25.3.5)(happy-dom@20.8.3)(jiti@2.6.1)(jsdom@27.2.0(postcss@8.5.6)))
+        version: 4.0.18(vitest@4.0.18(@types/node@25.4.0)(happy-dom@20.8.3)(jiti@2.6.1)(jsdom@27.2.0(postcss@8.5.6)))
       baseline-browser-mapping:
         specifier: ^2.10.0
         version: 2.10.0
@@ -188,7 +188,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^4.0.18
-        version: 4.0.18(@types/node@25.3.5)(happy-dom@20.8.3)(jiti@2.6.1)(jsdom@27.2.0(postcss@8.5.6))
+        version: 4.0.18(@types/node@25.4.0)(happy-dom@20.8.3)(jiti@2.6.1)(jsdom@27.2.0(postcss@8.5.6))
 
 packages:
 
@@ -1674,8 +1674,8 @@ packages:
   '@types/node@22.19.15':
     resolution: {integrity: sha512-F0R/h2+dsy5wJAUe3tAU6oqa2qbWY5TpNfL/RGmo1y38hiyO1w3x2jPtt76wmuaJI4DQnOBu21cNXQ2STIUUWg==}
 
-  '@types/node@25.3.5':
-    resolution: {integrity: sha512-oX8xrhvpiyRCQkG1MFchB09f+cXftgIXb3a7UUa4Y3wpmZPw5tyZGTLWhlESOLq1Rq6oDlc8npVU2/9xiCuXMA==}
+  '@types/node@25.4.0':
+    resolution: {integrity: sha512-9wLpoeWuBlcbBpOY3XmzSTG3oscB6xjBEEtn+pYXTfhyXhIxC5FsBer2KTopBlvKEiW9l13po9fq+SJY/5lkhw==}
 
   '@types/nodemailer@7.0.11':
     resolution: {integrity: sha512-E+U4RzR2dKrx+u3N4DlsmLaDC6mMZOM/TPROxA0UAPiTgI0y4CEFBmZE+coGWTjakDriRsXG368lNk1u9Q0a2g==}
@@ -5547,7 +5547,7 @@ snapshots:
 
   '@types/bcrypt@6.0.0':
     dependencies:
-      '@types/node': 25.3.5
+      '@types/node': 25.4.0
 
   '@types/chai@5.2.3':
     dependencies:
@@ -5561,7 +5561,7 @@ snapshots:
   '@types/jsonwebtoken@9.0.10':
     dependencies:
       '@types/ms': 2.1.0
-      '@types/node': 25.3.5
+      '@types/node': 25.4.0
 
   '@types/long@4.0.2': {}
 
@@ -5571,19 +5571,19 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/node@25.3.5':
+  '@types/node@25.4.0':
     dependencies:
       undici-types: 7.18.2
 
   '@types/nodemailer@7.0.11':
     dependencies:
-      '@types/node': 25.3.5
+      '@types/node': 25.4.0
 
   '@types/normalize-package-data@2.4.4': {}
 
   '@types/pg@8.18.0':
     dependencies:
-      '@types/node': 25.3.5
+      '@types/node': 25.4.0
       pg-protocol: 1.13.0
       pg-types: 2.2.0
 
@@ -5605,9 +5605,9 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 25.3.5
+      '@types/node': 25.4.0
 
-  '@vitejs/plugin-react@5.1.4(vite@7.2.4(@types/node@25.3.5)(jiti@2.6.1))':
+  '@vitejs/plugin-react@5.1.4(vite@7.2.4(@types/node@25.4.0)(jiti@2.6.1))':
     dependencies:
       '@babel/core': 7.29.0
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.29.0)
@@ -5615,11 +5615,11 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-rc.3
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 7.2.4(@types/node@25.3.5)(jiti@2.6.1)
+      vite: 7.2.4(@types/node@25.4.0)(jiti@2.6.1)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@4.0.18(vitest@4.0.18(@types/node@25.3.5)(happy-dom@20.8.3)(jiti@2.6.1)(jsdom@27.2.0(postcss@8.5.6)))':
+  '@vitest/coverage-v8@4.0.18(vitest@4.0.18(@types/node@25.4.0)(happy-dom@20.8.3)(jiti@2.6.1)(jsdom@27.2.0(postcss@8.5.6)))':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
       '@vitest/utils': 4.0.18
@@ -5631,7 +5631,7 @@ snapshots:
       obug: 2.1.1
       std-env: 3.10.0
       tinyrainbow: 3.0.3
-      vitest: 4.0.18(@types/node@25.3.5)(happy-dom@20.8.3)(jiti@2.6.1)(jsdom@27.2.0(postcss@8.5.6))
+      vitest: 4.0.18(@types/node@25.4.0)(happy-dom@20.8.3)(jiti@2.6.1)(jsdom@27.2.0(postcss@8.5.6))
 
   '@vitest/expect@4.0.18':
     dependencies:
@@ -5642,13 +5642,13 @@ snapshots:
       chai: 6.2.1
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.18(vite@7.2.4(@types/node@25.3.5)(jiti@2.6.1))':
+  '@vitest/mocker@4.0.18(vite@7.2.4(@types/node@25.4.0)(jiti@2.6.1))':
     dependencies:
       '@vitest/spy': 4.0.18
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.2.4(@types/node@25.3.5)(jiti@2.6.1)
+      vite: 7.2.4(@types/node@25.4.0)(jiti@2.6.1)
 
   '@vitest/pretty-format@4.0.18':
     dependencies:
@@ -6396,7 +6396,7 @@ snapshots:
 
   happy-dom@20.8.3:
     dependencies:
-      '@types/node': 25.3.5
+      '@types/node': 25.4.0
       '@types/whatwg-mimetype': 3.0.2
       '@types/ws': 8.18.1
       entities: 7.0.1
@@ -7849,7 +7849,7 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite@7.2.4(@types/node@25.3.5)(jiti@2.6.1):
+  vite@7.2.4(@types/node@25.4.0)(jiti@2.6.1):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.3)
@@ -7858,14 +7858,14 @@ snapshots:
       rollup: 4.53.3
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 25.3.5
+      '@types/node': 25.4.0
       fsevents: 2.3.3
       jiti: 2.6.1
 
-  vitest@4.0.18(@types/node@25.3.5)(happy-dom@20.8.3)(jiti@2.6.1)(jsdom@27.2.0(postcss@8.5.6)):
+  vitest@4.0.18(@types/node@25.4.0)(happy-dom@20.8.3)(jiti@2.6.1)(jsdom@27.2.0(postcss@8.5.6)):
     dependencies:
       '@vitest/expect': 4.0.18
-      '@vitest/mocker': 4.0.18(vite@7.2.4(@types/node@25.3.5)(jiti@2.6.1))
+      '@vitest/mocker': 4.0.18(vite@7.2.4(@types/node@25.4.0)(jiti@2.6.1))
       '@vitest/pretty-format': 4.0.18
       '@vitest/runner': 4.0.18
       '@vitest/snapshot': 4.0.18
@@ -7882,10 +7882,10 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.2.4(@types/node@25.3.5)(jiti@2.6.1)
+      vite: 7.2.4(@types/node@25.4.0)(jiti@2.6.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 25.3.5
+      '@types/node': 25.4.0
       happy-dom: 20.8.3
       jsdom: 27.2.0(postcss@8.5.6)
     transitivePeerDependencies:
