@@ -28,7 +28,10 @@ const FavoriteRecipesClient = () => {
         recipes={recipes}
         loading={loading}
         withFavorite
-        emptyMessage={t('noFavoriteRecipesYet' as never) || 'No favourite recipes yet. Start exploring and add recipes to your favourites!'}
+        emptyMessage={
+          t('noFavoriteRecipesYet' as never) ||
+          'No favourite recipes yet. Start exploring and add recipes to your favourites!'
+        }
       />
     </Stack>
   );

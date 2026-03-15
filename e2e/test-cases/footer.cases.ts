@@ -17,10 +17,11 @@ export async function shouldNavigateToPrivacyPolicyFromFooter(
   await page.goto('/');
 
   await page
-    .locator('[data-testid="footer-privacy"]')
+    .getByTestId('footer-privacy')
     .filter({ visible: true })
+    .first()
     .click();
-  await expect(page).toHaveURL('/privacy-policy');
+  await expect(page).toHaveURL(/\/privacy-policy$/);
 }
 
 export async function shouldNavigateToCookiePolicyFromFooter(
@@ -29,10 +30,11 @@ export async function shouldNavigateToCookiePolicyFromFooter(
   await page.goto('/');
 
   await page
-    .locator('[data-testid="footer-cookie"]')
+    .getByTestId('footer-cookie')
     .filter({ visible: true })
+    .first()
     .click();
-  await expect(page).toHaveURL('/cookie-policy');
+  await expect(page).toHaveURL(/\/cookie-policy$/);
 }
 
 export async function shouldRenderFooterCopyright(page: Page): Promise<void> {

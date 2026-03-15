@@ -1,14 +1,6 @@
 'use client';
 
-import {
-  Badge,
-  Box,
-  Card,
-  Group,
-  Image,
-  Rating,
-  Text,
-} from '@mantine/core';
+import { Badge, Box, Card, Group, Image, Rating, Text } from '@mantine/core';
 import {
   IconChefHat,
   IconClock,
@@ -65,22 +57,14 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
         )}
         {withFavorite && (
           <Box className={classes.favoriteButton}>
-            <FavoriteButton
-              recipeId={id}
-              isFavorite={isFavorite}
-              size="sm"
-            />
+            <FavoriteButton recipeId={id} isFavorite={isFavorite} size="sm" />
           </Box>
         )}
       </Card.Section>
 
       <Box p="sm" pb="md">
         <Group justify="space-between" mb={4}>
-          <Badge
-            variant="light"
-            size="sm"
-            className={classes.badge}
-          >
+          <Badge variant="light" size="sm" className={classes.badge}>
             {t(`category-${category.key}`)}
           </Badge>
           <Badge
@@ -120,12 +104,7 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
 
         {ratingsCount > 0 && (
           <Group mt="xs" gap="xs">
-            <Rating
-              value={averageRating}
-              readOnly
-              fractions={2}
-              size="xs"
-            />
+            <Rating value={averageRating} readOnly fractions={2} size="xs" />
             <Group gap={2}>
               <IconStar size={12} color="var(--mantine-color-dimmed)" />
               <Text size="xs" c="dimmed">

@@ -4,12 +4,11 @@ import { useQuery } from '@apollo/client/react';
 import { Box, Center, Stack, Text, Title } from '@mantine/core';
 import { IconClockHour4, IconFlame } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { RecipeCarousel } from '@/components/Recipe/RecipeCarousel';
 import type { RecipeCardData } from '@/components/Recipe/RecipeCard';
+import { RecipeCarousel } from '@/components/Recipe/RecipeCarousel';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
 import classes from './HomePage.module.css';
 import { MOCK_RECENTLY_VIEWED_RECIPES } from './mockRecentlyViewed';
-
 
 const HomePage = () => {
   const t = useTranslations('sidebar');
@@ -18,14 +17,15 @@ const HomePage = () => {
     variables: { limit: 10 },
   });
 
-  const latestRecipes: RecipeCardData[] = (data as any)?.getRecipes?.recipes ?? [];
+  const latestRecipes: RecipeCardData[] =
+    (data as any)?.getRecipes?.recipes ?? [];
 
   return (
     <Stack gap="xl" p="md">
       {/* Section 1: Latest Recipes */}
       <Box component="section" className={classes.section}>
         <Box className={classes.sectionHeader}>
-          <Title order={3}>
+          <Title order={1} size="h3">
             <IconFlame
               size={22}
               style={{

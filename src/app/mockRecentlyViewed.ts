@@ -34,8 +34,7 @@ export const MOCK_RECENTLY_VIEWED_RECIPES: RecipeCardData[] = [
   {
     id: 'recently-3',
     title: 'Thai Green Curry',
-    description:
-      'Fragrant Thai green curry with vegetables and coconut milk.',
+    description: 'Fragrant Thai green curry with vegetables and coconut milk.',
     imgSrc: null,
     cookingTime: 35,
     servings: 4,

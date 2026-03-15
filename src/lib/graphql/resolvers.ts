@@ -23,10 +23,7 @@ import {
   setNewPassword,
   updateUser,
 } from './resolvers/user/mutations';
-import {
-  getUserById,
-  getFavoriteRecipes,
-} from './resolvers/user/queries';
+import { getFavoriteRecipes, getUserById } from './resolvers/user/queries';
 
 export const resolvers = {
   Query: {

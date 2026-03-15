@@ -1,9 +1,6 @@
 import { prisma } from '@/lib/prisma/prisma';
 
-export const getRecipes = async (
-  _: unknown,
-  { limit }: { limit?: number },
-) => {
+export const getRecipes = async (_: unknown, { limit }: { limit?: number }) => {
   const [recipes, totalRecipes] = await Promise.all([
     prisma.recipe.findMany({
       include: {

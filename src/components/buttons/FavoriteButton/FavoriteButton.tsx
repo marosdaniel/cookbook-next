@@ -63,7 +63,9 @@ const FavoriteButton = ({
           setOptimisticFavorite(previousState);
           notifications.show({
             title: t('error'),
-            message: t(response.messageKey?.replace('response.', '') ?? 'unknownError'),
+            message: t(
+              response.messageKey?.replace('response.', '') ?? 'unknownError',
+            ),
             color: 'red',
           });
         }
@@ -94,7 +96,9 @@ const FavoriteButton = ({
 
   return (
     <Tooltip
-      label={optimisticFavorite ? 'Remove from favourites' : 'Add to favourites'}
+      label={
+        optimisticFavorite ? 'Remove from favourites' : 'Add to favourites'
+      }
       withArrow
     >
       <ActionIcon
@@ -110,7 +114,9 @@ const FavoriteButton = ({
         <HeartIcon
           size={iconSize}
           style={{
-            color: optimisticFavorite ? 'var(--mantine-color-red-6)' : undefined,
+            color: optimisticFavorite
+              ? 'var(--mantine-color-red-6)'
+              : undefined,
           }}
         />
       </ActionIcon>
