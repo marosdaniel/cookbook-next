@@ -12,6 +12,7 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import {
   IconFilter,
@@ -19,20 +20,15 @@ import {
   IconSearch,
   IconX,
 } from '@tabler/icons-react';
+import { zodResolver } from 'mantine-form-zod-resolver';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
-import { DEFAULT_FILTERS } from './consts';
+import { DEFAULT_FILTERS, recipeSearchSchema } from './consts';
 import classes from './RecipeSearch.module.css';
-import type {
-  FilterKey,
-  FilterValue,
-  RecipeSearchFilters,
-  RecipeSearchProps,
-} from './types';
+import type { RecipeSearchFilters, RecipeSearchProps } from './types';
 
 export const RecipeSearch = ({
-  onSearch,
   initialFilters,
+  onSearch,
   categoryOptions = [],
   difficultyOptions = [],
   labelOptions = [],
@@ -40,41 +36,43 @@ export const RecipeSearch = ({
 }: RecipeSearchProps) => {
   const t = useTranslations('recipeSearch');
 
-  const [filters, setFilters] = useState<RecipeSearchFilters>(
-    initialFilters || DEFAULT_FILTERS,
-  );
-
   const [opened, { toggle }] = useDisclosure(false);
 
-  const handleFilterChange = (key: FilterKey, value: FilterValue) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
-  };
+  const form = useForm<RecipeSearchFilters>({
+    mode: 'controlled',
+    initialValues: initialFilters ?? DEFAULT_FILTERS,
+    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
+    validate: zodResolver(recipeSearchSchema) as any,
+    validateInputOnBlur: true,
+  });
 
-  const handleSearch = () => {
-    onSearch(filters);
+  const handleSubmit = (values: RecipeSearchFilters) => {
+    onSearch(values);
   };
 
   const handleClear = () => {
-    setFilters(DEFAULT_FILTERS);
+    form.setValues(DEFAULT_FILTERS);
+    form.clearErrors();
     onSearch(DEFAULT_FILTERS);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
-  };
-
   const hasActiveFilters =
-    filters.categoryKey ||
-    filters.difficultyLevelKey ||
-    filters.labelKeys.length > 0 ||
-    filters.maxCookingTime;
+    form.values.categoryKey ||
+    form.values.difficultyLevelKey ||
+    form.values.labelKeys.length > 0 ||
+    form.values.maxCookingTime;
 
   const filterIconColor = hasActiveFilters || opened ? 'pink' : 'gray';
 
   return (
-    <Paper withBorder p="md" radius="md" className={classes.wrapper}>
+    <Paper
+      withBorder
+      p="md"
+      radius="md"
+      className={classes.wrapper}
+      component="form"
+      onSubmit={form.onSubmit(handleSubmit)}
+    >
       <Stack gap="md">
         <Group align="flex-end" gap="sm">
           <TextInput
@@ -82,25 +80,21 @@ export const RecipeSearch = ({
             placeholder={t('searchPlaceholder')}
             label={t('recipeName')}
             leftSection={<IconSearch size={16} stroke={1.5} />}
-            value={filters.title}
-            onChange={(e) => handleFilterChange('title', e.currentTarget.value)}
-            onKeyDown={handleKeyDown}
+            key={form.key('title')}
+            {...form.getInputProps('title')}
           />
           <ActionIcon
             variant={opened ? 'light' : 'subtle'}
             color={filterIconColor}
             size="lg"
             onClick={toggle}
+            type="button"
             aria-label={t('toggleFilters')}
             className={classes.filterToggleBtn}
           >
             {opened ? <IconFilterOff size={20} /> : <IconFilter size={20} />}
           </ActionIcon>
-          <Button
-            onClick={handleSearch}
-            loading={loading}
-            className={classes.searchBtn}
-          >
+          <Button type="submit" loading={loading} className={classes.searchBtn}>
             {t('search')}
           </Button>
         </Group>
@@ -115,6 +109,7 @@ export const RecipeSearch = ({
                 variant="subtle"
                 size="xs"
                 color="gray"
+                type="button"
                 onClick={handleClear}
                 rightSection={<IconX size={14} />}
               >
@@ -126,19 +121,17 @@ export const RecipeSearch = ({
                 label={t('category')}
                 placeholder={t('categoryPlaceholder')}
                 data={categoryOptions}
-                value={filters.categoryKey}
-                onChange={(val) => handleFilterChange('categoryKey', val)}
                 clearable
+                key={form.key('categoryKey')}
+                {...form.getInputProps('categoryKey')}
               />
               <Select
                 label={t('difficulty')}
                 placeholder={t('difficultyPlaceholder')}
                 data={difficultyOptions}
-                value={filters.difficultyLevelKey}
-                onChange={(val) =>
-                  handleFilterChange('difficultyLevelKey', val)
-                }
                 clearable
+                key={form.key('difficultyLevelKey')}
+                {...form.getInputProps('difficultyLevelKey')}
               />
             </Group>
             <Group
@@ -151,24 +144,24 @@ export const RecipeSearch = ({
                 label={t('labels')}
                 placeholder={t('labelsPlaceholder')}
                 data={labelOptions}
-                value={filters.labelKeys}
-                onChange={(val) => handleFilterChange('labelKeys', val)}
                 clearable
                 searchable
+                key={form.key('labelKeys')}
+                {...form.getInputProps('labelKeys')}
               />
               <NumberInput
                 label={t('maxCookingTime')}
                 placeholder={t('maxCookingTimePlaceholder')}
                 min={0}
-                value={filters.maxCookingTime}
-                onChange={(val) => handleFilterChange('maxCookingTime', val)}
                 hideControls
+                key={form.key('maxCookingTime')}
+                {...form.getInputProps('maxCookingTime')}
               />
             </Group>
 
             <Button
               fullWidth
-              onClick={handleSearch}
+              type="submit"
               loading={loading}
               mt="md"
               className={classes.applyBtn}

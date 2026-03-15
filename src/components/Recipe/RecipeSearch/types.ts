@@ -12,8 +12,8 @@ export interface SelectOption {
 }
 
 export interface RecipeSearchProps {
-  onSearch: (filters: RecipeSearchFilters) => void;
   initialFilters?: RecipeSearchFilters;
+  onSearch: (filters: RecipeSearchFilters) => void;
   categoryOptions?: SelectOption[];
   difficultyOptions?: SelectOption[];
   labelOptions?: SelectOption[];

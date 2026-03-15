@@ -1,8 +1,23 @@
 'use client';
 
 import { useQuery } from '@apollo/client/react';
-import { Box, Container, Group, Stack, Text, Title } from '@mantine/core';
-import { IconChefHat, IconRotateClockwise2 } from '@tabler/icons-react';
+import {
+  Box,
+  Center,
+  Container,
+  Group,
+  Stack,
+  Text,
+  Title,
+  Transition,
+} from '@mantine/core';
+import {
+  IconChefHat,
+  IconMoodSmile,
+  IconRotateClockwise2,
+  IconSearch,
+} from '@tabler/icons-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { type FC, useCallback, useMemo, useState } from 'react';
 import { toCleanedOptions } from '@/components/Recipe/Create/utils';
@@ -10,20 +25,15 @@ import type { RecipeCardData } from '@/components/Recipe/RecipeCard';
 import { RecipeGrid } from '@/components/Recipe/RecipeCard';
 import { RecipeCarousel } from '@/components/Recipe/RecipeCarousel';
 import {
+  filtersToSearchParams,
+  isSearchActive,
   RecipeSearch,
   type RecipeSearchFilters,
+  searchParamsToFilters,
 } from '@/components/Recipe/RecipeSearch';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
 import { useCategories, useLabels, useLevels } from '@/lib/store/metadata';
 import classes from '../HomePage.module.css';
-
-const DEFAULT_FILTERS: RecipeSearchFilters = {
-  title: '',
-  categoryKey: null,
-  difficultyLevelKey: null,
-  labelKeys: [],
-  maxCookingTime: '',
-};
 
 function buildQueryFilter(filters: RecipeSearchFilters) {
   const filter: Record<string, unknown> = {};
@@ -37,24 +47,28 @@ function buildQueryFilter(filters: RecipeSearchFilters) {
   return Object.keys(filter).length > 0 ? filter : undefined;
 }
 
-function isSearchActive(filters: RecipeSearchFilters) {
-  return (
-    filters.title.trim() !== '' ||
-    filters.categoryKey !== null ||
-    filters.difficultyLevelKey !== null ||
-    filters.labelKeys.length > 0 ||
-    filters.maxCookingTime !== ''
-  );
-}
-
 const RecipesPage: FC = () => {
   const t = useTranslations('sidebar');
   const st = useTranslations('recipeSearch');
   const tMisc = useTranslations('misc');
 
-  const [filters, setFilters] = useState<RecipeSearchFilters>(DEFAULT_FILTERS);
-  const searching = isSearchActive(filters);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
+  // --- URL → filters (initial + committed state) ---
+  const filtersFromUrl = useMemo(
+    () => searchParamsToFilters(searchParams),
+    [searchParams],
+  );
+
+  // "committed" = what's in the URL / used for the query
+  const [committedFilters, setCommittedFilters] =
+    useState<RecipeSearchFilters>(filtersFromUrl);
+
+  const searching = isSearchActive(committedFilters);
+
+  // --- Metadata → select options ---
   const categoriesFromStore = useCategories();
   const levelsFromStore = useLevels();
   const labelsFromStore = useLabels();
@@ -72,10 +86,11 @@ const RecipesPage: FC = () => {
     [labelsFromStore, tMisc],
   );
 
+  // --- GraphQL query driven by committed filters ---
   const { data, loading } = useQuery(GET_LATEST_RECIPES, {
     variables: {
       ...(searching ? {} : { limit: 10 }),
-      filter: buildQueryFilter(filters),
+      filter: buildQueryFilter(committedFilters),
     },
   });
 
@@ -87,9 +102,18 @@ const RecipesPage: FC = () => {
     (data as { getRecipes?: { totalRecipes: number } })?.getRecipes
       ?.totalRecipes ?? 0;
 
-  const handleSearch = useCallback((newFilters: RecipeSearchFilters) => {
-    setFilters(newFilters);
-  }, []);
+  // --- Handlers ---
+  const handleSearch = useCallback(
+    (filters: RecipeSearchFilters) => {
+      setCommittedFilters(filters);
+
+      // Sync URL
+      const params = filtersToSearchParams(filters);
+      const qs = params.toString();
+      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+    },
+    [router, pathname],
+  );
 
   return (
     <Container size="xl" py="xl">
@@ -105,34 +129,46 @@ const RecipesPage: FC = () => {
         </Box>
 
         <RecipeSearch
+          initialFilters={filtersFromUrl}
           onSearch={handleSearch}
-          initialFilters={filters}
           categoryOptions={categoryOptions}
           difficultyOptions={difficultyOptions}
           labelOptions={labelOptions}
           loading={loading}
         />
 
-        {searching ? (
-          <Box component="section">
-            <Group justify="space-between" mb="md">
-              <Title order={2} size="h3">
-                {st('searchResults')}
-              </Title>
-              {!loading && (
-                <Text c="dimmed" size="sm">
-                  {st('totalResults', { count: totalRecipes })}
-                </Text>
-              )}
-            </Group>
-            <RecipeGrid
-              loading={loading}
-              recipes={recipes}
-              emptyMessage={st('noResults')}
-              withFavorite
-            />
-          </Box>
-        ) : (
+        <Transition
+          mounted={searching}
+          transition="fade"
+          duration={200}
+          exitDuration={150}
+        >
+          {(styles) => (
+            <Box component="section" style={styles}>
+              <Group justify="space-between" mb="md">
+                <Group gap="xs">
+                  <IconSearch size={20} color="var(--mantine-color-pink-6)" />
+                  <Title order={2} size="h3">
+                    {st('searchResults')}
+                  </Title>
+                </Group>
+                {!loading && (
+                  <Text c="dimmed" size="sm">
+                    {st('totalResults', { count: totalRecipes })}
+                  </Text>
+                )}
+              </Group>
+              <RecipeGrid
+                loading={loading}
+                recipes={recipes}
+                emptyMessage={st('noResults')}
+                withFavorite
+              />
+            </Box>
+          )}
+        </Transition>
+
+        {!searching && (
           <Box component="section" className={classes.section}>
             <Box className={classes.sectionHeader}>
               <Title order={2} size="h3">
@@ -147,12 +183,26 @@ const RecipesPage: FC = () => {
                 {st('recentlyAdded')}
               </Title>
             </Box>
-            <RecipeCarousel
-              loading={loading}
-              recipes={recipes}
-              emptyMessage={st('noRecipes')}
-              withFavorite
-            />
+            {recipes.length === 0 && !loading ? (
+              <Center py="xl">
+                <Stack align="center" gap="xs">
+                  <IconMoodSmile
+                    size={48}
+                    color="var(--mantine-color-dimmed)"
+                  />
+                  <Text c="dimmed" size="lg" ta="center">
+                    {st('noRecipes')}
+                  </Text>
+                </Stack>
+              </Center>
+            ) : (
+              <RecipeCarousel
+                loading={loading}
+                recipes={recipes}
+                emptyMessage={st('noRecipes')}
+                withFavorite
+              />
+            )}
           </Box>
         )}
       </Stack>
