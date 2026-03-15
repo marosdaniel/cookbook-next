@@ -1,5 +1,6 @@
 'use client';
 
+import { Center, Loader } from '@mantine/core';
 import { redirect } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useRef } from 'react';
@@ -45,7 +46,13 @@ const RecipeCreateClient = () => {
     }
   }, [status]);
 
-  if (status === 'loading') return null;
+  if (status === 'loading') {
+    return (
+      <Center h="100vh">
+        <Loader size="lg" type="dots" />
+      </Center>
+    );
+  }
   if (!session) return null;
 
   return (
