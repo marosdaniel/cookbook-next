@@ -1,3 +1,11 @@
+# [2.12.0](https://github.com/marosdaniel/cookbook-next/compare/v2.11.0...v2.12.0) (2026-03-15)
+
+
+### Features
+
+* Add new recipes page displaying recently added recipes. ([6c52175](https://github.com/marosdaniel/cookbook-next/commit/6c52175f02acda5b07b4cd781f40d411c198025f))
+* Add recipe search component with advanced filtering options and GraphQL integration. ([800a52c](https://github.com/marosdaniel/cookbook-next/commit/800a52ce94f6d5449124b2f8e5f2546b360c73ba))
+
 # [2.11.0](https://github.com/marosdaniel/cookbook-next/compare/v2.10.0...v2.11.0) (2026-03-15)
 
 
