@@ -16,10 +16,13 @@ export async function shouldNavigateToResetPasswordFromLoginPage(
 ): Promise<void> {
   await page.goto('/login');
 
-  const forgotPasswordLink = page.getByTestId('forgot-password');
+  const forgotPasswordLink = page.locator('[data-testid="forgot-password"]');
   await expect(forgotPasswordLink).toBeVisible();
   await forgotPasswordLink.click();
-  await expect(page).toHaveURL(/\/reset-password$/);
+  await expect(page).toHaveURL('/reset-password');
+  // Confirm reset page rendered its root container
+  const resetRoot = page.locator('#reset-password-page');
+  await expect(resetRoot).toBeVisible();
 }
 
 export async function shouldShowValidationErrorOnEmptyLoginSubmit(
