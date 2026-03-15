@@ -26,7 +26,7 @@ import { DEFAULT_FILTERS, recipeSearchSchema } from './consts';
 import classes from './RecipeSearch.module.css';
 import type { RecipeSearchFilters, RecipeSearchProps } from './types';
 
-export const RecipeSearch = ({
+const RecipeSearch = ({
   initialFilters,
   onSearch,
   categoryOptions = [],
@@ -174,3 +174,5 @@ export const RecipeSearch = ({
     </Paper>
   );
 };
+
+export default RecipeSearch;

@@ -17,35 +17,24 @@ import {
   IconRotateClockwise2,
   IconSearch,
 } from '@tabler/icons-react';
+import type { Route } from 'next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { type FC, useCallback, useMemo, useState } from 'react';
+import { type FC, useCallback, useMemo } from 'react';
 import { toCleanedOptions } from '@/components/Recipe/Create/utils';
 import type { RecipeCardData } from '@/components/Recipe/RecipeCard';
 import { RecipeGrid } from '@/components/Recipe/RecipeCard';
 import { RecipeCarousel } from '@/components/Recipe/RecipeCarousel';
-import {
+import RecipeSearch, {
+  buildQueryFilter,
   filtersToSearchParams,
   isSearchActive,
-  RecipeSearch,
   type RecipeSearchFilters,
   searchParamsToFilters,
 } from '@/components/Recipe/RecipeSearch';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
 import { useCategories, useLabels, useLevels } from '@/lib/store/metadata';
 import classes from '../HomePage.module.css';
-
-function buildQueryFilter(filters: RecipeSearchFilters) {
-  const filter: Record<string, unknown> = {};
-  if (filters.title.trim()) filter.title = filters.title.trim();
-  if (filters.categoryKey) filter.categoryKey = filters.categoryKey;
-  if (filters.difficultyLevelKey)
-    filter.difficultyLevelKey = filters.difficultyLevelKey;
-  if (filters.labelKeys.length > 0) filter.labelKeys = filters.labelKeys;
-  if (filters.maxCookingTime)
-    filter.maxCookingTime = Number(filters.maxCookingTime);
-  return Object.keys(filter).length > 0 ? filter : undefined;
-}
 
 const RecipesPage: FC = () => {
   const t = useTranslations('sidebar');
@@ -56,17 +45,13 @@ const RecipesPage: FC = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // --- URL → filters (initial + committed state) ---
+  // --- URL → filters (single source of truth) ---
   const filtersFromUrl = useMemo(
     () => searchParamsToFilters(searchParams),
     [searchParams],
   );
 
-  // "committed" = what's in the URL / used for the query
-  const [committedFilters, setCommittedFilters] =
-    useState<RecipeSearchFilters>(filtersFromUrl);
-
-  const searching = isSearchActive(committedFilters);
+  const searching = isSearchActive(filtersFromUrl);
 
   // --- Metadata → select options ---
   const categoriesFromStore = useCategories();
@@ -86,11 +71,11 @@ const RecipesPage: FC = () => {
     [labelsFromStore, tMisc],
   );
 
-  // --- GraphQL query driven by committed filters ---
+  // --- GraphQL query driven by URL filters ---
   const { data, loading } = useQuery(GET_LATEST_RECIPES, {
     variables: {
       ...(searching ? {} : { limit: 10 }),
-      filter: buildQueryFilter(committedFilters),
+      filter: buildQueryFilter(filtersFromUrl),
     },
   });
 
@@ -105,12 +90,10 @@ const RecipesPage: FC = () => {
   // --- Handlers ---
   const handleSearch = useCallback(
     (filters: RecipeSearchFilters) => {
-      setCommittedFilters(filters);
-
-      // Sync URL
       const params = filtersToSearchParams(filters);
       const qs = params.toString();
-      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+      const url = qs ? `${pathname}?${qs}` : pathname;
+      router.replace(url as Route, { scroll: false });
     },
     [router, pathname],
   );

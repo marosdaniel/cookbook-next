@@ -66,3 +66,20 @@ export function isSearchActive(filters: RecipeSearchFilters): boolean {
     filters.maxCookingTime !== ''
   );
 }
+
+/** Convert client-side filters to the GraphQL RecipeFilterInput shape. */
+export function buildQueryFilter(filters: RecipeSearchFilters) {
+  if (!isSearchActive(filters)) return undefined;
+
+  return {
+    ...(filters.title.trim() && { title: filters.title.trim() }),
+    ...(filters.categoryKey && { categoryKey: filters.categoryKey }),
+    ...(filters.difficultyLevelKey && {
+      difficultyLevelKey: filters.difficultyLevelKey,
+    }),
+    ...(filters.labelKeys.length > 0 && { labelKeys: filters.labelKeys }),
+    ...(filters.maxCookingTime && {
+      maxCookingTime: Number(filters.maxCookingTime),
+    }),
+  };
+}
