@@ -18,7 +18,8 @@ const HomePage = () => {
   });
 
   const latestRecipes: RecipeCardData[] =
-    (data as any)?.getRecipes?.recipes ?? [];
+    (data as { getRecipes?: { recipes: RecipeCardData[] } })?.getRecipes
+      ?.recipes ?? [];
 
   return (
     <Stack gap="xl" p="md">

@@ -7,11 +7,12 @@ export async function shouldNavigateToRecipesPage(page: Page): Promise<void> {
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 }
 
-export async function shouldNavigateToLoginFromPrivacyPolicy(
+export async function shouldNavigateToPrivacyPolicyPage(
   page: Page,
 ): Promise<void> {
   await page.goto('/privacy-policy');
   await expect(page).toHaveURL('/privacy-policy');
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 }
 
 export async function shouldNavigateToCookiePolicyPage(
@@ -26,6 +27,11 @@ export async function shouldRedirectLoginToHomeAfterVisit(
 ): Promise<void> {
   await page.goto('/login');
   await expect(page.locator('#login-page')).toBeVisible();
-  await page.goto('/');
+
+  // Navigate back to home by clicking the header logo
+  await page.locator('header').getByRole('link', { name: /Cookbook/i }).first().click();
+
   await expect(page).toHaveURL('/');
+  // Verify home page content to ensure successful navigation
+  await expect(page.getByRole('heading', { name: /Latest Recipes/i })).toBeVisible();
 }

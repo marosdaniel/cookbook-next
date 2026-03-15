@@ -7,6 +7,7 @@ import {
   IconStar,
   IconUsers,
 } from '@tabler/icons-react';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { FavoriteButton } from '@/components/buttons/FavoriteButton';
@@ -40,7 +41,7 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
   return (
     <Card
       component={Link}
-      href={`/recipes/${id}` as any}
+      href={`/recipes/${id}` as Route}
       shadow="sm"
       radius="md"
       withBorder

@@ -82,3 +82,8 @@ export interface LegalMessages {
   cookiePolicy: CookiePolicyContent;
   privacyPolicy: PrivacyPolicyContent;
 }
+
+export interface BaseMutationResponse {
+  success: boolean;
+  messageKey?: string;
+}

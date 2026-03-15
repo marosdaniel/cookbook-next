@@ -1,7 +1,7 @@
 import { test } from '@playwright/test';
 import {
   shouldNavigateToCookiePolicyPage,
-  shouldNavigateToLoginFromPrivacyPolicy,
+  shouldNavigateToPrivacyPolicyPage,
   shouldNavigateToRecipesPage,
   shouldRedirectLoginToHomeAfterVisit,
 } from '../test-cases/navigation.cases';
@@ -12,7 +12,7 @@ test.describe('Navigation suite', () => {
   });
 
   test('TC-008: can navigate to privacy policy page', async ({ page }) => {
-    await shouldNavigateToLoginFromPrivacyPolicy(page);
+    await shouldNavigateToPrivacyPolicyPage(page);
   });
 
   test('TC-009: can navigate to cookie policy page', async ({ page }) => {

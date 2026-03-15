@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client/react';
 import { Stack, Title } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import { RecipeGrid } from '@/components/Recipe/RecipeCard';
+import { RecipeGrid, type RecipeCardData } from '@/components/Recipe/RecipeCard';
 import { GET_FAVORITE_RECIPES } from '@/lib/graphql/queries';
 
 const FavoriteRecipesClient = () => {
@@ -19,7 +19,9 @@ const FavoriteRecipesClient = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const recipes = (data as any)?.getFavoriteRecipes ?? [];
+  const recipes: RecipeCardData[] =
+    (data as { getFavoriteRecipes?: RecipeCardData[] })?.getFavoriteRecipes ??
+    [];
 
   return (
     <Stack gap="lg" p="md">
