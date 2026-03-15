@@ -1,26 +1,95 @@
 'use client';
 
 import { useQuery } from '@apollo/client/react';
-import { Box, Container, Stack, Title, Text, Group } from '@mantine/core';
-import { IconRotateClockwise2, IconChefHat } from '@tabler/icons-react';
+import { Box, Container, Group, Stack, Text, Title } from '@mantine/core';
+import { IconChefHat, IconRotateClockwise2 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import type { FC } from 'react';
-import { RecipeCarousel } from '@/components/Recipe/RecipeCarousel';
+import { type FC, useCallback, useMemo, useState } from 'react';
+import { toCleanedOptions } from '@/components/Recipe/Create/utils';
 import type { RecipeCardData } from '@/components/Recipe/RecipeCard';
+import { RecipeGrid } from '@/components/Recipe/RecipeCard';
+import { RecipeCarousel } from '@/components/Recipe/RecipeCarousel';
+import {
+  RecipeSearch,
+  type RecipeSearchFilters,
+} from '@/components/Recipe/RecipeSearch';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
+import { useCategories, useLabels, useLevels } from '@/lib/store/metadata';
 import classes from '../HomePage.module.css';
+
+const DEFAULT_FILTERS: RecipeSearchFilters = {
+  title: '',
+  categoryKey: null,
+  difficultyLevelKey: null,
+  labelKeys: [],
+  maxCookingTime: '',
+};
+
+function buildQueryFilter(filters: RecipeSearchFilters) {
+  const filter: Record<string, unknown> = {};
+  if (filters.title.trim()) filter.title = filters.title.trim();
+  if (filters.categoryKey) filter.categoryKey = filters.categoryKey;
+  if (filters.difficultyLevelKey)
+    filter.difficultyLevelKey = filters.difficultyLevelKey;
+  if (filters.labelKeys.length > 0) filter.labelKeys = filters.labelKeys;
+  if (filters.maxCookingTime)
+    filter.maxCookingTime = Number(filters.maxCookingTime);
+  return Object.keys(filter).length > 0 ? filter : undefined;
+}
+
+function isSearchActive(filters: RecipeSearchFilters) {
+  return (
+    filters.title.trim() !== '' ||
+    filters.categoryKey !== null ||
+    filters.difficultyLevelKey !== null ||
+    filters.labelKeys.length > 0 ||
+    filters.maxCookingTime !== ''
+  );
+}
 
 const RecipesPage: FC = () => {
   const t = useTranslations('sidebar');
-  const commonT = useTranslations('common');
+  const st = useTranslations('recipeSearch');
+  const tMisc = useTranslations('misc');
+
+  const [filters, setFilters] = useState<RecipeSearchFilters>(DEFAULT_FILTERS);
+  const searching = isSearchActive(filters);
+
+  const categoriesFromStore = useCategories();
+  const levelsFromStore = useLevels();
+  const labelsFromStore = useLabels();
+
+  const categoryOptions = useMemo(
+    () => toCleanedOptions(categoriesFromStore, tMisc),
+    [categoriesFromStore, tMisc],
+  );
+  const difficultyOptions = useMemo(
+    () => toCleanedOptions(levelsFromStore, tMisc),
+    [levelsFromStore, tMisc],
+  );
+  const labelOptions = useMemo(
+    () => toCleanedOptions(labelsFromStore, tMisc),
+    [labelsFromStore, tMisc],
+  );
 
   const { data, loading } = useQuery(GET_LATEST_RECIPES, {
-    variables: { limit: 10 },
+    variables: {
+      ...(searching ? {} : { limit: 10 }),
+      filter: buildQueryFilter(filters),
+    },
   });
 
-  const latestRecipes: RecipeCardData[] =
+  const recipes: RecipeCardData[] =
     (data as { getRecipes?: { recipes: RecipeCardData[] } })?.getRecipes
       ?.recipes ?? [];
+
+  const totalRecipes: number =
+    (data as { getRecipes?: { totalRecipes: number } })?.getRecipes
+      ?.totalRecipes ?? 0;
+
+  const handleSearch = useCallback((newFilters: RecipeSearchFilters) => {
+    setFilters(newFilters);
+  }, []);
 
   return (
     <Container size="xl" py="xl">
@@ -31,34 +100,61 @@ const RecipesPage: FC = () => {
             <Title order={1}>{t('recipes')}</Title>
           </Group>
           <Text c="dimmed" size="lg">
-            Explore our community's culinary creations and find your next favorite meal.
+            {st('pageDescription')}
           </Text>
         </Box>
 
-        {/* Section: Recently Added */}
-        <Box component="section" className={classes.section}>
-          <Box className={classes.sectionHeader}>
-            <Title order={2} size="h3">
-              <IconRotateClockwise2
-                size={22}
-                style={{
-                  marginRight: 8,
-                  verticalAlign: 'middle',
-                  color: 'var(--mantine-color-blue-6)',
-                }}
-              />
-              Recently Added Recipes
-            </Title>
-          </Box>
-          <RecipeCarousel
-            loading={loading}
-            recipes={latestRecipes}
-            emptyMessage="No recipes found. Try creating the first one!"
-            withFavorite
-          />
-        </Box>
+        <RecipeSearch
+          onSearch={handleSearch}
+          initialFilters={filters}
+          categoryOptions={categoryOptions}
+          difficultyOptions={difficultyOptions}
+          labelOptions={labelOptions}
+          loading={loading}
+        />
 
-        {/* You could add more sections here in the future, like Trending or Categories */}
+        {searching ? (
+          <Box component="section">
+            <Group justify="space-between" mb="md">
+              <Title order={2} size="h3">
+                {st('searchResults')}
+              </Title>
+              {!loading && (
+                <Text c="dimmed" size="sm">
+                  {st('totalResults', { count: totalRecipes })}
+                </Text>
+              )}
+            </Group>
+            <RecipeGrid
+              loading={loading}
+              recipes={recipes}
+              emptyMessage={st('noResults')}
+              withFavorite
+            />
+          </Box>
+        ) : (
+          <Box component="section" className={classes.section}>
+            <Box className={classes.sectionHeader}>
+              <Title order={2} size="h3">
+                <IconRotateClockwise2
+                  size={22}
+                  style={{
+                    marginRight: 8,
+                    verticalAlign: 'middle',
+                    color: 'var(--mantine-color-blue-6)',
+                  }}
+                />
+                {st('recentlyAdded')}
+              </Title>
+            </Box>
+            <RecipeCarousel
+              loading={loading}
+              recipes={recipes}
+              emptyMessage={st('noRecipes')}
+              withFavorite
+            />
+          </Box>
+        )}
       </Stack>
     </Container>
   );

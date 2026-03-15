@@ -313,6 +313,29 @@
     "changesResetTitle": "Módosítások visszaállítva",
     "changesResetMessage": "Visszaállt az eredeti receptre."
   },
+  "recipeSearch": {
+    "searchPlaceholder": "Receptek keresése név alapján...",
+    "recipeName": "Recept neve",
+    "toggleFilters": "Szűrők",
+    "search": "Keresés",
+    "advancedFilters": "Részletes szűrők",
+    "clearFilters": "Szűrők törlése",
+    "category": "Kategória",
+    "categoryPlaceholder": "Válassz kategóriát",
+    "difficulty": "Nehézség",
+    "difficultyPlaceholder": "Válassz nehézséget",
+    "labels": "Címkék",
+    "labelsPlaceholder": "Válassz címkéket",
+    "maxCookingTime": "Max főzési idő (perc)",
+    "maxCookingTimePlaceholder": "pl. 30",
+    "applyFilters": "Szűrők alkalmazása",
+    "pageDescription": "Fedezd fel közösségünk kulináris alkotásait és találd meg a következő kedvenc ételed.",
+    "searchResults": "Keresési eredmények",
+    "noResults": "Nem található recept a megadott szűrőkkel.",
+    "totalResults": "{count} recept találva",
+    "recentlyAdded": "Nemrég hozzáadott receptek",
+    "noRecipes": "Nem található recept. Próbáld meg te létrehozni az elsőt!"
+  },
   "recipeComposer": {
     "sections": {
       "basics": {

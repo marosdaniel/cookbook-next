@@ -312,6 +312,29 @@
     "changesResetTitle": "Änderungen zurückgesetzt",
     "changesResetMessage": "Auf das Originalrezept zurückgesetzt."
   },
+  "recipeSearch": {
+    "searchPlaceholder": "Rezepte nach Name suchen...",
+    "recipeName": "Rezeptname",
+    "toggleFilters": "Filter umschalten",
+    "search": "Suchen",
+    "advancedFilters": "Erweiterte Filter",
+    "clearFilters": "Filter löschen",
+    "category": "Kategorie",
+    "categoryPlaceholder": "Kategorie wählen",
+    "difficulty": "Schwierigkeit",
+    "difficultyPlaceholder": "Schwierigkeit wählen",
+    "labels": "Labels",
+    "labelsPlaceholder": "Labels wählen",
+    "maxCookingTime": "Max. Kochzeit (Min)",
+    "maxCookingTimePlaceholder": "z.B. 30",
+    "applyFilters": "Filter anwenden",
+    "pageDescription": "Entdecke die kulinarischen Kreationen unserer Community und finde dein nächstes Lieblingsessen.",
+    "searchResults": "Suchergebnisse",
+    "noResults": "Keine Rezepte gefunden, die deinen Filtern entsprechen.",
+    "totalResults": "{count} Rezepte gefunden",
+    "recentlyAdded": "Kürzlich hinzugefügte Rezepte",
+    "noRecipes": "Keine Rezepte gefunden. Erstelle das erste!"
+  },
   "recipeComposer": {
     "sections": {
       "basics": {

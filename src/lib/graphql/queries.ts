@@ -105,8 +105,8 @@ export const GET_FAVORITE_RECIPES = gql`
 `;
 
 export const GET_LATEST_RECIPES = gql`
-  query getRecipes($limit: Int) {
-    getRecipes(limit: $limit) {
+  query getRecipes($limit: Int, $filter: RecipeFilterInput) {
+    getRecipes(limit: $limit, filter: $filter) {
       recipes {
         id
         title

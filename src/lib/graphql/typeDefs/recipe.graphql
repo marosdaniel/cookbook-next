@@ -125,9 +125,17 @@ type RecipeData {
   totalRecipes: Int!
 }
 
+input RecipeFilterInput {
+  title: String
+  categoryKey: String
+  difficultyLevelKey: String
+  labelKeys: [String!]
+  maxCookingTime: Int
+}
+
 type Query {
   getRecipeById(id: ID!): Recipe!
-  getRecipes(limit: Int): RecipeData!
+  getRecipes(limit: Int, filter: RecipeFilterInput): RecipeData!
   getRecipesByTitle(title: String!, limit: Int): RecipeData!
   getRecipesByUserName(userName: String!, limit: Int): RecipeData!
   getRecipesByUserId(userId: ID!, limit: Int): RecipeData! # deprecated

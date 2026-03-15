@@ -313,6 +313,29 @@
     "changesResetTitle": "Changes reset",
     "changesResetMessage": "Reverted to the original recipe."
   },
+  "recipeSearch": {
+    "searchPlaceholder": "Search recipes by name...",
+    "recipeName": "Recipe Name",
+    "toggleFilters": "Toggle filters",
+    "search": "Search",
+    "advancedFilters": "Advanced Filters",
+    "clearFilters": "Clear Filters",
+    "category": "Category",
+    "categoryPlaceholder": "Select category",
+    "difficulty": "Difficulty",
+    "difficultyPlaceholder": "Select difficulty",
+    "labels": "Labels",
+    "labelsPlaceholder": "Select labels",
+    "maxCookingTime": "Max Cooking Time (min)",
+    "maxCookingTimePlaceholder": "e.g. 30",
+    "applyFilters": "Apply Filters",
+    "pageDescription": "Explore our community's culinary creations and find your next favourite meal.",
+    "searchResults": "Search Results",
+    "noResults": "No recipes found matching your filters.",
+    "totalResults": "{count} recipes found",
+    "recentlyAdded": "Recently Added Recipes",
+    "noRecipes": "No recipes found. Try creating the first one!"
+  },
   "recipeComposer": {
     "sections": {
       "basics": {
