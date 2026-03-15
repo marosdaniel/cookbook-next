@@ -71,6 +71,63 @@ export const GET_RECIPE_BY_ID = gql`
         description
         order
       }
+      averageRating
+      ratingsCount
+      userRating
+      isFavorite
+    }
+  }
+`;
+
+export const GET_FAVORITE_RECIPES = gql`
+  query getFavoriteRecipes($userId: ID!, $limit: Int) {
+    getFavoriteRecipes(userId: $userId, limit: $limit) {
+      id
+      title
+      description
+      imgSrc
+      cookingTime
+      servings
+      createdBy
+      category {
+        key
+        label
+      }
+      difficultyLevel {
+        key
+        label
+      }
+      averageRating
+      ratingsCount
+      isFavorite
+    }
+  }
+`;
+
+export const GET_LATEST_RECIPES = gql`
+  query getRecipes($limit: Int) {
+    getRecipes(limit: $limit) {
+      recipes {
+        id
+        title
+        description
+        imgSrc
+        cookingTime
+        servings
+        createdBy
+        category {
+          key
+          label
+        }
+        difficultyLevel {
+          key
+          label
+        }
+        averageRating
+        ratingsCount
+        isFavorite
+      }
+      totalRecipes
     }
   }
 `;

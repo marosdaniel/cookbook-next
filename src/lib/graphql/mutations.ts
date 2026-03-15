@@ -95,3 +95,25 @@ export const DELETE_RATING = gql`
     deleteRating(recipeId: $recipeId)
   }
 `;
+
+export const ADD_TO_FAVORITE_RECIPES = gql`
+  mutation AddToFavoriteRecipes($userId: ID!, $recipeId: ID!) {
+    addToFavoriteRecipes(userId: $userId, recipeId: $recipeId) {
+      success
+      message
+      messageKey
+      statusCode
+    }
+  }
+`;
+
+export const REMOVE_FROM_FAVORITE_RECIPES = gql`
+  mutation RemoveFromFavoriteRecipes($userId: ID!, $recipeId: ID!) {
+    removeFromFavoriteRecipes(userId: $userId, recipeId: $recipeId) {
+      success
+      message
+      messageKey
+      statusCode
+    }
+  }
+`;

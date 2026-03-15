@@ -1,0 +1,12 @@
+.carouselSlide {
+  padding-bottom: 0.5rem;
+}
+
+.emptyCarousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  border-radius: var(--mantine-radius-md);
+  border: 1px dashed var(--mantine-color-gray-4);
+}

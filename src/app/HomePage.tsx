@@ -1,12 +1,76 @@
 'use client';
 
-import { Title } from '@mantine/core';
+import { useQuery } from '@apollo/client/react';
+import { Box, Center, Stack, Text, Title } from '@mantine/core';
+import { IconClockHour4, IconFlame } from '@tabler/icons-react';
+import { useTranslations } from 'next-intl';
+import { RecipeCarousel } from '@/components/Recipe/RecipeCarousel';
+import type { RecipeCardData } from '@/components/Recipe/RecipeCard';
+import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
+import classes from './HomePage.module.css';
+import { MOCK_RECENTLY_VIEWED_RECIPES } from './mockRecentlyViewed';
+
 
 const HomePage = () => {
+  const t = useTranslations('sidebar');
+
+  const { data, loading } = useQuery(GET_LATEST_RECIPES, {
+    variables: { limit: 10 },
+  });
+
+  const latestRecipes: RecipeCardData[] = (data as any)?.getRecipes?.recipes ?? [];
+
   return (
-    <div style={{ padding: '2rem' }}>
-      <Title order={1}>home</Title>
-    </div>
+    <Stack gap="xl" p="md">
+      {/* Section 1: Latest Recipes */}
+      <Box component="section" className={classes.section}>
+        <Box className={classes.sectionHeader}>
+          <Title order={3}>
+            <IconFlame
+              size={22}
+              style={{
+                marginRight: 8,
+                verticalAlign: 'middle',
+                color: 'var(--mantine-color-pink-6)',
+              }}
+            />
+            {t('latestRecipes')}
+          </Title>
+        </Box>
+        <RecipeCarousel
+          loading={loading}
+          recipes={latestRecipes}
+          emptyMessage="No recipes yet. Be the first to share one!"
+          withFavorite
+        />
+      </Box>
+
+      {/* Section 2: Recently Viewed (Mock) */}
+      <Box component="section" className={classes.section}>
+        <Box className={classes.sectionHeader}>
+          <Title order={3}>
+            <IconClockHour4
+              size={22}
+              style={{
+                marginRight: 8,
+                verticalAlign: 'middle',
+                color: 'var(--mantine-color-grape-6)',
+              }}
+            />
+            Recently Viewed
+          </Title>
+        </Box>
+        <RecipeCarousel
+          recipes={MOCK_RECENTLY_VIEWED_RECIPES}
+          withFavorite={false}
+        />
+        <Center mt="xs">
+          <Text size="xs" c="dimmed" fs="italic">
+            * Recently viewed recipes — coming soon
+          </Text>
+        </Center>
+      </Box>
+    </Stack>
   );
 };
 
