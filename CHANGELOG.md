@@ -1,3 +1,10 @@
+# [2.11.0](https://github.com/marosdaniel/cookbook-next/compare/v2.10.0...v2.11.0) (2026-03-15)
+
+
+### Features
+
+* Implement recipe card, carousel, and favorite recipe management with new GraphQL queries and mutations. ([14c38c0](https://github.com/marosdaniel/cookbook-next/commit/14c38c04b6e64c7fd7a134178b42a5a728a668ef))
+
 # [2.10.0](https://github.com/marosdaniel/cookbook-next/compare/v2.9.0...v2.10.0) (2026-03-09)
 
 
