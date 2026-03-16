@@ -1,3 +1,11 @@
+# [2.13.0](https://github.com/marosdaniel/cookbook-next/compare/v2.12.0...v2.13.0) (2026-03-16)
+
+
+### Features
+
+* display a loading spinner on the recipe creation page while session is loading. ([4676eef](https://github.com/marosdaniel/cookbook-next/commit/4676eefbfcda6eddd1f3dc802dca31042ae29c91))
+* Refactor RecipeSearch to use Mantine form with Zod validation and synchronize filters with URL query parameters. ([583d3ec](https://github.com/marosdaniel/cookbook-next/commit/583d3ec27bc0d964cc348c54ef8863e376b60fda))
+
 # [2.12.0](https://github.com/marosdaniel/cookbook-next/compare/v2.11.0...v2.12.0) (2026-03-15)
 
 
