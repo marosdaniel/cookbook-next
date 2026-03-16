@@ -43,8 +43,8 @@ import { extractYoutubeId, getDifficultyColor } from './utils';
 const RecipeDetailClient = ({
   recipeId,
 }: Readonly<RecipeDetailClientProps>) => {
-  const t = useTranslations('recipeDetail');
-  const tMisc = useTranslations('misc');
+  const translate = useTranslations('recipeDetail');
+  const translateMisc = useTranslations('misc');
   const { data: session } = useSession();
 
   /* Data */
@@ -116,8 +116,10 @@ const RecipeDetailClient = ({
       <Center h="60vh">
         <Stack align="center" gap="md">
           <IconChefHat size={64} color="var(--mantine-color-dimmed)" />
-          <Title order={3}>{t('notFound')}</Title>
-          <Text c="dimmed">{error?.message ?? t('notFoundDescription')}</Text>
+          <Title order={3}>{translate('notFound')}</Title>
+          <Text c="dimmed">
+            {error?.message ?? translate('notFoundDescription')}
+          </Text>
           <Text
             component={Link}
             href={'/recipes' as Route}
@@ -125,7 +127,7 @@ const RecipeDetailClient = ({
             fw={600}
             td="underline"
           >
-            {t('backToRecipes')}
+            {translate('backToRecipes')}
           </Text>
         </Stack>
       </Center>
@@ -154,7 +156,7 @@ const RecipeDetailClient = ({
             c="dimmed"
             size="sm"
           >
-            {t('backToRecipes')}
+            {translate('backToRecipes')}
           </Text>
         </Group>
 
@@ -208,14 +210,14 @@ const RecipeDetailClient = ({
             {/* Label pills */}
             <Group gap="xs" mt="sm">
               <Badge variant="light" className={classes.labelPill}>
-                {tMisc(`category-${recipe.category.key}`)}
+                {translateMisc(`category-${recipe.category.key}`)}
               </Badge>
               <Badge
                 variant="light"
                 color={getDifficultyColor(recipe.difficultyLevel.key)}
                 className={classes.labelPill}
               >
-                {tMisc(`level-${recipe.difficultyLevel.key}`)}
+                {translateMisc(`level-${recipe.difficultyLevel.key}`)}
               </Badge>
               {recipe.labels.map((label) => (
                 <Badge
@@ -224,7 +226,7 @@ const RecipeDetailClient = ({
                   color="pink"
                   className={classes.labelPill}
                 >
-                  {tMisc(`label-${label.key}`)}
+                  {translateMisc(`label-${label.key}`)}
                 </Badge>
               ))}
             </Group>
@@ -233,11 +235,11 @@ const RecipeDetailClient = ({
             <Box className={classes.quickInfo}>
               <span className={classes.infoPill}>
                 <IconClock size={16} />
-                {t('cookingTime', { time: recipe.cookingTime })}
+                {translate('cookingTime', { time: recipe.cookingTime })}
               </span>
               <span className={classes.infoPill}>
                 <IconUsers size={16} />
-                {t('servingsCount', { count: recipe.servings })}
+                {translate('servingsCount', { count: recipe.servings })}
               </span>
               {recipe.ratingsCount > 0 && (
                 <span className={classes.infoPill}>
@@ -257,7 +259,7 @@ const RecipeDetailClient = ({
               {/* Preparation Steps */}
               <Box>
                 <Title order={2} size="h3" mb="lg">
-                  {t('preparationSteps')}
+                  {translate('preparationSteps')}
                 </Title>
                 <Stack gap="lg">
                   {sortedSteps.map((step) => (
@@ -285,7 +287,7 @@ const RecipeDetailClient = ({
               {youtubeId && (
                 <Box>
                   <Title order={2} size="h3" mb="md">
-                    {t('videoTitle')}
+                    {translate('videoTitle')}
                   </Title>
                   <Box className={classes.videoWrapper}>
                     <iframe
@@ -301,7 +303,7 @@ const RecipeDetailClient = ({
               {/* Rating */}
               <Paper p="lg" radius="md" withBorder>
                 <Title order={3} size="h4" mb="sm">
-                  {t('rateThisRecipe')}
+                  {translate('rateThisRecipe')}
                 </Title>
                 <RecipeRating
                   recipeId={recipe.id}
@@ -323,10 +325,10 @@ const RecipeDetailClient = ({
             >
               <Group justify="space-between" mb="md">
                 <Title order={2} size="h3" c="pink">
-                  {t('ingredients')}
+                  {translate('ingredients')}
                 </Title>
                 <Text size="xs" c="dimmed">
-                  {t('checkedOff', {
+                  {translate('checkedOff', {
                     count: checkedIngredients.size,
                     total: recipe.ingredients.length,
                   })}
@@ -336,7 +338,7 @@ const RecipeDetailClient = ({
               {/* Serving adjuster */}
               <Group gap="xs" mb="lg" justify="center">
                 <Text fw={700} size="sm" tt="uppercase">
-                  {t('servings')}:
+                  {translate('servings')}:
                 </Text>
                 <ActionIcon
                   variant="filled"
