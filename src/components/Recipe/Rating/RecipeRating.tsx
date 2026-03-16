@@ -14,7 +14,7 @@ const RecipeRating = ({
   ratingsCount,
   readOnly = false,
 }: RecipeRatingProps) => {
-  const t = useTranslations('recipe');
+  const translate = useTranslations('recipe');
   const [rateRecipe, { loading }] = useMutation(RATE_RECIPE);
 
   const handleRatingChange = async (value: number) => {
@@ -32,15 +32,15 @@ const RecipeRating = ({
         refetchQueries: ['getRecipeById'],
       });
       notifications.show({
-        title: t('ratingSuccess'),
-        message: t('ratingSuccessMessage'),
+        title: translate('ratingSuccess'),
+        message: translate('ratingSuccessMessage'),
         color: 'green',
       });
     } catch (error) {
       console.error('Rating failed:', error);
       notifications.show({
-        title: t('ratingError'),
-        message: t('ratingErrorMessage'),
+        title: translate('ratingError'),
+        message: translate('ratingErrorMessage'),
         color: 'red',
       });
     }
@@ -56,12 +56,12 @@ const RecipeRating = ({
           fractions={2}
         />
         <Text size="sm" c="dimmed">
-          ({ratingsCount} {t('ratingsCount')})
+          ({ratingsCount} {translate('ratingsCount')})
         </Text>
       </Group>
       {userRating && (
         <Text size="xs" c="dimmed" style={{ fontStyle: 'italic' }}>
-          {t('yourRating')}: {userRating}
+          {translate('yourRating')}: {userRating}
         </Text>
       )}
     </Stack>

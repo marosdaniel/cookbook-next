@@ -20,7 +20,7 @@ const FavoriteButton = ({
   size = 'md',
 }: FavoriteButtonProps) => {
   const { data: session } = useSession();
-  const t = useTranslations('response');
+  const translate = useTranslations('response');
   const [optimisticFavorite, setOptimisticFavorite] = useState(isFavorite);
 
   const [addToFavorite, { loading: addLoading }] =
@@ -55,8 +55,8 @@ const FavoriteButton = ({
         if (response && !response.success) {
           setOptimisticFavorite(previousState);
           notifications.show({
-            title: t('error'),
-            message: t(
+            title: translate('error'),
+            message: translate(
               response.messageKey?.replace('response.', '') ?? 'unknownError',
             ),
             color: 'red',
@@ -65,8 +65,8 @@ const FavoriteButton = ({
       } catch {
         setOptimisticFavorite(previousState);
         notifications.show({
-          title: t('error'),
-          message: t('somethingWentWrong'),
+          title: translate('error'),
+          message: translate('somethingWentWrong'),
           color: 'red',
         });
       }
@@ -78,7 +78,7 @@ const FavoriteButton = ({
       loading,
       addToFavorite,
       removeFromFavorite,
-      t,
+      translate,
     ],
   );
 

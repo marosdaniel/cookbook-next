@@ -37,9 +37,9 @@ import { useCategories, useLabels, useLevels } from '@/lib/store/metadata';
 import classes from '../HomePage.module.css';
 
 const RecipesPage: FC = () => {
-  const t = useTranslations('sidebar');
-  const st = useTranslations('recipeSearch');
-  const tMisc = useTranslations('misc');
+  const translateSidebar = useTranslations('sidebar');
+  const translateRecipeSearch = useTranslations('recipeSearch');
+  const translateMisc = useTranslations('misc');
 
   const router = useRouter();
   const pathname = usePathname();
@@ -59,16 +59,16 @@ const RecipesPage: FC = () => {
   const labelsFromStore = useLabels();
 
   const categoryOptions = useMemo(
-    () => toCleanedOptions(categoriesFromStore, tMisc),
-    [categoriesFromStore, tMisc],
+    () => toCleanedOptions(categoriesFromStore, translateMisc),
+    [categoriesFromStore, translateMisc],
   );
   const difficultyOptions = useMemo(
-    () => toCleanedOptions(levelsFromStore, tMisc),
-    [levelsFromStore, tMisc],
+    () => toCleanedOptions(levelsFromStore, translateMisc),
+    [levelsFromStore, translateMisc],
   );
   const labelOptions = useMemo(
-    () => toCleanedOptions(labelsFromStore, tMisc),
-    [labelsFromStore, tMisc],
+    () => toCleanedOptions(labelsFromStore, translateMisc),
+    [labelsFromStore, translateMisc],
   );
 
   // --- GraphQL query driven by URL filters ---
@@ -104,10 +104,10 @@ const RecipesPage: FC = () => {
         <Box>
           <Group gap="xs" mb="xs">
             <IconChefHat size={32} color="var(--mantine-color-pink-6)" />
-            <Title order={1}>{t('recipes')}</Title>
+            <Title order={1}>{translateSidebar('recipes')}</Title>
           </Group>
           <Text c="dimmed" size="lg">
-            {st('pageDescription')}
+            {translateRecipeSearch('pageDescription')}
           </Text>
         </Box>
 
@@ -132,19 +132,21 @@ const RecipesPage: FC = () => {
                 <Group gap="xs">
                   <IconSearch size={20} color="var(--mantine-color-pink-6)" />
                   <Title order={2} size="h3">
-                    {st('searchResults')}
+                    {translateRecipeSearch('searchResults')}
                   </Title>
                 </Group>
                 {!loading && (
                   <Text c="dimmed" size="sm">
-                    {st('totalResults', { count: totalRecipes })}
+                    {translateRecipeSearch('totalResults', {
+                      count: totalRecipes,
+                    })}
                   </Text>
                 )}
               </Group>
               <RecipeGrid
                 loading={loading}
                 recipes={recipes}
-                emptyMessage={st('noResults')}
+                emptyMessage={translateRecipeSearch('noResults')}
                 withFavorite
               />
             </Box>
@@ -163,7 +165,7 @@ const RecipesPage: FC = () => {
                     color: 'var(--mantine-color-blue-6)',
                   }}
                 />
-                {st('recentlyAdded')}
+                {translateRecipeSearch('recentlyAdded')}
               </Title>
             </Box>
             {recipes.length === 0 && !loading ? (
@@ -174,7 +176,7 @@ const RecipesPage: FC = () => {
                     color="var(--mantine-color-dimmed)"
                   />
                   <Text c="dimmed" size="lg" ta="center">
-                    {st('noRecipes')}
+                    {translateRecipeSearch('noRecipes')}
                   </Text>
                 </Stack>
               </Center>
@@ -182,7 +184,7 @@ const RecipesPage: FC = () => {
               <RecipeCarousel
                 loading={loading}
                 recipes={recipes}
-                emptyMessage={st('noRecipes')}
+                emptyMessage={translateRecipeSearch('noRecipes')}
                 withFavorite
               />
             )}

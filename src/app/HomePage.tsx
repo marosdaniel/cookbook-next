@@ -11,7 +11,7 @@ import classes from './HomePage.module.css';
 import { MOCK_RECENTLY_VIEWED_RECIPES } from './mockRecentlyViewed';
 
 const HomePage = () => {
-  const t = useTranslations('sidebar');
+  const translate = useTranslations('sidebar');
 
   const { data, loading } = useQuery(GET_LATEST_RECIPES, {
     variables: { limit: 10 },
@@ -35,7 +35,7 @@ const HomePage = () => {
                 color: 'var(--mantine-color-pink-6)',
               }}
             />
-            {t('latestRecipes')}
+            {translate('latestRecipes')}
           </Title>
         </Box>
         <RecipeCarousel

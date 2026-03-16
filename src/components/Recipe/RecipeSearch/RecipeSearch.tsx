@@ -34,7 +34,7 @@ const RecipeSearch = ({
   labelOptions = [],
   loading = false,
 }: RecipeSearchProps) => {
-  const t = useTranslations('recipeSearch');
+  const translate = useTranslations('recipeSearch');
 
   const [opened, { toggle }] = useDisclosure(false);
 
@@ -77,8 +77,8 @@ const RecipeSearch = ({
         <Group align="flex-end" gap="sm">
           <TextInput
             flex={1}
-            placeholder={t('searchPlaceholder')}
-            label={t('recipeName')}
+            placeholder={translate('searchPlaceholder')}
+            label={translate('recipeName')}
             leftSection={<IconSearch size={16} stroke={1.5} />}
             key={form.key('title')}
             {...form.getInputProps('title')}
@@ -89,13 +89,13 @@ const RecipeSearch = ({
             size="lg"
             onClick={toggle}
             type="button"
-            aria-label={t('toggleFilters')}
+            aria-label={translate('toggleFilters')}
             className={classes.filterToggleBtn}
           >
             {opened ? <IconFilterOff size={20} /> : <IconFilter size={20} />}
           </ActionIcon>
           <Button type="submit" loading={loading} className={classes.searchBtn}>
-            {t('search')}
+            {translate('search')}
           </Button>
         </Group>
 
@@ -103,7 +103,7 @@ const RecipeSearch = ({
           <Box pt="sm">
             <Group justify="space-between" mb="sm">
               <Text fw={500} size="sm">
-                {t('advancedFilters')}
+                {translate('advancedFilters')}
               </Text>
               <Button
                 variant="subtle"
@@ -113,21 +113,21 @@ const RecipeSearch = ({
                 onClick={handleClear}
                 rightSection={<IconX size={14} />}
               >
-                {t('clearFilters')}
+                {translate('clearFilters')}
               </Button>
             </Group>
             <Group grow align="flex-start" className={classes.filterRow}>
               <Select
-                label={t('category')}
-                placeholder={t('categoryPlaceholder')}
+                label={translate('category')}
+                placeholder={translate('categoryPlaceholder')}
                 data={categoryOptions}
                 clearable
                 key={form.key('categoryKey')}
                 {...form.getInputProps('categoryKey')}
               />
               <Select
-                label={t('difficulty')}
-                placeholder={t('difficultyPlaceholder')}
+                label={translate('difficulty')}
+                placeholder={translate('difficultyPlaceholder')}
                 data={difficultyOptions}
                 clearable
                 key={form.key('difficultyLevelKey')}
@@ -141,8 +141,8 @@ const RecipeSearch = ({
               className={classes.filterRow}
             >
               <MultiSelect
-                label={t('labels')}
-                placeholder={t('labelsPlaceholder')}
+                label={translate('labels')}
+                placeholder={translate('labelsPlaceholder')}
                 data={labelOptions}
                 clearable
                 searchable
@@ -150,8 +150,8 @@ const RecipeSearch = ({
                 {...form.getInputProps('labelKeys')}
               />
               <NumberInput
-                label={t('maxCookingTime')}
-                placeholder={t('maxCookingTimePlaceholder')}
+                label={translate('maxCookingTime')}
+                placeholder={translate('maxCookingTimePlaceholder')}
                 min={0}
                 hideControls
                 key={form.key('maxCookingTime')}
@@ -166,7 +166,7 @@ const RecipeSearch = ({
               mt="md"
               className={classes.applyBtn}
             >
-              {t('applyFilters')}
+              {translate('applyFilters')}
             </Button>
           </Box>
         </Collapse>

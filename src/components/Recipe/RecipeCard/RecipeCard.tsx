@@ -15,7 +15,7 @@ import classes from './RecipeCard.module.css';
 import type { RecipeCardProps } from './types';
 
 const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
-  const t = useTranslations('misc');
+  const translate = useTranslations('misc');
 
   const {
     id,
@@ -66,7 +66,7 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
       <Box p="sm" pb="md">
         <Group justify="space-between" mb={4}>
           <Badge variant="light" size="sm" className={classes.badge}>
-            {t(`category-${category.key}`)}
+            {translate(`category-${category.key}`)}
           </Badge>
           <Badge
             variant="light"
@@ -74,7 +74,7 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
             size="sm"
             className={classes.badge}
           >
-            {t(`level-${difficultyLevel.key}`)}
+            {translate(`level-${difficultyLevel.key}`)}
           </Badge>
         </Group>
 
