@@ -17,7 +17,9 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default async function EditRecipePage({ params }: EditRecipePageProps) {
+export default async function EditRecipePage({
+  params,
+}: Readonly<EditRecipePageProps>) {
   const { id } = await params;
   return <RecipeEditClient recipeId={id} />;
 }
