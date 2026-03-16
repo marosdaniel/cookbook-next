@@ -1,3 +1,10 @@
+# [2.15.0](https://github.com/marosdaniel/cookbook-next/compare/v2.14.0...v2.15.0) (2026-03-16)
+
+
+### Features
+
+* Introduce shared recipe types and a reusable BackTo navigation component, replacing the old BackLink. ([c1a0321](https://github.com/marosdaniel/cookbook-next/commit/c1a0321a50dd97c47d1a335913a738d0f2979341))
+
 # [2.14.0](https://github.com/marosdaniel/cookbook-next/compare/v2.13.0...v2.14.0) (2026-03-16)
 
 
