@@ -8,6 +8,7 @@ export const PUBLIC_ROUTES = {
   ABOUT: '/about',
   RECIPES: '/recipes',
   RECIPES_LATEST: '/recipes/latest',
+  RECIPE_DETAIL: '/recipes/:id',
   PRIVACY_POLICY: '/privacy-policy',
   COOKIE_POLICY: '/cookie-policy',
   TERMS_OF_SERVICE: '/terms-of-service',

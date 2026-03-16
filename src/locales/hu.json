@@ -108,6 +108,23 @@
     "ratingError": "Hiba történt",
     "ratingErrorMessage": "Nem sikerült menteni az értékelést."
   },
+  "recipeDetail": {
+    "ingredients": "Hozzávalók",
+    "servings": "Adagok",
+    "preparationSteps": "Elkészítés",
+    "cookingTime": "{time} perc",
+    "servingsCount": "{count} adag",
+    "stepNumber": "{number}. lépés",
+    "rateThisRecipe": "Értékeld a receptet",
+    "editRecipe": "Recept szerkesztése",
+    "shareRecipe": "Megosztás",
+    "backToRecipes": "Vissza a receptekhez",
+    "notFound": "A recept nem található",
+    "notFoundDescription": "A keresett recept nem létezik vagy eltávolításra került.",
+    "checkedOff": "{count} / {total} kipipálva",
+    "loadError": "Nem sikerült betölteni a receptet",
+    "videoTitle": "Videó"
+  },
   "response": {
     "success": "Siker",
     "error": "Hiba",

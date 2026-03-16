@@ -107,6 +107,23 @@
     "ratingError": "Bewertungsfehler",
     "ratingErrorMessage": "Deine Bewertung konnte nicht gespeichert werden."
   },
+  "recipeDetail": {
+    "ingredients": "Zutaten",
+    "servings": "Portionen",
+    "preparationSteps": "Zubereitung",
+    "cookingTime": "{time} Min.",
+    "servingsCount": "{count} Portionen",
+    "stepNumber": "Schritt {number}",
+    "rateThisRecipe": "Rezept bewerten",
+    "editRecipe": "Rezept bearbeiten",
+    "shareRecipe": "Teilen",
+    "backToRecipes": "Zurück zu Rezepten",
+    "notFound": "Rezept nicht gefunden",
+    "notFoundDescription": "Das gesuchte Rezept existiert nicht oder wurde entfernt.",
+    "checkedOff": "{count} von {total} abgehakt",
+    "loadError": "Rezept konnte nicht geladen werden",
+    "videoTitle": "Video"
+  },
   "response": {
     "success": "Erfolg",
     "error": "Fehler",

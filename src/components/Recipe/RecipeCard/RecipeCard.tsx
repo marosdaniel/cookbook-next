@@ -10,6 +10,7 @@ import {
 import type { Route } from 'next';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { getDifficultyColor } from '@/app/recipes/[id]/utils';
 import { FavoriteButton } from '@/components/buttons/FavoriteButton';
 import classes from './RecipeCard.module.css';
 import type { RecipeCardProps } from './types';
@@ -31,13 +32,7 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
     isFavorite = false,
   } = recipe;
 
-  let difficultyColor = 'green';
-  if (difficultyLevel.key === 'medium') {
-    difficultyColor = 'yellow';
-  } else if (difficultyLevel.key === 'hard') {
-    difficultyColor = 'red';
-  }
-
+  const difficultyColor = getDifficultyColor(difficultyLevel.key);
   return (
     <Card
       component={Link}
