@@ -12,9 +12,9 @@ import { recipeFormValidationSchema } from '@/lib/validation/validation';
 import { useRecipeFormHook } from '../FormContext';
 import type {
   DraftState,
+  FormIngredient,
+  FormPreparationStep,
   RecipeFormValues,
-  TIngredient,
-  TPreparationStep,
   UseRecipeFormProps,
 } from '../types';
 import {
@@ -184,7 +184,7 @@ export function useRecipeForm({
 
   const addIngredient = useCallback(() => {
     const f = formRef.current;
-    const newIngredient: TIngredient = {
+    const newIngredient: FormIngredient = {
       localId: uuidv4(),
       name: '',
       quantity: '',
@@ -195,7 +195,7 @@ export function useRecipeForm({
 
   const addStep = useCallback(() => {
     const f = formRef.current;
-    const newStep: TPreparationStep = {
+    const newStep: FormPreparationStep = {
       localId: uuidv4(),
       description: '',
       order: f.getValues().preparationSteps.length + 1,

@@ -3,10 +3,7 @@ import { IconChefHat } from '@tabler/icons-react';
 import type { Route } from 'next';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-
-interface RecipeNotFoundProps {
-  errorMessage?: string;
-}
+import type { RecipeNotFoundProps } from '../types';
 
 export function RecipeNotFound({
   errorMessage,

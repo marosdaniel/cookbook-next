@@ -1,11 +1,7 @@
 import { Box, Title } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 import classes from '../RecipeDetail.module.css';
-
-interface RecipeVideoProps {
-  youtubeId: string;
-  title: string;
-}
+import type { RecipeVideoProps } from '../types';
 
 export function RecipeVideo({ youtubeId, title }: Readonly<RecipeVideoProps>) {
   const translate = useTranslations('recipeDetail');

@@ -9,9 +9,10 @@ import {
   Stack,
   Title,
 } from '@mantine/core';
+import type { Route } from 'next';
 import { useTranslations } from 'next-intl';
+import { BackTo } from '@/components/buttons/BackTo';
 import RecipeRating from '@/components/Recipe/Rating';
-import { BackLink } from './components/BackLink';
 import { RecipeHero } from './components/RecipeHero';
 import { RecipeIngredients } from './components/RecipeIngredients';
 import { RecipeNotFound } from './components/RecipeNotFound';
@@ -55,7 +56,7 @@ const RecipeDetailClient = ({
   return (
     <Container size="xl" py="xl">
       <Stack gap="xl">
-        <BackLink />
+        <BackTo href={'/recipes' as Route} text={translate('backToRecipes')} />
 
         <RecipeHero recipe={recipe} isOwner={isOwner} />
 

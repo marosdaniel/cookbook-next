@@ -19,13 +19,8 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { FavoriteButton } from '@/components/buttons/FavoriteButton';
 import classes from '../RecipeDetail.module.css';
-import type { Recipe } from '../types';
+import type { RecipeHeroProps } from '../types';
 import { getDifficultyColor } from '../utils';
-
-interface RecipeHeroProps {
-  recipe: Recipe;
-  isOwner: boolean;
-}
 
 export function RecipeHero({ recipe, isOwner }: Readonly<RecipeHeroProps>) {
   const translate = useTranslations('recipeDetail');

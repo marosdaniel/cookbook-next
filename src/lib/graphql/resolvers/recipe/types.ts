@@ -1,19 +1,14 @@
-export interface IngredientInput {
-  localId: string;
-  name: string;
-  quantity: number;
-  unit: string;
-}
+import type {
+  RecipeIngredient,
+  RecipeMetadataOption,
+  RecipePreparationStep,
+} from '@/types/recipe';
 
-export interface PreparationStepInput {
-  description: string;
-  order: number;
-}
+export type IngredientInput = RecipeIngredient;
 
-export interface MetaInputPartial {
-  value: string;
-  label: string;
-}
+export type PreparationStepInput = RecipePreparationStep;
+
+export type MetaInputPartial = RecipeMetadataOption;
 
 export interface RecipeInputBase {
   title: string;

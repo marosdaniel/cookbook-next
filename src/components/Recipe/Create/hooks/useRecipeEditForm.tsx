@@ -11,10 +11,10 @@ import { recipeFormValidationSchema } from '@/lib/validation/validation';
 import { useRecipeFormHook } from '../FormContext';
 import type {
   ComposerSection,
+  FormIngredient,
+  FormPreparationStep,
+  MetadataOption,
   RecipeFormValues,
-  TIngredient,
-  TMetadataCleaned,
-  TPreparationStep,
 } from '../types';
 import { computeCompletion, transformValuesToInput } from '../utils';
 
@@ -22,7 +22,7 @@ export interface UseRecipeEditFormProps {
   recipeId: string;
   initialValues: RecipeFormValues;
   onSectionChange: (section: ComposerSection) => void;
-  labels: TMetadataCleaned[];
+  labels: MetadataOption[];
 }
 
 export function useRecipeEditForm({
@@ -107,7 +107,7 @@ export function useRecipeEditForm({
 
   const addIngredient = useCallback(() => {
     const f = formRef.current;
-    const newIngredient: TIngredient = {
+    const newIngredient: FormIngredient = {
       localId: uuidv4(),
       name: '',
       quantity: '',
@@ -118,7 +118,7 @@ export function useRecipeEditForm({
 
   const addStep = useCallback(() => {
     const f = formRef.current;
-    const newStep: TPreparationStep = {
+    const newStep: FormPreparationStep = {
       localId: uuidv4(),
       description: '',
       order: f.getValues().preparationSteps.length + 1,

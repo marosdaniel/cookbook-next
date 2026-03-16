@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
+import type { RecipeFormSource, RecipeTaxonomyItem } from '@/types/recipe';
 import type {
   ComposerSection,
+  MetadataOption,
   RecipeFormValues,
-  TMetadataCleaned,
 } from './types';
 
 /* ─── Constants ───────────────────────────────── */
@@ -65,9 +66,9 @@ export function sectionCompletion(
 }
 
 export function toCleanedOptions(
-  items: { key: string; label: string }[],
+  items: RecipeTaxonomyItem[],
   t?: (key: string) => string,
-): TMetadataCleaned[] {
+): MetadataOption[] {
   return items.map((m) => {
     const translation = t ? t(m.key) : m.label;
     return {
@@ -79,7 +80,7 @@ export function toCleanedOptions(
 
 export function transformValuesToInput(
   values: RecipeFormValues,
-  labels: TMetadataCleaned[],
+  labels: MetadataOption[],
 ) {
   return {
     title: values.title,
@@ -132,24 +133,7 @@ export function getStatusColor(isComplete: boolean, isActive: boolean): string {
  * Transforms a recipe fetched from the server (GraphQL response)
  * into `RecipeFormValues` suitable for Formik.
  */
-export function recipeToFormValues(recipe: {
-  title: string;
-  description?: string | null;
-  imgSrc?: string | null;
-  cookingTime: number;
-  servings: number;
-  youtubeLink?: string | null;
-  category: { key: string; label: string };
-  difficultyLevel: { key: string; label: string };
-  labels: { key: string; label: string }[];
-  ingredients: {
-    localId: string;
-    name: string;
-    quantity: number;
-    unit: string;
-  }[];
-  preparationSteps: { description: string; order: number }[];
-}): RecipeFormValues {
+export function recipeToFormValues(recipe: RecipeFormSource): RecipeFormValues {
   return {
     title: recipe.title,
     description: recipe.description ?? '',

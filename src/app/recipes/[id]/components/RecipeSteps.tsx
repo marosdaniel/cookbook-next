@@ -1,11 +1,7 @@
 import { Box, Paper, Stack, Text, Title } from '@mantine/core';
 import { useTranslations } from 'next-intl';
 import classes from '../RecipeDetail.module.css';
-import type { PreparationStep } from '../types';
-
-interface RecipeStepsProps {
-  steps: PreparationStep[];
-}
+import type { RecipeStepsProps } from '../types';
 
 export function RecipeSteps({ steps }: Readonly<RecipeStepsProps>) {
   const translate = useTranslations('recipeDetail');

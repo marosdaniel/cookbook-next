@@ -1,25 +1,27 @@
 import type { UseFormReturnType } from '@mantine/form';
 import type { RefObject } from 'react';
+import type {
+  RecipeIngredient,
+  RecipeIngredientId,
+  RecipeMetadataOption,
+  RecipePreparationStep,
+} from '@/types/recipe';
 
-export interface TMetadataCleaned {
-  value: string;
-  label: string;
+export type MetadataOption = RecipeMetadataOption;
+
+interface FormListItem {
+  localId: RecipeIngredientId;
 }
 
-interface TListItem {
-  localId: string;
-}
-
-export interface TIngredient extends TListItem {
-  name: string;
+export interface FormIngredient
+  extends Omit<RecipeIngredient, 'quantity'>,
+    FormListItem {
   quantity: number | '';
-  unit: string;
 }
 
-export interface TPreparationStep extends TListItem {
-  description: string;
-  order: number;
-}
+export interface FormPreparationStep
+  extends RecipePreparationStep,
+    FormListItem {}
 
 export interface RecipeCompletion {
   done: number;
@@ -33,12 +35,12 @@ export interface RecipeFormValues {
   imgSrc: string;
   servings: number | '';
   cookingTime: number | '';
-  difficultyLevel: TMetadataCleaned | null;
-  category: TMetadataCleaned | null;
+  difficultyLevel: MetadataOption | null;
+  category: MetadataOption | null;
   labels: string[]; // array of keys
   youtubeLink: string;
-  ingredients: TIngredient[];
-  preparationSteps: TPreparationStep[];
+  ingredients: FormIngredient[];
+  preparationSteps: FormPreparationStep[];
 }
 
 export type ComposerMode = 'create' | 'edit';
@@ -48,7 +50,7 @@ export type ComposerSection = 'basics' | 'media' | 'ingredients' | 'steps';
 export interface UseRecipeFormProps {
   metadataLoaded: boolean;
   onSectionChange: (section: ComposerSection) => void;
-  labels: TMetadataCleaned[];
+  labels: MetadataOption[];
 }
 
 export interface DraftState {
@@ -81,6 +83,6 @@ export interface RecipeComposerProps {
 }
 
 export interface PreviewProps {
-  labels: TMetadataCleaned[];
+  labels: MetadataOption[];
   values: RecipeFormValues;
 }

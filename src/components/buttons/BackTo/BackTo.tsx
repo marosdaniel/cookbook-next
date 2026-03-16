@@ -1,26 +1,25 @@
 import { ActionIcon, Group, Text } from '@mantine/core';
 import { IconArrowLeft } from '@tabler/icons-react';
-import type { Route } from 'next';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import type { BackToProps } from './types';
 
-export function BackLink() {
-  const translate = useTranslations('recipeDetail');
-
+const BackTo = ({ href, text }: Readonly<BackToProps>) => {
   return (
     <Group>
       <ActionIcon
         component={Link}
-        href={'/recipes' as Route}
+        href={href}
         variant="subtle"
         color="gray"
         size="lg"
       >
         <IconArrowLeft size={20} />
       </ActionIcon>
-      <Text component={Link} href={'/recipes' as Route} c="dimmed" size="sm">
-        {translate('backToRecipes')}
+      <Text component={Link} href={href} c="dimmed" size="sm">
+        {text}
       </Text>
     </Group>
   );
-}
+};
+
+export default BackTo;

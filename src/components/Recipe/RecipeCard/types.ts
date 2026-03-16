@@ -1,19 +1,6 @@
-export interface RecipeCardData {
-  id: string;
-  title: string;
-  description?: string | null;
-  imgSrc?: string | null;
-  cookingTime: number;
-  servings: number;
-  createdBy: string;
-  category: {
-    key: string;
-    label: string;
-  };
-  difficultyLevel: {
-    key: string;
-    label: string;
-  };
+import type { RecipeCardDataBase } from '@/types/recipe';
+
+export interface RecipeCardData extends RecipeCardDataBase {
   averageRating?: number;
   ratingsCount?: number;
   isFavorite?: boolean;

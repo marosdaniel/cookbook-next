@@ -12,21 +12,11 @@ import {
 import { IconMinus, IconPlus } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import classes from '../RecipeDetail.module.css';
-import type { Ingredient } from '../types';
+import type { RecipeIngredientsProps } from '../types';
 import { scaleQuantity } from '../utils';
 
 const SERVING_MIN = 1;
 const SERVING_MAX = 20;
-
-interface RecipeIngredientsProps {
-  ingredients: Ingredient[];
-  servingMultiplier: number;
-  adjustedServings: number;
-  checkedIngredients: Set<string>;
-  onToggleIngredient: (localId: string) => void;
-  onIncrementServings: () => void;
-  onDecrementServings: () => void;
-}
 
 export function RecipeIngredients({
   ingredients,

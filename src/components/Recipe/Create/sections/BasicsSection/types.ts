@@ -1,8 +1,8 @@
-import type { TMetadataCleaned } from '../../types';
+import type { MetadataOption } from '../../types';
 
 export interface BasicsSectionProps {
-  categories: TMetadataCleaned[];
-  levels: TMetadataCleaned[];
-  labels: TMetadataCleaned[];
+  categories: MetadataOption[];
+  levels: MetadataOption[];
+  labels: MetadataOption[];
   onNext: () => void;
 }

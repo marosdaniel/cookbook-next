@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { RecipeFormValues, TMetadataCleaned } from './types';
+import type { MetadataOption, RecipeFormValues } from './types';
 import {
   computeCompletion,
   getProgressColor,
@@ -30,7 +30,7 @@ const mockRecipeFormValues: RecipeFormValues = {
   ],
 };
 
-const mockLabels: TMetadataCleaned[] = [
+const mockLabels: MetadataOption[] = [
   { value: 'vegetarian', label: 'Vegetarian' },
   { value: 'gluten-free', label: 'Gluten Free' },
 ];
