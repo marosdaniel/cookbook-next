@@ -1,4 +1,3 @@
-/* ─── Hero section ─────────────────────────────── */
 .hero {
   position: relative;
   width: 100%;
@@ -114,12 +113,11 @@
   border-radius: var(--mantine-radius-xl);
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(8px);
-  color: white;
+  color: var(--mantine-color-gray-2);
   font-size: var(--mantine-font-size-sm);
   font-weight: 500;
 }
 
-/* ─── Ingredients ──────────────────────────────── */
 .ingredientsCard {
   position: sticky;
   top: 80px;
@@ -131,25 +129,29 @@
   }
 }
 
-.servingsControl {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--mantine-spacing-xs);
-  user-select: none;
-}
-
 .ingredientItem {
   display: flex;
   align-items: center;
   gap: var(--mantine-spacing-sm);
-  padding: var(--mantine-spacing-xs) 0;
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-xs);
   border-bottom: 1px solid var(--mantine-color-default-border);
-  transition: opacity 200ms ease;
+  border-radius: var(--mantine-radius-sm);
+  transition:
+    opacity 200ms ease,
+    background-color 150ms ease;
   cursor: pointer;
 }
 
 .ingredientItem:last-child {
   border-bottom: none;
+}
+
+.ingredientItem:hover {
+  background-color: var(--mantine-color-gray-0);
+}
+
+[data-mantine-color-scheme='dark'] .ingredientItem:hover {
+  background-color: var(--mantine-color-dark-5);
 }
 
 .ingredientChecked {
@@ -166,10 +168,17 @@
   color: var(--mantine-color-dimmed);
 }
 
-/* ─── Preparation steps ────────────────────────── */
 .stepCard {
   position: relative;
   overflow: visible;
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.stepCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--mantine-shadow-md);
 }
 
 .stepWatermark {
@@ -205,7 +214,6 @@
   }
 }
 
-/* ─── Labels / pills row ──────────────────────── */
 .labelPill {
   font-weight: 600;
   text-transform: uppercase;
@@ -213,7 +221,6 @@
   font-size: 0.65rem;
 }
 
-/* ─── Video embed ──────────────────────────────── */
 .videoWrapper {
   position: relative;
   padding-bottom: 56.25%;

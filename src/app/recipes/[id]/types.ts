@@ -25,6 +25,10 @@ export interface RecipeDetailData {
   };
 }
 
+export type Recipe = RecipeDetailData['getRecipeById'];
+export type Ingredient = Recipe['ingredients'][number];
+export type PreparationStep = Recipe['preparationSteps'][number];
+
 export interface RecipeDetailClientProps {
   recipeId: string;
 }

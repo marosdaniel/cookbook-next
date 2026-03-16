@@ -15,3 +15,11 @@ export function getDifficultyColor(key: string) {
   if (key === 'hard') return 'red';
   return 'green';
 }
+
+export function scaleQuantity(quantity: number, multiplier: number): number {
+  return +(quantity * multiplier).toFixed(2);
+}
+
+export function sortByOrder<T extends { order: number }>(items: T[]): T[] {
+  return [...items].sort((a, b) => a.order - b.order);
+}
