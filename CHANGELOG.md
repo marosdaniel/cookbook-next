@@ -1,3 +1,11 @@
+# [2.14.0](https://github.com/marosdaniel/cookbook-next/compare/v2.13.0...v2.14.0) (2026-03-16)
+
+
+### Features
+
+* Introduce recipe detail page, route, and translations, extracting difficulty color logic to a utility. ([8ae8fbe](https://github.com/marosdaniel/cookbook-next/commit/8ae8fbe960588d36ef043327810a9cd05f413f8a))
+* refactor recipe detail page by extracting logic into a custom hook and breaking down UI into dedicated components. ([c3446e4](https://github.com/marosdaniel/cookbook-next/commit/c3446e4d89aaed479500fb2f10533067892d7c0c))
+
 # [2.13.0](https://github.com/marosdaniel/cookbook-next/compare/v2.12.0...v2.13.0) (2026-03-16)
 
 
