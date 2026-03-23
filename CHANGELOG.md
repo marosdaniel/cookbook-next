@@ -1,3 +1,10 @@
+# [2.16.0](https://github.com/marosdaniel/cookbook-next/compare/v2.15.0...v2.16.0) (2026-03-23)
+
+
+### Features
+
+* Implement comprehensive recipe metadata, time fields, text fields, and SEO options for recipe creation and editing. ([05cdfbb](https://github.com/marosdaniel/cookbook-next/commit/05cdfbb28e8d288aac3adcad5fa01bf71dc24705))
+
 # [2.15.0](https://github.com/marosdaniel/cookbook-next/compare/v2.14.0...v2.15.0) (2026-03-16)
 
 
