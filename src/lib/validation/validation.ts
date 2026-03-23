@@ -118,6 +118,12 @@ export const signUpValidationSchema = baseUserSchema
     path: ['confirmPassword'],
   });
 
+/* ─── Shared sub-schemas ──────────────────────── */
+const metadataOptionSchema = z.object({
+  value: z.string(),
+  label: z.string(),
+});
+
 /* ─── Recipe Schema ───────────────────────────── */
 export const recipeFormValidationSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -125,18 +131,10 @@ export const recipeFormValidationSchema = z.object({
   imgSrc: z.url({ message: 'Invalid URL' }).optional().or(z.literal('')),
   cookingTime: z.coerce.number().positive('Must be positive'),
   servings: z.coerce.number().positive('Must be positive'),
-  difficultyLevel: z
-    .object({
-      value: z.string(),
-      label: z.string(),
-    })
+  difficultyLevel: metadataOptionSchema
     .nullable()
     .refine((val) => val !== null, { message: 'Difficulty is required' }),
-  category: z
-    .object({
-      value: z.string(),
-      label: z.string(),
-    })
+  category: metadataOptionSchema
     .nullable()
     .refine((val) => val !== null, { message: 'Category is required' }),
   labels: z.array(z.string()),
@@ -147,6 +145,8 @@ export const recipeFormValidationSchema = z.object({
         name: z.string().min(1, 'Name is required'),
         quantity: z.coerce.number().positive('Must be positive'),
         unit: z.string().min(1, 'Unit is required'),
+        isOptional: z.boolean().optional(),
+        note: z.string().optional().or(z.literal('')),
       }),
     )
     .min(1, 'At least one ingredient is required'),
@@ -167,4 +167,51 @@ export const recipeFormValidationSchema = z.object({
     )
     .optional()
     .or(z.literal('')),
+
+  // New time fields (optional, >= 0)
+  prepTimeMinutes: z.coerce
+    .number()
+    .min(0, 'Must be >= 0')
+    .optional()
+    .or(z.literal('')),
+  cookTimeMinutes: z.coerce
+    .number()
+    .min(0, 'Must be >= 0')
+    .optional()
+    .or(z.literal('')),
+  restTimeMinutes: z.coerce
+    .number()
+    .min(0, 'Must be >= 0')
+    .optional()
+    .or(z.literal('')),
+
+  // New metadata fields
+  servingUnit: metadataOptionSchema.nullable().optional(),
+  cuisine: metadataOptionSchema.nullable().optional(),
+  dietaryFlags: z.array(z.string()).optional(),
+  allergens: z.array(z.string()).optional(),
+  equipment: z.array(z.string()).optional(),
+  costLevel: metadataOptionSchema.nullable().optional(),
+
+  // Text fields
+  tips: z.string().optional().or(z.literal('')),
+  substitutions: z.string().optional().or(z.literal('')),
+
+  // SEO fields
+  slug: z
+    .string()
+    .regex(/^[a-z0-9-]*$/, 'Only lowercase letters, numbers and hyphens')
+    .optional()
+    .or(z.literal('')),
+  seoTitle: z
+    .string()
+    .max(60, 'Max 60 characters')
+    .optional()
+    .or(z.literal('')),
+  seoDescription: z
+    .string()
+    .max(160, 'Max 160 characters')
+    .optional()
+    .or(z.literal('')),
+  socialImage: z.url({ message: 'Invalid URL' }).optional().or(z.literal('')),
 });

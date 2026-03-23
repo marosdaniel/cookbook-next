@@ -11,6 +11,24 @@ export const useUnits = () => useAppSelector((state) => state.metadata.units);
 
 export const useLevels = () => useAppSelector((state) => state.metadata.levels);
 
+export const useCuisines = () =>
+  useAppSelector((state) => state.metadata.cuisines);
+
+export const useServingUnits = () =>
+  useAppSelector((state) => state.metadata.servingUnits);
+
+export const useDietaryFlags = () =>
+  useAppSelector((state) => state.metadata.dietaryFlags);
+
+export const useAllergens = () =>
+  useAppSelector((state) => state.metadata.allergens);
+
+export const useEquipment = () =>
+  useAppSelector((state) => state.metadata.equipment);
+
+export const useCostLevels = () =>
+  useAppSelector((state) => state.metadata.costLevels);
+
 export const useMetadataLoading = () =>
   useAppSelector((state) => state.metadata.isLoading);
 

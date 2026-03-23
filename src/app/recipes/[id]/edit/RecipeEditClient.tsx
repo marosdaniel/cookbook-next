@@ -9,7 +9,10 @@ import { useRecipeEditForm } from '@/components/Recipe/Create/hooks/useRecipeEdi
 import { useRecipeMetadata } from '@/components/Recipe/Create/hooks/useRecipeMetadata';
 import { RecipeComposer } from '@/components/Recipe/Create/RecipeComposer';
 import type { ComposerSection } from '@/components/Recipe/Create/types';
-import { recipeToFormValues } from '@/components/Recipe/Create/utils';
+import {
+  EMPTY_FORM_VALUES,
+  recipeToFormValues,
+} from '@/components/Recipe/Create/utils';
 import { GET_RECIPE_BY_ID } from '@/lib/graphql/queries';
 import type { RecipeByIdData, RecipeEditClientProps } from './types';
 
@@ -54,19 +57,7 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
   /* Form hook – only create after we have initial values */
   const editForm = useRecipeEditForm({
     recipeId,
-    initialValues: initialValues ?? {
-      title: '',
-      description: '',
-      imgSrc: '',
-      cookingTime: '',
-      servings: '',
-      difficultyLevel: null,
-      category: null,
-      labels: [],
-      youtubeLink: '',
-      ingredients: [],
-      preparationSteps: [],
-    },
+    initialValues: initialValues ?? EMPTY_FORM_VALUES,
     onSectionChange: goToSection,
     labels,
   });

@@ -1,5 +1,7 @@
+import type { MetadataOption } from '../../types';
+
 export interface IngredientsSectionProps {
-  unitSuggestions: string[];
+  unitOptions: MetadataOption[];
   onAdd: () => void;
   onBack: () => void;
   onNext: () => void;

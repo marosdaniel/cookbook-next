@@ -42,6 +42,19 @@ vi.mock('../utils', () => ({
   computeCompletion: vi.fn(() => ({ done: 5, total: 8, percent: 62 })),
   transformValuesToInput: vi.fn((values) => values),
   DRAFT_STORAGE_KEY: 'cookbook:create:draft:v2',
+  EMPTY_FORM_VALUES: {
+    title: '',
+    description: '',
+    imgSrc: '',
+    cookingTime: '',
+    servings: '',
+    difficultyLevel: null,
+    category: null,
+    labels: [],
+    youtubeLink: '',
+    ingredients: [],
+    preparationSteps: [],
+  },
 }));
 
 vi.mock('@/lib/graphql/mutations', () => ({

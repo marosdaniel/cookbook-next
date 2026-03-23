@@ -8,6 +8,12 @@ const mockUseCategories = vi.fn();
 const mockUseLabels = vi.fn();
 const mockUseLevels = vi.fn();
 const mockUseUnits = vi.fn();
+const mockUseCuisines = vi.fn();
+const mockUseServingUnits = vi.fn();
+const mockUseDietaryFlags = vi.fn();
+const mockUseAllergens = vi.fn();
+const mockUseEquipment = vi.fn();
+const mockUseCostLevels = vi.fn();
 const mockUseMetadataLoading = vi.fn();
 const mockUseMetadataLoaded = vi.fn();
 
@@ -20,6 +26,12 @@ vi.mock('@/lib/store/metadata', () => ({
   useLabels: () => mockUseLabels(),
   useLevels: () => mockUseLevels(),
   useUnits: () => mockUseUnits(),
+  useCuisines: () => mockUseCuisines(),
+  useServingUnits: () => mockUseServingUnits(),
+  useDietaryFlags: () => mockUseDietaryFlags(),
+  useAllergens: () => mockUseAllergens(),
+  useEquipment: () => mockUseEquipment(),
+  useCostLevels: () => mockUseCostLevels(),
   useMetadataLoading: () => mockUseMetadataLoading(),
   useMetadataLoaded: () => mockUseMetadataLoaded(),
 }));
@@ -42,6 +54,12 @@ describe('useRecipeMetadata', () => {
     mockUseLabels.mockReturnValue([]);
     mockUseLevels.mockReturnValue([]);
     mockUseUnits.mockReturnValue([]);
+    mockUseCuisines.mockReturnValue([]);
+    mockUseServingUnits.mockReturnValue([]);
+    mockUseDietaryFlags.mockReturnValue([]);
+    mockUseAllergens.mockReturnValue([]);
+    mockUseEquipment.mockReturnValue([]);
+    mockUseCostLevels.mockReturnValue([]);
     mockUseMetadataLoading.mockReturnValue(false);
     mockUseMetadataLoaded.mockReturnValue(true);
   });
@@ -52,7 +70,12 @@ describe('useRecipeMetadata', () => {
     expect(result.current.categories).toEqual([]);
     expect(result.current.levels).toEqual([]);
     expect(result.current.labels).toEqual([]);
-    expect(result.current.unitSuggestions).toEqual([]);
+    expect(result.current.cuisines).toEqual([]);
+    expect(result.current.servingUnits).toEqual([]);
+    expect(result.current.dietaryFlags).toEqual([]);
+    expect(result.current.allergens).toEqual([]);
+    expect(result.current.equipment).toEqual([]);
+    expect(result.current.costLevels).toEqual([]);
     expect(result.current.metadataLoading).toBe(false);
     expect(result.current.metadataLoaded).toBe(true);
   });
@@ -93,7 +116,7 @@ describe('useRecipeMetadata', () => {
     ]);
   });
 
-  it('should transform unit suggestions', () => {
+  it('should transform unit options', () => {
     const unitsData = [
       { key: 'gram', label: 'g' },
       { key: 'liter', label: 'L' },
@@ -107,10 +130,13 @@ describe('useRecipeMetadata', () => {
 
     const { result } = renderHook(() => useRecipeMetadata());
 
-    expect(result.current.unitSuggestions).toEqual(['gramm', 'Liter']);
+    expect(result.current.unitOptions).toEqual([
+      { value: 'gram', label: 'gramm' },
+      { value: 'liter', label: 'Liter' },
+    ]);
   });
 
-  it('should filter out empty unit suggestions', () => {
+  it('should transform unit options with fallback for untranslated items', () => {
     const unitsData = [
       { key: 'gram', label: 'g' },
       { key: 'unknown', label: 'U' },
@@ -123,6 +149,9 @@ describe('useRecipeMetadata', () => {
 
     const { result } = renderHook(() => useRecipeMetadata());
 
-    expect(result.current.unitSuggestions).toEqual(['gramm']);
+    expect(result.current.unitOptions).toEqual([
+      { value: 'gram', label: 'gramm' },
+      { value: 'unknown', label: 'U' }, // Falls back to original label
+    ]);
   });
 });

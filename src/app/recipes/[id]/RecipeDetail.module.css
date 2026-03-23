@@ -82,7 +82,7 @@
   );
 }
 
-[data-mantine-color-scheme='dark'] .heroPlaceholder {
+[data-mantine-color-scheme="dark"] .heroPlaceholder {
   background: linear-gradient(
     135deg,
     var(--mantine-color-dark-6) 0%,
@@ -150,7 +150,7 @@
   background-color: var(--mantine-color-gray-0);
 }
 
-[data-mantine-color-scheme='dark'] .ingredientItem:hover {
+[data-mantine-color-scheme="dark"] .ingredientItem:hover {
   background-color: var(--mantine-color-dark-5);
 }
 
@@ -194,7 +194,7 @@
   z-index: 0;
 }
 
-[data-mantine-color-scheme='dark'] .stepWatermark {
+[data-mantine-color-scheme="dark"] .stepWatermark {
   color: var(--mantine-color-dark-5);
 }
 

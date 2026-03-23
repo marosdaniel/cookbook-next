@@ -29,9 +29,15 @@ export async function shouldRedirectLoginToHomeAfterVisit(
   await expect(page.locator('#login-page')).toBeVisible();
 
   // Navigate back to home by clicking the header logo
-  await page.locator('header').getByRole('link', { name: /Cookbook/i }).first().click();
+  await page
+    .locator('header')
+    .getByRole('link', { name: /Cookbook/i })
+    .first()
+    .click();
 
   await expect(page).toHaveURL('/');
   // Verify home page content to ensure successful navigation
-  await expect(page.getByRole('heading', { name: /Latest Recipes/i })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: /Latest Recipes/i }),
+  ).toBeVisible();
 }

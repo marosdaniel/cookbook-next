@@ -20,6 +20,8 @@ type Ingredient {
   name: String!
   quantity: Float!
   unit: String!
+  isOptional: Boolean!
+  note: String
 }
 
 input IngredientInput {
@@ -27,6 +29,8 @@ input IngredientInput {
   name: String!
   quantity: Float!
   unit: String!
+  isOptional: Boolean
+  note: String
 }
 
 type PreparationStep {
@@ -49,6 +53,15 @@ type Category {
 }
 
 type Label {
+  id: ID
+  name: String!
+  key: String!
+  label: String!
+  type: String!
+}
+
+# Reusable metadata type for cuisine, servingUnit, costLevel, etc.
+type MetadataItem {
   id: ID
   name: String!
   key: String!
@@ -80,7 +93,6 @@ type Recipe {
   createdAt: DateTime!
   updatedAt: DateTime!
   createdBy: String!
-  # author: User!
   imgSrc: String
   cookingTime: Int!
   difficultyLevel: DifficultyLevel!
@@ -90,6 +102,30 @@ type Recipe {
   ratingsCount: Int!
   userRating: Float
   isFavorite: Boolean
+
+  # New time fields
+  prepTimeMinutes: Int
+  cookTimeMinutes: Int
+  restTimeMinutes: Int
+  totalTimeMinutes: Int
+
+  # New metadata fields
+  servingUnit: MetadataItem
+  cuisine: MetadataItem
+  dietaryFlags: [MetadataItem]
+  allergens: [MetadataItem]
+  equipment: [MetadataItem]
+  costLevel: MetadataItem
+
+  # Text fields
+  tips: String
+  substitutions: String
+
+  # SEO fields
+  slug: String
+  seoTitle: String
+  seoDescription: String
+  socialImage: String
 }
 
 input RecipeCreateInput {
@@ -104,6 +140,29 @@ input RecipeCreateInput {
   difficultyLevel: MetaInputPartial!
   servings: Int!
   youtubeLink: String
+
+  # New time fields
+  prepTimeMinutes: Int
+  cookTimeMinutes: Int
+  restTimeMinutes: Int
+
+  # New metadata fields
+  servingUnit: MetaInputPartial
+  cuisine: MetaInputPartial
+  dietaryFlags: [MetaInputPartial]
+  allergens: [MetaInputPartial]
+  equipment: [MetaInputPartial]
+  costLevel: MetaInputPartial
+
+  # Text fields
+  tips: String
+  substitutions: String
+
+  # SEO fields
+  slug: String
+  seoTitle: String
+  seoDescription: String
+  socialImage: String
 }
 
 input RecipeEditInput {
@@ -118,6 +177,29 @@ input RecipeEditInput {
   difficultyLevel: MetaInputPartial!
   servings: Int!
   youtubeLink: String
+
+  # New time fields
+  prepTimeMinutes: Int
+  cookTimeMinutes: Int
+  restTimeMinutes: Int
+
+  # New metadata fields
+  servingUnit: MetaInputPartial
+  cuisine: MetaInputPartial
+  dietaryFlags: [MetaInputPartial]
+  allergens: [MetaInputPartial]
+  equipment: [MetaInputPartial]
+  costLevel: MetaInputPartial
+
+  # Text fields
+  tips: String
+  substitutions: String
+
+  # SEO fields
+  slug: String
+  seoTitle: String
+  seoDescription: String
+  socialImage: String
 }
 
 type RecipeData {
@@ -131,6 +213,11 @@ input RecipeFilterInput {
   difficultyLevelKey: String
   labelKeys: [String!]
   maxCookingTime: Int
+  cuisineKey: String
+  costLevelKey: String
+  dietaryFlagKeys: [String!]
+  allergenKeys: [String!]
+  equipmentKeys: [String!]
 }
 
 type Query {

@@ -41,6 +41,29 @@ export interface RecipeFormValues {
   youtubeLink: string;
   ingredients: FormIngredient[];
   preparationSteps: FormPreparationStep[];
+
+  // New time fields
+  prepTimeMinutes: number | '';
+  cookTimeMinutes: number | '';
+  restTimeMinutes: number | '';
+
+  // New metadata fields
+  servingUnit: MetadataOption | null;
+  cuisine: MetadataOption | null;
+  dietaryFlags: string[];
+  allergens: string[];
+  equipment: string[];
+  costLevel: MetadataOption | null;
+
+  // Text fields
+  tips: string;
+  substitutions: string;
+
+  // SEO fields
+  slug: string;
+  seoTitle: string;
+  seoDescription: string;
+  socialImage: string;
 }
 
 export type ComposerMode = 'create' | 'edit';

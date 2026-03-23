@@ -66,6 +66,8 @@ export const GET_RECIPE_BY_ID = gql`
         name
         quantity
         unit
+        isOptional
+        note
       }
       preparationSteps {
         description
@@ -75,6 +77,40 @@ export const GET_RECIPE_BY_ID = gql`
       ratingsCount
       userRating
       isFavorite
+      prepTimeMinutes
+      cookTimeMinutes
+      restTimeMinutes
+      totalTimeMinutes
+      servingUnit {
+        key
+        label
+      }
+      cuisine {
+        key
+        label
+      }
+      dietaryFlags {
+        key
+        label
+      }
+      allergens {
+        key
+        label
+      }
+      equipment {
+        key
+        label
+      }
+      costLevel {
+        key
+        label
+      }
+      tips
+      substitutions
+      slug
+      seoTitle
+      seoDescription
+      socialImage
     }
   }
 `;

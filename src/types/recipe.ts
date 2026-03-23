@@ -13,6 +13,8 @@ export interface RecipeIngredient {
   name: string;
   quantity: number;
   unit: string;
+  isOptional?: boolean;
+  note?: string;
 }
 
 export type RecipeIngredientId = RecipeIngredient['localId'];
@@ -36,6 +38,30 @@ export interface RecipeBase {
   labels: RecipeTaxonomyItem[];
   ingredients: RecipeIngredient[];
   preparationSteps: RecipePreparationStep[];
+
+  // New time fields
+  prepTimeMinutes?: number | null;
+  cookTimeMinutes?: number | null;
+  restTimeMinutes?: number | null;
+  totalTimeMinutes?: number | null;
+
+  // New metadata fields
+  servingUnit?: RecipeTaxonomyItem | null;
+  cuisine?: RecipeTaxonomyItem | null;
+  dietaryFlags?: RecipeTaxonomyItem[] | null;
+  allergens?: RecipeTaxonomyItem[] | null;
+  equipment?: RecipeTaxonomyItem[] | null;
+  costLevel?: RecipeTaxonomyItem | null;
+
+  // Text fields
+  tips?: string | null;
+  substitutions?: string | null;
+
+  // SEO fields
+  slug?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  socialImage?: string | null;
 }
 
 export interface RecipeDetail extends RecipeBase {
@@ -58,6 +84,22 @@ export type RecipeFormSource = Pick<
   | 'labels'
   | 'ingredients'
   | 'preparationSteps'
+  | 'prepTimeMinutes'
+  | 'cookTimeMinutes'
+  | 'restTimeMinutes'
+  | 'totalTimeMinutes'
+  | 'servingUnit'
+  | 'cuisine'
+  | 'dietaryFlags'
+  | 'allergens'
+  | 'equipment'
+  | 'costLevel'
+  | 'tips'
+  | 'substitutions'
+  | 'slug'
+  | 'seoTitle'
+  | 'seoDescription'
+  | 'socialImage'
 >;
 
 export type RecipeCardDataBase = Pick<

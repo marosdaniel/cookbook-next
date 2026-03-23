@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Badge,
+  Box,
   Button,
   Group,
   Image,
@@ -13,7 +14,9 @@ import {
 } from '@mantine/core';
 import {
   IconArrowLeft,
+  IconLink,
   IconPhoto,
+  IconSearch,
   IconToolsKitchen2,
   IconVideo,
   IconX,
@@ -21,6 +24,7 @@ import {
 import { useTranslations } from 'next-intl';
 import { useRecipeFormContext } from '../../FormContext';
 import { useFormError } from '../../hooks/useFormError';
+import { SEO_DESCRIPTION_MAX_LENGTH, SEO_TITLE_MAX_LENGTH } from '../../utils';
 import type { MediaSectionProps } from './types';
 
 const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
@@ -102,6 +106,94 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
           }}
           error={getFieldError('youtubeLink')}
         />
+
+        {/* ── SEO Fields ── */}
+        <Box>
+          <Group gap="xs" mb="sm">
+            <ThemeIcon size={24} radius="md" variant="light" color="grape">
+              <IconSearch size={14} />
+            </ThemeIcon>
+            <Text fw={600} size="sm">
+              {translate('seoSection')}
+            </Text>
+          </Group>
+
+          <Stack gap="sm">
+            <TextInput
+              label={translate('slug')}
+              placeholder={translate('slugPlaceholder')}
+              leftSection={<IconLink size={16} />}
+              value={values.slug}
+              onChange={(e) => {
+                setFieldValue('slug', e.target.value);
+                revalidateOnChange('slug');
+              }}
+              error={getFieldError('slug')}
+            />
+
+            <Box>
+              <TextInput
+                label={translate('seoTitle')}
+                placeholder={translate('seoTitlePlaceholder')}
+                value={values.seoTitle}
+                onChange={(e) => {
+                  setFieldValue('seoTitle', e.target.value);
+                  revalidateOnChange('seoTitle');
+                }}
+                error={getFieldError('seoTitle')}
+              />
+              <Text
+                size="xs"
+                c={
+                  (values.seoTitle?.length ?? 0) > SEO_TITLE_MAX_LENGTH * 0.9
+                    ? 'orange'
+                    : 'dimmed'
+                }
+                ta="right"
+              >
+                {values.seoTitle?.length ?? 0}/{SEO_TITLE_MAX_LENGTH}
+              </Text>
+            </Box>
+
+            <Box>
+              <TextInput
+                label={translate('seoDescription')}
+                placeholder={translate('seoDescriptionPlaceholder')}
+                value={values.seoDescription}
+                onChange={(e) => {
+                  setFieldValue('seoDescription', e.target.value);
+                  revalidateOnChange('seoDescription');
+                }}
+                error={getFieldError('seoDescription')}
+              />
+              <Text
+                size="xs"
+                c={
+                  (values.seoDescription?.length ?? 0) >
+                  SEO_DESCRIPTION_MAX_LENGTH * 0.9
+                    ? 'orange'
+                    : 'dimmed'
+                }
+                ta="right"
+              >
+                {values.seoDescription?.length ?? 0}/
+                {SEO_DESCRIPTION_MAX_LENGTH}
+              </Text>
+            </Box>
+
+            <TextInput
+              label={translate('socialImage')}
+              placeholder={translate('socialImagePlaceholder')}
+              leftSection={<IconPhoto size={16} />}
+              value={values.socialImage}
+              onChange={(e) => {
+                setFieldValue('socialImage', e.target.value);
+                revalidateOnChange('socialImage');
+              }}
+              error={getFieldError('socialImage')}
+            />
+          </Stack>
+        </Box>
 
         <Group justify="space-between" mt="xs">
           <Button

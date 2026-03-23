@@ -31,6 +31,8 @@ export const createRecipe = async (
             name: i.name,
             quantity: i.quantity,
             unit: i.unit,
+            isOptional: i.isOptional ?? false,
+            note: i.note ?? null,
           })),
         },
         preparationSteps: {

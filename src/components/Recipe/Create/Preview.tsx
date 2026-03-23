@@ -19,9 +19,11 @@ import {
 import {
   IconChefHat,
   IconClock,
+  IconCoin,
   IconFlame,
   IconToolsKitchen2,
   IconUsers,
+  IconWorld,
 } from '@tabler/icons-react';
 import { memo } from 'react';
 import type { PreviewProps } from './types';
@@ -31,9 +33,22 @@ const NO_VALUE_FALLBACK = '—';
 export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
   const categoryLabel = values.category?.label;
   const difficultyLabel = values.difficultyLevel?.label;
+  const cuisineLabel = values.cuisine?.label;
+  const costLevelLabel = values.costLevel?.label;
+  const servingUnitLabel = values.servingUnit?.label;
   const tags = values.labels
     .map((k) => labels.find((l) => l.value === k)?.label ?? k)
     .filter(Boolean);
+
+  // Compute total time
+  const prep =
+    typeof values.prepTimeMinutes === 'number' ? values.prepTimeMinutes : 0;
+  const cook =
+    typeof values.cookTimeMinutes === 'number' ? values.cookTimeMinutes : 0;
+  const rest =
+    typeof values.restTimeMinutes === 'number' ? values.restTimeMinutes : 0;
+  const hasTimeParts =
+    values.prepTimeMinutes || values.cookTimeMinutes || values.restTimeMinutes;
 
   return (
     <Card
@@ -124,6 +139,30 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
                   {difficultyLabel}
                 </Badge>
               )}
+              {cuisineLabel && (
+                <Badge
+                  variant="filled"
+                  color="rgba(255,255,255,0.2)"
+                  radius="sm"
+                  c="white"
+                  style={{ backdropFilter: 'blur(4px)' }}
+                  leftSection={<IconWorld size={12} />}
+                >
+                  {cuisineLabel}
+                </Badge>
+              )}
+              {costLevelLabel && (
+                <Badge
+                  variant="filled"
+                  color="rgba(255,255,255,0.2)"
+                  radius="sm"
+                  c="white"
+                  style={{ backdropFilter: 'blur(4px)' }}
+                  leftSection={<IconCoin size={12} />}
+                >
+                  {costLevelLabel}
+                </Badge>
+              )}
             </Group>
 
             <Title
@@ -174,13 +213,55 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
                   <IconUsers size={18} color="var(--mantine-color-blue-6)" />
                   <Text fw={700}>
                     {values.servings
-                      ? `${values.servings} pp`
+                      ? `${values.servings} ${servingUnitLabel || 'pp'}`
                       : NO_VALUE_FALLBACK}
                   </Text>
                 </Group>
               </Stack>
             </Paper>
           </Group>
+
+          {/* Time Breakdown */}
+          {hasTimeParts && (
+            <Group grow mb="md">
+              {values.prepTimeMinutes ? (
+                <Paper withBorder p="xs" radius="md">
+                  <Stack gap={2} align="center">
+                    <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
+                      Prep
+                    </Text>
+                    <Text size="sm" fw={600}>
+                      {prep} min
+                    </Text>
+                  </Stack>
+                </Paper>
+              ) : null}
+              {values.cookTimeMinutes ? (
+                <Paper withBorder p="xs" radius="md">
+                  <Stack gap={2} align="center">
+                    <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
+                      Cook
+                    </Text>
+                    <Text size="sm" fw={600}>
+                      {cook} min
+                    </Text>
+                  </Stack>
+                </Paper>
+              ) : null}
+              {values.restTimeMinutes ? (
+                <Paper withBorder p="xs" radius="md">
+                  <Stack gap={2} align="center">
+                    <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
+                      Rest
+                    </Text>
+                    <Text size="sm" fw={600}>
+                      {rest} min
+                    </Text>
+                  </Stack>
+                </Paper>
+              ) : null}
+            </Group>
+          )}
 
           {/* Description */}
           {values.description?.trim() ? (
@@ -197,6 +278,22 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
             <Text c="dimmed" fs="italic" opacity={0.5} mb="xl">
               Add a catchy description to hook your readers...
             </Text>
+          )}
+
+          {/* Equipment */}
+          {values.equipment.length > 0 && (
+            <Box mb="md">
+              <Text size="sm" fw={600} mb="xs" c="dimmed" tt="uppercase">
+                Equipment needed
+              </Text>
+              <Group gap="xs">
+                {values.equipment.map((key) => (
+                  <Badge key={key} variant="outline" color="gray" size="sm">
+                    {key}
+                  </Badge>
+                ))}
+              </Group>
+            </Box>
           )}
 
           <Divider
@@ -232,6 +329,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
                           i % 2 === 0
                             ? 'var(--mantine-color-gray-0)'
                             : 'transparent',
+                        opacity: ing.isOptional ? 0.6 : 1,
                       }}
                     >
                       <Group justify="space-between" align="center">
@@ -242,12 +340,24 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
                             style={{ cursor: 'default' }}
                             readOnly
                           />
-                          <Text fw={500}>{ing.name}</Text>
+                          <Text fw={500}>
+                            {ing.name}
+                            {ing.isOptional && (
+                              <Text span size="xs" c="dimmed" ml={4}>
+                                (optional)
+                              </Text>
+                            )}
+                          </Text>
                         </Group>
                         <Badge variant="light" color="gray" size="sm">
                           {ing.quantity} {ing.unit}
                         </Badge>
                       </Group>
+                      {ing.note && (
+                        <Text size="xs" c="dimmed" mt={2} ml={36} fs="italic">
+                          {ing.note}
+                        </Text>
+                      )}
                     </Box>
                   ))}
                 </Paper>
@@ -302,6 +412,30 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
               )}
             </Box>
           </Stack>
+
+          {/* Tips */}
+          {values.tips?.trim() && (
+            <Box mt="xl">
+              <Text size="sm" fw={600} mb="xs" c="dimmed" tt="uppercase">
+                Tips
+              </Text>
+              <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
+                {values.tips}
+              </Text>
+            </Box>
+          )}
+
+          {/* Substitutions */}
+          {values.substitutions?.trim() && (
+            <Box mt="md">
+              <Text size="sm" fw={600} mb="xs" c="dimmed" tt="uppercase">
+                Substitutions
+              </Text>
+              <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
+                {values.substitutions}
+              </Text>
+            </Box>
+          )}
 
           {/* Tags Footer */}
           {tags.length > 0 && (

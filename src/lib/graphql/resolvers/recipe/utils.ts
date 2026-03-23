@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { METADATA } from '@/lib/data/metadata';
 import { prisma } from '@/lib/prisma/prisma';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
@@ -73,12 +74,28 @@ export function validateRequiredFields(input: RecipeInputBase) {
  * and stored as JSON within the recipe.
  */
 export async function resolveRecipeMetadata(input: RecipeInputBase) {
-  const { category, difficultyLevel, labels = [] } = input;
+  const {
+    category,
+    difficultyLevel,
+    labels = [],
+    cuisine,
+    servingUnit,
+    dietaryFlags = [],
+    allergens = [],
+    equipment = [],
+    costLevel,
+  } = input;
 
   return {
     categoryFromInput: category,
     difficultyLevelFromInput: difficultyLevel,
     labelsFromInput: labels,
+    cuisineFromInput: cuisine,
+    servingUnitFromInput: servingUnit,
+    dietaryFlagsFromInput: dietaryFlags,
+    allergensFromInput: allergens,
+    equipmentFromInput: equipment,
+    costLevelFromInput: costLevel,
   };
 }
 
@@ -103,8 +120,27 @@ export function buildRecipeData(
   input: RecipeInputBase,
   metadata: Awaited<ReturnType<typeof resolveRecipeMetadata>>,
 ) {
-  const { categoryFromInput, difficultyLevelFromInput, labelsFromInput } =
-    metadata;
+  const {
+    categoryFromInput,
+    difficultyLevelFromInput,
+    labelsFromInput,
+    cuisineFromInput,
+    servingUnitFromInput,
+    dietaryFlagsFromInput,
+    allergensFromInput,
+    equipmentFromInput,
+    costLevelFromInput,
+  } = metadata;
+
+  // Compute totalTimeMinutes from time breakdown
+  const prep = input.prepTimeMinutes ?? 0;
+  const cook = input.cookTimeMinutes ?? 0;
+  const rest = input.restTimeMinutes ?? 0;
+  const hasTimes =
+    input.prepTimeMinutes != null ||
+    input.cookTimeMinutes != null ||
+    input.restTimeMinutes != null;
+  const totalTimeMinutes = hasTimes ? prep + cook + rest : null;
 
   return {
     title: input.title,
@@ -119,5 +155,37 @@ export function buildRecipeData(
     cookingTime: input.cookingTime,
     servings: input.servings,
     youtubeLink: input.youtubeLink,
+
+    // Time fields
+    prepTimeMinutes: input.prepTimeMinutes ?? null,
+    cookTimeMinutes: input.cookTimeMinutes ?? null,
+    restTimeMinutes: input.restTimeMinutes ?? null,
+    totalTimeMinutes,
+
+    // Metadata fields
+    servingUnit: servingUnitFromInput
+      ? mapMetadataToJson(servingUnitFromInput, 'SERVING_UNIT')
+      : Prisma.DbNull,
+    cuisine: cuisineFromInput
+      ? mapMetadataToJson(cuisineFromInput, 'CUISINE')
+      : Prisma.DbNull,
+    dietaryFlags: dietaryFlagsFromInput.map((d) =>
+      mapMetadataToJson(d, 'DIET'),
+    ),
+    allergens: allergensFromInput.map((a) => mapMetadataToJson(a, 'ALLERGEN')),
+    equipment: equipmentFromInput.map((e) => mapMetadataToJson(e, 'EQUIPMENT')),
+    costLevel: costLevelFromInput
+      ? mapMetadataToJson(costLevelFromInput, 'COST_LEVEL')
+      : Prisma.DbNull,
+
+    // Text fields
+    tips: input.tips ?? null,
+    substitutions: input.substitutions ?? null,
+
+    // SEO fields
+    slug: input.slug ?? null,
+    seoTitle: input.seoTitle ?? null,
+    seoDescription: input.seoDescription ?? null,
+    socialImage: input.socialImage ?? null,
   };
 }

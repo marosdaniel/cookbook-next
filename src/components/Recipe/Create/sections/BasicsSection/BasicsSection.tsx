@@ -15,10 +15,13 @@ import {
 } from '@mantine/core';
 import {
   IconClock,
+  IconCoin,
   IconHash,
   IconPhoto,
   IconSparkles,
+  IconToolsKitchen,
   IconUsers,
+  IconWorld,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -33,6 +36,12 @@ const BasicsSection = ({
   categories,
   levels,
   labels,
+  cuisines,
+  servingUnits,
+  costLevels,
+  dietaryFlags,
+  allergens,
+  equipment,
   onNext,
 }: Readonly<BasicsSectionProps>) => {
   const translate = useTranslations('recipeComposer.sections.basics');
@@ -113,6 +122,15 @@ const BasicsSection = ({
   const completion = sectionCompletion('basics', values);
   const isComplete = completion.done === completion.total;
 
+  // Compute total time from time fields
+  const prep =
+    typeof values.prepTimeMinutes === 'number' ? values.prepTimeMinutes : 0;
+  const cook =
+    typeof values.cookTimeMinutes === 'number' ? values.cookTimeMinutes : 0;
+  const rest =
+    typeof values.restTimeMinutes === 'number' ? values.restTimeMinutes : 0;
+  const totalTime = prep + cook + rest;
+
   return (
     <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm">
       <Stack gap="lg">
@@ -170,6 +188,57 @@ const BasicsSection = ({
           </Text>
         </Box>
 
+        {/* ── Time Breakdown ── */}
+        <Stack gap={4}>
+          <Text fw={600} size="sm">
+            <Group gap={6}>
+              <IconClock size={14} />
+              {translate('timeBreakdown')}
+            </Group>
+          </Text>
+          <Group grow align="flex-start">
+            <TextInput
+              placeholder={translate('prepTimePlaceholder')}
+              label={translate('prepTime')}
+              value={values.prepTimeMinutes}
+              onChange={(e) => {
+                const val = e.target.value ? Number(e.target.value) : '';
+                setFieldValue('prepTimeMinutes', val);
+              }}
+              error={getFieldError('prepTimeMinutes')}
+              size="sm"
+            />
+            <TextInput
+              placeholder={translate('cookTimePlaceholder')}
+              label={translate('cookTime')}
+              value={values.cookTimeMinutes}
+              onChange={(e) => {
+                const val = e.target.value ? Number(e.target.value) : '';
+                setFieldValue('cookTimeMinutes', val);
+              }}
+              error={getFieldError('cookTimeMinutes')}
+              size="sm"
+            />
+            <TextInput
+              placeholder={translate('restTimePlaceholder')}
+              label={translate('restTime')}
+              value={values.restTimeMinutes}
+              onChange={(e) => {
+                const val = e.target.value ? Number(e.target.value) : '';
+                setFieldValue('restTimeMinutes', val);
+              }}
+              error={getFieldError('restTimeMinutes')}
+              size="sm"
+            />
+          </Group>
+          {totalTime > 0 && (
+            <Text size="xs" c="dimmed">
+              {translate('totalTime')}: {totalTime} min
+            </Text>
+          )}
+        </Stack>
+
+        {/* ── Cookingtime (backward compat) + Servings ── */}
         <Group grow align="flex-start">
           <Stack gap={4}>
             <Text fw={600} size="sm">
@@ -196,16 +265,30 @@ const BasicsSection = ({
                 {translate('servings')}
               </Group>
             </Text>
-            <TextInput
-              placeholder={translate('servingsPlaceholder')}
-              value={values.servings}
-              onChange={(e) => {
-                const val = e.target.value ? Number(e.target.value) : '';
-                setFieldValue('servings', val);
-                revalidateOnChange('servings');
-              }}
-              error={getFieldError('servings')}
-            />
+            <Group grow align="flex-start">
+              <TextInput
+                placeholder={translate('servingsPlaceholder')}
+                value={values.servings}
+                onChange={(e) => {
+                  const val = e.target.value ? Number(e.target.value) : '';
+                  setFieldValue('servings', val);
+                  revalidateOnChange('servings');
+                }}
+                error={getFieldError('servings')}
+              />
+              <Select
+                placeholder={translate('servingUnitPlaceholder')}
+                data={servingUnits}
+                value={values.servingUnit?.value ?? null}
+                onChange={(value) => {
+                  const next =
+                    servingUnits.find((s) => s.value === value) ?? null;
+                  setFieldValue('servingUnit', next);
+                }}
+                searchable
+                clearable
+              />
+            </Group>
           </Stack>
         </Group>
 
@@ -238,6 +321,36 @@ const BasicsSection = ({
           />
         </Group>
 
+        {/* ── Cuisine + Cost Level ── */}
+        <Group grow align="flex-start">
+          <Select
+            label={translate('cuisine')}
+            placeholder={translate('select')}
+            searchable
+            clearable
+            data={cuisines}
+            value={values.cuisine?.value ?? null}
+            onChange={(value) => {
+              const next = cuisines.find((c) => c.value === value) ?? null;
+              setFieldValue('cuisine', next);
+            }}
+            leftSection={<IconWorld size={14} />}
+          />
+          <Select
+            label={translate('costLevel')}
+            placeholder={translate('select')}
+            searchable
+            clearable
+            data={costLevels}
+            value={values.costLevel?.value ?? null}
+            onChange={(value) => {
+              const next = costLevels.find((c) => c.value === value) ?? null;
+              setFieldValue('costLevel', next);
+            }}
+            leftSection={<IconCoin size={14} />}
+          />
+        </Group>
+
         <MultiSelect
           label={translate('tags')}
           placeholder={translate('tagsPlaceholder')}
@@ -249,6 +362,60 @@ const BasicsSection = ({
           leftSection={<IconHash size={14} />}
           maxValues={5}
         />
+
+        {/* ── Dietary Flags + Allergens ── */}
+        <Group grow align="flex-start">
+          <MultiSelect
+            label={translate('dietaryFlags')}
+            placeholder={translate('dietaryFlagsPlaceholder')}
+            searchable
+            clearable
+            data={dietaryFlags}
+            value={values.dietaryFlags}
+            onChange={(value) => setFieldValue('dietaryFlags', value)}
+          />
+          <MultiSelect
+            label={translate('allergens')}
+            placeholder={translate('allergensPlaceholder')}
+            searchable
+            clearable
+            data={allergens}
+            value={values.allergens}
+            onChange={(value) => setFieldValue('allergens', value)}
+          />
+        </Group>
+
+        {/* ── Equipment ── */}
+        <MultiSelect
+          label={translate('equipment')}
+          placeholder={translate('equipmentPlaceholder')}
+          searchable
+          clearable
+          data={equipment}
+          value={values.equipment}
+          onChange={(value) => setFieldValue('equipment', value)}
+          leftSection={<IconToolsKitchen size={14} />}
+        />
+
+        {/* ── Tips & Substitutions ── */}
+        <Group grow align="flex-start">
+          <Textarea
+            label={translate('tips')}
+            placeholder={translate('tipsPlaceholder')}
+            autosize
+            minRows={2}
+            value={values.tips}
+            onChange={(e) => setFieldValue('tips', e.target.value)}
+          />
+          <Textarea
+            label={translate('substitutions')}
+            placeholder={translate('substitutionsPlaceholder')}
+            autosize
+            minRows={2}
+            value={values.substitutions}
+            onChange={(e) => setFieldValue('substitutions', e.target.value)}
+          />
+        </Group>
 
         <Group justify="flex-end" mt="xs">
           <Button

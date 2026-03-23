@@ -13,6 +13,12 @@ interface MetadataState {
   labels: Metadata[];
   units: Metadata[];
   levels: Metadata[];
+  cuisines: Metadata[];
+  servingUnits: Metadata[];
+  dietaryFlags: Metadata[];
+  allergens: Metadata[];
+  equipment: Metadata[];
+  costLevels: Metadata[];
   isLoading: boolean;
   isLoaded: boolean;
   error: string | null;
@@ -23,6 +29,12 @@ const initialState: MetadataState = {
   labels: [],
   units: [],
   levels: [],
+  cuisines: [],
+  servingUnits: [],
+  dietaryFlags: [],
+  allergens: [],
+  equipment: [],
+  costLevels: [],
   isLoading: false,
   isLoaded: false,
   error: null,
@@ -55,6 +67,24 @@ const metadataSlice = createSlice({
       state.levels = metadata.filter((m) =>
         ['level', 'DIFFICULTY_LEVEL'].includes(m.type),
       );
+      state.cuisines = metadata.filter((m) =>
+        ['cuisine', 'CUISINE'].includes(m.type),
+      );
+      state.servingUnits = metadata.filter((m) =>
+        ['serving_unit', 'SERVING_UNIT'].includes(m.type),
+      );
+      state.dietaryFlags = metadata.filter((m) =>
+        ['diet', 'DIET'].includes(m.type),
+      );
+      state.allergens = metadata.filter((m) =>
+        ['allergen', 'ALLERGEN'].includes(m.type),
+      );
+      state.equipment = metadata.filter((m) =>
+        ['equipment', 'EQUIPMENT'].includes(m.type),
+      );
+      state.costLevels = metadata.filter((m) =>
+        ['cost_level', 'COST_LEVEL'].includes(m.type),
+      );
 
       state.isLoaded = true;
       state.isLoading = false;
@@ -65,6 +95,12 @@ const metadataSlice = createSlice({
       state.labels = [];
       state.units = [];
       state.levels = [];
+      state.cuisines = [];
+      state.servingUnits = [];
+      state.dietaryFlags = [];
+      state.allergens = [];
+      state.equipment = [];
+      state.costLevels = [];
       state.isLoaded = false;
       state.isLoading = false;
       state.error = null;

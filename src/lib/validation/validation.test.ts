@@ -137,5 +137,91 @@ describe('validation', () => {
       });
       expect(result.success).toBe(true);
     });
+
+    // ─── New time field tests ───
+    it('should accept valid time breakdown fields', () => {
+      const result = recipeFormValidationSchema.safeParse({
+        ...validRecipe,
+        prepTimeMinutes: 15,
+        cookTimeMinutes: 30,
+        restTimeMinutes: 10,
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject negative prep time', () => {
+      const result = recipeFormValidationSchema.safeParse({
+        ...validRecipe,
+        prepTimeMinutes: -5,
+      });
+      expect(result.success).toBe(false);
+    });
+
+    // ─── Ingredient optional/note tests ───
+    it('should accept optional ingredient', () => {
+      const result = recipeFormValidationSchema.safeParse({
+        ...validRecipe,
+        ingredients: [
+          {
+            localId: '1',
+            name: 'Parsley',
+            quantity: 10,
+            unit: 'g',
+            isOptional: true,
+            note: 'for garnish',
+          },
+        ],
+      });
+      expect(result.success).toBe(true);
+    });
+
+    // ─── SEO field tests ───
+    it('should reject invalid slug', () => {
+      const result = recipeFormValidationSchema.safeParse({
+        ...validRecipe,
+        slug: 'Invalid Slug With Spaces',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('should accept valid slug', () => {
+      const result = recipeFormValidationSchema.safeParse({
+        ...validRecipe,
+        slug: 'delicious-pasta-recipe',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject seoTitle longer than 60 chars', () => {
+      const result = recipeFormValidationSchema.safeParse({
+        ...validRecipe,
+        seoTitle: 'a'.repeat(61),
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject seoDescription longer than 160 chars', () => {
+      const result = recipeFormValidationSchema.safeParse({
+        ...validRecipe,
+        seoDescription: 'a'.repeat(161),
+      });
+      expect(result.success).toBe(false);
+    });
+
+    // ─── Metadata fields tests ───
+    it('should accept metadata fields', () => {
+      const result = recipeFormValidationSchema.safeParse({
+        ...validRecipe,
+        cuisine: { value: 'cuisine-italian', label: 'Italian' },
+        costLevel: { value: 'cost-level-low', label: 'Low' },
+        servingUnit: { value: 'serving-unit-person', label: 'person' },
+        dietaryFlags: ['diet-vegan'],
+        allergens: ['allergen-milk'],
+        equipment: ['equipment-oven'],
+        tips: 'Cook al dente',
+        substitutions: 'Use penne instead of spaghetti',
+      });
+      expect(result.success).toBe(true);
+    });
   });
 });

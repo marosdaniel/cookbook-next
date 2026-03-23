@@ -48,7 +48,13 @@ export const RecipeComposer = ({
     categories,
     levels,
     labels,
-    unitSuggestions,
+    unitOptions,
+    cuisines,
+    servingUnits,
+    dietaryFlags,
+    allergens,
+    equipment,
+    costLevels,
     metadataLoading,
     metadataLoaded,
   } = useRecipeMetadata();
@@ -155,6 +161,12 @@ export const RecipeComposer = ({
                   categories={categories}
                   levels={levels}
                   labels={labels}
+                  cuisines={cuisines}
+                  servingUnits={servingUnits}
+                  costLevels={costLevels}
+                  dietaryFlags={dietaryFlags}
+                  allergens={allergens}
+                  equipment={equipment}
                   onNext={goToMedia}
                 />
               )}
@@ -165,7 +177,7 @@ export const RecipeComposer = ({
 
               {activeSection === 'ingredients' && (
                 <IngredientsSection
-                  unitSuggestions={unitSuggestions}
+                  unitOptions={unitOptions}
                   onAdd={addIngredient}
                   onBack={goToMedia}
                   onNext={goToSteps}

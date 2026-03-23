@@ -1,11 +1,12 @@
 import {
   ActionIcon,
-  Autocomplete,
   Badge,
   Button,
   Group,
   Paper,
+  Select,
   Stack,
+  Switch,
   Text,
   TextInput,
   ThemeIcon,
@@ -24,7 +25,7 @@ import { useFormError } from '../../hooks/useFormError';
 import type { IngredientsSectionProps } from './types';
 
 const IngredientsSection = ({
-  unitSuggestions,
+  unitOptions,
   onAdd,
   onBack,
   onNext,
@@ -82,55 +83,83 @@ const IngredientsSection = ({
                   ? '3px solid var(--mantine-color-teal-5)'
                   : '3px solid var(--mantine-color-gray-3)',
                 transition: 'border-color 0.2s ease',
+                opacity: ing.isOptional ? 0.75 : 1,
               }}
             >
-              <Group gap="xs" align="flex-start" wrap="nowrap">
-                <TextInput
-                  placeholder={translate('itemName')}
-                  value={ing.name}
-                  onChange={(e) => {
-                    const path = `ingredients[${idx}].name`;
-                    setFieldValue(path, e.target.value);
-                    revalidateOnChange(path);
-                  }}
-                  error={getFieldError(`ingredients[${idx}].name`)}
-                  style={{ flex: 2 }}
-                  size="sm"
-                />
-                <TextInput
-                  placeholder={translate('qty')}
-                  value={ing.quantity}
-                  onChange={(e) => {
-                    const path = `ingredients[${idx}].quantity`;
-                    setFieldValue(path, e.target.value);
-                    revalidateOnChange(path);
-                  }}
-                  error={getFieldError(`ingredients[${idx}].quantity`)}
-                  style={{ width: 70 }}
-                  size="sm"
-                />
-                <Autocomplete
-                  placeholder={translate('unit')}
-                  data={unitSuggestions}
-                  value={ing.unit}
-                  onChange={(val) => {
-                    const path = `ingredients[${idx}].unit`;
-                    setFieldValue(path, val);
-                    revalidateOnChange(path);
-                  }}
-                  error={getFieldError(`ingredients[${idx}].unit`)}
-                  style={{ width: 100 }}
-                  size="sm"
-                />
-                <ActionIcon
-                  color="red"
-                  variant="subtle"
-                  onClick={() => removeIngredient(idx)}
-                  mt={4}
-                >
-                  <IconTrash size={16} />
-                </ActionIcon>
-              </Group>
+              <Stack gap="xs">
+                <Group gap="xs" align="flex-start" wrap="nowrap">
+                  <TextInput
+                    placeholder={translate('itemName')}
+                    value={ing.name}
+                    onChange={(e) => {
+                      const path = `ingredients[${idx}].name`;
+                      setFieldValue(path, e.target.value);
+                      revalidateOnChange(path);
+                    }}
+                    error={getFieldError(`ingredients[${idx}].name`)}
+                    style={{ flex: 2 }}
+                    size="sm"
+                  />
+                  <TextInput
+                    placeholder={translate('qty')}
+                    value={ing.quantity}
+                    onChange={(e) => {
+                      const path = `ingredients[${idx}].quantity`;
+                      setFieldValue(path, e.target.value);
+                      revalidateOnChange(path);
+                    }}
+                    error={getFieldError(`ingredients[${idx}].quantity`)}
+                    style={{ width: 70 }}
+                    size="sm"
+                  />
+                  <Select
+                    placeholder={translate('unit')}
+                    data={unitOptions}
+                    value={ing.unit || null}
+                    onChange={(val) => {
+                      const path = `ingredients[${idx}].unit`;
+                      setFieldValue(path, val ?? '');
+                      revalidateOnChange(path);
+                    }}
+                    error={getFieldError(`ingredients[${idx}].unit`)}
+                    style={{ width: 120 }}
+                    size="sm"
+                    searchable
+                    allowDeselect={false}
+                  />
+                  <ActionIcon
+                    color="red"
+                    variant="subtle"
+                    onClick={() => removeIngredient(idx)}
+                    mt={4}
+                  >
+                    <IconTrash size={16} />
+                  </ActionIcon>
+                </Group>
+                <Group gap="xs" align="center">
+                  <Switch
+                    label={translate('optional')}
+                    size="xs"
+                    checked={ing.isOptional ?? false}
+                    onChange={(e) => {
+                      setFieldValue(
+                        `ingredients[${idx}].isOptional`,
+                        e.currentTarget.checked,
+                      );
+                    }}
+                  />
+                  <TextInput
+                    placeholder={translate('notePlaceholder')}
+                    value={ing.note ?? ''}
+                    onChange={(e) => {
+                      setFieldValue(`ingredients[${idx}].note`, e.target.value);
+                    }}
+                    style={{ flex: 1 }}
+                    size="xs"
+                    variant="unstyled"
+                  />
+                </Group>
+              </Stack>
             </Paper>
           ))}
 

@@ -28,6 +28,22 @@ const mockRecipeFormValues: RecipeFormValues = {
     { localId: '1', description: 'Mix ingredients', order: 1 },
     { localId: '2', description: 'Bake', order: 2 },
   ],
+  // New fields with defaults
+  prepTimeMinutes: '',
+  cookTimeMinutes: '',
+  restTimeMinutes: '',
+  servingUnit: null,
+  cuisine: null,
+  dietaryFlags: [],
+  allergens: [],
+  equipment: [],
+  costLevel: null,
+  tips: '',
+  substitutions: '',
+  slug: '',
+  seoTitle: '',
+  seoDescription: '',
+  socialImage: '',
 };
 
 const mockLabels: MetadataOption[] = [
@@ -56,6 +72,21 @@ describe('computeCompletion', () => {
       youtubeLink: '',
       ingredients: [],
       preparationSteps: [],
+      prepTimeMinutes: '',
+      cookTimeMinutes: '',
+      restTimeMinutes: '',
+      servingUnit: null,
+      cuisine: null,
+      dietaryFlags: [],
+      allergens: [],
+      equipment: [],
+      costLevel: null,
+      tips: '',
+      substitutions: '',
+      slug: '',
+      seoTitle: '',
+      seoDescription: '',
+      socialImage: '',
     };
     const result = computeCompletion(emptyValues);
     expect(result.done).toBe(0);
@@ -157,13 +188,43 @@ describe('transformValuesToInput', () => {
       labels: [{ value: 'vegetarian', label: 'Vegetarian' }],
       youtubeLink: 'https://youtube.com/test',
       ingredients: [
-        { localId: '1', name: 'Flour', quantity: 200, unit: 'g' },
-        { localId: '2', name: 'Eggs', quantity: 2, unit: 'pcs' },
+        {
+          localId: '1',
+          name: 'Flour',
+          quantity: 200,
+          unit: 'g',
+          isOptional: false,
+          note: undefined,
+        },
+        {
+          localId: '2',
+          name: 'Eggs',
+          quantity: 2,
+          unit: 'pcs',
+          isOptional: false,
+          note: undefined,
+        },
       ],
       preparationSteps: [
         { description: 'Mix ingredients', order: 1 },
         { description: 'Bake', order: 2 },
       ],
+      // New fields (all default/undefined)
+      prepTimeMinutes: undefined,
+      cookTimeMinutes: undefined,
+      restTimeMinutes: undefined,
+      servingUnit: undefined,
+      cuisine: undefined,
+      dietaryFlags: [],
+      allergens: [],
+      equipment: [],
+      costLevel: undefined,
+      tips: undefined,
+      substitutions: undefined,
+      slug: undefined,
+      seoTitle: undefined,
+      seoDescription: undefined,
+      socialImage: undefined,
     });
   });
 
@@ -184,6 +245,31 @@ describe('transformValuesToInput', () => {
     expect(result.labels).toEqual([
       { value: 'nonexistent', label: 'nonexistent' },
     ]);
+  });
+
+  it('should transform new metadata fields', () => {
+    const values: RecipeFormValues = {
+      ...mockRecipeFormValues,
+      cuisine: { value: 'cuisine-italian', label: 'Italian' },
+      costLevel: { value: 'cost-level-low', label: 'Low' },
+      dietaryFlags: ['diet-vegan'],
+      equipment: ['equipment-oven', 'equipment-blender'],
+      tips: 'cook al dente',
+    };
+    const result = transformValuesToInput(values, mockLabels);
+    expect(result.cuisine).toEqual({
+      value: 'cuisine-italian',
+      label: 'Italian',
+    });
+    expect(result.costLevel).toEqual({ value: 'cost-level-low', label: 'Low' });
+    expect(result.dietaryFlags).toEqual([
+      { value: 'diet-vegan', label: 'diet-vegan' },
+    ]);
+    expect(result.equipment).toEqual([
+      { value: 'equipment-oven', label: 'equipment-oven' },
+      { value: 'equipment-blender', label: 'equipment-blender' },
+    ]);
+    expect(result.tips).toBe('cook al dente');
   });
 });
 

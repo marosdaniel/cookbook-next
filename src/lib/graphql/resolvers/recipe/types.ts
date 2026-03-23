@@ -22,6 +22,29 @@ export interface RecipeInputBase {
   difficultyLevel: MetaInputPartial;
   servings: number;
   youtubeLink?: string;
+
+  // New time fields
+  prepTimeMinutes?: number;
+  cookTimeMinutes?: number;
+  restTimeMinutes?: number;
+
+  // New metadata fields
+  servingUnit?: MetaInputPartial;
+  cuisine?: MetaInputPartial;
+  dietaryFlags?: MetaInputPartial[];
+  allergens?: MetaInputPartial[];
+  equipment?: MetaInputPartial[];
+  costLevel?: MetaInputPartial;
+
+  // Text fields
+  tips?: string;
+  substitutions?: string;
+
+  // SEO fields
+  slug?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  socialImage?: string;
 }
 
 export interface RecipeCreateInput extends RecipeInputBase {}

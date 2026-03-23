@@ -9,6 +9,8 @@ import type {
 /* ─── Constants ───────────────────────────────── */
 export const DRAFT_STORAGE_KEY = 'cookbook:create:draft:v2';
 export const DESCRIPTION_MAX_LENGTH = 500;
+export const SEO_TITLE_MAX_LENGTH = 60;
+export const SEO_DESCRIPTION_MAX_LENGTH = 160;
 
 /* ─── Helpers ─────────────────────────────────── */
 export function computeCompletion(values: RecipeFormValues) {
@@ -108,11 +110,54 @@ export function transformValuesToInput(
       name: i.name,
       quantity: Number(i.quantity),
       unit: i.unit,
+      isOptional: i.isOptional ?? false,
+      note: i.note || undefined,
     })),
     preparationSteps: values.preparationSteps.map((s, idx) => ({
       description: s.description,
       order: s.order || idx + 1,
     })),
+
+    // Time fields
+    prepTimeMinutes: values.prepTimeMinutes
+      ? Number(values.prepTimeMinutes)
+      : undefined,
+    cookTimeMinutes: values.cookTimeMinutes
+      ? Number(values.cookTimeMinutes)
+      : undefined,
+    restTimeMinutes: values.restTimeMinutes
+      ? Number(values.restTimeMinutes)
+      : undefined,
+
+    // Metadata fields
+    servingUnit: values.servingUnit
+      ? {
+          value: values.servingUnit.value,
+          label: values.servingUnit.label,
+        }
+      : undefined,
+    cuisine: values.cuisine
+      ? { value: values.cuisine.value, label: values.cuisine.label }
+      : undefined,
+    dietaryFlags: values.dietaryFlags.map((key) => ({
+      value: key,
+      label: key,
+    })),
+    allergens: values.allergens.map((key) => ({ value: key, label: key })),
+    equipment: values.equipment.map((key) => ({ value: key, label: key })),
+    costLevel: values.costLevel
+      ? { value: values.costLevel.value, label: values.costLevel.label }
+      : undefined,
+
+    // Text fields
+    tips: values.tips || undefined,
+    substitutions: values.substitutions || undefined,
+
+    // SEO fields
+    slug: values.slug || undefined,
+    seoTitle: values.seoTitle || undefined,
+    seoDescription: values.seoDescription || undefined,
+    socialImage: values.socialImage || undefined,
   };
 }
 
@@ -129,9 +174,39 @@ export function getStatusColor(isComplete: boolean, isActive: boolean): string {
   return 'gray';
 }
 
+/** Default empty form values for all fields */
+export const EMPTY_FORM_VALUES: RecipeFormValues = {
+  title: '',
+  description: '',
+  imgSrc: '',
+  cookingTime: '',
+  servings: '',
+  difficultyLevel: null,
+  category: null,
+  labels: [],
+  youtubeLink: '',
+  ingredients: [],
+  preparationSteps: [],
+  prepTimeMinutes: '',
+  cookTimeMinutes: '',
+  restTimeMinutes: '',
+  servingUnit: null,
+  cuisine: null,
+  dietaryFlags: [],
+  allergens: [],
+  equipment: [],
+  costLevel: null,
+  tips: '',
+  substitutions: '',
+  slug: '',
+  seoTitle: '',
+  seoDescription: '',
+  socialImage: '',
+};
+
 /**
  * Transforms a recipe fetched from the server (GraphQL response)
- * into `RecipeFormValues` suitable for Formik.
+ * into `RecipeFormValues` suitable for the form.
  */
 export function recipeToFormValues(recipe: RecipeFormSource): RecipeFormValues {
   return {
@@ -152,11 +227,42 @@ export function recipeToFormValues(recipe: RecipeFormSource): RecipeFormValues {
       name: i.name,
       quantity: i.quantity,
       unit: i.unit,
+      isOptional: i.isOptional ?? false,
+      note: i.note ?? '',
     })),
     preparationSteps: recipe.preparationSteps.map((s) => ({
       localId: uuidv4(),
       description: s.description,
       order: s.order,
     })),
+
+    // New time fields
+    prepTimeMinutes: recipe.prepTimeMinutes ?? '',
+    cookTimeMinutes: recipe.cookTimeMinutes ?? '',
+    restTimeMinutes: recipe.restTimeMinutes ?? '',
+
+    // New metadata fields
+    servingUnit: recipe.servingUnit
+      ? { value: recipe.servingUnit.key, label: recipe.servingUnit.label }
+      : null,
+    cuisine: recipe.cuisine
+      ? { value: recipe.cuisine.key, label: recipe.cuisine.label }
+      : null,
+    dietaryFlags: recipe.dietaryFlags?.map((d) => d.key) ?? [],
+    allergens: recipe.allergens?.map((a) => a.key) ?? [],
+    equipment: recipe.equipment?.map((e) => e.key) ?? [],
+    costLevel: recipe.costLevel
+      ? { value: recipe.costLevel.key, label: recipe.costLevel.label }
+      : null,
+
+    // Text fields
+    tips: recipe.tips ?? '',
+    substitutions: recipe.substitutions ?? '',
+
+    // SEO fields
+    slug: recipe.slug ?? '',
+    seoTitle: recipe.seoTitle ?? '',
+    seoDescription: recipe.seoDescription ?? '',
+    socialImage: recipe.socialImage ?? '',
   };
 }

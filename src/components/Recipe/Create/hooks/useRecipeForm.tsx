@@ -20,6 +20,7 @@ import type {
 import {
   computeCompletion,
   DRAFT_STORAGE_KEY,
+  EMPTY_FORM_VALUES,
   transformValuesToInput,
 } from '../utils';
 
@@ -63,19 +64,7 @@ export function useRecipeForm({
 
   const form = useRecipeFormHook({
     mode: 'controlled',
-    initialValues: draft?.values ?? {
-      title: '',
-      description: '',
-      imgSrc: '',
-      cookingTime: '',
-      servings: '',
-      difficultyLevel: null,
-      category: null,
-      labels: [],
-      youtubeLink: '',
-      ingredients: [],
-      preparationSteps: [],
-    },
+    initialValues: draft?.values ?? EMPTY_FORM_VALUES,
     // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
     validate: zodResolver(recipeFormValidationSchema) as any,
     validateInputOnBlur: true,
@@ -102,13 +91,6 @@ export function useRecipeForm({
   const formRef = useRef(form);
   formRef.current = form;
 
-  // Reactivity note: using getValues() in an uncontrolled form might not trigger updates for `useMemo` dependencies the same way.
-  // We'll track controlled updates via `form.getValues()` or Mantine form events if needed, but for completion percentage,
-  // we can read it directly from values when triggered or pass `form.values` instead if `mode: 'controlled'` is preferable.
-  // Actually, Mantine's uncontrolled mode doesn't re-render on every keystroke, but `form.getValues()` gets the current data.
-  // Since we use the debounced value to save state, let's just observe `form.getValues()` when needed,
-  // or switch form mode if we need `form.values` to react properly.
-  // Let's keep `form.getValues()` for completion right now.
   const completion = useMemo(
     () => computeCompletion(form.values),
     [form.values],
@@ -161,19 +143,7 @@ export function useRecipeForm({
   const resetDraft = useCallback(() => {
     setDraft(null);
     formRef.current.reset();
-    formRef.current.setValues({
-      title: '',
-      description: '',
-      imgSrc: '',
-      cookingTime: '',
-      servings: '',
-      difficultyLevel: null,
-      category: null,
-      labels: [],
-      youtubeLink: '',
-      ingredients: [],
-      preparationSteps: [],
-    });
+    formRef.current.setValues(EMPTY_FORM_VALUES);
     onSectionChange('basics');
     notifications.show({
       title: translate('notifications.draftClearedTitle'),
@@ -189,6 +159,8 @@ export function useRecipeForm({
       name: '',
       quantity: '',
       unit: '',
+      isOptional: false,
+      note: '',
     };
     f.insertListItem('ingredients', newIngredient);
   }, []);

@@ -54,6 +54,30 @@ model Recipe {
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 
+  // New time fields
+  prepTimeMinutes  Int?
+  cookTimeMinutes  Int?
+  restTimeMinutes  Int?
+  totalTimeMinutes Int?
+
+  // New metadata fields (stored as JSON)
+  servingUnit      Json?
+  cuisine          Json?
+  dietaryFlags     Json?
+  allergens        Json?
+  equipment        Json?
+  costLevel        Json?
+
+  // Text fields
+  tips             String?
+  substitutions    String?
+
+  // SEO fields
+  slug             String?           @unique
+  seoTitle         String?
+  seoDescription   String?
+  socialImage      String?
+
   // Relations
   ingredients      Ingredient[]
   preparationSteps PreparationStep[]
@@ -73,11 +97,13 @@ model Recipe {
 
 // Ingredient model (New Model for SQL)
 model Ingredient {
-  id       String  @id @default(cuid())
-  localId  String
-  name     String
-  quantity Float
-  unit     String
+  id         String  @id @default(cuid())
+  localId    String
+  name       String
+  quantity   Float
+  unit       String
+  isOptional Boolean @default(false)
+  note       String?
   
   // Relation back to Recipe
   recipeId String

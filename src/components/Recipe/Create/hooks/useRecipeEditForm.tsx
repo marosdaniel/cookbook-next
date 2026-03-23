@@ -112,6 +112,8 @@ export function useRecipeEditForm({
       name: '',
       quantity: '',
       unit: '',
+      isOptional: false,
+      note: '',
     };
     f.insertListItem('ingredients', newIngredient);
   }, []);
