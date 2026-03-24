@@ -77,7 +77,8 @@
     "confirmPassword": "Jelszó megerősítése",
     "profileTabTitle": "Profil",
     "myRecipesTabTitle": "Saját receptek",
-    "favoritesTabTitle": "Kedvencek"
+    "favoritesTabTitle": "Kedvencek",
+    "noFavoriteRecipesYet": "Még nincsenek kedvenc receptjeid. Kezdj el böngészni és adj hozzá recepteket a kedvenceidhez!"
   },
   "sidebar": {
     "recipes": "Receptek",

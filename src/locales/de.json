@@ -76,7 +76,8 @@
     "confirmPassword": "Passwort bestätigen",
     "profileTabTitle": "Profil",
     "myRecipesTabTitle": "Meine Rezepte",
-    "favoritesTabTitle": "Favoriten"
+    "favoritesTabTitle": "Favoriten",
+    "noFavoriteRecipesYet": "Noch keine Lieblingsrezepte. Fange an zu stöbern und füge Rezepte zu deinen Favoriten hinzu!"
   },
   "sidebar": {
     "recipes": "Rezepte",
