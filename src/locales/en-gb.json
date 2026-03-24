@@ -38,8 +38,8 @@
     "cookiePolicyTitle": "Cookie Policy",
     "cookiePolicyDescription": "Learn about how Cookbook uses cookies.",
     "privacyPolicyTitle": "Privacy Policy",
-    "privacyPolicyDescription": "Learn about how Cookbook protects your privacy."
-    ,"emailPlaceholder": "your@email.com"
+    "privacyPolicyDescription": "Learn about how Cookbook protects your privacy.",
+    "emailPlaceholder": "your@email.com"
   },
   "common": {
     "language": "Language",
@@ -67,7 +67,7 @@
     "unfollow": "Unfollow",
     "headerTitle": "Create Recipe",
     "submitLabel": "Publish",
-    "resetLabel": "Clear draft"
+    "resetLabel": "Clear draft",
     "generaTitle": "General information",
     "personalDataTitle": "Personal data",
     "changePasswordTitle": "Change password",
@@ -96,7 +96,7 @@
     "myProfile": "My Profile",
     "favorites": "Favourites",
     "friends": "Friends",
-      "optional": "(optional)"
+    "optional": "(optional)",
     "followings": "Following",
     "allRecipes": "All Recipes",
     "latestRecipes": "Latest Recipes",
@@ -382,8 +382,8 @@
     "recipeUpdateFailedTitle": "Update failed",
     "recipeUpdateFailedMessage": "Something went wrong while saving.",
     "changesResetTitle": "Changes reset",
-    "changesResetMessage": "Reverted to the original recipe."
-    ,"personalDataUpdatedMessage": "Your personal data has been updated"
+    "changesResetMessage": "Reverted to the original recipe.",
+    "personalDataUpdatedMessage": "Your personal data has been updated"
   },
   "recipeIngredients": {
     "decreaseServings": "Decrease servings",
@@ -467,7 +467,7 @@
     },
     "text": "Cookbook"
   },
- 
+
   "units": {
     "minuteShort": "min"
   },
@@ -580,22 +580,22 @@
         "publish": "Publish Recipe"
       }
     }
-    },
-    "recipeEdit": {
-      "failedToLoad": "Failed to load recipe",
-      "notAuthorizedTitle": "Not Authorized",
-      "notAuthorizedMessage": "You can only edit your own recipes.",
-      "lastSavedLabel": "Editing",
-      "headerTitle": "Edit Recipe",
-      "submitLabel": "Save Changes",
-      "resetLabel": "Reset changes"
-    },
+  },
+  "recipeEdit": {
+    "failedToLoad": "Failed to load recipe",
+    "notAuthorizedTitle": "Not Authorized",
+    "notAuthorizedMessage": "You can only edit your own recipes.",
+    "lastSavedLabel": "Editing",
+    "headerTitle": "Edit Recipe",
+    "submitLabel": "Save Changes",
+    "resetLabel": "Reset changes"
+  },
   "home": {
     "carouselEmpty": "No recipes yet. Be the first to share one!",
     "recentlyViewed": "Recently Viewed",
     "recentlyViewedHint": "* Recently viewed recipes — coming soon"
-  }
-  ,"headerSearch": {
+  },
+  "headerSearch": {
     "placeholder": "Search...",
     "searching": "Searching...",
     "noResults": "No results"
@@ -605,8 +605,8 @@
     "copyright": "© {year} Cookbook. All rights reserved.",
     "privacy": "Privacy Policy",
     "cookies": "Cookie Policy"
-  }
-  ,"favorites": {
+  },
+  "favorites": {
     "add": "Add to favourites",
     "remove": "Remove from favourites"
   }
