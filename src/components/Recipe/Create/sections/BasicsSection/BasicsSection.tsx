@@ -190,7 +190,7 @@ const BasicsSection = ({
 
         {/* ── Time Breakdown ── */}
         <Stack gap={4}>
-          <Text fw={600} size="sm">
+          <Text fw={600} size="sm" component="div">
             <Group gap={6}>
               <IconClock size={14} />
               {translate('timeBreakdown')}
@@ -241,7 +241,7 @@ const BasicsSection = ({
         {/* ── Cookingtime (backward compat) + Servings ── */}
         <Group grow align="flex-start">
           <Stack gap={4}>
-            <Text fw={600} size="sm">
+            <Text fw={600} size="sm" component="div">
               <Group gap={6}>
                 <IconClock size={14} />
                 {translate('cookingTime')}
@@ -259,7 +259,7 @@ const BasicsSection = ({
             />
           </Stack>
           <Stack gap={4}>
-            <Text fw={600} size="sm">
+            <Text fw={600} size="sm" component="div">
               <Group gap={6}>
                 <IconUsers size={14} />
                 {translate('servings')}

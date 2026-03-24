@@ -17,7 +17,10 @@ const NavbarLinksGroup = ({
 }: NavbarLinksGroupProps) => {
   const pathname = usePathname();
   const hasLinks = Array.isArray(links);
-  const [opened, setOpened] = useState(initiallyOpened || false);
+  const isChildActive = hasLinks && links.some((l) => pathname === l.link);
+  const [expanded, setExpanded] = useState(
+    initiallyOpened || isChildActive || false,
+  );
   const ChevronIcon = FiChevronRight;
 
   const items = (hasLinks ? links : []).map((link) => (
@@ -35,7 +38,7 @@ const NavbarLinksGroup = ({
   const content = (
     <Group justify="space-between" gap={0} wrap="nowrap">
       <Box style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-        {Icon && <Icon style={{ width: rem(18), height: rem(18) }} />}
+        {Icon && <Icon style={{ width: rem(20), height: rem(20) }} />}
         <Box ml={Icon ? 'md' : 0} style={{ flex: 1 }}>
           {label}
         </Box>
@@ -46,7 +49,7 @@ const NavbarLinksGroup = ({
           style={{
             width: rem(16),
             height: rem(16),
-            transform: opened ? 'rotate(-90deg)' : 'none',
+            transform: expanded ? 'rotate(90deg)' : 'none',
           }}
         />
       )}
@@ -69,12 +72,13 @@ const NavbarLinksGroup = ({
   return (
     <>
       <UnstyledButton
-        onClick={() => setOpened((o) => !o)}
+        onClick={() => setExpanded((o) => !o)}
         className={classes.control}
+        data-active-child={isChildActive || undefined}
       >
         {content}
       </UnstyledButton>
-      {hasLinks ? <Collapse expanded={opened}> {items}</Collapse> : null}
+      {hasLinks ? <Collapse expanded={expanded}>{items}</Collapse> : null}
     </>
   );
 };
