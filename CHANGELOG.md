@@ -1,3 +1,10 @@
+# [2.20.0](https://github.com/marosdaniel/cookbook-next/compare/v2.19.0...v2.20.0) (2026-03-24)
+
+
+### Features
+
+* Enhance NavbarLinksGroup styling, active state indicators, and expansion logic, while updating Text component structure in recipe basics. ([e2ccd2e](https://github.com/marosdaniel/cookbook-next/commit/e2ccd2eb24cb9e98496fa294301d412c1995de4d))
+
 # [2.19.0](https://github.com/marosdaniel/cookbook-next/compare/v2.18.0...v2.19.0) (2026-03-24)
 
 
