@@ -1,3 +1,10 @@
+# [2.18.0](https://github.com/marosdaniel/cookbook-next/compare/v2.17.0...v2.18.0) (2026-03-24)
+
+
+### Features
+
+* introduce a header search component and display it in the application shell. ([bc23f09](https://github.com/marosdaniel/cookbook-next/commit/bc23f09ee286c0752430356ca4fac456d0dc52c2))
+
 # [2.17.0](https://github.com/marosdaniel/cookbook-next/compare/v2.16.0...v2.17.0) (2026-03-24)
 
 
