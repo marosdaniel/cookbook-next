@@ -1,3 +1,10 @@
+# [2.17.0](https://github.com/marosdaniel/cookbook-next/compare/v2.16.0...v2.17.0) (2026-03-24)
+
+
+### Features
+
+* Extend recipe and ingredient models with new fields and refactor login form to use controlled validation. ([bfb13f0](https://github.com/marosdaniel/cookbook-next/commit/bfb13f063e5a816bec2043132d9ab0bb9de5c95a))
+
 # [2.16.0](https://github.com/marosdaniel/cookbook-next/compare/v2.15.0...v2.16.0) (2026-03-23)
 
 
