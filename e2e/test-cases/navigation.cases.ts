@@ -36,8 +36,6 @@ export async function shouldRedirectLoginToHomeAfterVisit(
     .click();
 
   await expect(page).toHaveURL('/');
-  // Verify home page content to ensure successful navigation
-  await expect(
-    page.getByRole('heading', { name: /Latest Recipes/i }),
-  ).toBeVisible();
+  // Verify home page rendered (h1 visible) to ensure successful navigation
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 }

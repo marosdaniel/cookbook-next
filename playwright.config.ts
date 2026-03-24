@@ -21,6 +21,11 @@ export default defineConfig({
     : [['html', { open: 'never' }]],
   use: {
     baseURL: `http://127.0.0.1:${PORT}`,
+    // Ensure tests run with a consistent locale so i18n text is stable.
+    locale: 'en-GB',
+    extraHTTPHeaders: {
+      'Accept-Language': 'en-GB',
+    },
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
