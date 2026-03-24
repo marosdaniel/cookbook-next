@@ -12,6 +12,7 @@ import LanguageSelector from '../LanguageSelector';
 import { Logo } from '../Logo';
 import Navbar from '../Navbar';
 import ThemeSwitcher from '../ThemeSwitcher';
+import { HeaderSearch } from '../HeaderSearch';
 
 const Shell: FC<PropsWithChildren> = ({ children }) => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
@@ -38,15 +39,22 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
       {!isImmersive && (
         <AppShell.Header>
           <Group h="100%" px="md" justify="space-between">
-            <Logo
-              variant="icon"
-              width={40}
-              height={40}
-              priority
-              withText
-              hideTextOnMobile
-              href={PUBLIC_ROUTES.HOME}
-            />
+            <Group>
+              <Logo
+                variant="icon"
+                width={40}
+                height={40}
+                priority
+                withText
+                hideTextOnMobile
+                href={PUBLIC_ROUTES.HOME}
+              />
+            </Group>
+            
+            <Group flex={1} justify="center" display={{ base: 'none', sm: 'flex' }}>
+              {!isAuthPage && <HeaderSearch />}
+            </Group>
+
             <Group gap="xs">
               {!session && !isAuthPage && <AuthButton variant="compact" />}
               <ThemeSwitcher />
