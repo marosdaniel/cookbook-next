@@ -26,11 +26,13 @@ import {
   IconWorld,
 } from '@tabler/icons-react';
 import { memo } from 'react';
+import { useTranslations } from 'next-intl';
 import type { PreviewProps } from './types';
 
 const NO_VALUE_FALLBACK = '—';
 
 export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
+  const t = useTranslations('recipePreview');
   const categoryLabel = values.category?.label;
   const difficultyLabel = values.difficultyLevel?.label;
   const cuisineLabel = values.cuisine?.label;
@@ -68,7 +70,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
           {values.imgSrc ? (
             <Image
               src={values.imgSrc}
-              alt="Recipe cover"
+              alt={t('imageAlt')}
               h="100%"
               w="100%"
               fit="cover"
@@ -92,7 +94,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
                 <IconChefHat size={40} />
               </ThemeIcon>
               <Text c="dimmed" fw={500}>
-                No cover image yet
+                {t('noCover')}
               </Text>
             </Stack>
           )}
@@ -174,12 +176,12 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
                 textShadow: '0 2px 10px rgba(0,0,0,0.3)',
               }}
             >
-              {values.title?.trim() || 'Untitled Recipe'}
+              {values.title?.trim() || t('title.untitled')}
             </Title>
 
             {!values.title?.trim() && (
               <Text c="dimmed" size="sm" mt="xs" fs="italic" opacity={0.7}>
-                (Add a title to see it here)
+                {t('title.addHint')}
               </Text>
             )}
           </Box>
@@ -192,7 +194,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
             <Paper withBorder p="sm" radius="md">
               <Stack gap={4} align="center">
                 <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
-                  Total Time
+                  {t('totalTime.label')}
                 </Text>
                 <Group gap={6}>
                   <IconClock size={18} color="var(--mantine-color-orange-6)" />
@@ -207,13 +209,13 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
             <Paper withBorder p="sm" radius="md">
               <Stack gap={4} align="center">
                 <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
-                  Servings
+                  {t('servings.label')}
                 </Text>
                 <Group gap={6}>
                   <IconUsers size={18} color="var(--mantine-color-blue-6)" />
                   <Text fw={700}>
                     {values.servings
-                      ? `${values.servings} ${servingUnitLabel || 'pp'}`
+                      ? `${values.servings} ${servingUnitLabel || t('servings.fallbackUnit')}`
                       : NO_VALUE_FALLBACK}
                   </Text>
                 </Group>
@@ -227,8 +229,8 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
               {values.prepTimeMinutes ? (
                 <Paper withBorder p="xs" radius="md">
                   <Stack gap={2} align="center">
-                    <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
-                      Prep
+                      <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
+                      {t('time.prep')}
                     </Text>
                     <Text size="sm" fw={600}>
                       {prep} min
@@ -239,8 +241,8 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
               {values.cookTimeMinutes ? (
                 <Paper withBorder p="xs" radius="md">
                   <Stack gap={2} align="center">
-                    <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
-                      Cook
+                      <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
+                      {t('time.cook')}
                     </Text>
                     <Text size="sm" fw={600}>
                       {cook} min
@@ -251,8 +253,8 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
               {values.restTimeMinutes ? (
                 <Paper withBorder p="xs" radius="md">
                   <Stack gap={2} align="center">
-                    <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
-                      Rest
+                      <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
+                      {t('time.rest')}
                     </Text>
                     <Text size="sm" fw={600}>
                       {rest} min
@@ -276,7 +278,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
             </Text>
           ) : (
             <Text c="dimmed" fs="italic" opacity={0.5} mb="xl">
-              Add a catchy description to hook your readers...
+              {t('description.placeholder')}
             </Text>
           )}
 
@@ -284,7 +286,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
           {values.equipment.length > 0 && (
             <Box mb="md">
               <Text size="sm" fw={600} mb="xs" c="dimmed" tt="uppercase">
-                Equipment needed
+                {t('equipment.label')}
               </Text>
               <Group gap="xs">
                 {values.equipment.map((key) => (
@@ -307,7 +309,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
             {/* Ingredients */}
             <Box>
               <Title order={3} mb="md">
-                Ingredients
+                {t('ingredients.title')}
               </Title>
               {values.ingredients.length > 0 ? (
                 <Paper
@@ -344,7 +346,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
                             {ing.name}
                             {ing.isOptional && (
                               <Text span size="xs" c="dimmed" ml={4}>
-                                (optional)
+                                {t('optional')}
                               </Text>
                             )}
                           </Text>
@@ -363,7 +365,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
                 </Paper>
               ) : (
                 <Text c="dimmed" size="sm" fs="italic">
-                  No ingredients listed yet.
+                  {t('ingredients.noIngredients')}
                 </Text>
               )}
             </Box>
@@ -371,7 +373,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
             {/* Steps */}
             <Box>
               <Title order={3} mb="md">
-                Preparation
+                {t('preparation.title')}
               </Title>
               {values.preparationSteps.length > 0 ? (
                 <Stack gap="lg">
@@ -398,7 +400,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
                         <Text pt={2} style={{ lineHeight: 1.6 }}>
                           {step.description || (
                             <Text span c="dimmed" fs="italic">
-                              Describe this step...
+                              {t('step.describePlaceholder')}
                             </Text>
                           )}
                         </Text>
@@ -407,7 +409,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
                 </Stack>
               ) : (
                 <Text c="dimmed" size="sm" fs="italic">
-                  No steps added yet.
+                  {t('preparation.noSteps')}
                 </Text>
               )}
             </Box>
@@ -417,7 +419,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
           {values.tips?.trim() && (
             <Box mt="xl">
               <Text size="sm" fw={600} mb="xs" c="dimmed" tt="uppercase">
-                Tips
+                {t('tips.title')}
               </Text>
               <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
                 {values.tips}
@@ -429,7 +431,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
           {values.substitutions?.trim() && (
             <Box mt="md">
               <Text size="sm" fw={600} mb="xs" c="dimmed" tt="uppercase">
-                Substitutions
+                {t('substitutions.title')}
               </Text>
               <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
                 {values.substitutions}

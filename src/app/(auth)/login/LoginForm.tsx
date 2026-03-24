@@ -115,7 +115,7 @@ export const LoginForm: FC = () => {
       >
         <TextInput
           label={translate('user.email')}
-          placeholder="your@email.com"
+          placeholder={translate('auth.emailPlaceholder')}
           required
           id="email"
           type="email"

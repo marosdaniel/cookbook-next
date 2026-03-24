@@ -377,6 +377,99 @@
     "recipeUpdateFailedMessage": "Valami hiba történt mentés közben.",
     "changesResetTitle": "Módosítások visszaállítva",
     "changesResetMessage": "Visszaállt az eredeti receptre."
+    ,"personalDataUpdatedMessage": "Személyes adataid sikeresen frissítve lettek"
+  },
+  "recipeIngredients": {
+    "decreaseServings": "Adagok csökkentése",
+    "increaseServings": "Adagok növelése"
+  },
+  "recipePreview": {
+    "imageAlt": "Recept borító",
+    "noCover": "Még nincs borító kép",
+    "title": {
+      "untitled": "Cím nélküli recept",
+      "addHint": "Adj címet, hogy itt megjelenjen"
+    },
+    "totalTime": {
+      "label": "Összes idő"
+    },
+    "servings": {
+      "label": "Adagok",
+      "fallbackUnit": "adag"
+    },
+    "time": {
+      "prep": "Előkészítés",
+      "cook": "Főzés",
+      "rest": "Pihentetés"
+    },
+    "description": {
+      "placeholder": "Írj egy figyelemfelkeltő leírást..."
+    },
+    "equipment": {
+      "label": "Szükséges eszközök"
+    },
+    "ingredients": {
+      "title": "Hozzávalók",
+      "noIngredients": "Még nem listáztál hozzávalókat."
+    },
+    "preparation": {
+      "title": "Elkészítés",
+      "noSteps": "Még nem adtál hozzá lépéseket."
+    },
+    "step": {
+      "describePlaceholder": "Írd le ezt a lépést..."
+    },
+    "tips": {
+      "title": "Tippek"
+    },
+    "substitutions": {
+      "title": "Helyettesítések"
+    }
+  },
+  "recipeCreate": {
+    "sidebar": {
+      "basics": "Alapok",
+      "media": "Média",
+      "ingredients": "Hozzávalók",
+      "steps": "Lépések",
+      "sectionsTitle": "Szekciók",
+      "itemsCount": "{count} elem",
+      "stepsCount": "{count} lépés",
+      "mediaCoverSet": "Borító beállítva",
+      "mediaOptional": "Opcionális",
+      "progressPercent": "{percent}% kész",
+      "quickAddIngredient": "Gyors hozzávaló hozzáadása",
+      "quickAddStep": "Gyors lépés hozzáadása",
+      "resetButton": "Visszaállítás"
+    }
+  },
+  "recipePreview": {
+    "optional": "(opcionális)"
+  },
+  },
+  "composerHeader": {
+    "saveDraft": {
+      "tooltip": "Piszkozat mentése"
+    },
+    "save": {
+      "button": "Mentés"
+    },
+    "preview": {
+      "button": "Előnézet"
+    }
+  },
+  "logo": {
+    "alt": {
+      "icon": "Cookbook",
+      "full": "Cookbook logó"
+    },
+    "text": "Cookbook"
+  },
+  "recipe": {
+    "empty": "Nincs találat a receptek között."
+  },
+  "units": {
+    "minuteShort": "perc"
   },
   "recipeSearch": {
     "searchPlaceholder": "Receptek keresése név alapján...",
@@ -487,5 +580,43 @@
         "publish": "Recept közzététele"
       }
     }
+    },
+    "recipeEdit": {
+      "failedToLoad": "Nem sikerült betölteni a receptet",
+      "notAuthorizedTitle": "Nincs jogosultság",
+      "notAuthorizedMessage": "Csak a saját receptjeidet szerkesztheted.",
+      "lastSavedLabel": "Szerkesztés alatt",
+      "headerTitle": "Recept szerkesztése",
+      "submitLabel": "Változtatások mentése",
+      "resetLabel": "Változtatások visszaállítása"
+    },
+  "home": {
+    "carouselEmpty": "Még nincsenek receptek. Légy te az első, aki megoszt egyet!",
+    "recentlyViewed": "Nemrég megtekintett",
+    "recentlyViewedHint": "* Nemrég megtekintett receptek — hamarosan"
+  }
+  ,"headerSearch": {
+    "placeholder": "Keresés...",
+    "searching": "Keresés folyamatban...",
+    "noResults": "Nincs találat"
+  },
+  "recipeCreate": {
+    "headerTitle": "Recept létrehozása",
+    "submitLabel": "Közzététel",
+    "resetLabel": "Piszkozat törlése"
+  },
+  "auth": {
+    "emailPlaceholder": "your@email.com"
+  },
+  "footer": {
+    "copyright": "© {year} Cookbook. Minden jog fenntartva.",
+    "privacy": "Adatvédelmi szabályzat",
+    "cookies": "Süti szabályzat"
+  }
+  ,"favorites": {
+    "add": "Hozzáadás a kedvencekhez",
+    "remove": "Eltávolítás a kedvencek közül"
+  }
+  }
   }
 }

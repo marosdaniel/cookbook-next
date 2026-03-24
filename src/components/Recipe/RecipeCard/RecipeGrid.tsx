@@ -1,6 +1,7 @@
 'use client';
 
 import { Center, SimpleGrid, Skeleton, Stack, Text } from '@mantine/core';
+import { useTranslations } from 'next-intl';
 import { IconMoodSad } from '@tabler/icons-react';
 import RecipeCard from './RecipeCard';
 import type { RecipeGridProps } from './types';
@@ -11,9 +12,11 @@ const RecipeGrid = ({
   recipes,
   loading = false,
   withFavorite = true,
-  emptyMessage = 'No recipes found.',
+  emptyMessage,
   columns = { base: 1, sm: 2, md: 3, lg: 4 },
 }: RecipeGridProps) => {
+  const t = useTranslations('recipe');
+  const empty = emptyMessage ?? t('empty');
   if (loading) {
     return (
       <SimpleGrid cols={columns}>
@@ -30,7 +33,7 @@ const RecipeGrid = ({
         <Stack align="center" gap="xs">
           <IconMoodSad size={48} color="var(--mantine-color-dimmed)" />
           <Text c="dimmed" size="lg">
-            {emptyMessage}
+            {empty}
           </Text>
         </Stack>
       </Center>

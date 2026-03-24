@@ -16,6 +16,7 @@ import {
   IconTrash,
 } from '@tabler/icons-react';
 import { memo } from 'react';
+import { useTranslations } from 'next-intl';
 import { getProgressColor, sectionCompletion } from '../../utils';
 import SectionNavItem from '../SectionNavItem';
 import type { ComposerSidebarProps } from './types';
@@ -31,6 +32,8 @@ const ComposerSidebar = memo(
     onReset,
     resetLabel,
   }: Readonly<ComposerSidebarProps>) => {
+    const t = useTranslations('recipeCreate.sidebar');
+
     const sectionItems = [
       {
         key: 'basics' as const,
@@ -68,17 +71,17 @@ const ComposerSidebar = memo(
       >
         <Stack gap="xs">
           <Text size="xs" tt="uppercase" fw={700} c="dimmed" mb={4}>
-            Sections
+            {t('sectionsTitle')}
           </Text>
           {sectionItems.map((s) => {
             const sc = sectionCompletion(s.key, values);
             const hint = (() => {
               if (s.key === 'ingredients')
-                return `${values.ingredients.length} items`;
+                return t('itemsCount', { count: values.ingredients.length });
               if (s.key === 'steps')
-                return `${values.preparationSteps.length} steps`;
+                return t('stepsCount', { count: values.preparationSteps.length });
               if (s.key === 'media')
-                return values.imgSrc ? 'Cover set' : 'Optional';
+                return values.imgSrc ? t('mediaCoverSet') : t('mediaOptional');
               return `${sc.done}/${sc.total} filled`;
             })();
 
@@ -104,13 +107,13 @@ const ComposerSidebar = memo(
             color={getProgressColor(completion.percent)}
           />
           <Text size="xs" c="dimmed" ta="center">
-            {completion.percent}% complete
+            {t('progressPercent', { percent: completion.percent })}
           </Text>
 
           <Divider my="sm" />
 
           <Group gap="xs">
-            <Button
+              <Button
               size="xs"
               variant="light"
               leftSection={<IconPlus size={14} />}
@@ -120,7 +123,7 @@ const ComposerSidebar = memo(
               }}
               fullWidth
             >
-              Quick add ingredient
+              {t('quickAddIngredient')}
             </Button>
             <Button
               size="xs"
@@ -132,7 +135,7 @@ const ComposerSidebar = memo(
               }}
               fullWidth
             >
-              Quick add step
+              {t('quickAddStep')}
             </Button>
           </Group>
 
@@ -146,7 +149,7 @@ const ComposerSidebar = memo(
             onClick={onReset}
             fullWidth
           >
-            {resetLabel}
+            {resetLabel || t('resetButton')}
           </Button>
         </Stack>
       </Box>

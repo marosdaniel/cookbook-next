@@ -21,6 +21,7 @@ const FavoriteButton = ({
 }: FavoriteButtonProps) => {
   const { data: session } = useSession();
   const translate = useTranslations('response');
+  const tFav = useTranslations('favorites');
   const [optimisticFavorite, setOptimisticFavorite] = useState(isFavorite);
 
   const [addToFavorite, { loading: addLoading }] =
@@ -88,20 +89,13 @@ const FavoriteButton = ({
   const HeartIcon = optimisticFavorite ? IconHeartFilled : IconHeart;
 
   return (
-    <Tooltip
-      label={
-        optimisticFavorite ? 'Remove from favourites' : 'Add to favourites'
-      }
-      withArrow
-    >
+    <Tooltip label={optimisticFavorite ? tFav('remove') : tFav('add')} withArrow>
       <ActionIcon
         variant="subtle"
         color={optimisticFavorite ? 'red' : 'gray'}
         onClick={handleToggle}
         loading={loading}
-        aria-label={
-          optimisticFavorite ? 'Remove from favourites' : 'Add to favourites'
-        }
+        aria-label={optimisticFavorite ? tFav('remove') : tFav('add')}
         size={size}
       >
         <HeartIcon

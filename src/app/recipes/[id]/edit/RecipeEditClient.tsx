@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
 import { useQuery } from '@apollo/client/react';
 import { Center, LoadingOverlay, Stack, Text, Title } from '@mantine/core';
+import { useTranslations } from 'next-intl';
 import { redirect } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -18,6 +19,7 @@ import type { RecipeByIdData, RecipeEditClientProps } from './types';
 
 const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
   const { data: session, status: authStatus } = useSession();
+  const translate = useTranslations('recipeEdit');
 
   /* Auth guard */
   useEffect(() => {
@@ -80,7 +82,7 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
     return (
       <Center h="100vh">
         <Stack align="center" gap="md">
-          <Title order={3}>Failed to load recipe</Title>
+          <Title order={3}>{translate('failedToLoad')}</Title>
           <Text c="dimmed">{recipeError.message}</Text>
         </Stack>
       </Center>
@@ -93,8 +95,8 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
     return (
       <Center h="100vh">
         <Stack align="center" gap="md">
-          <Title order={3}>Not Authorized</Title>
-          <Text c="dimmed">You can only edit your own recipes.</Text>
+          <Title order={3}>{translate('notAuthorizedTitle')}</Title>
+          <Text c="dimmed">{translate('notAuthorizedMessage')}</Text>
         </Stack>
       </Center>
     );
@@ -111,14 +113,14 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
       handlePublish={editForm.handlePublish}
       submitLoading={editForm.submitLoading}
       completion={editForm.completion}
-      lastSavedLabel="Editing"
+      lastSavedLabel={translate('lastSavedLabel')}
       onSave={handleSave}
       onReset={editForm.resetToOriginal}
       addIngredient={editForm.addIngredient}
       addStep={editForm.addStep}
-      headerTitle="Edit Recipe"
-      submitLabel="Save Changes"
-      resetLabel="Reset changes"
+      headerTitle={translate('headerTitle')}
+      submitLabel={translate('submitLabel')}
+      resetLabel={translate('resetLabel')}
       goToSectionRef={goToSectionRef}
     />
   );

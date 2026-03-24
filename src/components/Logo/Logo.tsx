@@ -1,6 +1,7 @@
 'use client';
 
 import { Group, Text, useComputedColorScheme } from '@mantine/core';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -23,11 +24,12 @@ export const Logo = ({
 
   const size = variant === 'icon' ? 40 : 120;
   const logoSrc = colorScheme === 'dark' ? LOGO_SRC_DARK : LOGO_SRC_LIGHT;
+  const t = useTranslations('logo');
 
   const image = (
     <Image
       src={logoSrc}
-      alt={variant === 'icon' ? 'Cookbook' : 'Cookbook Logo'}
+      alt={variant === 'icon' ? t('alt.icon') : t('alt.full')}
       width={width ?? size}
       height={height ?? size}
       priority={priority}
@@ -44,7 +46,7 @@ export const Logo = ({
       visibleFrom={hideTextOnMobile ? 'sm' : undefined}
       style={{ lineHeight: 1 }}
     >
-      Cookbook
+      {t('text')}
     </Text>
   );
 

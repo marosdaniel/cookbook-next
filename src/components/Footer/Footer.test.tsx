@@ -42,6 +42,21 @@ vi.mock('../Logo', () => ({
   ),
 }));
 
+// Mock next-intl
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string, values?: Record<string, any>) => {
+    const translations: Record<string, string> = {
+      'footer.privacy': 'Privacy Policy',
+      'footer.cookies': 'Cookie Policy',
+    };
+    if (key === 'footer.copyright') {
+      const year = values?.year ?? '';
+      return `© ${year} Cookbook. All rights reserved.`;
+    }
+    return translations[key] || key;
+  },
+}));
+
 // Mock PUBLIC_ROUTES
 vi.mock('../../types/routes', () => ({
   PUBLIC_ROUTES: {

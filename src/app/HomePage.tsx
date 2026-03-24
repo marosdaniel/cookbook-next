@@ -12,6 +12,7 @@ import { MOCK_RECENTLY_VIEWED_RECIPES } from './mockRecentlyViewed';
 
 const HomePage = () => {
   const translate = useTranslations('sidebar');
+  const translateHome = useTranslations('home');
 
   const { data, loading } = useQuery(GET_LATEST_RECIPES, {
     variables: { limit: 10 },
@@ -41,7 +42,7 @@ const HomePage = () => {
         <RecipeCarousel
           loading={loading}
           recipes={latestRecipes}
-          emptyMessage="No recipes yet. Be the first to share one!"
+          emptyMessage={translateHome('carouselEmpty')}
           withFavorite
         />
       </Box>
@@ -58,7 +59,7 @@ const HomePage = () => {
                 color: 'var(--mantine-color-grape-6)',
               }}
             />
-            Recently Viewed
+            {translateHome('recentlyViewed')}
           </Title>
         </Box>
         <RecipeCarousel
@@ -67,7 +68,7 @@ const HomePage = () => {
         />
         <Center mt="xs">
           <Text size="xs" c="dimmed" fs="italic">
-            * Recently viewed recipes — coming soon
+            {translateHome('recentlyViewedHint')}
           </Text>
         </Center>
       </Box>

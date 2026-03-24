@@ -28,6 +28,7 @@ export function RecipeIngredients({
   onDecrementServings,
 }: Readonly<RecipeIngredientsProps>) {
   const translate = useTranslations('recipeDetail');
+  const ingTranslate = useTranslations('recipeIngredients');
 
   return (
     <Paper p="lg" radius="md" withBorder className={classes.ingredientsCard}>
@@ -54,7 +55,7 @@ export function RecipeIngredients({
           size="sm"
           onClick={onDecrementServings}
           disabled={servingMultiplier <= SERVING_MIN}
-          aria-label="Decrease servings"
+          aria-label={ingTranslate('decreaseServings')}
         >
           <IconMinus size={14} />
         </ActionIcon>
@@ -72,7 +73,7 @@ export function RecipeIngredients({
           size="sm"
           onClick={onIncrementServings}
           disabled={servingMultiplier >= SERVING_MAX}
-          aria-label="Increase servings"
+          aria-label={ingTranslate('increaseServings')}
         >
           <IconPlus size={14} />
         </ActionIcon>

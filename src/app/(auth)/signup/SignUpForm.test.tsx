@@ -47,6 +47,7 @@ vi.mock('next-intl', () => ({
       'user.email': 'Email',
       'user.password': 'Password', // NOSONAR
       'user.confirmPassword': 'Confirm Password', // NOSONAR
+      'auth.emailPlaceholder': 'your@email.com',
       'auth.createAnAccountButton': 'Create an account',
       'response.success': 'Success',
       'response.error': 'Error',

@@ -14,3 +14,23 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: () => false,
   }),
 });
+
+import { vi } from 'vitest';
+
+// Provide a lightweight mock for next-intl so tests can render components
+// that use `useTranslations` without loading locale files.
+vi.mock('next-intl', () => {
+  return {
+    useTranslations: (ns?: string) => {
+      return (key: string, opts?: Record<string, any>) => {
+        if (opts && typeof opts === 'object') {
+          return String(key).replace(/\{(\w+)\}/g, (_, k) => String(opts[k] ?? ''));
+        }
+        const parts = String(key).split('.');
+        return parts[parts.length - 1];
+      };
+    },
+    NextIntlProvider: ({ children }: any) => children,
+    useLocale: () => 'en',
+  };
+});

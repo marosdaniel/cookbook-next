@@ -2,6 +2,7 @@
 
 import { Carousel } from '@mantine/carousel';
 import { Box, Skeleton, Text } from '@mantine/core';
+import { useTranslations } from 'next-intl';
 import { RecipeCard } from '../RecipeCard';
 import classes from './RecipeCarousel.module.css';
 import type { RecipeCarouselProps } from './types';
@@ -17,9 +18,11 @@ const RecipeCarousel = ({
   recipes,
   loading = false,
   withFavorite = true,
-  emptyMessage = 'No recipes found.',
+  emptyMessage,
   skeletonCount = 4,
 }: RecipeCarouselProps) => {
+  const t = useTranslations('recipe');
+  const empty = emptyMessage ?? t('empty');
   if (loading) {
     const skeletonItems = Array.from({ length: skeletonCount }, (_, i) => i);
     return (
@@ -39,10 +42,10 @@ const RecipeCarousel = ({
   if (recipes.length === 0) {
     return (
       <Box className={classes.emptyCarousel}>
-        <Text c="dimmed" size="lg">
-          {emptyMessage}
-        </Text>
-      </Box>
+          <Text c="dimmed" size="lg">
+            {empty}
+          </Text>
+        </Box>
     );
   }
 

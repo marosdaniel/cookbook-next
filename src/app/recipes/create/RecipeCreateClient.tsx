@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useRef } from 'react';
 import { useRecipeForm } from '@/components/Recipe/Create/hooks/useRecipeForm';
+import { useTranslations } from 'next-intl';
 import { useRecipeMetadata } from '@/components/Recipe/Create/hooks/useRecipeMetadata';
 import { RecipeComposer } from '@/components/Recipe/Create/RecipeComposer';
 import type { ComposerSection } from '@/components/Recipe/Create/types';
@@ -13,6 +14,7 @@ const RecipeCreateClient = () => {
   const { data: session, status } = useSession();
 
   const { labels, metadataLoaded } = useRecipeMetadata();
+  const t = useTranslations('recipeCreate');
 
   /**
    * Ref that RecipeComposer populates with its internal goToSection callback.
@@ -67,9 +69,9 @@ const RecipeCreateClient = () => {
       onReset={resetDraft}
       addIngredient={addIngredient}
       addStep={addStep}
-      headerTitle="Create Recipe"
-      submitLabel="Publish"
-      resetLabel="Clear draft"
+      headerTitle={t('headerTitle')}
+      submitLabel={t('submitLabel')}
+      resetLabel={t('resetLabel')}
       goToSectionRef={goToSectionRef}
     />
   );

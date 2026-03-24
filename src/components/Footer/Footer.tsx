@@ -5,9 +5,11 @@ import Link from 'next/link';
 import type { FC } from 'react';
 import { PUBLIC_ROUTES } from '../../types/routes';
 import { Logo } from '../Logo';
+import { useTranslations } from 'next-intl';
 
 const Footer: FC = () => {
   const currentYear = new Date().getFullYear();
+  const t = useTranslations('footer');
 
   return (
     <>
@@ -28,7 +30,7 @@ const Footer: FC = () => {
           href={PUBLIC_ROUTES.HOME}
         />
         <Text size="xs" c="dimmed" data-testid="footer-copyright">
-          &copy; {currentYear} Cookbook. All rights reserved.
+          {t('copyright', { year: currentYear })}
         </Text>
         <Group gap="md">
           <Anchor
@@ -39,7 +41,7 @@ const Footer: FC = () => {
             underline="hover"
             data-testid="footer-privacy"
           >
-            Privacy Policy
+            {t('privacy')}
           </Anchor>
           <Anchor
             variant="subtle"
@@ -50,7 +52,7 @@ const Footer: FC = () => {
             underline="hover"
             data-testid="footer-cookie"
           >
-            Cookie Policy
+            {t('cookies')}
           </Anchor>
         </Group>
       </Stack>
@@ -72,7 +74,7 @@ const Footer: FC = () => {
             href={PUBLIC_ROUTES.HOME}
           />
           <Text size="xs" c="dimmed" data-testid="footer-copyright">
-            &copy; {currentYear} Cookbook. All rights reserved.
+            {t('copyright', { year: currentYear })}
           </Text>
         </Group>
 
@@ -85,7 +87,7 @@ const Footer: FC = () => {
             underline="hover"
             data-testid="footer-privacy"
           >
-            Privacy Policy
+            {t('privacy')}
           </Anchor>
           <Anchor
             component={Link}
@@ -96,7 +98,7 @@ const Footer: FC = () => {
             variant="subtle"
             data-testid="footer-cookie"
           >
-            Cookie Policy
+            {t('cookies')}
           </Anchor>
         </Group>
       </Group>

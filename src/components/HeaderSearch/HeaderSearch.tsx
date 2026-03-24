@@ -15,9 +15,11 @@ import type { Route } from 'next';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
+import { useTranslations } from 'next-intl';
 import type { RecipeBase } from '@/types/recipe';
 
 export function HeaderSearch() {
+  const t = useTranslations('headerSearch');
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch] = useDebouncedValue(searchQuery, 800);
@@ -70,7 +72,7 @@ export function HeaderSearch() {
     >
       <Combobox.Target>
         <TextInput
-          placeholder="Keresés..."
+          placeholder={t('placeholder')}
           value={searchQuery}
           onChange={(event) => {
             setSearchQuery(event.currentTarget.value);
@@ -96,9 +98,7 @@ export function HeaderSearch() {
             setIsFocused(false);
             combobox.closeDropdown();
           }}
-          rightSection={
-            loading ? <Loader size={18} /> : <IconSearch size={18} />
-          }
+          rightSection={loading ? <Loader size={18} /> : <IconSearch size={18} />}
           radius="xl"
           size="sm"
           w={{ base: 200, md: 300, lg: 400 }}
@@ -111,7 +111,7 @@ export function HeaderSearch() {
           {loading && (
             <Combobox.Empty>
               <Text size="sm" c="dimmed">
-                Keresés...
+                {t('searching')}
               </Text>
             </Combobox.Empty>
           )}
@@ -121,7 +121,7 @@ export function HeaderSearch() {
           {hasNoResults && (
             <Combobox.Empty>
               <Text size="sm" c="dimmed">
-                Nincs találat
+                {t('noResults')}
               </Text>
             </Combobox.Empty>
           )}

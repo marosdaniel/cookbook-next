@@ -17,6 +17,7 @@ import type { RecipeCardProps } from './types';
 
 const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
   const translate = useTranslations('misc');
+  const tCommon = useTranslations();
 
   const {
     id,
@@ -87,7 +88,7 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
           <Group gap={4} className={classes.metaRow}>
             <IconClock size={14} color="var(--mantine-color-dimmed)" />
             <Text size="xs" c="dimmed">
-              {cookingTime} min
+              {cookingTime} {tCommon('units.minuteShort')}
             </Text>
           </Group>
           <Group gap={4} className={classes.metaRow}>

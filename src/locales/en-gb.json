@@ -377,6 +377,98 @@
     "recipeUpdateFailedMessage": "Something went wrong while saving.",
     "changesResetTitle": "Changes reset",
     "changesResetMessage": "Reverted to the original recipe."
+    ,"personalDataUpdatedMessage": "Your personal data has been updated"
+  },
+  "recipeIngredients": {
+    "decreaseServings": "Decrease servings",
+    "increaseServings": "Increase servings"
+  },
+  "recipePreview": {
+    "imageAlt": "Recipe cover",
+    "noCover": "No cover image yet",
+    "title": {
+      "untitled": "Untitled recipe",
+      "addHint": "Add a title to see it here"
+    },
+    "totalTime": {
+      "label": "Total time"
+    },
+    "servings": {
+      "label": "Servings",
+      "fallbackUnit": "pp"
+    },
+    "time": {
+      "prep": "Prep",
+      "cook": "Cook",
+      "rest": "Rest"
+    },
+    "description": {
+      "placeholder": "Add a catchy description to hook your readers..."
+    },
+    "equipment": {
+      "label": "Equipment needed"
+    },
+    "ingredients": {
+      "title": "Ingredients",
+      "noIngredients": "No ingredients listed yet."
+    },
+    "preparation": {
+      "title": "Preparation",
+      "noSteps": "No steps added yet."
+    },
+    "step": {
+      "describePlaceholder": "Describe this step..."
+    },
+    "tips": {
+      "title": "Tips"
+    },
+    "substitutions": {
+      "title": "Substitutions"
+    }
+  },
+  "recipeCreate": {
+    "sidebar": {
+      "basics": "Basics",
+      "media": "Media",
+      "ingredients": "Ingredients",
+      "steps": "Steps",
+      "sectionsTitle": "Sections",
+      "itemsCount": "{count} items",
+      "stepsCount": "{count} steps",
+      "mediaCoverSet": "Cover set",
+      "mediaOptional": "Optional",
+      "progressPercent": "{percent}% complete",
+      "quickAddIngredient": "Quick add ingredient",
+      "quickAddStep": "Quick add step",
+      "resetButton": "Reset"
+    }
+  },
+  "recipePreview": {
+    "optional": "(optional)"
+  },
+  "composerHeader": {
+    "saveDraft": {
+      "tooltip": "Save draft"
+    },
+    "save": {
+      "button": "Save"
+    },
+    "preview": {
+      "button": "Preview"
+    }
+  },
+  "logo": {
+    "alt": {
+      "icon": "Cookbook",
+      "full": "Cookbook Logo"
+    },
+    "text": "Cookbook"
+  },
+  "recipe": {
+    "empty": "No recipes found."
+  },
+  "units": {
+    "minuteShort": "min"
   },
   "recipeSearch": {
     "searchPlaceholder": "Search recipes by name...",
@@ -487,5 +579,43 @@
         "publish": "Publish Recipe"
       }
     }
+    },
+    "recipeEdit": {
+      "failedToLoad": "Failed to load recipe",
+      "notAuthorizedTitle": "Not Authorized",
+      "notAuthorizedMessage": "You can only edit your own recipes.",
+      "lastSavedLabel": "Editing",
+      "headerTitle": "Edit Recipe",
+      "submitLabel": "Save Changes",
+      "resetLabel": "Reset changes"
+    },
+  "home": {
+    "carouselEmpty": "No recipes yet. Be the first to share one!",
+    "recentlyViewed": "Recently Viewed",
+    "recentlyViewedHint": "* Recently viewed recipes — coming soon"
+  }
+  ,"headerSearch": {
+    "placeholder": "Search...",
+    "searching": "Searching...",
+    "noResults": "No results"
+  },
+  "recipeCreate": {
+    "headerTitle": "Create Recipe",
+    "submitLabel": "Publish",
+    "resetLabel": "Clear draft"
+  },
+  "auth": {
+    "emailPlaceholder": "your@email.com"
+  },
+  "footer": {
+    "copyright": "© {year} Cookbook. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy"
+  }
+  ,"favorites": {
+    "add": "Add to favourites",
+    "remove": "Remove from favourites"
+  }
+  }
   }
 }

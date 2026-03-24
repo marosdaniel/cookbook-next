@@ -16,6 +16,7 @@ import {
   IconWand,
 } from '@tabler/icons-react';
 import { memo } from 'react';
+import { useTranslations } from 'next-intl';
 import { getProgressColor } from '../../utils';
 import type { ComposerHeaderProps } from './types';
 
@@ -32,6 +33,7 @@ const ComposerHeader = memo(
     submitLabel,
   }: Readonly<ComposerHeaderProps>) => {
     const ringColor = getProgressColor(completion.percent);
+    const t = useTranslations('composerHeader');
 
     return (
       <Paper
@@ -87,14 +89,14 @@ const ComposerHeader = memo(
               </Stack>
             </Group>
 
-            <Tooltip label="Save draft">
+            <Tooltip label={t('saveDraft.tooltip')}>
               <Button
                 variant="default"
                 leftSection={<IconDeviceFloppy size={16} />}
                 onClick={onSave}
                 visibleFrom="sm"
               >
-                Save
+                {t('save.button')}
               </Button>
             </Tooltip>
             <ActionIcon
@@ -112,7 +114,7 @@ const ComposerHeader = memo(
               onClick={onPreview}
               hiddenFrom="lg"
             >
-              Preview
+              {t('preview.button')}
             </Button>
 
             <Button

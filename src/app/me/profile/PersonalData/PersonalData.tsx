@@ -107,7 +107,7 @@ const PersonalData = () => {
         setIsEditMode(false);
         notifications.show({
           title: translate('response.success'),
-          message: 'Your personal data has been updated',
+          message: translate('notifications.personalDataUpdatedMessage'),
           color: 'teal',
         });
       } else {
@@ -122,7 +122,7 @@ const PersonalData = () => {
       console.error('Something went wrong:', error);
       notifications.show({
         title: translate('response.error'),
-        message: 'Something went wrong. Please try again later.',
+        message: translate('response.somethingWentWrong'),
         color: 'red',
       });
     }
