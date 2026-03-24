@@ -32,14 +32,13 @@ export const LoginForm: FC = () => {
   const [isSigningIn, setIsSigningIn] = useState(false);
 
   const form = useForm<LoginFormValues>({
-    mode: 'uncontrolled',
+    mode: 'controlled',
     initialValues: {
       email: '',
       password: '',
     },
     // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
     validate: zodResolver(loginValidationSchema) as any,
-    validateInputOnBlur: true,
   });
 
   const handleLogin = async (values: LoginFormValues) => {
@@ -121,7 +120,6 @@ export const LoginForm: FC = () => {
           id="email"
           type="email"
           autoComplete="email"
-          key={form.key('email')}
           {...form.getInputProps('email')}
         />
         <PasswordInput
@@ -131,7 +129,6 @@ export const LoginForm: FC = () => {
           id="password"
           label={translate('user.password')}
           autoComplete="current-password"
-          key={form.key('password')}
           {...form.getInputProps('password')}
         />
         <Group justify="space-between" mt="lg">
