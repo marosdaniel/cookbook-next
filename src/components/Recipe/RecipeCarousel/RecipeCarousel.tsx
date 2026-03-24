@@ -42,10 +42,10 @@ const RecipeCarousel = ({
   if (recipes.length === 0) {
     return (
       <Box className={classes.emptyCarousel}>
-          <Text c="dimmed" size="lg">
-            {empty}
-          </Text>
-        </Box>
+        <Text c="dimmed" size="lg">
+          {empty}
+        </Text>
+      </Box>
     );
   }
 

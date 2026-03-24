@@ -1,10 +1,10 @@
 'use client';
 
 import { Group, Text, useComputedColorScheme } from '@mantine/core';
-import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { LOGO_SRC_DARK, LOGO_SRC_LIGHT } from './consts';
 import type { LogoProps } from './types';
 

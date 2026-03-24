@@ -39,6 +39,7 @@
     "cookiePolicyDescription": "Learn about how Cookbook uses cookies.",
     "privacyPolicyTitle": "Privacy Policy",
     "privacyPolicyDescription": "Learn about how Cookbook protects your privacy."
+    ,"emailPlaceholder": "your@email.com"
   },
   "common": {
     "language": "Language",
@@ -64,6 +65,9 @@
     "followings": "Followings",
     "follow": "Follow",
     "unfollow": "Unfollow",
+    "headerTitle": "Create Recipe",
+    "submitLabel": "Publish",
+    "resetLabel": "Clear draft"
     "generaTitle": "General information",
     "personalDataTitle": "Personal data",
     "changePasswordTitle": "Change password",
@@ -92,6 +96,7 @@
     "myProfile": "My Profile",
     "favorites": "Favourites",
     "friends": "Friends",
+      "optional": "(optional)"
     "followings": "Following",
     "allRecipes": "All Recipes",
     "latestRecipes": "Latest Recipes",
@@ -107,7 +112,8 @@
     "ratingSuccess": "Rating success!",
     "ratingSuccessMessage": "Thank you for your rating!",
     "ratingError": "Rating error",
-    "ratingErrorMessage": "Failed to save your rating."
+    "ratingErrorMessage": "Failed to save your rating.",
+    "empty": "No recipes found."
   },
   "recipeDetail": {
     "ingredients": "Ingredients",
@@ -443,9 +449,6 @@
       "resetButton": "Reset"
     }
   },
-  "recipePreview": {
-    "optional": "(optional)"
-  },
   "composerHeader": {
     "saveDraft": {
       "tooltip": "Save draft"
@@ -464,9 +467,7 @@
     },
     "text": "Cookbook"
   },
-  "recipe": {
-    "empty": "No recipes found."
-  },
+ 
   "units": {
     "minuteShort": "min"
   },
@@ -599,14 +600,7 @@
     "searching": "Searching...",
     "noResults": "No results"
   },
-  "recipeCreate": {
-    "headerTitle": "Create Recipe",
-    "submitLabel": "Publish",
-    "resetLabel": "Clear draft"
-  },
-  "auth": {
-    "emailPlaceholder": "your@email.com"
-  },
+
   "footer": {
     "copyright": "© {year} Cookbook. All rights reserved.",
     "privacy": "Privacy Policy",
@@ -615,7 +609,5 @@
   ,"favorites": {
     "add": "Add to favourites",
     "remove": "Remove from favourites"
-  }
-  }
   }
 }

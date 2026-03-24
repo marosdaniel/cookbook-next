@@ -15,8 +15,8 @@ import {
   IconEye,
   IconWand,
 } from '@tabler/icons-react';
-import { memo } from 'react';
 import { useTranslations } from 'next-intl';
+import { memo } from 'react';
 import { getProgressColor } from '../../utils';
 import type { ComposerHeaderProps } from './types';
 

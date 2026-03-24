@@ -39,6 +39,7 @@
     "cookiePolicyDescription": "Tudjon meg többet arról, hogyan használja a Cookbook a sütiket.",
     "privacyPolicyTitle": "Adatvédelmi Szabályzat",
     "privacyPolicyDescription": "Tudjon meg többet arról, hogyan védi a Cookbook az Ön adatait."
+    ,"emailPlaceholder": "your@email.com"
   },
   "common": {
     "language": "Nyelv",
@@ -125,6 +126,9 @@
     "checkedOff": "{count} / {total} kipipálva",
     "loadError": "Nem sikerült betölteni a receptet",
     "videoTitle": "Videó"
+    "headerTitle": "Recept létrehozása",
+    "submitLabel": "Közzététel",
+    "resetLabel": "Piszkozat törlése"
   },
   "response": {
     "success": "Siker",
@@ -425,6 +429,7 @@
     "substitutions": {
       "title": "Helyettesítések"
     }
+    ,"optional": "(opcionális)"
   },
   "recipeCreate": {
     "sidebar": {
@@ -443,10 +448,7 @@
       "resetButton": "Visszaállítás"
     }
   },
-  "recipePreview": {
-    "optional": "(opcionális)"
-  },
-  },
+  
   "composerHeader": {
     "saveDraft": {
       "tooltip": "Piszkozat mentése"
@@ -465,9 +467,7 @@
     },
     "text": "Cookbook"
   },
-  "recipe": {
-    "empty": "Nincs találat a receptek között."
-  },
+  
   "units": {
     "minuteShort": "perc"
   },
@@ -600,14 +600,7 @@
     "searching": "Keresés folyamatban...",
     "noResults": "Nincs találat"
   },
-  "recipeCreate": {
-    "headerTitle": "Recept létrehozása",
-    "submitLabel": "Közzététel",
-    "resetLabel": "Piszkozat törlése"
-  },
-  "auth": {
-    "emailPlaceholder": "your@email.com"
-  },
+  
   "footer": {
     "copyright": "© {year} Cookbook. Minden jog fenntartva.",
     "privacy": "Adatvédelmi szabályzat",
@@ -616,7 +609,5 @@
   ,"favorites": {
     "add": "Hozzáadás a kedvencekhez",
     "remove": "Eltávolítás a kedvencek közül"
-  }
-  }
   }
 }

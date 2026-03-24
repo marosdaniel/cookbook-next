@@ -25,8 +25,8 @@ import {
   IconUsers,
   IconWorld,
 } from '@tabler/icons-react';
-import { memo } from 'react';
 import { useTranslations } from 'next-intl';
+import { memo } from 'react';
 import type { PreviewProps } from './types';
 
 const NO_VALUE_FALLBACK = '—';
@@ -229,7 +229,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
               {values.prepTimeMinutes ? (
                 <Paper withBorder p="xs" radius="md">
                   <Stack gap={2} align="center">
-                      <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
+                    <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
                       {t('time.prep')}
                     </Text>
                     <Text size="sm" fw={600}>
@@ -241,7 +241,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
               {values.cookTimeMinutes ? (
                 <Paper withBorder p="xs" radius="md">
                   <Stack gap={2} align="center">
-                      <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
+                    <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
                       {t('time.cook')}
                     </Text>
                     <Text size="sm" fw={600}>
@@ -253,7 +253,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
               {values.restTimeMinutes ? (
                 <Paper withBorder p="xs" radius="md">
                   <Stack gap={2} align="center">
-                      <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
+                    <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
                       {t('time.rest')}
                     </Text>
                     <Text size="sm" fw={600}>

@@ -45,9 +45,9 @@ describe('Logo', () => {
   });
 
   describe('Logo Component', () => {
-    it('renders with correct alt text for default variant', () => {
+    it('renders image for default variant', () => {
       render(<Logo />);
-      const image = screen.getByAltText('Cookbook Logo');
+      const image = screen.getByTestId('logo-image');
       expect(image).toBeInTheDocument();
     });
 
@@ -81,16 +81,16 @@ describe('Logo', () => {
 
     it('renders icon variant with correct size (40x40)', () => {
       render(<Logo variant="icon" />);
-      const image = screen.getByAltText('Cookbook');
+      const image = screen.getByTestId('logo-image');
       expect(image).toHaveAttribute('width', '40');
       expect(image).toHaveAttribute('height', '40');
     });
   });
 
   describe('LogoIcon Component', () => {
-    it('renders with correct alt text', () => {
+    it('renders icon image', () => {
       render(<LogoIcon />);
-      const image = screen.getByAltText('Cookbook');
+      const image = screen.getByTestId('logo-image');
       expect(image).toBeInTheDocument();
     });
 

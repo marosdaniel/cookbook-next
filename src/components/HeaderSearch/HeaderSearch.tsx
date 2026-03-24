@@ -13,9 +13,9 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { IconSearch } from '@tabler/icons-react';
 import type { Route } from 'next';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
-import { useTranslations } from 'next-intl';
 import type { RecipeBase } from '@/types/recipe';
 
 export function HeaderSearch() {
@@ -68,7 +68,11 @@ export function HeaderSearch() {
       }}
       store={combobox}
       withinPortal={true}
-      transitionProps={{ transition: 'fade', duration: 200, timingFunction: 'ease' }}
+      transitionProps={{
+        transition: 'fade',
+        duration: 200,
+        timingFunction: 'ease',
+      }}
     >
       <Combobox.Target>
         <TextInput
@@ -78,9 +82,9 @@ export function HeaderSearch() {
             setSearchQuery(event.currentTarget.value);
             combobox.resetSelectedOption();
             if (event.currentTarget.value.length < 4) {
-               combobox.closeDropdown();
+              combobox.closeDropdown();
             } else if (recipes.length > 0) {
-               combobox.openDropdown();
+              combobox.openDropdown();
             }
           }}
           onClick={() => {
@@ -98,7 +102,9 @@ export function HeaderSearch() {
             setIsFocused(false);
             combobox.closeDropdown();
           }}
-          rightSection={loading ? <Loader size={18} /> : <IconSearch size={18} />}
+          rightSection={
+            loading ? <Loader size={18} /> : <IconSearch size={18} />
+          }
           radius="xl"
           size="sm"
           w={{ base: 200, md: 300, lg: 400 }}

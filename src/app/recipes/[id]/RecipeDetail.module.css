@@ -49,7 +49,7 @@
 }
 
 .heroTitle {
-  color: white !important;
+  color: white;
   font-size: 2.4rem;
   font-weight: 800;
   line-height: 1.15;
@@ -63,7 +63,7 @@
 }
 
 .heroDescription {
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: rgba(255, 255, 255, 0.85);
   font-size: var(--mantine-font-size-md);
   max-width: 600px;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);

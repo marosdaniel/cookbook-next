@@ -89,7 +89,10 @@ const FavoriteButton = ({
   const HeartIcon = optimisticFavorite ? IconHeartFilled : IconHeart;
 
   return (
-    <Tooltip label={optimisticFavorite ? tFav('remove') : tFav('add')} withArrow>
+    <Tooltip
+      label={optimisticFavorite ? tFav('remove') : tFav('add')}
+      withArrow
+    >
       <ActionIcon
         variant="subtle"
         color={optimisticFavorite ? 'red' : 'gray'}

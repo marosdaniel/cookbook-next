@@ -8,11 +8,11 @@ import type { FC, PropsWithChildren } from 'react';
 import { isAuthRoute, PUBLIC_ROUTES } from '@/types/routes';
 import AuthButton from '../buttons/AuthButton';
 import Footer from '../Footer';
+import { HeaderSearch } from '../HeaderSearch';
 import LanguageSelector from '../LanguageSelector';
 import { Logo } from '../Logo';
 import Navbar from '../Navbar';
 import ThemeSwitcher from '../ThemeSwitcher';
-import { HeaderSearch } from '../HeaderSearch';
 
 const Shell: FC<PropsWithChildren> = ({ children }) => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
@@ -50,8 +50,12 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
                 href={PUBLIC_ROUTES.HOME}
               />
             </Group>
-            
-            <Group flex={1} justify="center" display={{ base: 'none', sm: 'flex' }}>
+
+            <Group
+              flex={1}
+              justify="center"
+              display={{ base: 'none', sm: 'flex' }}
+            >
               {!isAuthPage && <HeaderSearch />}
             </Group>
 

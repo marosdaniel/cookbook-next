@@ -15,8 +15,8 @@ import {
   IconToolsKitchen2,
   IconTrash,
 } from '@tabler/icons-react';
-import { memo } from 'react';
 import { useTranslations } from 'next-intl';
+import { memo } from 'react';
 import { getProgressColor, sectionCompletion } from '../../utils';
 import SectionNavItem from '../SectionNavItem';
 import type { ComposerSidebarProps } from './types';
@@ -79,7 +79,9 @@ const ComposerSidebar = memo(
               if (s.key === 'ingredients')
                 return t('itemsCount', { count: values.ingredients.length });
               if (s.key === 'steps')
-                return t('stepsCount', { count: values.preparationSteps.length });
+                return t('stepsCount', {
+                  count: values.preparationSteps.length,
+                });
               if (s.key === 'media')
                 return values.imgSrc ? t('mediaCoverSet') : t('mediaOptional');
               return `${sc.done}/${sc.total} filled`;
@@ -113,7 +115,7 @@ const ComposerSidebar = memo(
           <Divider my="sm" />
 
           <Group gap="xs">
-              <Button
+            <Button
               size="xs"
               variant="light"
               leftSection={<IconPlus size={14} />}

@@ -34,7 +34,7 @@
     box-shadow: 0 4px 12px rgba(255, 0, 161, 0.05);
 
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       right: 12px;
       top: 50%;
@@ -87,7 +87,7 @@
     );
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       left: 26px;
       top: 50%;

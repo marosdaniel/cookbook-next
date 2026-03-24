@@ -2,10 +2,10 @@
 
 import { Anchor, Group, Stack, Text } from '@mantine/core';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 import { PUBLIC_ROUTES } from '../../types/routes';
 import { Logo } from '../Logo';
-import { useTranslations } from 'next-intl';
 
 const Footer: FC = () => {
   const currentYear = new Date().getFullYear();

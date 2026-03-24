@@ -1,8 +1,8 @@
 'use client';
 
 import { Center, SimpleGrid, Skeleton, Stack, Text } from '@mantine/core';
-import { useTranslations } from 'next-intl';
 import { IconMoodSad } from '@tabler/icons-react';
+import { useTranslations } from 'next-intl';
 import RecipeCard from './RecipeCard';
 import type { RecipeGridProps } from './types';
 
