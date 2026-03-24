@@ -1,3 +1,10 @@
+# [2.19.0](https://github.com/marosdaniel/cookbook-next/compare/v2.18.0...v2.19.0) (2026-03-24)
+
+
+### Features
+
+* Add 'no favorite recipes yet' translation key to multiple locales and use it in the favorite recipes client. ([51f7369](https://github.com/marosdaniel/cookbook-next/commit/51f7369ee6c6342da27d27a40c6d07d94583e3da))
+
 # [2.18.0](https://github.com/marosdaniel/cookbook-next/compare/v2.17.0...v2.18.0) (2026-03-24)
 
 
