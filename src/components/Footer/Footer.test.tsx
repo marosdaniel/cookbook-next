@@ -44,16 +44,20 @@ vi.mock('../Logo', () => ({
 
 // Mock next-intl
 vi.mock('next-intl', () => ({
-  useTranslations: () => (key: string, values?: Record<string, unknown>) => {
+  useTranslations: (ns: string) => (
+    key: string,
+    values?: Record<string, unknown>,
+  ) => {
+    const fullKey = `${ns}.${key}`;
     const translations: Record<string, string> = {
       'footer.privacy': 'Privacy Policy',
       'footer.cookies': 'Cookie Policy',
     };
-    if (key === 'footer.copyright') {
+    if (fullKey === 'footer.copyright') {
       const year = (values?.year as number | string) ?? '';
       return `© ${year} Cookbook. All rights reserved.`;
     }
-    return translations[key] || key;
+    return translations[fullKey] || key;
   },
 }));
 
