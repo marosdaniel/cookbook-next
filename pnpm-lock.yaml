@@ -12,11 +12,11 @@ importers:
         specifier: ^4.1.6
         version: 4.1.6(graphql@17.0.0-alpha.9)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(rxjs@7.8.2)
       '@apollo/server':
-        specifier: ^5.4.0
-        version: 5.4.0(graphql@17.0.0-alpha.9)
+        specifier: ^5.5.0
+        version: 5.5.0(graphql@17.0.0-alpha.9)
       '@as-integrations/next':
         specifier: ^4.1.0
-        version: 4.1.0(@apollo/server@5.4.0(graphql@17.0.0-alpha.9))(next@16.2.1(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+        version: 4.1.0(@apollo/server@5.5.0(graphql@17.0.0-alpha.9))(next@16.2.1(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       '@mantine/carousel':
         specifier: 9.0.0-alpha.4
         version: 9.0.0-alpha.4(@mantine/core@9.0.0-alpha.4(@mantine/hooks@9.0.0-alpha.4(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@mantine/hooks@9.0.0-alpha.4(react@19.2.4))(embla-carousel-react@8.6.0(react@19.2.4))(embla-carousel@8.6.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -85,7 +85,7 @@ importers:
         version: 16.2.1(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       next-auth:
         specifier: 5.0.0-beta.30
-        version: 5.0.0-beta.30(next@16.2.1(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(nodemailer@8.0.3)(react@19.2.4)
+        version: 5.0.0-beta.30(next@16.2.1(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(nodemailer@8.0.4)(react@19.2.4)
       next-intl:
         specifier: ^4.8.3
         version: 4.8.3(next@16.2.1(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(typescript@6.0.2)
@@ -93,8 +93,8 @@ importers:
         specifier: ^3.9.17
         version: 3.9.17(next@16.2.1(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       nodemailer:
-        specifier: ^8.0.3
-        version: 8.0.3
+        specifier: ^8.0.4
+        version: 8.0.4
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -167,7 +167,7 @@ importers:
         version: 6.0.1(vite@8.0.2(@types/node@25.5.0)(jiti@2.6.1))
       '@vitest/coverage-v8':
         specifier: 4.1.1
-        version: 4.1.1(vitest@4.1.1(@types/node@25.5.0)(happy-dom@20.8.7)(jsdom@27.2.0(postcss@8.5.8))(vite@8.0.2(@types/node@25.5.0)(jiti@2.6.1)))
+        version: 4.1.1(vitest@4.1.1(@types/node@25.5.0)(happy-dom@20.8.8)(jsdom@27.2.0(postcss@8.5.8))(vite@8.0.2(@types/node@25.5.0)(jiti@2.6.1)))
       baseline-browser-mapping:
         specifier: ^2.10.10
         version: 2.10.10
@@ -175,8 +175,8 @@ importers:
         specifier: ^17.3.1
         version: 17.3.1
       happy-dom:
-        specifier: ^20.8.7
-        version: 20.8.7
+        specifier: ^20.8.8
+        version: 20.8.8
       prisma:
         specifier: 7.5.0
         version: 7.5.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.2)
@@ -191,7 +191,7 @@ importers:
         version: 8.0.2(@types/node@25.5.0)(jiti@2.6.1)
       vitest:
         specifier: ^4.1.1
-        version: 4.1.1(@types/node@25.5.0)(happy-dom@20.8.7)(jsdom@27.2.0(postcss@8.5.8))(vite@8.0.2(@types/node@25.5.0)(jiti@2.6.1))
+        version: 4.1.1(@types/node@25.5.0)(happy-dom@20.8.8)(jsdom@27.2.0(postcss@8.5.8))(vite@8.0.2(@types/node@25.5.0)(jiti@2.6.1))
 
 packages:
 
@@ -246,8 +246,8 @@ packages:
     peerDependencies:
       graphql: 14.x || 15.x || 16.x
 
-  '@apollo/server@5.4.0':
-    resolution: {integrity: sha512-E0/2C5Rqp7bWCjaDh4NzYuEPDZ+dltTf2c0FI6GCKJA6GBetVferX3h1//1rS4+NxD36wrJsGGJK+xyT/M3ysg==}
+  '@apollo/server@5.5.0':
+    resolution: {integrity: sha512-vWtodBOK/SZwBTJzItECOmLfL8E8pn/IdvP7pnxN5g2tny9iW4+9sxdajE798wV1H2+PYp/rRcl/soSHIBKMPw==}
     engines: {node: '>=20'}
     peerDependencies:
       graphql: ^16.11.0
@@ -2213,8 +2213,8 @@ packages:
     engines: {node: '>=0.4.7'}
     hasBin: true
 
-  happy-dom@20.8.7:
-    resolution: {integrity: sha512-7wfBi+UqulQlyLcis+9a+hTK0A/fMO4QKP6w6J9HnadXVkRdOvGf/N5G4XVpfgCYfnY7oKazlOSdWmsfatNSLQ==}
+  happy-dom@20.8.8:
+    resolution: {integrity: sha512-5/F8wxkNxYtsN0bXfMwIyNLZ9WYsoOYPbmoluqVJqv8KBUbcyKZawJ7uYK4WTX8IHBLYv+VXIwfeNDPy1oKMwQ==}
     engines: {node: '>=20.0.0'}
 
   has-flag@3.0.0:
@@ -2821,8 +2821,8 @@ packages:
     resolution: {integrity: sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==}
     hasBin: true
 
-  nodemailer@8.0.3:
-    resolution: {integrity: sha512-JQNBqvK+bj3NMhUFR3wmCl3SYcOeMotDiwDBvIoCuQdF0PvlIY0BH+FJ2CG7u4cXKPChplE78oowlH/Otsc4ZQ==}
+  nodemailer@8.0.4:
+    resolution: {integrity: sha512-k+jf6N8PfQJ0Fe8ZhJlgqU5qJU44Lpvp2yvidH3vp1lPnVQMgi4yEEMPXg5eJS1gFIJTVq1NHBk7Ia9ARdSBdQ==}
     engines: {node: '>=6.0.0'}
 
   normalize-package-data@6.0.2:
@@ -4082,7 +4082,7 @@ snapshots:
       '@apollo/utils.logger': 3.0.0
       graphql: 17.0.0-alpha.9
 
-  '@apollo/server@5.4.0(graphql@17.0.0-alpha.9)':
+  '@apollo/server@5.5.0(graphql@17.0.0-alpha.9)':
     dependencies:
       '@apollo/cache-control-types': 1.0.3(graphql@17.0.0-alpha.9)
       '@apollo/server-gateway-interface': 2.0.0(graphql@17.0.0-alpha.9)
@@ -4162,9 +4162,9 @@ snapshots:
 
   '@apollo/utils.withrequired@3.0.0': {}
 
-  '@as-integrations/next@4.1.0(@apollo/server@5.4.0(graphql@17.0.0-alpha.9))(next@16.2.1(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
+  '@as-integrations/next@4.1.0(@apollo/server@5.5.0(graphql@17.0.0-alpha.9))(next@16.2.1(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
     dependencies:
-      '@apollo/server': 5.4.0(graphql@17.0.0-alpha.9)
+      '@apollo/server': 5.5.0(graphql@17.0.0-alpha.9)
       next: 16.2.1(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
 
   '@asamuzakjp/css-color@4.1.0':
@@ -4188,7 +4188,7 @@ snapshots:
   '@asamuzakjp/nwsapi@2.3.9':
     optional: true
 
-  '@auth/core@0.41.0(nodemailer@8.0.3)':
+  '@auth/core@0.41.0(nodemailer@8.0.4)':
     dependencies:
       '@panva/hkdf': 1.2.1
       jose: 6.1.3
@@ -4196,7 +4196,7 @@ snapshots:
       preact: 10.24.3
       preact-render-to-string: 6.5.11(preact@10.24.3)
     optionalDependencies:
-      nodemailer: 8.0.3
+      nodemailer: 8.0.4
 
   '@babel/code-frame@7.27.1':
     dependencies:
@@ -5229,7 +5229,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-rc.7
       vite: 8.0.2(@types/node@25.5.0)(jiti@2.6.1)
 
-  '@vitest/coverage-v8@4.1.1(vitest@4.1.1(@types/node@25.5.0)(happy-dom@20.8.7)(jsdom@27.2.0(postcss@8.5.8))(vite@8.0.2(@types/node@25.5.0)(jiti@2.6.1)))':
+  '@vitest/coverage-v8@4.1.1(vitest@4.1.1(@types/node@25.5.0)(happy-dom@20.8.8)(jsdom@27.2.0(postcss@8.5.8))(vite@8.0.2(@types/node@25.5.0)(jiti@2.6.1)))':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
       '@vitest/utils': 4.1.1
@@ -5241,7 +5241,7 @@ snapshots:
       obug: 2.1.1
       std-env: 4.0.0
       tinyrainbow: 3.0.3
-      vitest: 4.1.1(@types/node@25.5.0)(happy-dom@20.8.7)(jsdom@27.2.0(postcss@8.5.8))(vite@8.0.2(@types/node@25.5.0)(jiti@2.6.1))
+      vitest: 4.1.1(@types/node@25.5.0)(happy-dom@20.8.8)(jsdom@27.2.0(postcss@8.5.8))(vite@8.0.2(@types/node@25.5.0)(jiti@2.6.1))
 
   '@vitest/expect@4.1.1':
     dependencies:
@@ -5964,7 +5964,7 @@ snapshots:
     optionalDependencies:
       uglify-js: 3.19.3
 
-  happy-dom@20.8.7:
+  happy-dom@20.8.8:
     dependencies:
       '@types/node': 25.5.0
       '@types/whatwg-mimetype': 3.0.2
@@ -6448,13 +6448,13 @@ snapshots:
 
   nerf-dart@1.0.0: {}
 
-  next-auth@5.0.0-beta.30(next@16.2.1(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(nodemailer@8.0.3)(react@19.2.4):
+  next-auth@5.0.0-beta.30(next@16.2.1(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(nodemailer@8.0.4)(react@19.2.4):
     dependencies:
-      '@auth/core': 0.41.0(nodemailer@8.0.3)
+      '@auth/core': 0.41.0(nodemailer@8.0.4)
       next: 16.2.1(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react: 19.2.4
     optionalDependencies:
-      nodemailer: 8.0.3
+      nodemailer: 8.0.4
 
   next-intl-swc-plugin-extractor@4.8.3: {}
 
@@ -6523,7 +6523,7 @@ snapshots:
 
   node-gyp-build@4.8.4: {}
 
-  nodemailer@8.0.3: {}
+  nodemailer@8.0.4: {}
 
   normalize-package-data@6.0.2:
     dependencies:
@@ -7457,7 +7457,7 @@ snapshots:
       fsevents: 2.3.3
       jiti: 2.6.1
 
-  vitest@4.1.1(@types/node@25.5.0)(happy-dom@20.8.7)(jsdom@27.2.0(postcss@8.5.8))(vite@8.0.2(@types/node@25.5.0)(jiti@2.6.1)):
+  vitest@4.1.1(@types/node@25.5.0)(happy-dom@20.8.8)(jsdom@27.2.0(postcss@8.5.8))(vite@8.0.2(@types/node@25.5.0)(jiti@2.6.1)):
     dependencies:
       '@vitest/expect': 4.1.1
       '@vitest/mocker': 4.1.1(vite@8.0.2(@types/node@25.5.0)(jiti@2.6.1))
@@ -7481,7 +7481,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 25.5.0
-      happy-dom: 20.8.7
+      happy-dom: 20.8.8
       jsdom: 27.2.0(postcss@8.5.8)
     transitivePeerDependencies:
       - msw
