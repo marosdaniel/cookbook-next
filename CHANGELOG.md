@@ -1,3 +1,16 @@
+# [2.21.0](https://github.com/marosdaniel/cookbook-next/compare/v2.20.0...v2.21.0) (2026-03-25)
+
+
+### Bug Fixes
+
+* Correct JSON formatting and add missing commas in locale files. ([4836542](https://github.com/marosdaniel/cookbook-next/commit/4836542c09e46a6409d7166d90a455c71f4acad1))
+* Update `useTranslations` mock in Footer tests to support namespaces. ([bfb7054](https://github.com/marosdaniel/cookbook-next/commit/bfb7054a424570a631b856edb77126a0ecb5a36c))
+
+
+### Features
+
+* Implement internationalization across various components and pages, including auth forms, recipe creation, and the homepage. ([9abcdae](https://github.com/marosdaniel/cookbook-next/commit/9abcdae800d6929c5a4119b3dc7c665efaff9fbf))
+
 # [2.20.0](https://github.com/marosdaniel/cookbook-next/compare/v2.19.0...v2.20.0) (2026-03-24)
 
 
