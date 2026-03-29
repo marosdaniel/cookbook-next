@@ -75,6 +75,16 @@
     "newPassword": "Neues Passwort",
     "confirmPassword": "Passwort bestätigen",
     "profileTabTitle": "Profil",
+    "profileGreeting": "Hallo, {firstName}!",
+    "profileSubtitle": "Verwalte dein Konto und persönliche Einstellungen",
+    "accountInfoTitle": "Konto",
+    "memberSince": "Mitglied seit",
+    "lastUpdated": "Zuletzt aktualisiert",
+    "securityTitle": "Sicherheit",
+    "role": "Rolle",
+    "roleUser": "Benutzer",
+    "roleAdmin": "Administrator",
+    "roleBlogger": "Blogger",
     "myRecipesTabTitle": "Meine Rezepte",
     "favoritesTabTitle": "Favoriten",
     "noFavoriteRecipesYet": "Noch keine Lieblingsrezepte. Fange an zu stöbern und füge Rezepte zu deinen Favoriten hinzu!"
@@ -376,7 +386,9 @@
     "recipeUpdateFailedTitle": "Aktualisierung fehlgeschlagen",
     "recipeUpdateFailedMessage": "Beim Speichern ist etwas schief gelaufen.",
     "changesResetTitle": "Änderungen zurückgesetzt",
-    "changesResetMessage": "Auf das Originalrezept zurückgesetzt."
+    "changesResetMessage": "Auf das Originalrezept zurückgesetzt.",
+    "personalDataUpdatedMessage": "Ihre persönlichen Daten wurden aktualisiert",
+    "passwordChangedMessage": "Ihr Passwort wurde erfolgreich geändert!"
   },
   "recipeSearch": {
     "searchPlaceholder": "Rezepte nach Name suchen...",

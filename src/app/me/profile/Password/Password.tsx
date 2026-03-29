@@ -2,16 +2,20 @@
 
 import { useMutation } from '@apollo/client/react';
 import {
-  Box,
+  ActionIcon,
   Button,
   Group,
   Paper,
   PasswordInput,
+  SimpleGrid,
+  Stack,
   Text,
   Title,
+  Tooltip,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
+import { IconLock, IconPencil } from '@tabler/icons-react';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -23,48 +27,19 @@ import {
   passwordEditValidationSchema,
 } from '@/lib/validation';
 
+interface ChangePasswordData {
+  changePassword: {
+    success: boolean;
+    message: string;
+  };
+}
+
 const Password = () => {
   const translate = useTranslations();
   const [isEditMode, setIsEditMode] = useState(false);
 
-  // Define types for the mutation response
-  interface ChangePasswordData {
-    changePassword: {
-      success: boolean;
-      message: string;
-    };
-  }
-
-  const [changePassword, { loading }] = useMutation<ChangePasswordData>(
-    CHANGE_PASSWORD,
-    {
-      onCompleted: (data) => {
-        if (data?.changePassword?.success) {
-          notifications.show({
-            title: translate('response.success'),
-            message: translate('auth.passwordChangedSuccess'),
-            color: 'teal',
-          });
-          handleCancelPasswordEdit();
-        } else {
-          notifications.show({
-            title: translate('response.error'),
-            message:
-              data?.changePassword?.message ||
-              translate('response.unknownError'),
-            color: 'red',
-          });
-        }
-      },
-      onError: (error) => {
-        notifications.show({
-          title: translate('response.error'),
-          message: error.message || translate('response.unknownError'),
-          color: 'red',
-        });
-      },
-    },
-  );
+  const [changePassword, { loading }] =
+    useMutation<ChangePasswordData>(CHANGE_PASSWORD);
 
   const form = useForm<z.infer<typeof passwordEditValidationSchema>>({
     mode: 'uncontrolled',
@@ -78,11 +53,16 @@ const Password = () => {
     validateInputOnBlur: true,
   });
 
+  const handleCancel = () => {
+    form.reset();
+    setIsEditMode(false);
+  };
+
   const onSubmit = async (
     values: z.infer<typeof passwordEditValidationSchema>,
   ) => {
     try {
-      await changePassword({
+      const { data } = await changePassword({
         variables: {
           passwordEditInput: {
             currentPassword: values.currentPassword,
@@ -91,74 +71,86 @@ const Password = () => {
           },
         },
       });
-    } catch (error) {
-      console.error('Something went wrong:', error);
-    }
-  };
 
-  const handleCancelPasswordEdit = () => {
-    form.reset();
-    setIsEditMode(false);
+      if (data?.changePassword?.success) {
+        notifications.show({
+          title: translate('response.success'),
+          message: translate('notifications.passwordChangedMessage'),
+          color: 'teal',
+        });
+        handleCancel();
+      } else {
+        notifications.show({
+          title: translate('response.error'),
+          message:
+            data?.changePassword?.message ?? translate('response.unknownError'),
+          color: 'red',
+        });
+      }
+    } catch {
+      notifications.show({
+        title: translate('response.error'),
+        message: translate('response.somethingWentWrong'),
+        color: 'red',
+      });
+    }
   };
 
   return (
     <Paper
       component="form"
       onSubmit={form.onSubmit(onSubmit)}
-      shadow="md"
+      shadow="sm"
       radius="lg"
-      p={{
-        base: 'md',
-        md: 'xl',
-      }}
-      m="32px auto"
-      w={{ base: '100%', md: '80%', lg: '75%' }}
+      p={{ base: 'md', md: 'xl' }}
     >
-      <Group mb="lg" justify="space-between" align="baseline">
-        <Title order={5}>{translate('user.changePasswordTitle')}</Title>
+      <Group mb="lg" justify="space-between" align="center">
+        <Group gap="xs">
+          <IconLock size={20} stroke={1.5} />
+          <Title order={4}>{translate('user.securityTitle')}</Title>
+        </Group>
         {!isEditMode && (
-          <Button variant="subtle" onClick={() => setIsEditMode(true)}>
-            {translate('general.edit')}
-          </Button>
+          <Tooltip label={translate('general.edit')}>
+            <ActionIcon
+              variant="subtle"
+              color="pink"
+              onClick={() => setIsEditMode(true)}
+              aria-label={translate('general.edit')}
+            >
+              <IconPencil size={18} />
+            </ActionIcon>
+          </Tooltip>
         )}
       </Group>
+
       {isEditMode ? (
-        <Box>
-          <Box mt="md">
+        <Stack gap="md">
+          <PasswordInput
+            required
+            label={translate('user.currentPassword')}
+            placeholder={translate('user.currentPassword')}
+            key={form.key('currentPassword')}
+            {...form.getInputProps('currentPassword')}
+          />
+          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
             <PasswordInput
               required
-              id="password"
-              placeholder={translate('user.password')}
-              mt="md"
-              label={translate('user.currentPassword')}
-              key={form.key('currentPassword')}
-              {...form.getInputProps('currentPassword')}
-            />
-            <PasswordInput
-              required
-              id="new-password"
-              placeholder={translate('user.newPassword')}
-              mt="md"
               label={translate('user.newPassword')}
+              placeholder={translate('user.newPassword')}
               key={form.key('newPassword')}
               {...form.getInputProps('newPassword')}
             />
             <PasswordInput
               required
-              id="confirm-password"
-              placeholder={translate('user.confirmPassword')}
-              mt="md"
               label={translate('user.confirmPassword')}
+              placeholder={translate('user.confirmPassword')}
               key={form.key('confirmNewPassword')}
               {...form.getInputProps('confirmNewPassword')}
             />
-          </Box>
-          <Group mt="xl" justify="flex-end">
-            <Button
-              variant="default"
-              size="sm"
-              onClick={handleCancelPasswordEdit}
-            >
+          </SimpleGrid>
+
+          <Group mt="sm" justify="flex-end">
+            <Button variant="default" size="sm" onClick={handleCancel}>
               {translate('general.cancel')}
             </Button>
             <Button
@@ -171,16 +163,14 @@ const Password = () => {
               {translate('general.save')}
             </Button>
           </Group>
-        </Box>
+        </Stack>
       ) : (
-        <Box>
-          <Box mb="lg">
-            <Text size="sm" c="dimmed">
-              {translate('user.password')}
-            </Text>
-            <Text size="md">***************</Text>
-          </Box>
-        </Box>
+        <Stack gap={2}>
+          <Text size="xs" c="dimmed" tt="uppercase" fw={600}>
+            {translate('user.password')}
+          </Text>
+          <Text size="sm">••••••••••••</Text>
+        </Stack>
       )}
     </Paper>
   );

@@ -80,6 +80,16 @@
     "newPassword": "New password",
     "confirmPassword": "Confirm password",
     "profileTabTitle": "Profile",
+    "profileGreeting": "Hello, {firstName}!",
+    "profileSubtitle": "Manage your account and personal settings",
+    "accountInfoTitle": "Account",
+    "memberSince": "Member since",
+    "lastUpdated": "Last updated",
+    "securityTitle": "Security",
+    "role": "Role",
+    "roleUser": "User",
+    "roleAdmin": "Administrator",
+    "roleBlogger": "Blogger",
     "myRecipesTabTitle": "My recipes",
     "favoritesTabTitle": "Favourites",
     "noFavoriteRecipesYet": "No favourite recipes yet. Start exploring and add recipes to your favourites!"
@@ -383,7 +393,8 @@
     "recipeUpdateFailedMessage": "Something went wrong while saving.",
     "changesResetTitle": "Changes reset",
     "changesResetMessage": "Reverted to the original recipe.",
-    "personalDataUpdatedMessage": "Your personal data has been updated"
+    "personalDataUpdatedMessage": "Your personal data has been updated",
+    "passwordChangedMessage": "Your password has been changed successfully!"
   },
   "recipeIngredients": {
     "decreaseServings": "Decrease servings",

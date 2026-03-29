@@ -11,14 +11,16 @@ import {
 import { GET_FAVORITE_RECIPES } from '@/lib/graphql/queries';
 
 const FavoriteRecipesClient = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const translate = useTranslations('user');
 
   const userId = (session?.user as { id?: string })?.id;
 
+  const isSessionLoading = status === 'loading';
+
   const { data, loading } = useQuery(GET_FAVORITE_RECIPES, {
     variables: { userId },
-    skip: !userId,
+    skip: !userId || isSessionLoading,
     fetchPolicy: 'cache-and-network',
   });
 

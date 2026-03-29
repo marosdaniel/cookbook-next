@@ -22,9 +22,13 @@ import NavbarLinksGroup from './NavbarLinksGroup/NavbarLinksGroup';
 const Navbar: FC = () => {
   const translate = useTranslations('sidebar');
   const authTranslate = useTranslations('auth');
-  const { data: session } = useSession() as { data: Session | null };
+  const { data: session, status } = useSession() as {
+    data: Session | null;
+    status: string;
+  };
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
+  const isSessionLoading = status === 'loading';
 
   const handleLogout = async () => {
     const shouldRedirect = isProtectedRoute(pathname);
@@ -95,45 +99,59 @@ const Navbar: FC = () => {
     />
   ));
 
+  const renderFooterContent = () => {
+    if (isSessionLoading) {
+      return (
+        <Box p="md" style={{ display: 'flex', justifyContent: 'center' }}>
+          <Loader size="sm" />
+        </Box>
+      );
+    }
+
+    if (session) {
+      return (
+        <Stack gap="xs" p="md">
+          <Button
+            variant="subtle"
+            color="red"
+            fullWidth
+            leftSection={
+              isPending ? <Loader size="xs" /> : <FiLogOut size={20} />
+            }
+            onClick={handleLogout}
+            disabled={isPending}
+            styles={{
+              root: {
+                justifyContent: 'flex-start',
+                fontWeight: 500,
+              },
+            }}
+          >
+            {translate('logout')}
+          </Button>
+        </Stack>
+      );
+    }
+
+    return (
+      <Box p="md">
+        <NavButton
+          label={authTranslate('login')}
+          href={AUTH_ROUTES.LOGIN}
+          size="md"
+          icon={<FiLogIn size={20} />}
+        />
+      </Box>
+    );
+  };
+
   return (
     <div className={classes.navbar}>
       <ScrollArea className={classes.links}>
         <div className={classes.linksInner}>{links}</div>
       </ScrollArea>
 
-      <div className={classes.footer}>
-        {session ? (
-          <Stack gap="xs" p="md">
-            <Button
-              variant="subtle"
-              color="red"
-              fullWidth
-              leftSection={
-                isPending ? <Loader size="xs" /> : <FiLogOut size={20} />
-              }
-              onClick={handleLogout}
-              disabled={isPending}
-              styles={{
-                root: {
-                  justifyContent: 'flex-start',
-                  fontWeight: 500,
-                },
-              }}
-            >
-              {translate('logout')}
-            </Button>
-          </Stack>
-        ) : (
-          <Box p="md">
-            <NavButton
-              label={authTranslate('login')}
-              href={AUTH_ROUTES.LOGIN}
-              size="md"
-              icon={<FiLogIn size={20} />}
-            />
-          </Box>
-        )}
-      </div>
+      <div className={classes.footer}>{renderFooterContent()}</div>
     </div>
   );
 };

@@ -1,73 +1,77 @@
 'use client';
 
-import { useMutation, useQuery } from '@apollo/client/react';
+import { useMutation } from '@apollo/client/react';
 import {
-  Box,
+  ActionIcon,
   Button,
   Group,
   LoadingOverlay,
   Paper,
+  SimpleGrid,
+  Skeleton,
+  Stack,
   Text,
   TextInput,
   Title,
+  Tooltip,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
+import { IconPencil, IconUser } from '@tabler/icons-react';
 import { zodResolver } from 'mantine-form-zod-resolver';
-import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import type { z } from 'zod';
 import { UPDATE_USER } from '@/lib/graphql/mutations';
-import { GET_USER_BY_ID } from '@/lib/graphql/queries';
 import { isFormSubmitDisabled, nameValidationSchema } from '@/lib/validation';
+import type { ProfileUser } from '../ProfileClient';
 
-const PersonalData = () => {
+interface PersonalDataProps {
+  user: ProfileUser | undefined;
+  loading: boolean;
+  refetch: () => Promise<unknown>;
+}
+
+interface UpdateUserData {
+  updateUser: {
+    success: boolean;
+    message: string;
+    user?: { id: string; firstName: string; lastName: string };
+  };
+}
+
+const InfoField = ({
+  label,
+  value,
+  isLoading,
+}: {
+  label: string;
+  value: string;
+  isLoading?: boolean;
+}) => (
+  <Stack gap={2}>
+    <Text size="xs" c="dimmed" tt="uppercase" fw={600}>
+      {label}
+    </Text>
+    {isLoading ? (
+      <Skeleton h={20} w="70%" />
+    ) : (
+      <Text size="sm" fw={500}>
+        {value}
+      </Text>
+    )}
+  </Stack>
+);
+
+const PersonalData = ({ user, loading, refetch }: PersonalDataProps) => {
   const translate = useTranslations();
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-
   const [isEditMode, setIsEditMode] = useState(false);
-
-  interface GetUserData {
-    getUserById: {
-      id: string;
-      firstName: string;
-      lastName: string;
-    };
-  }
-
-  // Fetch user data from DB directly
-  const {
-    data: userData,
-    loading: userLoading,
-    refetch: refetchUser,
-  } = useQuery<GetUserData>(GET_USER_BY_ID, {
-    variables: { id: userId || '' },
-    skip: !userId,
-    fetchPolicy: 'network-only', // Ensure we always get the fresh data
-  });
-
-  const user = userData?.getUserById;
-
-  // Define types for the mutation response
-  interface UpdateUserData {
-    updateUser: {
-      success: boolean;
-      message: string;
-      user?: {
-        id: string;
-        firstName: string;
-        lastName: string;
-      };
-    };
-  }
 
   const [updateUser, { loading: updateLoading }] =
     useMutation<UpdateUserData>(UPDATE_USER);
 
   const form = useForm<z.infer<typeof nameValidationSchema>>({
-    mode: 'uncontrolled',
+    mode: 'controlled',
     initialValues: {
       firstName: user?.firstName ?? '',
       lastName: user?.lastName ?? '',
@@ -77,7 +81,7 @@ const PersonalData = () => {
     validateInputOnBlur: true,
   });
 
-  // Manual reinitialization when user data is fetched
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Mantine form methods are unstable references; adding them causes an infinite re-render loop
   useEffect(() => {
     if (user) {
       form.setValues({
@@ -89,7 +93,7 @@ const PersonalData = () => {
         lastName: user.lastName,
       });
     }
-  }, [user, form]);
+  }, [user]);
 
   const onSubmit = async (values: z.infer<typeof nameValidationSchema>) => {
     try {
@@ -103,7 +107,7 @@ const PersonalData = () => {
       });
 
       if (data?.updateUser?.success) {
-        await refetchUser(); // Refetch user data to update UI from DB
+        await refetch();
         setIsEditMode(false);
         notifications.show({
           title: translate('response.success'),
@@ -114,12 +118,11 @@ const PersonalData = () => {
         notifications.show({
           title: translate('response.error'),
           message:
-            data?.updateUser?.message || translate('response.unknownError'),
+            data?.updateUser?.message ?? translate('response.unknownError'),
           color: 'red',
         });
       }
-    } catch (error) {
-      console.error('Something went wrong:', error);
+    } catch {
       notifications.show({
         title: translate('response.error'),
         message: translate('response.somethingWentWrong'),
@@ -128,81 +131,73 @@ const PersonalData = () => {
     }
   };
 
-  const handlePersonalDataEditable = () => {
-    setIsEditMode((prev) => !prev);
-  };
-
-  const handleCancelPersonalData = () => {
+  const handleCancel = () => {
     form.reset();
     setIsEditMode(false);
   };
 
-  if (userLoading && !user) {
-    return (
-      <Paper
-        shadow="md"
-        radius="lg"
-        p={{ base: 'md', md: 'xl' }}
-        m="32px auto"
-        w={{ base: '100%', md: '80%', lg: '75%' }}
-        pos="relative"
-      >
-        <LoadingOverlay visible={true} />
-      </Paper>
-    );
-  }
+  const isInitialLoading = loading && !user;
 
   return (
     <Paper
       component="form"
       onSubmit={form.onSubmit(onSubmit)}
-      shadow="md"
+      shadow="sm"
       radius="lg"
-      p={{
-        base: 'md',
-        md: 'xl',
-      }}
-      m="32px auto"
-      w={{ base: '100%', md: '80%', lg: '75%' }}
+      p={{ base: 'md', md: 'xl' }}
       pos="relative"
     >
-      <LoadingOverlay visible={userLoading || updateLoading} />
-      <Group mb="lg" justify="space-between" align="baseline">
-        <Title order={5}>{translate('user.personalDataTitle')}</Title>
-        {!isEditMode && (
-          <Button variant="subtle" onClick={handlePersonalDataEditable}>
-            {translate('general.edit')}
-          </Button>
+      <LoadingOverlay visible={updateLoading} />
+
+      <Group mb="lg" justify="space-between" align="center">
+        <Group gap="xs">
+          <IconUser size={20} stroke={1.5} />
+          <Title order={4}>{translate('user.personalDataTitle')}</Title>
+        </Group>
+        {!isEditMode && !isInitialLoading && (
+          <Tooltip label={translate('general.edit')}>
+            <ActionIcon
+              variant="subtle"
+              color="pink"
+              onClick={() => setIsEditMode(true)}
+              aria-label={translate('general.edit')}
+            >
+              <IconPencil size={18} />
+            </ActionIcon>
+          </Tooltip>
         )}
       </Group>
+
       {isEditMode ? (
-        <Box>
-          <Box mt="md">
+        <Stack gap="md">
+          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
             <TextInput
               required
-              id="first-name"
-              placeholder={translate('user.firstName')}
-              mt="md"
               label={translate('user.firstName')}
-              key={form.key('firstName')}
+              placeholder={translate('user.firstName')}
               {...form.getInputProps('firstName')}
             />
             <TextInput
               required
-              id="last-name"
-              placeholder={translate('user.lastName')}
-              mt="md"
               label={translate('user.lastName')}
-              key={form.key('lastName')}
+              placeholder={translate('user.lastName')}
               {...form.getInputProps('lastName')}
             />
-          </Box>
-          <Group mt="xl" justify="flex-end">
-            <Button
-              variant="default"
-              size="sm"
-              onClick={handleCancelPersonalData}
-            >
+          </SimpleGrid>
+
+          <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+            <InfoField
+              label={translate('user.email')}
+              value={user?.email ?? ''}
+            />
+            <InfoField
+              label={translate('user.userName')}
+              value={`@${user?.userName ?? ''}`}
+            />
+          </SimpleGrid>
+
+          <Group mt="sm" justify="flex-end">
+            <Button variant="default" size="sm" onClick={handleCancel}>
               {translate('general.cancel')}
             </Button>
             <Button
@@ -215,26 +210,30 @@ const PersonalData = () => {
               {translate('general.save')}
             </Button>
           </Group>
-        </Box>
+        </Stack>
       ) : (
-        <Box>
-          <Box mb="lg">
-            <Text size="sm" c="dimmed">
-              {translate('user.firstName')}
-            </Text>
-            <Text size="md" fw={500}>
-              {user?.firstName}
-            </Text>
-          </Box>
-          <Box mb="lg">
-            <Text size="sm" c="dimmed">
-              {translate('user.lastName')}
-            </Text>
-            <Text size="md" fw={500}>
-              {user?.lastName}
-            </Text>
-          </Box>
-        </Box>
+        <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+          <InfoField
+            label={translate('user.firstName')}
+            value={user?.firstName ?? ''}
+            isLoading={isInitialLoading}
+          />
+          <InfoField
+            label={translate('user.lastName')}
+            value={user?.lastName ?? ''}
+            isLoading={isInitialLoading}
+          />
+          <InfoField
+            label={translate('user.email')}
+            value={user?.email ?? ''}
+            isLoading={isInitialLoading}
+          />
+          <InfoField
+            label={translate('user.userName')}
+            value={user ? `@${user.userName}` : ''}
+            isLoading={isInitialLoading}
+          />
+        </SimpleGrid>
       )}
     </Paper>
   );

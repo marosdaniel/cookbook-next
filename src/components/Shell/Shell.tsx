@@ -17,7 +17,8 @@ import ThemeSwitcher from '../ThemeSwitcher';
 const Shell: FC<PropsWithChildren> = ({ children }) => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const isSessionLoading = status === 'loading';
 
   const isAuthPage = isAuthRoute(pathname);
   const isImmersive = pathname?.startsWith('/recipes/create');
@@ -60,7 +61,9 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
             </Group>
 
             <Group gap="xs">
-              {!session && !isAuthPage && <AuthButton variant="compact" />}
+              {!isSessionLoading && !session && !isAuthPage && (
+                <AuthButton variant="compact" />
+              )}
               <ThemeSwitcher />
               <LanguageSelector />
               {!isAuthPage && (

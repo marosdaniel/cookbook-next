@@ -77,6 +77,16 @@
     "newPassword": "Új jelszó",
     "confirmPassword": "Jelszó megerősítése",
     "profileTabTitle": "Profil",
+    "profileGreeting": "Szia, {firstName}!",
+    "profileSubtitle": "Kezeld fiókodat és személyes beállításaidat",
+    "accountInfoTitle": "Fiók",
+    "memberSince": "Regisztrálva",
+    "lastUpdated": "Utolsó módosítás",
+    "securityTitle": "Biztonság",
+    "role": "Szerepkör",
+    "roleUser": "Felhasználó",
+    "roleAdmin": "Adminisztrátor",
+    "roleBlogger": "Blogger",
     "myRecipesTabTitle": "Saját receptek",
     "favoritesTabTitle": "Kedvencek",
     "noFavoriteRecipesYet": "Még nincsenek kedvenc receptjeid. Kezdj el böngészni és adj hozzá recepteket a kedvenceidhez!"
@@ -382,7 +392,8 @@
     "recipeUpdateFailedMessage": "Valami hiba történt mentés közben.",
     "changesResetTitle": "Módosítások visszaállítva",
     "changesResetMessage": "Visszaállt az eredeti receptre.",
-    "personalDataUpdatedMessage": "Személyes adataid sikeresen frissítve lettek"
+    "personalDataUpdatedMessage": "Személyes adataid sikeresen frissítve lettek",
+    "passwordChangedMessage": "Jelszavad sikeresen módosítva!"
   },
   "recipeIngredients": {
     "decreaseServings": "Adagok csökkentése",
