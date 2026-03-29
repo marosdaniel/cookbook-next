@@ -1,3 +1,11 @@
+# [2.25.0](https://github.com/marosdaniel/cookbook-next/compare/v2.24.0...v2.25.0) (2026-03-29)
+
+
+### Features
+
+* add Follow model to schema and update Prisma configuration with directUrl ([2208bff](https://github.com/marosdaniel/cookbook-next/commit/2208bffda618cc9ebfa333664a7ea58a89643f37))
+* enhance favorite recipes page with statistics, loading skeletons, and improved UI layout ([274d184](https://github.com/marosdaniel/cookbook-next/commit/274d184778b58e6aef9e190d481954cf00680636))
+
 # [2.24.0](https://github.com/marosdaniel/cookbook-next/compare/v2.23.0...v2.24.0) (2026-03-29)
 
 
