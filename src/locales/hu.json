@@ -89,7 +89,15 @@
     "roleBlogger": "Blogger",
     "myRecipesTabTitle": "Saját receptek",
     "favoritesTabTitle": "Kedvencek",
-    "noFavoriteRecipesYet": "Még nincsenek kedvenc receptjeid. Kezdj el böngészni és adj hozzá recepteket a kedvenceidhez!"
+    "noFavoriteRecipesYet": "Még nincsenek kedvenc receptjeid. Kezdj el böngészni és adj hozzá recepteket a kedvenceidhez!",
+    "myRecipesHeading": "Kulináris Alkotásaid",
+    "myRecipesSubtitle": "Minden recept, amit életre keltettél",
+    "noMyRecipesYet": "Még nem hoztál létre egyetlen receptet sem. Ideje megosztani az első remekművedet!",
+    "createFirstRecipe": "Készítsd el az első recepted",
+    "createNewRecipe": "Új recept",
+    "totalRecipes": "Receptek",
+    "totalRatings": "Értékelések",
+    "avgRating": "Átl. értékelés"
   },
   "sidebar": {
     "recipes": "Receptek",

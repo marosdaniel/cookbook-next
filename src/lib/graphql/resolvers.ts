@@ -9,7 +9,11 @@ import {
   editRecipe,
   rateRecipe,
 } from './resolvers/recipe/mutations';
-import { getRecipeById, getRecipes } from './resolvers/recipe/queries';
+import {
+  getRecipeById,
+  getRecipes,
+  getRecipesByUserId,
+} from './resolvers/recipe/queries';
 import {
   addToFavoriteRecipes,
   changePassword,
@@ -30,6 +34,7 @@ export const resolvers = {
     getUserById,
     getRecipeById,
     getRecipes,
+    getRecipesByUserId,
     getFavoriteRecipes,
     // Metadata queries
     getAllMetadata,

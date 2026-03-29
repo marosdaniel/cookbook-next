@@ -87,7 +87,15 @@
     "roleBlogger": "Blogger",
     "myRecipesTabTitle": "Meine Rezepte",
     "favoritesTabTitle": "Favoriten",
-    "noFavoriteRecipesYet": "Noch keine Lieblingsrezepte. Fange an zu stöbern und füge Rezepte zu deinen Favoriten hinzu!"
+    "noFavoriteRecipesYet": "Noch keine Lieblingsrezepte. Fange an zu stöbern und füge Rezepte zu deinen Favoriten hinzu!",
+    "myRecipesHeading": "Deine Kulinarischen Kreationen",
+    "myRecipesSubtitle": "Alle Rezepte, die du zum Leben erweckt hast",
+    "noMyRecipesYet": "Du hast noch keine Rezepte erstellt. Zeit, dein erstes Meisterwerk zu teilen!",
+    "createFirstRecipe": "Erstelle dein erstes Rezept",
+    "createNewRecipe": "Neues Rezept",
+    "totalRecipes": "Rezepte",
+    "totalRatings": "Bewertungen",
+    "avgRating": "Durchschn. Bewertung"
   },
   "sidebar": {
     "recipes": "Rezepte",

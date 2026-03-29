@@ -167,3 +167,31 @@ export const GET_LATEST_RECIPES = gql`
     }
   }
 `;
+
+export const GET_RECIPES_BY_USER_ID = gql`
+  query getRecipesByUserId($userId: ID!, $limit: Int) {
+    getRecipesByUserId(userId: $userId, limit: $limit) {
+      recipes {
+        id
+        title
+        description
+        imgSrc
+        cookingTime
+        servings
+        createdBy
+        category {
+          key
+          label
+        }
+        difficultyLevel {
+          key
+          label
+        }
+        averageRating
+        ratingsCount
+        isFavorite
+      }
+      totalRecipes
+    }
+  }
+`;

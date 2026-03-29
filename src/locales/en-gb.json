@@ -92,7 +92,15 @@
     "roleBlogger": "Blogger",
     "myRecipesTabTitle": "My recipes",
     "favoritesTabTitle": "Favourites",
-    "noFavoriteRecipesYet": "No favourite recipes yet. Start exploring and add recipes to your favourites!"
+    "noFavoriteRecipesYet": "No favourite recipes yet. Start exploring and add recipes to your favourites!",
+    "myRecipesHeading": "Your Culinary Creations",
+    "myRecipesSubtitle": "All the recipes you've brought to life",
+    "noMyRecipesYet": "You haven't created any recipes yet. Time to share your first masterpiece!",
+    "createFirstRecipe": "Create Your First Recipe",
+    "createNewRecipe": "New Recipe",
+    "totalRecipes": "Recipes",
+    "totalRatings": "Ratings",
+    "avgRating": "Avg. Rating"
   },
   "sidebar": {
     "recipes": "Recipes",
