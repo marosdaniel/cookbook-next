@@ -1,3 +1,10 @@
+# [2.24.0](https://github.com/marosdaniel/cookbook-next/compare/v2.23.0...v2.24.0) (2026-03-29)
+
+
+### Features
+
+* implement user following system with GraphQL resolvers, Prisma schema, and UI components ([92136ae](https://github.com/marosdaniel/cookbook-next/commit/92136ae47173f21e39d1efaf43bfbcf19ca2e9e3))
+
 # [2.23.0](https://github.com/marosdaniel/cookbook-next/compare/v2.22.0...v2.23.0) (2026-03-29)
 
 
