@@ -108,7 +108,8 @@
     "ratingSuccess": "Sikeres értékelés!",
     "ratingSuccessMessage": "Köszönjük az értékelést!",
     "ratingError": "Hiba történt",
-    "ratingErrorMessage": "Nem sikerült menteni az értékelést."
+    "ratingErrorMessage": "Nem sikerült menteni az értékelést.",
+    "empty": "Nincsenek receptek."
   },
   "recipeDetail": {
     "ingredients": "Hozzávalók",

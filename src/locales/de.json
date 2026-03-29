@@ -106,7 +106,8 @@
     "ratingSuccess": "Bewertung erfolgreich!",
     "ratingSuccessMessage": "Vielen Dank für deine Bewertung!",
     "ratingError": "Bewertungsfehler",
-    "ratingErrorMessage": "Deine Bewertung konnte nicht gespeichert werden."
+    "ratingErrorMessage": "Deine Bewertung konnte nicht gespeichert werden.",
+    "empty": "Keine Rezepte gefunden."
   },
   "recipeDetail": {
     "ingredients": "Zutaten",
