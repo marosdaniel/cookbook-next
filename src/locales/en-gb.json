@@ -100,7 +100,14 @@
     "createNewRecipe": "New Recipe",
     "totalRecipes": "Recipes",
     "totalRatings": "Ratings",
-    "avgRating": "Avg. Rating"
+    "avgRating": "Avg. Rating",
+    "followingHeading": "Your Flavour Circle",
+    "followingSubtitle": "Chefs you follow and their latest culinary adventures",
+    "followingCount": "Following",
+    "followingTotalRecipes": "Their Recipes",
+    "noFollowingYet": "Your table is set for one! Start following chefs to discover their latest creations.",
+    "discoverChefs": "Discover Recipes",
+    "latestRecipes": "Latest creations"
   },
   "sidebar": {
     "recipes": "Recipes",
@@ -172,6 +179,13 @@
     "userFavoriteRecipeNotFound": "Recipe not found",
     "userFavoriteAlreadyFavorite": "Recipe already in favourites",
     "userFavoriteSuccess": "Recipe successfully added to favourites",
+    "userFollowUnauthorized": "You must be logged in to follow users",
+    "userFollowUserNotFound": "User not found",
+    "userFollowAlreadyFollowing": "You are already following this user",
+    "userFollowNotFollowing": "You are not following this user",
+    "userFollowCannotFollowSelf": "You cannot follow yourself",
+    "userFollowSuccess": "Successfully followed user",
+    "userUnfollowSuccess": "Successfully unfollowed user",
     "unknownError": "An unknown error occurred"
   },
   "seo": {

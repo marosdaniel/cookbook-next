@@ -63,6 +63,11 @@ export const operationsConfig: OperationsConfig = {
     'removeFromFavoriteRecipes',
     'getFavoriteRecipes',
 
+    // Following
+    'getFollowing',
+    'followUser',
+    'unfollowUser',
+
     // Metadata
     'getMetadataByKey',
 

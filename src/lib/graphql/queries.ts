@@ -195,3 +195,39 @@ export const GET_RECIPES_BY_USER_ID = gql`
     }
   }
 `;
+
+export const GET_FOLLOWING = gql`
+  query getFollowing($userId: ID!, $limit: Int) {
+    getFollowing(userId: $userId, limit: $limit) {
+      users {
+        id
+        firstName
+        lastName
+        userName
+        recipeCount
+        followedAt
+        latestRecipes {
+          id
+          title
+          description
+          imgSrc
+          cookingTime
+          servings
+          createdBy
+          category {
+            key
+            label
+          }
+          difficultyLevel {
+            key
+            label
+          }
+          averageRating
+          ratingsCount
+          isFavorite
+        }
+      }
+      totalFollowing
+    }
+  }
+`;

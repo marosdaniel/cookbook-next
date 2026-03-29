@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import UnderConstruction from '@/components/UnderConstruction';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
 import { getMetadata } from '@/lib/seo/seo';
+import FollowingClient from './FollowingClient';
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocaleFromCookies();
@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const FollowingsPage = () => {
-  return <UnderConstruction />;
+  return <FollowingClient />;
 };
 
 export default FollowingsPage;

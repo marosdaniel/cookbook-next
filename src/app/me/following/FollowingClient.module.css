@@ -1,0 +1,49 @@
+.headerIcon {
+  color: var(--mantine-color-pink-6);
+  animation: wave 2.5s ease-in-out infinite;
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(15deg);
+  }
+  75% {
+    transform: rotate(-10deg);
+  }
+}
+
+.statCard {
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--mantine-shadow-md);
+}
+
+.userCard {
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.userCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--mantine-shadow-lg);
+}
+
+.unfollowButton {
+  transition:
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.unfollowButton:hover {
+  transform: scale(1.02);
+}

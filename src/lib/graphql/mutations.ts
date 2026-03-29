@@ -117,3 +117,25 @@ export const REMOVE_FROM_FAVORITE_RECIPES = gql`
     }
   }
 `;
+
+export const FOLLOW_USER = gql`
+  mutation FollowUser($targetUserId: ID!) {
+    followUser(targetUserId: $targetUserId) {
+      success
+      message
+      messageKey
+      statusCode
+    }
+  }
+`;
+
+export const UNFOLLOW_USER = gql`
+  mutation UnfollowUser($targetUserId: ID!) {
+    unfollowUser(targetUserId: $targetUserId) {
+      success
+      message
+      messageKey
+      statusCode
+    }
+  }
+`;

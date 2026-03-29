@@ -10,6 +10,16 @@ export const USER_FAVORITE_MESSAGE_KEYS = {
   SUCCESS: 'response.userFavoriteSuccess',
 } as const;
 
+export const USER_FOLLOW_MESSAGE_KEYS = {
+  UNAUTHORIZED: 'response.userFollowUnauthorized',
+  USER_NOT_FOUND: 'response.userFollowUserNotFound',
+  ALREADY_FOLLOWING: 'response.userFollowAlreadyFollowing',
+  NOT_FOLLOWING: 'response.userFollowNotFollowing',
+  CANNOT_FOLLOW_SELF: 'response.userFollowCannotFollowSelf',
+  FOLLOW_SUCCESS: 'response.userFollowSuccess',
+  UNFOLLOW_SUCCESS: 'response.userUnfollowSuccess',
+} as const;
+
 export const USER_REGISTER_MESSAGE_KEYS = {
   VALIDATION_ERROR: 'response.userRegisterValidationError',
   USERNAME_TAKEN: 'response.userRegisterUsernameTaken',

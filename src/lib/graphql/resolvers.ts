@@ -21,13 +21,19 @@ import {
   createUser,
   deleteAllUser,
   deleteUser,
+  followUser,
   loginUser,
   removeFromFavoriteRecipes,
   resetPassword,
   setNewPassword,
+  unfollowUser,
   updateUser,
 } from './resolvers/user/mutations';
-import { getFavoriteRecipes, getUserById } from './resolvers/user/queries';
+import {
+  getFavoriteRecipes,
+  getFollowing,
+  getUserById,
+} from './resolvers/user/queries';
 
 export const resolvers = {
   Query: {
@@ -36,6 +42,7 @@ export const resolvers = {
     getRecipes,
     getRecipesByUserId,
     getFavoriteRecipes,
+    getFollowing,
     // Metadata queries
     getAllMetadata,
     getMetadataByType,
@@ -48,10 +55,12 @@ export const resolvers = {
     createUser,
     deleteAllUser,
     deleteUser,
+    followUser,
     loginUser,
     removeFromFavoriteRecipes,
     resetPassword,
     setNewPassword,
+    unfollowUser,
     updateUser,
     createRecipe,
     editRecipe,

@@ -97,7 +97,14 @@
     "createNewRecipe": "Új recept",
     "totalRecipes": "Receptek",
     "totalRatings": "Értékelések",
-    "avgRating": "Átl. értékelés"
+    "avgRating": "Átl. értékelés",
+    "followingHeading": "Ízvilágod Köre",
+    "followingSubtitle": "Séfek, akiket követsz és legújabb kulináris kalandjaik",
+    "followingCount": "Követett",
+    "followingTotalRecipes": "Receptjeik",
+    "noFollowingYet": "Az asztalod csak egyre van terítve! Kezdj el séfeket követni és fedezd fel legújabb alkotásaikat.",
+    "discoverChefs": "Receptek felfedezése",
+    "latestRecipes": "Legújabb alkotások"
   },
   "sidebar": {
     "recipes": "Receptek",
@@ -171,6 +178,13 @@
     "userFavoriteRecipeNotFound": "Recept nem található",
     "userFavoriteAlreadyFavorite": "A recept már a kedvencek között van",
     "userFavoriteSuccess": "Recept sikeresen hozzáadva a kedvencekhez",
+    "userFollowUnauthorized": "Be kell jelentkezned a felhasználók követéséhez",
+    "userFollowUserNotFound": "Felhasználó nem található",
+    "userFollowAlreadyFollowing": "Már követed ezt a felhasználót",
+    "userFollowNotFollowing": "Nem követed ezt a felhasználót",
+    "userFollowCannotFollowSelf": "Nem követheted saját magadat",
+    "userFollowSuccess": "Felhasználó sikeresen követve",
+    "userUnfollowSuccess": "Követés sikeresen megszüntetve",
     "unknownError": "Ismeretlen hiba történt"
   },
   "seo": {

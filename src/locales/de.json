@@ -95,7 +95,14 @@
     "createNewRecipe": "Neues Rezept",
     "totalRecipes": "Rezepte",
     "totalRatings": "Bewertungen",
-    "avgRating": "Durchschn. Bewertung"
+    "avgRating": "Durchschn. Bewertung",
+    "followingHeading": "Dein Geschmackskreis",
+    "followingSubtitle": "Köche, denen du folgst, und ihre neuesten kulinarischen Abenteuer",
+    "followingCount": "Folge ich",
+    "followingTotalRecipes": "Ihre Rezepte",
+    "noFollowingYet": "Dein Tisch ist nur für einen gedeckt! Folge Köchen, um ihre neuesten Kreationen zu entdecken.",
+    "discoverChefs": "Rezepte entdecken",
+    "latestRecipes": "Neueste Kreationen"
   },
   "sidebar": {
     "recipes": "Rezepte",
@@ -166,6 +173,13 @@
     "userFavoriteRecipeNotFound": "Rezept nicht gefunden",
     "userFavoriteAlreadyFavorite": "Rezept bereits in Favoriten",
     "userFavoriteSuccess": "Rezept erfolgreich zu Favoriten hinzugefügt",
+    "userFollowUnauthorized": "Sie müssen angemeldet sein, um Benutzern zu folgen",
+    "userFollowUserNotFound": "Benutzer nicht gefunden",
+    "userFollowAlreadyFollowing": "Sie folgen diesem Benutzer bereits",
+    "userFollowNotFollowing": "Sie folgen diesem Benutzer nicht",
+    "userFollowCannotFollowSelf": "Sie können sich nicht selbst folgen",
+    "userFollowSuccess": "Benutzer erfolgreich gefolgt",
+    "userUnfollowSuccess": "Erfolgreich entfolgt",
     "unknownError": "Ein unbekannter Fehler ist aufgetreten"
   },
   "seo": {

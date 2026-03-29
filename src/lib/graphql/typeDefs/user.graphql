@@ -85,11 +85,27 @@ type UserUpdateResponse {
   user: User
 }
 
+type FollowedUser {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  userName: String!
+  recipeCount: Int!
+  followedAt: DateTime!
+  latestRecipes: [Recipe!]!
+}
+
+type FollowingData {
+  users: [FollowedUser!]!
+  totalFollowing: Int!
+}
+
 type Query {
   getUserById(id: ID!): User!
   getUserByUserName(userName: String!): User!
   getAllUser: [User]!
   getFavoriteRecipes(userId: ID!, limit: Int): [Recipe!]!
+  getFollowing(userId: ID!, limit: Int): FollowingData!
 }
 
 type Mutation {
@@ -106,6 +122,9 @@ type Mutation {
 
   addToFavoriteRecipes(userId: ID!, recipeId: ID!): OperationResponse!
   removeFromFavoriteRecipes(userId: ID!, recipeId: ID!): OperationResponse!
+
+  followUser(targetUserId: ID!): OperationResponse!
+  unfollowUser(targetUserId: ID!): OperationResponse!
 
   cleanUserRecipes(userId: ID!): Boolean!
 }
