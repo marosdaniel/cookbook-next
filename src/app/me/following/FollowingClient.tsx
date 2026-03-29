@@ -8,7 +8,6 @@ import {
   Card,
   Center,
   Group,
-  Paper,
   SimpleGrid,
   Skeleton,
   Stack,
@@ -29,7 +28,6 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
-import type { RecipeCardData } from '@/components/Recipe/RecipeCard';
 import { RecipeCarousel } from '@/components/Recipe/RecipeCarousel';
 import StyledText from '@/components/StyledText';
 import { UNFOLLOW_USER } from '@/lib/graphql/mutations';
@@ -37,61 +35,15 @@ import { GET_FOLLOWING } from '@/lib/graphql/queries';
 import type { OperationResponse } from '@/types/graphql/responses';
 import { PUBLIC_ROUTES } from '@/types/routes';
 import classes from './FollowingClient.module.css';
-
-interface FollowedUser {
-  id: string;
-  firstName: string;
-  lastName: string;
-  userName: string;
-  recipeCount: number;
-  followedAt: string;
-  latestRecipes: RecipeCardData[];
-}
-
-interface FollowingData {
-  getFollowing: {
-    users: FollowedUser[];
-    totalFollowing: number;
-  };
-}
-
-interface StatCardProps {
-  icon: React.ReactNode;
-  label: string;
-  value: string | number;
-}
-
-const StatCard = ({ icon, label, value }: StatCardProps) => (
-  <Paper withBorder radius="md" p="md" className={classes.statCard}>
-    <Group gap="sm">
-      <ThemeIcon
-        size="lg"
-        radius="md"
-        variant="gradient"
-        gradient={{ from: 'pink', to: 'violet', deg: 45 }}
-      >
-        {icon}
-      </ThemeIcon>
-      <div>
-        <Text size="xl" fw={700} lh={1}>
-          {value}
-        </Text>
-        <Text size="xs" c="dimmed" mt={2}>
-          {label}
-        </Text>
-      </div>
-    </Group>
-  </Paper>
-);
-
-const getInitials = (firstName: string, lastName: string) =>
-  `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+import StatCard from './StatCard';
+import type { FollowingData } from './types';
+import { getInitials } from './utils';
 
 const SKELETON_CARDS = [1, 2, 3, 4];
 
 const FollowingClient = () => {
   const { data: session, status } = useSession();
-  const t = useTranslations('user');
+  const translate = useTranslations('user');
 
   const userId = (session?.user as { id?: string })?.id;
   const isSessionLoading = status === 'loading';
@@ -151,11 +103,11 @@ const FollowingClient = () => {
         <Group gap="sm" align="center" mb={4}>
           <IconUserHeart size={32} className={classes.headerIcon} aria-hidden />
           <StyledText componentType="title" gradient order={2}>
-            {t('followingHeading')}
+            {translate('followingHeading')}
           </StyledText>
         </Group>
         <Text size="md" c="dimmed">
-          {t('followingSubtitle')}
+          {translate('followingSubtitle')}
         </Text>
       </Box>
 
@@ -163,12 +115,12 @@ const FollowingClient = () => {
         <SimpleGrid cols={{ base: 1, sm: 2 }}>
           <StatCard
             icon={<IconUsersGroup size={20} />}
-            label={t('followingCount')}
+            label={translate('followingCount')}
             value={totalFollowing}
           />
           <StatCard
             icon={<IconToolsKitchen2 size={20} />}
-            label={t('followingTotalRecipes')}
+            label={translate('followingTotalRecipes')}
             value={totalRecipesFromFollowed}
           />
         </SimpleGrid>
@@ -186,7 +138,7 @@ const FollowingClient = () => {
               <IconUsers size={40} />
             </ThemeIcon>
             <Text c="dimmed" size="lg" ta="center" maw={400}>
-              {t('noFollowingYet')}
+              {translate('noFollowingYet')}
             </Text>
             <Button
               component={Link}
@@ -196,7 +148,7 @@ const FollowingClient = () => {
               size="lg"
               mt="sm"
             >
-              {t('discoverChefs')}
+              {translate('discoverChefs')}
             </Button>
           </Stack>
         </Center>
@@ -238,10 +190,10 @@ const FollowingClient = () => {
                         color="var(--mantine-color-pink-6)"
                       />
                       <Text size="sm" fw={500}>
-                        {user.recipeCount} {t('recipes')}
+                        {user.recipeCount} {translate('recipes')}
                       </Text>
                     </Group>
-                    <Tooltip label={t('unfollow')}>
+                    <Tooltip label={translate('unfollow')}>
                       <Button
                         variant="light"
                         color="red"
@@ -250,7 +202,7 @@ const FollowingClient = () => {
                         className={classes.unfollowButton}
                         onClick={() => handleUnfollow(user.id)}
                       >
-                        {t('unfollow')}
+                        {translate('unfollow')}
                       </Button>
                     </Tooltip>
                   </Group>
@@ -259,7 +211,7 @@ const FollowingClient = () => {
                 {user.latestRecipes.length > 0 && (
                   <Box>
                     <Text size="sm" fw={500} mb="xs" c="dimmed">
-                      {t('latestRecipes')}
+                      {translate('latestRecipes')}
                     </Text>
                     <RecipeCarousel
                       recipes={user.latestRecipes}
