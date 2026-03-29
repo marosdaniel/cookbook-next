@@ -1,3 +1,10 @@
+# [2.22.0](https://github.com/marosdaniel/cookbook-next/compare/v2.21.0...v2.22.0) (2026-03-29)
+
+
+### Features
+
+* add empty state translation to German and Hungarian locales ([bf2f7b6](https://github.com/marosdaniel/cookbook-next/commit/bf2f7b62201d2e7d26802b2e6c08fabf58c924a5))
+
 # [2.21.0](https://github.com/marosdaniel/cookbook-next/compare/v2.20.0...v2.21.0) (2026-03-25)
 
 
