@@ -1,3 +1,10 @@
+# [2.23.0](https://github.com/marosdaniel/cookbook-next/compare/v2.22.0...v2.23.0) (2026-03-29)
+
+
+### Features
+
+* implement user recipes dashboard with GraphQL query and UI components ([c054ed2](https://github.com/marosdaniel/cookbook-next/commit/c054ed2e6066d9dd38ff9b3d6d311083e1f34213))
+
 # [2.22.0](https://github.com/marosdaniel/cookbook-next/compare/v2.21.0...v2.22.0) (2026-03-29)
 
 
