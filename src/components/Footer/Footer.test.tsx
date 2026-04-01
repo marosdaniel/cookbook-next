@@ -44,21 +44,19 @@ vi.mock('../Logo', () => ({
 
 // Mock next-intl
 vi.mock('next-intl', () => ({
-  useTranslations: (ns: string) => (
-    key: string,
-    values?: Record<string, unknown>,
-  ) => {
-    const fullKey = `${ns}.${key}`;
-    const translations: Record<string, string> = {
-      'footer.privacy': 'Privacy Policy',
-      'footer.cookies': 'Cookie Policy',
-    };
-    if (fullKey === 'footer.copyright') {
-      const year = (values?.year as number | string) ?? '';
-      return `© ${year} Cookbook. All rights reserved.`;
-    }
-    return translations[fullKey] || key;
-  },
+  useTranslations:
+    (ns: string) => (key: string, values?: Record<string, unknown>) => {
+      const fullKey = `${ns}.${key}`;
+      const translations: Record<string, string> = {
+        'footer.privacy': 'Privacy Policy',
+        'footer.cookies': 'Cookie Policy',
+      };
+      if (fullKey === 'footer.copyright') {
+        const year = (values?.year as number | string) ?? '';
+        return `© ${year} Cookbook. All rights reserved.`;
+      }
+      return translations[fullKey] || key;
+    },
 }));
 
 // Mock PUBLIC_ROUTES
