@@ -14,6 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
     descriptionKey: 'editRecipeDescription',
     fallbackTitle: 'Edit Recipe',
     fallbackDescription: 'Edit your recipe',
+    robots: { index: false, follow: false },
   });
 }
 

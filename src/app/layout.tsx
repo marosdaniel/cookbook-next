@@ -40,6 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
       : 'Share your recipes';
 
   return {
+    metadataBase: new URL(process.env.NEXTAUTH_URL ?? 'http://localhost:3000'),
     title: appTitle,
     description: appDescription,
     manifest: '/site.webmanifest',
@@ -64,6 +65,16 @@ export async function generateMetadata(): Promise<Metadata> {
       description: appDescription,
       type: 'website',
       siteName: appTitle,
+      locale,
+    },
+    twitter: {
+      card: 'summary',
+      title: appTitle,
+      description: appDescription,
+    },
+    robots: {
+      index: true,
+      follow: true,
     },
   };
 }

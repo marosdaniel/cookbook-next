@@ -16,6 +16,9 @@ export async function generateMetadata(): Promise<Metadata> {
     fallbackTitle: 'Recipe Details',
     fallbackDescription:
       'View recipe details, ingredients and preparation steps.',
+    keywordsKey: 'recipeDetailKeywords',
+    fallbackKeywords: 'recipe, cooking, ingredients, meal',
+    openGraph: { type: 'article' },
   });
 }
 

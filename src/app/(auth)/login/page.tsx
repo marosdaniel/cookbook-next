@@ -13,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
     descriptionKey: 'loginDescription',
     fallbackTitle: 'Login',
     fallbackDescription: 'Sign in to your account',
+    robots: { index: false, follow: false },
   });
 }
 

@@ -13,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
     descriptionKey: 'resetPasswordDescription',
     fallbackTitle: 'Set New Password',
     fallbackDescription: 'Enter your new password',
+    robots: { index: false, follow: false },
   });
 }
 

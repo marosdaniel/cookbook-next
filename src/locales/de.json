@@ -191,6 +191,7 @@
     "appDescription": "Der beste Ort, um Rezepte zu finden und zu teilen.",
     "homeTitle": "Startseite",
     "homeDescription": "Entdecken und teilen Sie die besten Rezepte.",
+    "homeKeywords": "Rezepte, Kochen, Essen, Mahlzeiten, Zutaten, Kochbuch",
     "loginTitle": "Anmelden",
     "loginDescription": "Melden Sie sich bei Ihrem Cookbook-Konto an, um auf Ihre Rezepte und Favoriten zuzugreifen",
     "signupTitle": "Registrieren",
@@ -213,6 +214,7 @@
     "editRecipeDescription": "Aktualisieren Sie Ihre Rezeptdetails",
     "recipeDetailTitle": "{title} - Rezept von {createdBy} | Kochbuch",
     "recipeDetailDescription": "{title} Rezept, erstellt von {createdBy}. Dieses Rezept gehört zur {category} Kategorie und kann in {cookingTime} Minuten zubereitet werden. Schauen Sie sich die genauen Zutaten und detaillierten Kochanweisungen an!",
+    "recipesKeywords": "alle Rezepte, Rezepte durchsuchen, Kochen, Essen, Mahlzeiten, Kochbuch",
     "recipeDetailKeywords": "Rezept, {title}, {category}, Kochen, {createdBy}, Zutaten, Mahlzeit"
   },
   "misc": {

@@ -11,6 +11,8 @@ export async function generateMetadata(): Promise<Metadata> {
     descriptionKey: 'recipesDescription',
     fallbackTitle: 'Recipes',
     fallbackDescription: 'Browse all recipes',
+    keywordsKey: 'recipesKeywords',
+    fallbackKeywords: 'all recipes, browse recipes, cooking, food, cookbook',
   });
 }
 

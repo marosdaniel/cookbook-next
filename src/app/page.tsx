@@ -10,6 +10,8 @@ export async function generateMetadata(): Promise<Metadata> {
     descriptionKey: 'homeDescription',
     fallbackTitle: 'Home',
     fallbackDescription: 'Discover and share recipes',
+    keywordsKey: 'homeKeywords',
+    fallbackKeywords: 'recipes, cooking, food, meals, cookbook',
   });
 }
 

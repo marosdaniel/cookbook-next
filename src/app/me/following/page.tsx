@@ -10,6 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
     descriptionKey: 'followingDescription',
     fallbackTitle: 'Following',
     fallbackDescription: 'People you follow',
+    robots: { index: false, follow: false },
   });
 }
 

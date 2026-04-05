@@ -18,6 +18,15 @@ export async function getMetadata(
     fallbackTitle: string;
     fallbackDescription: string;
     titleTemplate?: string; // Optional template like "%s | Cookbook"
+    keywordsKey?: string;
+    fallbackKeywords?: string;
+    robots?: {
+      index?: boolean;
+      follow?: boolean;
+    };
+    openGraph?: {
+      type?: 'website' | 'article';
+    };
   },
 ): Promise<Metadata> {
   const messages = await getLocaleMessages(locale);
@@ -36,9 +45,26 @@ export async function getMetadata(
     ? opts.titleTemplate.replace('%s', title)
     : `${title} | Cookbook`;
 
+  const keywords =
+    opts.keywordsKey && typeof data[opts.keywordsKey] === 'string'
+      ? data[opts.keywordsKey]
+      : opts.fallbackKeywords;
+
   return {
     title: finalTitle,
     description,
+    ...(keywords === undefined ? {} : { keywords }),
+    ...(opts.robots === undefined ? {} : { robots: opts.robots }),
+    openGraph: {
+      title: finalTitle,
+      description,
+      type: opts.openGraph?.type ?? 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title: finalTitle,
+      description,
+    },
   };
 }
 

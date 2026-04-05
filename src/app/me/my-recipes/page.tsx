@@ -10,6 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
     descriptionKey: 'myRecipesDescription',
     fallbackTitle: 'My Recipes',
     fallbackDescription: 'Your created recipes',
+    robots: { index: false, follow: false },
   });
 }
 

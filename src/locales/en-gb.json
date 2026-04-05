@@ -49,7 +49,6 @@
     "darkMode": "Dark mode",
     "toggleTheme": "Toggle theme"
   },
-
   "general": {
     "edit": "Edit",
     "delete": "Delete",
@@ -197,6 +196,7 @@
     "appDescription": "The best place to find and share recipes.",
     "homeTitle": "Home",
     "homeDescription": "Discover and share the best recipes.",
+    "homeKeywords": "recipes, cooking, food, meals, ingredients, cookbook",
     "loginTitle": "Login",
     "loginDescription": "Sign in to your Cookbook account to access your recipes and favourites",
     "signupTitle": "Register",
@@ -219,6 +219,7 @@
     "editRecipeDescription": "Update your recipe details",
     "recipeDetailTitle": "{title} - Recipe by {createdBy} | Cookbook",
     "recipeDetailDescription": "{title} recipe, created by {createdBy}. This recipe belongs to the {category} category and can be prepared in {cookingTime} minutes. Check out the exact ingredients and detailed cooking instructions!",
+    "recipesKeywords": "all recipes, browse recipes, cooking, food, meals, cookbook",
     "recipeDetailKeywords": "recipe, {title}, {category}, cooking, {createdBy}, ingredients, meal"
   },
   "misc": {
@@ -504,7 +505,6 @@
     },
     "text": "Cookbook"
   },
-
   "units": {
     "minuteShort": "min"
   },
@@ -637,7 +637,6 @@
     "searching": "Searching...",
     "noResults": "No results"
   },
-
   "footer": {
     "copyright": "© {year} Cookbook. All rights reserved.",
     "privacy": "Privacy Policy",

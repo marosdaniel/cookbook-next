@@ -49,7 +49,6 @@
     "darkMode": "Sötét mód",
     "toggleTheme": "Téma váltása"
   },
-
   "general": {
     "edit": "Szerkesztés",
     "delete": "Törlés",
@@ -196,6 +195,7 @@
     "appDescription": "A legjobb hely receptek keresésére és megosztására.",
     "homeTitle": "Főoldal",
     "homeDescription": "Fedezd fel és oszd meg a legjobb recepteket.",
+    "homeKeywords": "receptek, főzés, étel, fogások, hozzávalók, receptkönyv",
     "loginTitle": "Bejelentkezés",
     "loginDescription": "Jelentkezz be Cookbook fiókodba, hogy hozzáférj receptjeidhez és kedvenceidhez",
     "signupTitle": "Regisztráció",
@@ -218,6 +218,7 @@
     "editRecipeDescription": "Frissítsd a recepted részleteit",
     "recipeDetailTitle": "{title} - Recept tőle: {createdBy} | Receptkönyv",
     "recipeDetailDescription": "{title} recept, készítette: {createdBy}. Ez a recept a {category} kategóriába tartozik és {cookingTime} perc alatt elkészíthető. Nézze meg a pontos hozzávalókat és a részletes elkészítési útmutatót!",
+    "recipesKeywords": "összes recept, receptek böngészése, főzés, étel, fogások, receptkönyv",
     "recipeDetailKeywords": "recept, {title}, {category}, főzés, {createdBy}, hozzávalók, étel"
   },
   "misc": {
@@ -486,7 +487,6 @@
       "resetButton": "Visszaállítás"
     }
   },
-
   "composerHeader": {
     "saveDraft": {
       "tooltip": "Piszkozat mentése"
@@ -505,7 +505,6 @@
     },
     "text": "Cookbook"
   },
-
   "units": {
     "minuteShort": "perc"
   },
@@ -638,7 +637,6 @@
     "searching": "Keresés folyamatban...",
     "noResults": "Nincs találat"
   },
-
   "footer": {
     "copyright": "© {year} Cookbook. Minden jog fenntartva.",
     "privacy": "Adatvédelmi szabályzat",
