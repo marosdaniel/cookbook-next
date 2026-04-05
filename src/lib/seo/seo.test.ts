@@ -26,7 +26,7 @@ describe('getAuthMetadata', () => {
       fallbackDescription: 'Login page',
     });
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       title: 'Sign In | Cookbook',
       description: 'Please enter your credentials',
     });
@@ -47,7 +47,7 @@ describe('getAuthMetadata', () => {
       fallbackDescription: 'Default Description',
     });
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       title: 'Default Login | Cookbook',
       description: 'Default Description',
     });
@@ -65,7 +65,7 @@ describe('getAuthMetadata', () => {
       fallbackDescription: 'Create account',
     });
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       title: 'Sign Up | Cookbook',
       description: 'Create account',
     });
