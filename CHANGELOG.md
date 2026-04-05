@@ -1,3 +1,10 @@
+# [2.26.0](https://github.com/marosdaniel/cookbook-next/compare/v2.25.0...v2.26.0) (2026-04-05)
+
+
+### Features
+
+* enhance SEO metadata with keywords, robots directives, OpenGraph types, and Twitter cards ([6230271](https://github.com/marosdaniel/cookbook-next/commit/6230271834d4384dfb9bc39d3d7b465d1d2b60df))
+
 # [2.25.0](https://github.com/marosdaniel/cookbook-next/compare/v2.24.0...v2.25.0) (2026-03-29)
 
 
