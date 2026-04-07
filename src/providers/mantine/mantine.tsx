@@ -11,9 +11,9 @@ const colorSchemeManager = localStorageColorSchemeManager({
   key: 'cookbook-color-scheme',
 });
 
-export function MantineProviderWrapper({
+export const MantineProviderWrapper = ({
   children,
-}: Readonly<PropsWithChildren>) {
+}: Readonly<PropsWithChildren>) => {
   return (
     <MantineProvider
       theme={lightTheme}
@@ -35,4 +35,4 @@ export function MantineProviderWrapper({
       <ModalsProvider>{children}</ModalsProvider>
     </MantineProvider>
   );
-}
+};
