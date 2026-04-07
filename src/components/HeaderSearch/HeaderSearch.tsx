@@ -18,7 +18,7 @@ import { useEffect, useState } from 'react';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
 import type { RecipeBase } from '@/types/recipe';
 
-export function HeaderSearch() {
+export const HeaderSearch = () => {
   const t = useTranslations('headerSearch');
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
@@ -135,4 +135,4 @@ export function HeaderSearch() {
       </Combobox.Dropdown>
     </Combobox>
   );
-}
+};

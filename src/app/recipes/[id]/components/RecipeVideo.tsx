@@ -3,7 +3,10 @@ import { useTranslations } from 'next-intl';
 import classes from '../RecipeDetail.module.css';
 import type { RecipeVideoProps } from '../types';
 
-export function RecipeVideo({ youtubeId, title }: Readonly<RecipeVideoProps>) {
+export const RecipeVideo = ({
+  youtubeId,
+  title,
+}: Readonly<RecipeVideoProps>) => {
   const translate = useTranslations('recipeDetail');
 
   return (
@@ -21,4 +24,4 @@ export function RecipeVideo({ youtubeId, title }: Readonly<RecipeVideoProps>) {
       </Box>
     </Box>
   );
-}
+};

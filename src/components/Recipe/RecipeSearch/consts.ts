@@ -26,9 +26,9 @@ const PARAM_LABELS = 'labels';
 const PARAM_MAX_TIME = 'maxTime';
 
 /** Serialize filters into URLSearchParams (omitting defaults). */
-export function filtersToSearchParams(
+export const filtersToSearchParams = (
   filters: RecipeSearchFilters,
-): URLSearchParams {
+): URLSearchParams => {
   const params = new URLSearchParams();
   if (filters.title.trim()) params.set(PARAM_TITLE, filters.title.trim());
   if (filters.categoryKey) params.set(PARAM_CATEGORY, filters.categoryKey);
@@ -39,12 +39,12 @@ export function filtersToSearchParams(
   if (filters.maxCookingTime)
     params.set(PARAM_MAX_TIME, String(filters.maxCookingTime));
   return params;
-}
+};
 
 /** Parse URLSearchParams back to RecipeSearchFilters. */
-export function searchParamsToFilters(
+export const searchParamsToFilters = (
   params: URLSearchParams,
-): RecipeSearchFilters {
+): RecipeSearchFilters => {
   const labelsRaw = params.get(PARAM_LABELS);
   const maxTimeRaw = params.get(PARAM_MAX_TIME);
   return {
@@ -54,10 +54,10 @@ export function searchParamsToFilters(
     labelKeys: labelsRaw ? labelsRaw.split(',').filter(Boolean) : [],
     maxCookingTime: maxTimeRaw ? Number(maxTimeRaw) : '',
   };
-}
+};
 
 /** Returns true when at least one filter differs from defaults. */
-export function isSearchActive(filters: RecipeSearchFilters): boolean {
+export const isSearchActive = (filters: RecipeSearchFilters): boolean => {
   return (
     filters.title.trim() !== '' ||
     filters.categoryKey !== null ||
@@ -65,10 +65,10 @@ export function isSearchActive(filters: RecipeSearchFilters): boolean {
     filters.labelKeys.length > 0 ||
     filters.maxCookingTime !== ''
   );
-}
+};
 
 /** Convert client-side filters to the GraphQL RecipeFilterInput shape. */
-export function buildQueryFilter(filters: RecipeSearchFilters) {
+export const buildQueryFilter = (filters: RecipeSearchFilters) => {
   if (!isSearchActive(filters)) return undefined;
 
   return {
@@ -82,4 +82,4 @@ export function buildQueryFilter(filters: RecipeSearchFilters) {
       maxCookingTime: Number(filters.maxCookingTime),
     }),
   };
-}
+};

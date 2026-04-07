@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import type { RecipeNotFoundProps } from '../types';
 
-export function RecipeNotFound({
+export const RecipeNotFound = ({
   errorMessage,
-}: Readonly<RecipeNotFoundProps>) {
+}: Readonly<RecipeNotFoundProps>) => {
   const translate = useTranslations('recipeDetail');
 
   return (
@@ -30,4 +30,4 @@ export function RecipeNotFound({
       </Stack>
     </Center>
   );
-}
+};

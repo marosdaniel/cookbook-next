@@ -25,12 +25,12 @@ export interface UseRecipeEditFormProps {
   labels: MetadataOption[];
 }
 
-export function useRecipeEditForm({
+export const useRecipeEditForm = ({
   recipeId,
   initialValues,
   onSectionChange,
   labels,
-}: UseRecipeEditFormProps) {
+}: UseRecipeEditFormProps) => {
   const router = useRouter();
   const translate = useTranslations();
 
@@ -137,4 +137,4 @@ export function useRecipeEditForm({
     addIngredient,
     addStep,
   };
-}
+};

@@ -13,7 +13,7 @@ export const SEO_TITLE_MAX_LENGTH = 60;
 export const SEO_DESCRIPTION_MAX_LENGTH = 160;
 
 /* ─── Helpers ─────────────────────────────────── */
-export function computeCompletion(values: RecipeFormValues) {
+export const computeCompletion = (values: RecipeFormValues) => {
   const checks = [
     Boolean(values.title?.trim()),
     Boolean(values.description?.trim()),
@@ -30,12 +30,12 @@ export function computeCompletion(values: RecipeFormValues) {
     total: checks.length,
     percent: Math.round((done / checks.length) * 100),
   };
-}
+};
 
-export function sectionCompletion(
+export const sectionCompletion = (
   section: ComposerSection,
   values: RecipeFormValues,
-): { done: number; total: number } {
+): { done: number; total: number } => {
   switch (section) {
     case 'basics': {
       const checks = [
@@ -65,12 +65,12 @@ export function sectionCompletion(
         total: Math.max(values.preparationSteps.length, 1),
       };
   }
-}
+};
 
-export function toCleanedOptions(
+export const toCleanedOptions = (
   items: RecipeTaxonomyItem[],
   t?: (key: string) => string,
-): MetadataOption[] {
+): MetadataOption[] => {
   return items.map((m) => {
     const translation = t ? t(m.key) : m.label;
     return {
@@ -78,12 +78,12 @@ export function toCleanedOptions(
       label: translation === m.key ? m.label : translation,
     };
   });
-}
+};
 
-export function transformValuesToInput(
+export const transformValuesToInput = (
   values: RecipeFormValues,
   labels: MetadataOption[],
-) {
+) => {
   return {
     title: values.title,
     description: values.description,
@@ -159,20 +159,23 @@ export function transformValuesToInput(
     seoDescription: values.seoDescription || undefined,
     socialImage: values.socialImage || undefined,
   };
-}
+};
 
 /* ─── UI Helpers ─────────────────────────────── */
-export function getProgressColor(percent: number): string {
+export const getProgressColor = (percent: number): string => {
   if (percent === 100) return 'teal';
   if (percent > 50) return 'blue';
   return 'orange';
-}
+};
 
-export function getStatusColor(isComplete: boolean, isActive: boolean): string {
+export const getStatusColor = (
+  isComplete: boolean,
+  isActive: boolean,
+): string => {
   if (isComplete) return 'green';
   if (isActive) return 'blue';
   return 'gray';
-}
+};
 
 /** Default empty form values for all fields */
 export const EMPTY_FORM_VALUES: RecipeFormValues = {
@@ -208,7 +211,9 @@ export const EMPTY_FORM_VALUES: RecipeFormValues = {
  * Transforms a recipe fetched from the server (GraphQL response)
  * into `RecipeFormValues` suitable for the form.
  */
-export function recipeToFormValues(recipe: RecipeFormSource): RecipeFormValues {
+export const recipeToFormValues = (
+  recipe: RecipeFormSource,
+): RecipeFormValues => {
   return {
     title: recipe.title,
     description: recipe.description ?? '',
@@ -265,4 +270,4 @@ export function recipeToFormValues(recipe: RecipeFormSource): RecipeFormValues {
     seoDescription: recipe.seoDescription ?? '',
     socialImage: recipe.socialImage ?? '',
   };
-}
+};

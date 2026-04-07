@@ -5,12 +5,12 @@ import clsx from 'clsx';
 import classes from './StyledText.module.css';
 import type { StyledTextProps } from './types';
 
-export function StyledText<C extends 'title' | 'text' = 'text'>({
+export const StyledText = <C extends 'title' | 'text' = 'text'>({
   componentType = 'text' as C,
   gradient = false,
   className,
   ...props
-}: StyledTextProps<C>) {
+}: StyledTextProps<C>) => {
   const combinedClassName = clsx(className, {
     [classes.gradientText]: gradient,
   });
@@ -20,6 +20,6 @@ export function StyledText<C extends 'title' | 'text' = 'text'>({
   }
 
   return <Text className={combinedClassName} {...(props as TextProps)} />;
-}
+};
 
 export default StyledText;

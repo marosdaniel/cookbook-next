@@ -3,7 +3,7 @@ import { useTranslations } from 'next-intl';
 import classes from '../RecipeDetail.module.css';
 import type { RecipeStepsProps } from '../types';
 
-export function RecipeSteps({ steps }: Readonly<RecipeStepsProps>) {
+export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
   const translate = useTranslations('recipeDetail');
 
   return (
@@ -31,4 +31,4 @@ export function RecipeSteps({ steps }: Readonly<RecipeStepsProps>) {
       </Stack>
     </Box>
   );
-}
+};

@@ -9,7 +9,7 @@ import type { RecipeFormValues } from '../types';
  * Expects the form instance to be passed directly — the Recipe Composer
  * passes it through its context or props.
  */
-export function useFormError(form: UseFormReturnType<RecipeFormValues>) {
+export const useFormError = (form: UseFormReturnType<RecipeFormValues>) => {
   const getFieldError = useCallback(
     (path: string): string | undefined => {
       const error = form.errors[path];
@@ -34,4 +34,4 @@ export function useFormError(form: UseFormReturnType<RecipeFormValues>) {
   );
 
   return { getFieldError, revalidateOnChange };
-}
+};

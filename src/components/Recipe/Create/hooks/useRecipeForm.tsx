@@ -24,11 +24,11 @@ import {
   transformValuesToInput,
 } from '../utils';
 
-export function useRecipeForm({
+export const useRecipeForm = ({
   metadataLoaded,
   onSectionChange,
   labels,
-}: UseRecipeFormProps) {
+}: UseRecipeFormProps) => {
   const router = useRouter();
   const translate = useTranslations();
 
@@ -186,4 +186,4 @@ export function useRecipeForm({
     addIngredient,
     addStep,
   };
-}
+};

@@ -16,7 +16,7 @@ import {
 } from '@/lib/store/metadata';
 import { toCleanedOptions } from '../utils';
 
-export function useRecipeMetadata() {
+export const useRecipeMetadata = () => {
   const tMisc = useTranslations('misc');
 
   /* Metadata from Redux store */
@@ -88,4 +88,4 @@ export function useRecipeMetadata() {
     metadataLoading,
     metadataLoaded,
   };
-}
+};

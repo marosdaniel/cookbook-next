@@ -18,7 +18,7 @@ import { scaleQuantity } from '../utils';
 const SERVING_MIN = 1;
 const SERVING_MAX = 20;
 
-export function RecipeIngredients({
+export const RecipeIngredients = ({
   ingredients,
   servingMultiplier,
   adjustedServings,
@@ -26,7 +26,7 @@ export function RecipeIngredients({
   onToggleIngredient,
   onIncrementServings,
   onDecrementServings,
-}: Readonly<RecipeIngredientsProps>) {
+}: Readonly<RecipeIngredientsProps>) => {
   const translate = useTranslations('recipeDetail');
   const ingTranslate = useTranslations('recipeIngredients');
 
@@ -113,4 +113,4 @@ export function RecipeIngredients({
       </Stack>
     </Paper>
   );
-}
+};

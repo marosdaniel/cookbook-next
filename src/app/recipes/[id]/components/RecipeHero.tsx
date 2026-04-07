@@ -22,7 +22,7 @@ import classes from '../RecipeDetail.module.css';
 import type { RecipeHeroProps } from '../types';
 import { getDifficultyColor } from '../utils';
 
-export function RecipeHero({ recipe, isOwner }: Readonly<RecipeHeroProps>) {
+export const RecipeHero = ({ recipe, isOwner }: Readonly<RecipeHeroProps>) => {
   const translate = useTranslations('recipeDetail');
   const translateMisc = useTranslations('misc');
 
@@ -117,4 +117,4 @@ export function RecipeHero({ recipe, isOwner }: Readonly<RecipeHeroProps>) {
       </Box>
     </Box>
   );
-}
+};
