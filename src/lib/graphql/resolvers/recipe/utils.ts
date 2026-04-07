@@ -11,19 +11,19 @@ import type { MetaInputPartial, RecipeInputBase } from './types';
 
 type ErrorType = (typeof ErrorTypes)[keyof typeof ErrorTypes];
 
-export function assertPresent<T>(
+export const assertPresent = <T>(
   value: T,
   message: string,
   errorType: ErrorType,
-): asserts value is NonNullable<T> {
+): asserts value is NonNullable<T> => {
   if (value == null) {
     throwCustomError(message, errorType);
   }
-}
+};
 
 /* ─── Auth Guard ─────────────────────────────── */
 
-export async function resolveAuthenticatedUser(context: GraphQLContext) {
+export const resolveAuthenticatedUser = async (context: GraphQLContext) => {
   if (!context.userId) {
     throwCustomError('Unauthenticated', ErrorTypes.UNAUTHORIZED);
   }
@@ -35,11 +35,11 @@ export async function resolveAuthenticatedUser(context: GraphQLContext) {
   assertPresent(user, 'User not found', ErrorTypes.UNAUTHORIZED);
 
   return user;
-}
+};
 
 /* ─── Input Validation ───────────────────────── */
 
-export function validateRequiredFields(input: RecipeInputBase) {
+export const validateRequiredFields = (input: RecipeInputBase) => {
   const {
     title,
     ingredients,
@@ -64,7 +64,7 @@ export function validateRequiredFields(input: RecipeInputBase) {
       ErrorTypes.BAD_REQUEST,
     );
   }
-}
+};
 
 /* ─── Metadata Resolution ────────────────────── */
 
@@ -73,7 +73,7 @@ export function validateRequiredFields(input: RecipeInputBase) {
  * metadata is now taken directly from input
  * and stored as JSON within the recipe.
  */
-export async function resolveRecipeMetadata(input: RecipeInputBase) {
+export const resolveRecipeMetadata = async (input: RecipeInputBase) => {
   const {
     category,
     difficultyLevel,
@@ -97,11 +97,11 @@ export async function resolveRecipeMetadata(input: RecipeInputBase) {
     equipmentFromInput: equipment,
     costLevelFromInput: costLevel,
   };
-}
+};
 
 /* ─── Data Mapping ───────────────────────────── */
 
-function mapMetadataToJson(m: MetaInputPartial, type: string) {
+const mapMetadataToJson = (m: MetaInputPartial, type: string) => {
   const existing = METADATA.find(
     (entry) =>
       entry.type === type && (entry.key === m.value || entry.name === m.value),
@@ -114,12 +114,12 @@ function mapMetadataToJson(m: MetaInputPartial, type: string) {
     label: m.label,
     type,
   };
-}
+};
 
-export function buildRecipeData(
+export const buildRecipeData = (
   input: RecipeInputBase,
   metadata: Awaited<ReturnType<typeof resolveRecipeMetadata>>,
-) {
+) => {
   const {
     categoryFromInput,
     difficultyLevelFromInput,
@@ -188,4 +188,4 @@ export function buildRecipeData(
     seoDescription: input.seoDescription ?? null,
     socialImage: input.socialImage ?? null,
   };
-}
+};

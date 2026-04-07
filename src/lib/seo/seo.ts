@@ -9,7 +9,7 @@ import type { AuthMessages } from '../../types/common';
  * @param namespace - the key in the messages object (e.g. 'seo', 'auth', 'user')
  * @param opts      - keys to look up and fallback values
  */
-export async function getMetadata(
+export const getMetadata = async (
   locale: string,
   namespace: string,
   opts: {
@@ -28,7 +28,7 @@ export async function getMetadata(
       type?: 'website' | 'article';
     };
   },
-): Promise<Metadata> {
+): Promise<Metadata> => {
   const messages = await getLocaleMessages(locale);
   const data = (messages[namespace] ?? {}) as Record<string, string>;
 
@@ -66,7 +66,7 @@ export async function getMetadata(
       description,
     },
   };
-}
+};
 
 /**
  * Helper to build SEO metadata for auth‑related pages.
@@ -74,7 +74,7 @@ export async function getMetadata(
  * @param locale - locale string read from the cookie
  * @param opts   - keys to look up in the `auth` namespace and fallback values
  */
-export async function getAuthMetadata(
+export const getAuthMetadata = async (
   locale: string,
   opts: {
     titleKey: keyof AuthMessages;
@@ -82,10 +82,10 @@ export async function getAuthMetadata(
     fallbackTitle: string;
     fallbackDescription: string;
   },
-): Promise<Metadata> {
+): Promise<Metadata> => {
   return getMetadata(locale, 'auth', {
     ...opts,
     titleKey: String(opts.titleKey),
     descriptionKey: String(opts.descriptionKey),
   });
-}
+};

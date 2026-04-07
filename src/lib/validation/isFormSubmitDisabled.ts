@@ -29,11 +29,11 @@ import type { FormLike } from './types';
  * @param loading  - Whether an async operation (mutation / request) is in flight.
  * @param extra    - Optional additional loading flags (e.g. `isLoggingIn`).
  */
-export function isFormSubmitDisabled(
+export const isFormSubmitDisabled = (
   form: FormLike,
   loading: boolean,
   ...extra: boolean[]
-): boolean {
+): boolean => {
   let isFormValid = false;
 
   try {
@@ -53,4 +53,4 @@ export function isFormSubmitDisabled(
 
   const isLoading = loading || extra.some(Boolean);
   return isLoading || !isFormValid || !form.isDirty();
-}
+};
