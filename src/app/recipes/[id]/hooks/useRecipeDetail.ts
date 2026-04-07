@@ -8,7 +8,7 @@ import { extractYoutubeId, sortByOrder } from '../utils';
 const SERVING_MIN = 1;
 const SERVING_MAX = 20;
 
-export function useRecipeDetail(recipeId: string) {
+export const useRecipeDetail = (recipeId: string) => {
   const { data: session } = useSession();
   const { data, loading, error } = useQuery<RecipeDetailData>(
     GET_RECIPE_BY_ID,
@@ -77,4 +77,4 @@ export function useRecipeDetail(recipeId: string) {
     isOwner,
     sortedSteps,
   };
-}
+};

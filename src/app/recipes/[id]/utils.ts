@@ -1,4 +1,4 @@
-export function extractYoutubeId(url: string): string | null {
+export const extractYoutubeId = (url: string): string | null => {
   try {
     const parsed = new URL(url);
     if (parsed.hostname.includes('youtu.be')) {
@@ -8,18 +8,18 @@ export function extractYoutubeId(url: string): string | null {
   } catch {
     return null;
   }
-}
+};
 
-export function getDifficultyColor(key: string) {
+export const getDifficultyColor = (key: string) => {
   if (key === 'medium') return 'yellow';
   if (key === 'hard') return 'red';
   return 'green';
-}
+};
 
-export function scaleQuantity(quantity: number, multiplier: number): number {
+export const scaleQuantity = (quantity: number, multiplier: number): number => {
   return +(quantity * multiplier).toFixed(2);
-}
+};
 
-export function sortByOrder<T extends { order: number }>(items: T[]): T[] {
+export const sortByOrder = <T extends { order: number }>(items: T[]): T[] => {
   return [...items].sort((a, b) => a.order - b.order);
-}
+};

@@ -83,10 +83,10 @@ const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(
   },
 );
 
-async function wrappedHandler(
+const wrappedHandler = async (
   request: NextRequest,
   _context: { params: Promise<Record<string, never>> },
-): Promise<Response> {
+): Promise<Response> => {
   if (request.method === 'GET') {
     return new Response(
       JSON.stringify({
@@ -115,7 +115,7 @@ async function wrappedHandler(
   }
 
   return handler(request);
-}
+};
 
 // Export Next.js route handlers
 export const POST = wrappedHandler;
