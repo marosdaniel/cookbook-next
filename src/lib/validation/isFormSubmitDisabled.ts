@@ -20,11 +20,7 @@
  * button could incorrectly appear enabled before the user interacts with the form.
  */
 
-type FormLike = {
-  errors: Record<string, unknown>;
-  isDirty: (path?: string) => boolean;
-  isValid: () => boolean | Promise<boolean>;
-};
+import type { FormLike } from './types';
 
 /**
  * Returns `true` when the submit button should be **disabled**.
@@ -44,11 +40,14 @@ export function isFormSubmitDisabled(
     const validResult = form.isValid();
     // Safely unwrap: async validators (Promise) count as "not yet valid".
     isFormValid = validResult instanceof Promise ? false : validResult;
-  } catch (_err) {
+  } catch (err: unknown) {
     // Some Mantine versions may expect internal structures (like rules)
     // to exist when `isValid()` is called; in those cases fall back to a
     // conservative behaviour: treat the form as invalid so the submit stays
-    // disabled. This prevents runtime crashes in test/dev environments.
+    // disabled. Also log the error to surface unexpected failures instead of
+    // silently swallowing them (helps debugging and satisfies S2486).
+    // eslint-disable-next-line no-console
+    console.error('isFormSubmitDisabled: form.isValid() threw:', err);
     isFormValid = false;
   }
 

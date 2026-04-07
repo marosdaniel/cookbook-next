@@ -1,12 +1,6 @@
-// lib/errors/errorTypes.ts
+import type { ErrorCatalog } from './types';
 
-export type ErrorTypeDefinition = {
-  errorCode: string;
-  errorStatus: number;
-};
-
-// Predefined error categories
-export const ErrorTypes = {
+export const ErrorTypes: ErrorCatalog = {
   BAD_REQUEST: {
     errorCode: 'BAD_REQUEST',
     errorStatus: 400,
@@ -36,6 +30,3 @@ export const ErrorTypes = {
     errorStatus: 500,
   },
 } as const;
-
-// Type for keys (optional, for stricter typing)
-export type ErrorTypeKey = keyof typeof ErrorTypes;

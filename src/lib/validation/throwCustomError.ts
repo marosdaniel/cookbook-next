@@ -1,6 +1,9 @@
 import { GraphQLError } from 'graphql';
-import type { ErrorTypeDefinition } from './errorCatalog';
-import type { ErrorOptions, ZodIssueMinimal } from './types';
+import type {
+  ErrorOptions,
+  ErrorTypeDefinition,
+  ZodIssueMinimal,
+} from './types';
 
 const buildFieldErrorsFromZodIssues = (issues: ZodIssueMinimal[]) => {
   const fieldErrors: Record<string, string[]> = {};

@@ -14,3 +14,25 @@ export interface ErrorOptions {
   details?: Record<string, unknown>;
   zodIssues?: ZodIssueMinimal[];
 }
+
+export type FormLike = {
+  errors: Record<string, unknown>;
+  isDirty: (path?: string) => boolean;
+  isValid: () => boolean | Promise<boolean>;
+};
+
+export type ErrorTypeDefinition = {
+  errorCode: ErrorTypeKey;
+  errorStatus: number;
+};
+
+export type ErrorTypeKey =
+  | 'BAD_REQUEST'
+  | 'VALIDATION_ERROR'
+  | 'UNAUTHORIZED'
+  | 'FORBIDDEN'
+  | 'NOT_FOUND'
+  | 'CONFLICT'
+  | 'INTERNAL_SERVER_ERROR';
+
+export type ErrorCatalog = Record<ErrorTypeKey, ErrorTypeDefinition>;
