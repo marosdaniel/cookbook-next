@@ -11,11 +11,11 @@ import type { MetaInputPartial, RecipeInputBase } from './types';
 
 type ErrorType = (typeof ErrorTypes)[keyof typeof ErrorTypes];
 
-export const assertPresent = <T>(
+export const assertPresent: <T>(
   value: T,
   message: string,
   errorType: ErrorType,
-): asserts value is NonNullable<T> => {
+) => asserts value is NonNullable<T> = (value, message, errorType) => {
   if (value == null) {
     throwCustomError(message, errorType);
   }
