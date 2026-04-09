@@ -169,8 +169,8 @@ importers:
         specifier: 4.1.4
         version: 4.1.4(vitest@4.1.4)
       baseline-browser-mapping:
-        specifier: ^2.10.16
-        version: 2.10.16
+        specifier: ^2.10.17
+        version: 2.10.17
       dotenv:
         specifier: ^17.4.1
         version: 17.4.1
@@ -1699,8 +1699,8 @@ packages:
     resolution: {integrity: sha512-NZKeq9AfyQvEeNlN0zSYAaWrmBffJh3IELMZfRpJVWgrpEbtEpnjvzqBPf+mxoI287JohRDoa+/nsfqqiZmF6g==}
     engines: {node: '>= 6.0.0'}
 
-  baseline-browser-mapping@2.10.16:
-    resolution: {integrity: sha512-Lyf3aK28zpsD1yQMiiHD4RvVb6UdMoo8xzG2XzFIfR9luPzOpcBlAsT/qfB1XWS1bxWT+UtE4WmQgsp297FYOA==}
+  baseline-browser-mapping@2.10.17:
+    resolution: {integrity: sha512-HdrkN8eVG2CXxeifv/VdJ4A4RSra1DTW8dc/hdxzhGHN8QePs6gKaWM9pHPcpCoxYZJuOZ8drHmbdpLHjCYjLA==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -5523,7 +5523,7 @@ snapshots:
 
   aws-ssl-profiles@1.1.2: {}
 
-  baseline-browser-mapping@2.10.16: {}
+  baseline-browser-mapping@2.10.17: {}
 
   bcrypt@6.0.0:
     dependencies:
@@ -6638,7 +6638,7 @@ snapshots:
     dependencies:
       '@next/env': 16.2.3
       '@swc/helpers': 0.5.15
-      baseline-browser-mapping: 2.10.16
+      baseline-browser-mapping: 2.10.17
       caniuse-lite: 1.0.30001756
       postcss: 8.4.31
       react: 19.2.5
