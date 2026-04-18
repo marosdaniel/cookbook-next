@@ -14,7 +14,6 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { zodResolver } from 'mantine-form-zod-resolver';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
@@ -23,6 +22,7 @@ import type { FC } from 'react';
 import { useState } from 'react';
 import { CREATE_USER } from '@/lib/graphql/mutations';
 import { isFormSubmitDisabled, signUpValidationSchema } from '@/lib/validation';
+import { zodResolver } from '@/lib/validation/zodResolver';
 import PrivacyPolicyLink from '../../../components/PrivacyPolicyLink';
 import { AUTH_ROUTES } from '../../../types/routes';
 import type { CreateUserData, CreateUserVars } from './types';
@@ -46,8 +46,7 @@ const SignUpForm: FC = () => {
       confirmPassword: '',
       privacyAccepted: false as boolean,
     },
-    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
-    validate: zodResolver(signUpValidationSchema) as any,
+    validate: zodResolver(signUpValidationSchema),
     validateInputOnBlur: true,
   });
 

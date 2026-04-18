@@ -2,13 +2,13 @@ import { useMutation } from '@apollo/client/react';
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconCheck, IconDeviceFloppy } from '@tabler/icons-react';
-import { zodResolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { CREATE_RECIPE } from '@/lib/graphql/mutations';
 import { recipeFormValidationSchema } from '@/lib/validation/validation';
+import { zodResolver } from '@/lib/validation/zodResolver';
 import { useRecipeFormHook } from '../FormContext';
 import type {
   DraftState,
@@ -65,8 +65,7 @@ export const useRecipeForm = ({
   const form = useRecipeFormHook({
     mode: 'controlled',
     initialValues: draft?.values ?? EMPTY_FORM_VALUES,
-    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
-    validate: zodResolver(recipeFormValidationSchema) as any,
+    validate: zodResolver(recipeFormValidationSchema),
     validateInputOnBlur: true,
   });
 

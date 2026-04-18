@@ -16,16 +16,15 @@ import {
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconLock, IconPencil } from '@tabler/icons-react';
-import { zodResolver } from 'mantine-form-zod-resolver';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import type { z } from 'zod';
-
 import { CHANGE_PASSWORD } from '@/lib/graphql/mutations';
 import {
   isFormSubmitDisabled,
   passwordEditValidationSchema,
 } from '@/lib/validation';
+import { zodResolver } from '@/lib/validation/zodResolver';
 
 interface ChangePasswordData {
   changePassword: {
@@ -48,8 +47,7 @@ const Password = () => {
       newPassword: '',
       confirmNewPassword: '',
     },
-    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
-    validate: zodResolver(passwordEditValidationSchema) as any,
+    validate: zodResolver(passwordEditValidationSchema),
     validateInputOnBlur: true,
   });
 

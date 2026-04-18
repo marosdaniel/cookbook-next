@@ -12,7 +12,6 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { zodResolver } from 'mantine-form-zod-resolver';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -25,6 +24,7 @@ import {
   isFormSubmitDisabled,
   setNewPasswordValidationSchema,
 } from '@/lib/validation';
+import { zodResolver } from '@/lib/validation/zodResolver';
 import { AUTH_ROUTES } from '../../../../types/routes';
 import { showErrorNotification } from '../../../../utils/notifications';
 import { AUTH_CONSTANTS } from '../../consts';
@@ -46,8 +46,7 @@ export const SetNewPasswordForm: FC = () => {
       newPassword: '',
       confirmPassword: '',
     },
-    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
-    validate: zodResolver(setNewPasswordValidationSchema) as any,
+    validate: zodResolver(setNewPasswordValidationSchema),
     validateInputOnBlur: true,
   });
 

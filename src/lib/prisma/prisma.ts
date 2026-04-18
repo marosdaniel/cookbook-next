@@ -10,8 +10,14 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 const createPrismaClient = () => {
+  const connectionString = process.env.DATABASE_URL ?? process.env.DIRECT_URL;
+  if (!connectionString) {
+    throw new Error(
+      'No database connection string found. Set DATABASE_URL or DIRECT_URL environment variable.',
+    );
+  }
   const adapter = new PrismaNeon({
-    connectionString: process.env.DATABASE_URL,
+    connectionString,
   });
   return new PrismaClient({
     adapter,

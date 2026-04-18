@@ -18,12 +18,12 @@ import {
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconPencil, IconUser } from '@tabler/icons-react';
-import { zodResolver } from 'mantine-form-zod-resolver';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import type { z } from 'zod';
 import { UPDATE_USER } from '@/lib/graphql/mutations';
 import { isFormSubmitDisabled, nameValidationSchema } from '@/lib/validation';
+import { zodResolver } from '@/lib/validation/zodResolver';
 import type { ProfileUser } from '../ProfileClient';
 
 interface PersonalDataProps {
@@ -76,8 +76,7 @@ const PersonalData = ({ user, loading, refetch }: PersonalDataProps) => {
       firstName: user?.firstName ?? '',
       lastName: user?.lastName ?? '',
     },
-    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
-    validate: zodResolver(nameValidationSchema) as any,
+    validate: zodResolver(nameValidationSchema),
     validateInputOnBlur: true,
   });
 

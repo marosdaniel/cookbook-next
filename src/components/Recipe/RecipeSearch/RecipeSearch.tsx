@@ -20,8 +20,8 @@ import {
   IconSearch,
   IconX,
 } from '@tabler/icons-react';
-import { zodResolver } from 'mantine-form-zod-resolver';
 import { useTranslations } from 'next-intl';
+import { zodResolver } from '@/lib/validation/zodResolver';
 import { DEFAULT_FILTERS, recipeSearchSchema } from './consts';
 import classes from './RecipeSearch.module.css';
 import type { RecipeSearchFilters, RecipeSearchProps } from './types';
@@ -41,8 +41,7 @@ const RecipeSearch = ({
   const form = useForm<RecipeSearchFilters>({
     mode: 'controlled',
     initialValues: initialFilters ?? DEFAULT_FILTERS,
-    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
-    validate: zodResolver(recipeSearchSchema) as any,
+    validate: zodResolver(recipeSearchSchema),
     validateInputOnBlur: true,
   });
 

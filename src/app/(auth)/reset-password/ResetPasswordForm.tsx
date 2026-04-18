@@ -13,7 +13,6 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { zodResolver } from 'mantine-form-zod-resolver';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
@@ -25,6 +24,7 @@ import {
   isFormSubmitDisabled,
   resetPasswordValidationSchema,
 } from '@/lib/validation';
+import { zodResolver } from '@/lib/validation/zodResolver';
 import { AUTH_ROUTES } from '../../../types/routes';
 import {
   showErrorNotification,
@@ -44,8 +44,7 @@ export const ResetPasswordForm: FC = () => {
     initialValues: {
       email: '',
     },
-    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
-    validate: zodResolver(resetPasswordValidationSchema) as any,
+    validate: zodResolver(resetPasswordValidationSchema),
     validateInputOnBlur: true,
   });
 

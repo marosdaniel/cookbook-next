@@ -8,8 +8,8 @@ import { fireEvent, render, screen, waitFor } from '@/utils/test-utils';
 import { AUTH_ROUTES } from '../../../types/routes';
 import { LoginForm } from './LoginForm';
 
-// Mock mantine-form-zod-resolver
-vi.mock('mantine-form-zod-resolver', () => ({
+// Mock zodResolver
+vi.mock('@/lib/validation/zodResolver', () => ({
   zodResolver: vi.fn(() => (values: Record<string, unknown>) => {
     const errors: Record<string, string> = {};
     if (!values.email) errors.email = 'Required';

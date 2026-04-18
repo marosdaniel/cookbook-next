@@ -14,13 +14,13 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { zodResolver } from 'mantine-form-zod-resolver';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 import { useState } from 'react';
+import { zodResolver } from '@/lib/validation/zodResolver';
 import { loginValidationSchema } from '../../../lib/validation';
 import { AUTH_ROUTES } from '../../../types/routes';
 import type { LoginFormValues } from './types';
@@ -37,8 +37,7 @@ export const LoginForm: FC = () => {
       email: '',
       password: '',
     },
-    // biome-ignore lint/suspicious/noExplicitAny: Type mismatch between zodResolver and Mantine form values
-    validate: zodResolver(loginValidationSchema) as any,
+    validate: zodResolver(loginValidationSchema),
   });
 
   const handleLogin = async (values: LoginFormValues) => {
