@@ -1,3 +1,4 @@
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata, Viewport } from 'next';
 import nextDynamic from 'next/dynamic';
 import { connection } from 'next/server';
@@ -99,6 +100,7 @@ export default async function RootLayout(props: Readonly<PropsWithChildren>) {
   return (
     <html lang={locale}>
       <body suppressHydrationWarning>
+        <SpeedInsights />
         <ServerProviders>
           <ClientProviders messages={allMessages} locale={locale}>
             <Shell>{props.children}</Shell>
