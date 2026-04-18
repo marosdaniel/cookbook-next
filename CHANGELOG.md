@@ -1,3 +1,10 @@
+# [2.27.0](https://github.com/marosdaniel/cookbook-next/compare/v2.26.0...v2.27.0) (2026-04-18)
+
+
+### Features
+
+* integrate Vercel Speed Insights into root layout and update dependencies ([d9f1b8c](https://github.com/marosdaniel/cookbook-next/commit/d9f1b8c8866020966f3e4b0c9cc030d071c29189))
+
 # [2.26.0](https://github.com/marosdaniel/cookbook-next/compare/v2.25.0...v2.26.0) (2026-04-05)
 
 
