@@ -19,6 +19,7 @@ import type {
   UpdateUserInput,
 } from '@/lib/graphql/resolvers/user/mutations/types';
 import { prisma } from '@/lib/prisma/prisma';
+import { redis } from '@/lib/redis/redis';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
 import type { ZodIssueMinimal } from '@/lib/validation/types';
@@ -59,6 +60,17 @@ export const UserService = {
   },
 
   async getFavoriteRecipes(userId: string, limit?: number) {
+    const cacheKey = `user:${userId}:favorites:${limit || 'all'}`;
+
+    if (redis) {
+      try {
+        const cached = await redis.get(cacheKey);
+        if (cached) return cached;
+      } catch (error) {
+        console.error('Redis cache get error:', error);
+      }
+    }
+
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -72,10 +84,30 @@ export const UserService = {
     if (!user) {
       return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
     }
+
+    if (redis) {
+      try {
+        await redis.setex(cacheKey, 60, user.favoriteRecipes);
+      } catch (error) {
+        console.error('Redis cache set error:', error);
+      }
+    }
+
     return user.favoriteRecipes;
   },
 
   async getFollowing(userId: string, limit?: number) {
+    const cacheKey = `user:${userId}:following:${limit || 'all'}`;
+
+    if (redis) {
+      try {
+        const cached = await redis.get(cacheKey);
+        if (cached) return cached;
+      } catch (error) {
+        console.error('Redis cache get error:', error);
+      }
+    }
+
     const [follows, totalFollowing] = await Promise.all([
       prisma.follow.findMany({
         where: { followerId: userId },
@@ -107,7 +139,17 @@ export const UserService = {
       latestRecipes: follow.following.recipes,
     }));
 
-    return { users, totalFollowing };
+    const result = { users, totalFollowing };
+
+    if (redis) {
+      try {
+        await redis.setex(cacheKey, 60, result);
+      } catch (error) {
+        console.error('Redis cache set error:', error);
+      }
+    }
+
+    return result;
   },
 
   // Mutations

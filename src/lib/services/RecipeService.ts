@@ -10,6 +10,7 @@ import {
   validateRequiredFields,
 } from '@/lib/graphql/resolvers/recipe/utils';
 import { prisma } from '@/lib/prisma/prisma';
+import { redis } from '@/lib/redis/redis';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
 
@@ -24,6 +25,19 @@ export interface RecipeFilterInput {
 export const RecipeService = {
   // Queries
   async getRecipes(limit?: number, filter?: RecipeFilterInput) {
+    const cacheKey = `recipes:${limit || 'all'}:${JSON.stringify(filter || {})}`;
+
+    if (redis) {
+      try {
+        const cached = await redis.get(cacheKey);
+        if (cached) {
+          return cached;
+        }
+      } catch (error) {
+        console.error('Redis cache get error:', error);
+      }
+    }
+
     const where: Prisma.RecipeWhereInput = {};
 
     if (filter) {
@@ -59,10 +73,34 @@ export const RecipeService = {
       prisma.recipe.count({ where }),
     ]);
 
-    return { recipes, totalRecipes };
+    const result = { recipes, totalRecipes };
+
+    if (redis) {
+      try {
+        // Cache for 60 seconds to provide a quick response for frequent requests while keeping data relatively fresh
+        await redis.setex(cacheKey, 60, result);
+      } catch (error) {
+        console.error('Redis cache set error:', error);
+      }
+    }
+
+    return result;
   },
 
   async getRecipeById(id: string) {
+    const cacheKey = `recipe:${id}`;
+
+    if (redis) {
+      try {
+        const cached = await redis.get(cacheKey);
+        if (cached) {
+          return cached;
+        }
+      } catch (error) {
+        console.error('Redis cache get error:', error);
+      }
+    }
+
     const existingRecipe = await prisma.recipe.findUnique({
       where: { id },
       include: { ingredients: true, preparationSteps: true, author: true },
@@ -72,10 +110,29 @@ export const RecipeService = {
       return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
     }
 
+    if (redis) {
+      try {
+        await redis.setex(cacheKey, 60, existingRecipe);
+      } catch (error) {
+        console.error('Redis cache set error:', error);
+      }
+    }
+
     return existingRecipe;
   },
 
   async getRecipesByUserId(userId: string, limit?: number) {
+    const cacheKey = `recipes:user:${userId}:${limit || 'all'}`;
+
+    if (redis) {
+      try {
+        const cached = await redis.get(cacheKey);
+        if (cached) return cached;
+      } catch (error) {
+        console.error('Redis cache get error:', error);
+      }
+    }
+
     const [recipes, totalRecipes] = await Promise.all([
       prisma.recipe.findMany({
         where: { createdBy: userId },
@@ -86,7 +143,17 @@ export const RecipeService = {
       prisma.recipe.count({ where: { createdBy: userId } }),
     ]);
 
-    return { recipes, totalRecipes };
+    const result = { recipes, totalRecipes };
+
+    if (redis) {
+      try {
+        await redis.setex(cacheKey, 60, result);
+      } catch (error) {
+        console.error('Redis cache set error:', error);
+      }
+    }
+
+    return result;
   },
 
   // Mutations
