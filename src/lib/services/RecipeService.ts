@@ -187,6 +187,21 @@ export const RecipeService = {
       include: { ingredients: true, preparationSteps: true, author: true },
     });
 
+    if (redis) {
+      try {
+        // Invalidate user's recipe list and the general recipes list
+        // Since list keys depend on filters, we can't easily delete all variations without scanning,
+        // but we can at least target the main ones we know.
+        await Promise.all([
+          redis.del(`recipes:user:${userId}:all`),
+          // For general list, we might want to delete the 'all' key
+          redis.del(`recipes:all:{}`),
+        ]);
+      } catch (error) {
+        console.error('Redis cache invalidation error:', error);
+      }
+    }
+
     return newRecipe;
   },
 
@@ -240,6 +255,18 @@ export const RecipeService = {
       include: { ingredients: true, preparationSteps: true, author: true },
     });
 
+    if (redis) {
+      try {
+        await Promise.all([
+          redis.del(`recipe:${recipeId}`),
+          redis.del(`recipes:user:${userId}:all`),
+          redis.del(`recipes:all:{}`),
+        ]);
+      } catch (error) {
+        console.error('Redis cache invalidation error:', error);
+      }
+    }
+
     return updatedRecipe;
   },
 
@@ -263,10 +290,20 @@ export const RecipeService = {
       },
     });
 
-    return prisma.recipe.findUnique({
+    const updatedRecipe = await prisma.recipe.findUnique({
       where: { id: ratingInput.recipeId },
       include: { ingredients: true, preparationSteps: true },
     });
+
+    if (redis) {
+      try {
+        await redis.del(`recipe:${ratingInput.recipeId}`);
+      } catch (error) {
+        console.error('Redis cache invalidation error:', error);
+      }
+    }
+
+    return updatedRecipe;
   },
 
   async deleteRating(userId: string, recipeId: string) {
@@ -274,6 +311,15 @@ export const RecipeService = {
       const deleted = await prisma.rating.delete({
         where: { recipeId_userId: { recipeId, userId } },
       });
+
+      if (redis && deleted) {
+        try {
+          await redis.del(`recipe:${recipeId}`);
+        } catch (err) {
+          console.error('Redis cache invalidation error:', err);
+        }
+      }
+
       return !!deleted;
     } catch (error: unknown) {
       if (

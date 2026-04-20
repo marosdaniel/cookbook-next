@@ -506,6 +506,19 @@ export const UserService = {
     }
 
     await prisma.user.delete({ where: { id } });
+
+    if (redis) {
+      try {
+        await Promise.all([
+          redis.del(`user:${id}:favorites:all`),
+          redis.del(`user:${id}:following:all`),
+          redis.del(`recipes:user:${id}:all`),
+        ]);
+      } catch (error) {
+        console.error('Redis cache invalidation error:', error);
+      }
+    }
+
     return true;
   },
 
@@ -576,6 +589,14 @@ export const UserService = {
       data: { favoriteRecipes: { connect: { id: recipeId } } },
     });
 
+    if (redis) {
+      try {
+        await redis.del(`user:${targetUserId}:favorites:all`);
+      } catch (error) {
+        console.error('Redis cache invalidation error:', error);
+      }
+    }
+
     return {
       success: true,
       message: 'Recipe successfully added to favorites',
@@ -637,6 +658,14 @@ export const UserService = {
       data: { favoriteRecipes: { disconnect: { id: recipeId } } },
     });
 
+    if (redis) {
+      try {
+        await redis.del(`user:${targetUserId}:favorites:all`);
+      } catch (error) {
+        console.error('Redis cache invalidation error:', error);
+      }
+    }
+
     return {
       success: true,
       message: 'Recipe successfully removed from favorites',
@@ -689,6 +718,14 @@ export const UserService = {
       data: { followerId: currentUserId, followingId: targetUserId },
     });
 
+    if (redis) {
+      try {
+        await redis.del(`user:${currentUserId}:following:all`);
+      } catch (error) {
+        console.error('Redis cache invalidation error:', error);
+      }
+    }
+
     return {
       success: true,
       message: 'Successfully followed user',
@@ -724,6 +761,14 @@ export const UserService = {
         },
       },
     });
+
+    if (redis) {
+      try {
+        await redis.del(`user:${currentUserId}:following:all`);
+      } catch (error) {
+        console.error('Redis cache invalidation error:', error);
+      }
+    }
 
     return {
       success: true,
