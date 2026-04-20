@@ -1,3 +1,11 @@
+# [2.28.0](https://github.com/marosdaniel/cookbook-next/compare/v2.27.0...v2.28.0) (2026-04-20)
+
+
+### Features
+
+* implement Redis cache invalidation for user and recipe service operations ([4f9cf4f](https://github.com/marosdaniel/cookbook-next/commit/4f9cf4f42452c6c2c2647840d771bca7f54fa92a))
+* implement Redis caching for Recipe and User service queries and update dependencies ([8a77640](https://github.com/marosdaniel/cookbook-next/commit/8a77640e344eb216668668fe7cb3b25be3c70f05))
+
 # [2.27.0](https://github.com/marosdaniel/cookbook-next/compare/v2.26.0...v2.27.0) (2026-04-18)
 
 
