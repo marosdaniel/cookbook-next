@@ -13,13 +13,15 @@ export const redisToken =
   process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
 
 // Only initialize if the environment variables are present to avoid startup crashes if they are not yet configured
-let redis: Redis | null = null;
-if (redisUrl && redisToken) {
-  redis = new Redis({
-    url: redisUrl,
-    token: redisToken,
-  });
-} else {
+const redis: Redis | null =
+  redisUrl && redisToken
+    ? new Redis({
+        url: redisUrl,
+        token: redisToken,
+      })
+    : null;
+
+if (!redis) {
   console.warn('Upstash Redis URL or Token is missing. Caching will not work.');
 }
 
