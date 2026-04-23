@@ -31,7 +31,7 @@
     "deps:update": "pnpm dlx npm-check-updates -u"
   },
   "dependencies": {
-    "@apollo/client": "^4.1.7",
+    "@apollo/client": "^4.1.8",
     "@apollo/server": "^5.5.0",
     "@as-integrations/next": "^4.1.0",
     "@mantine/carousel": "9.1.0",
@@ -43,8 +43,8 @@
     "@mantine/nprogress": "9.1.0",
     "@mantine/spotlight": "^9.1.0",
     "@neondatabase/serverless": "^1.1.0",
-    "@prisma/adapter-neon": "^7.7.0",
-    "@prisma/client": "7.7.0",
+    "@prisma/adapter-neon": "^7.8.0",
+    "@prisma/client": "7.8.0",
     "@reduxjs/toolkit": "^2.11.2",
     "@tabler/icons-react": "^3.41.1",
     "@types/uuid": "^11.0.0",
@@ -72,7 +72,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.12",
     "@playwright/test": "^1.59.1",
-    "@prisma/config": "^7.7.0",
+    "@prisma/config": "^7.8.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^12.0.6",
@@ -88,13 +88,13 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/coverage-v8": "4.1.5",
-    "baseline-browser-mapping": "^2.10.20",
+    "baseline-browser-mapping": "^2.10.21",
     "dotenv": "^17.4.2",
     "happy-dom": "^20.9.0",
-    "prisma": "7.7.0",
+    "prisma": "7.8.0",
     "semantic-release": "^25.0.3",
     "typescript": "6.0.3",
-    "vite": "^8.0.9",
+    "vite": "^8.0.10",
     "vitest": "^4.1.5"
   }
 }
