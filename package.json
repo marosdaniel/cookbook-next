@@ -67,7 +67,7 @@
     "react-icons": "^5.6.0",
     "react-redux": "^9.2.0",
     "uuid": "^14.0.0",
-    "zod": "^4.4.2"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.14",
@@ -88,7 +88,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/coverage-v8": "4.1.5",
-    "baseline-browser-mapping": "^2.10.25",
+    "baseline-browser-mapping": "^2.10.27",
     "dotenv": "^17.4.2",
     "happy-dom": "^20.9.0",
     "prisma": "7.8.0",
