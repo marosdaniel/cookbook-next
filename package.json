@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@apollo/client": "^4.1.9",
-    "@apollo/server": "^5.5.0",
+    "@apollo/server": "^5.5.1",
     "@as-integrations/next": "^4.1.0",
     "@mantine/carousel": "9.1.1",
     "@mantine/core": "9.1.1",
@@ -48,7 +48,7 @@
     "@reduxjs/toolkit": "^2.11.2",
     "@tabler/icons-react": "^3.42.0",
     "@types/uuid": "^11.0.0",
-    "@upstash/redis": "^1.37.0",
+    "@upstash/redis": "^1.38.0",
     "@vercel/speed-insights": "^2.0.0",
     "bcrypt": "^6.0.0",
     "clsx": "^2.1.1",
