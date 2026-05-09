@@ -11,6 +11,7 @@ import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
+import { rateLimiter } from '@/lib/rateLimit/rateLimit';
 import type { GraphQLContext } from '../../../types/graphql/context';
 
 /**
@@ -60,7 +61,7 @@ const server = new ApolloServer<GraphQLContext>({
   typeDefs,
   resolvers: { ...scalarResolvers, ...resolvers },
   plugins: [loggingPlugin, authPlugin],
-  introspection: true,
+  introspection: process.env.NODE_ENV !== 'production',
 });
 
 /**
@@ -98,6 +99,27 @@ const wrappedHandler = async (
         headers: { 'Content-Type': 'application/json' },
       },
     );
+  }
+
+  // Apply rate limiting
+  if (rateLimiter) {
+    const ip =
+      request.headers.get('x-forwarded-for') ??
+      request.headers.get('x-real-ip') ??
+      '127.0.0.1';
+
+    const { success, limit, remaining } = await rateLimiter.limit(ip);
+
+    if (!success) {
+      return new Response(JSON.stringify({ error: 'Too many requests' }), {
+        status: 429,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-RateLimit-Limit': limit.toString(),
+          'X-RateLimit-Remaining': remaining.toString(),
+        },
+      });
+    }
   }
 
   const requestBody = await request.clone().text();
