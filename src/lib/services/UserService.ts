@@ -1,7 +1,6 @@
 import crypto from 'node:crypto';
 import { UserRole } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import { sanitizeOptional, sanitizeText } from '@/lib/sanitize/sanitize';
 import { ZodError } from 'zod';
 import {
   generateResetToken,
@@ -20,6 +19,7 @@ import type {
 } from '@/lib/graphql/resolvers/user/mutations/types';
 import { prisma } from '@/lib/prisma/prisma';
 import { redis } from '@/lib/redis/redis';
+import { sanitizeText } from '@/lib/sanitize/sanitize';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
 import type { ZodIssueMinimal } from '@/lib/validation/types';
@@ -409,7 +409,11 @@ export const UserService = {
     userId: string,
     userUpdateInput: UpdateUserInput['userUpdateInput'],
   ) {
-    const { firstName: rawFirstName, lastName: rawLastName, locale } = userUpdateInput;
+    const {
+      firstName: rawFirstName,
+      lastName: rawLastName,
+      locale,
+    } = userUpdateInput;
     const firstName = rawFirstName ? sanitizeText(rawFirstName) : rawFirstName;
     const lastName = rawLastName ? sanitizeText(rawLastName) : rawLastName;
     if (firstName || lastName) {
