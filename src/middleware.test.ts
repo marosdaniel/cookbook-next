@@ -17,16 +17,16 @@ vi.mock('next-auth', () => ({
   default: mockNextAuth,
 }));
 
-describe('proxy.ts (Middleware)', () => {
+describe('middleware.ts', () => {
   // biome-ignore lint/suspicious/noExplicitAny: middleware type is complex to mock fully
   let middleware: (req: any) => any;
 
   beforeEach(async () => {
     vi.clearAllMocks();
     // Re-import to trigger initialization
-    const proxyModule = await import('./proxy');
+    const middlewareModule = await import('./middleware');
     // biome-ignore lint/suspicious/noExplicitAny: necessary cast for mock
-    middleware = proxyModule.default as (req: any) => any;
+    middleware = middlewareModule.default as (req: any) => any;
   });
 
   it('should redirect unauthenticated users from /me routes', () => {
