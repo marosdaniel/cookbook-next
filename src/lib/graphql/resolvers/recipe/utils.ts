@@ -1,10 +1,10 @@
 import { Prisma } from '@prisma/client';
 import { METADATA } from '@/lib/data/metadata';
 import { prisma } from '@/lib/prisma/prisma';
+import { sanitizeOptional, sanitizeText } from '@/lib/sanitize/sanitize';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
 import type { GraphQLContext } from '@/types/graphql/context';
-import { sanitizeOptional, sanitizeText } from '@/lib/sanitize/sanitize';
 
 import type { MetaInputPartial, RecipeInputBase } from './types';
 
@@ -112,7 +112,7 @@ const mapMetadataToJson = (m: MetaInputPartial, type: string) => {
     id: existing?.id || null,
     name: m.value,
     key: existing?.key || m.value,
-    label: m.label,
+    label: existing?.label ?? m.label,
     type,
   };
 };
@@ -181,7 +181,9 @@ export const buildRecipeData = (
 
     // Text fields (sanitized to prevent XSS)
     tips: input.tips ? sanitizeText(input.tips) : null,
-    substitutions: input.substitutions ? sanitizeText(input.substitutions) : null,
+    substitutions: input.substitutions
+      ? sanitizeText(input.substitutions)
+      : null,
 
     // SEO fields (sanitized)
     slug: sanitizeOptional(input.slug) ?? null,
