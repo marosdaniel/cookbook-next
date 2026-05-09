@@ -1,3 +1,10 @@
+## [2.33.1](https://github.com/marosdaniel/cookbook-next/compare/v2.33.0...v2.33.1) (2026-05-09)
+
+
+### Bug Fixes
+
+* preserve existing labels and improve formatting for recipe metadata processing ([d930f85](https://github.com/marosdaniel/cookbook-next/commit/d930f85800b8e77b2ce99987dd0525663ceed89d))
+
 # [2.33.0](https://github.com/marosdaniel/cookbook-next/compare/v2.32.0...v2.33.0) (2026-05-09)
 
 
