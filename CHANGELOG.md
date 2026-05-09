@@ -1,3 +1,11 @@
+# [2.31.0](https://github.com/marosdaniel/cookbook-next/compare/v2.30.0...v2.31.0) (2026-05-09)
+
+
+### Features
+
+* add isomorphic-dompurify and implement sanitization for user-provided text inputs to prevent XSS ([f20bcf0](https://github.com/marosdaniel/cookbook-next/commit/f20bcf0b1e961ac03dea9738afcfc0e68beefcb2))
+* implement graphql-depth-limit validation and upgrade upstash ratelimit package ([d9c20d1](https://github.com/marosdaniel/cookbook-next/commit/d9c20d19d29ba97c766b5ee68bd655d369079af1))
+
 # [2.30.0](https://github.com/marosdaniel/cookbook-next/compare/v2.29.0...v2.30.0) (2026-05-09)
 
 
