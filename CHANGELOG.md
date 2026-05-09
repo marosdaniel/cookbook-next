@@ -1,3 +1,10 @@
+# [2.29.0](https://github.com/marosdaniel/cookbook-next/compare/v2.28.0...v2.29.0) (2026-05-09)
+
+
+### Features
+
+* implement Upstash rate limiting for the GraphQL API route ([ab28c64](https://github.com/marosdaniel/cookbook-next/commit/ab28c640aa733760c56392d6fb76a33a05707d63))
+
 # [2.28.0](https://github.com/marosdaniel/cookbook-next/compare/v2.27.0...v2.28.0) (2026-04-20)
 
 
