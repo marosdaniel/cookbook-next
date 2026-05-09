@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import { UserRole } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import { sanitizeOptional, sanitizeText } from '@/lib/sanitize/sanitize';
 import { ZodError } from 'zod';
 import {
   generateResetToken,
@@ -150,14 +151,19 @@ export const UserService = {
   // Mutations
   async createUser(userRegisterInput: CreateUserArgs['userRegisterInput']) {
     const {
-      firstName,
-      lastName,
-      userName,
+      firstName: rawFirstName,
+      lastName: rawLastName,
+      userName: rawUserName,
       email,
       password,
       confirmPassword,
       locale,
     } = userRegisterInput;
+
+    // Sanitize text fields before any processing or DB write
+    const firstName = sanitizeText(rawFirstName);
+    const lastName = sanitizeText(rawLastName);
+    const userName = sanitizeText(rawUserName);
 
     try {
       customValidationSchema.parse({
@@ -403,7 +409,9 @@ export const UserService = {
     userId: string,
     userUpdateInput: UpdateUserInput['userUpdateInput'],
   ) {
-    const { firstName, lastName, locale } = userUpdateInput;
+    const { firstName: rawFirstName, lastName: rawLastName, locale } = userUpdateInput;
+    const firstName = rawFirstName ? sanitizeText(rawFirstName) : rawFirstName;
+    const lastName = rawLastName ? sanitizeText(rawLastName) : rawLastName;
     if (firstName || lastName) {
       nameValidationSchema.parse({
         firstName: firstName || 'placeholder',

@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma/prisma';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
 import type { GraphQLContext } from '@/types/graphql/context';
+import { sanitizeOptional, sanitizeText } from '@/lib/sanitize/sanitize';
 
 import type { MetaInputPartial, RecipeInputBase } from './types';
 
@@ -143,8 +144,8 @@ export const buildRecipeData = (
   const totalTimeMinutes = hasTimes ? prep + cook + rest : null;
 
   return {
-    title: input.title,
-    description: input.description,
+    title: sanitizeText(input.title),
+    description: sanitizeOptional(input.description),
     category: mapMetadataToJson(categoryFromInput, 'CATEGORY'),
     difficultyLevel: mapMetadataToJson(
       difficultyLevelFromInput,
@@ -178,14 +179,14 @@ export const buildRecipeData = (
       ? mapMetadataToJson(costLevelFromInput, 'COST_LEVEL')
       : Prisma.DbNull,
 
-    // Text fields
-    tips: input.tips ?? null,
-    substitutions: input.substitutions ?? null,
+    // Text fields (sanitized to prevent XSS)
+    tips: input.tips ? sanitizeText(input.tips) : null,
+    substitutions: input.substitutions ? sanitizeText(input.substitutions) : null,
 
-    // SEO fields
-    slug: input.slug ?? null,
-    seoTitle: input.seoTitle ?? null,
-    seoDescription: input.seoDescription ?? null,
+    // SEO fields (sanitized)
+    slug: sanitizeOptional(input.slug) ?? null,
+    seoTitle: sanitizeOptional(input.seoTitle) ?? null,
+    seoDescription: sanitizeOptional(input.seoDescription) ?? null,
     socialImage: input.socialImage ?? null,
   };
 };
