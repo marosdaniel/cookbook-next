@@ -1,3 +1,10 @@
+# [2.30.0](https://github.com/marosdaniel/cookbook-next/compare/v2.29.0...v2.30.0) (2026-05-09)
+
+
+### Features
+
+* add security headers in next.config.ts and rename proxy files to middleware ([18127f7](https://github.com/marosdaniel/cookbook-next/commit/18127f7f4431d06816868de9a403c0eff2b659f7))
+
 # [2.29.0](https://github.com/marosdaniel/cookbook-next/compare/v2.28.0...v2.29.0) (2026-05-09)
 
 
