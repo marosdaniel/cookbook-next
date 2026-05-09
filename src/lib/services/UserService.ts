@@ -1,7 +1,6 @@
 import crypto from 'node:crypto';
 import { UserRole } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import { ZodError } from 'zod';
 import {
   generateResetToken,
@@ -25,17 +24,13 @@ import { throwCustomError } from '@/lib/validation/throwCustomError';
 import type { ZodIssueMinimal } from '@/lib/validation/types';
 import {
   customValidationSchema,
-  loginValidationSchema,
   nameValidationSchema,
   passwordEditValidationSchema,
   resetPasswordValidationSchema,
   setNewPasswordValidationSchema,
 } from '@/lib/validation/validation';
-import type { CreateUserArgs, LoginUserArgs } from '@/types/user';
+import type { CreateUserArgs } from '@/types/user';
 
-const JWT_SECRET =
-  process.env.JWT_SECRET || 'your-secret-key-change-this-in-production';
-const JWT_EXPIRES_IN = '7d';
 const SALT_ROUNDS = 10;
 const LATEST_RECIPES_LIMIT = 4;
 
@@ -247,61 +242,6 @@ export const UserService = {
       statusCode: 201,
       user: {
         ...newUser,
-        recipes: [],
-        favoriteRecipes: [],
-      },
-    };
-  },
-
-  async loginUser(userLoginInput: LoginUserArgs['userLoginInput']) {
-    const { email, password } = userLoginInput;
-
-    const validation = loginValidationSchema.safeParse(userLoginInput);
-    if (!validation.success) {
-      return throwCustomError(
-        'Invalid input data',
-        ErrorTypes.VALIDATION_ERROR,
-        {
-          zodIssues: validation.error.issues as ZodIssueMinimal[],
-        },
-      );
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase() },
-    });
-
-    if (!user) {
-      return throwCustomError(
-        'Invalid email address or password',
-        ErrorTypes.UNAUTHORIZED,
-      );
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return throwCustomError(
-        'Invalid email address or password',
-        ErrorTypes.UNAUTHORIZED,
-      );
-    }
-
-    const token = jwt.sign(
-      {
-        userId: user.id,
-        userName: user.userName,
-        email: user.email,
-        role: user.role,
-      },
-      JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN },
-    );
-
-    return {
-      token,
-      userId: user.id,
-      user: {
-        ...user,
         recipes: [],
         favoriteRecipes: [],
       },

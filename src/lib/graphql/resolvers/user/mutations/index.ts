@@ -5,7 +5,6 @@ export { createUser } from './createUser';
 export { deleteAllUser } from './deleteAllUser';
 export { deleteUser } from './deleteUser';
 export { followUser } from './followUser';
-export { loginUser } from './loginUser';
 export { removeFromFavoriteRecipes } from './removeFromFavoriteRecipes';
 export { resetPassword } from './resetPassword';
 export { setNewPassword } from './setNewPassword';

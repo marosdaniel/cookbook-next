@@ -34,7 +34,6 @@ export const operationsConfig: OperationsConfig = {
 
     // Auth mutations
     'createUser',
-    'loginUser',
     'resetPassword',
     'setNewPassword',
 

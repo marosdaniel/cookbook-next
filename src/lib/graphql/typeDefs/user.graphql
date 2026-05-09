@@ -68,17 +68,6 @@ input PasswordEditInput {
   confirmNewPassword: String!
 }
 
-input UserLoginInput {
-  email: String!
-  password: String!
-}
-
-type AuthPayload {
-  token: String!
-  user: User!
-  userId: ID!
-}
-
 type UserUpdateResponse {
   success: Boolean!
   message: String!
@@ -109,7 +98,6 @@ type Query {
 }
 
 type Mutation {
-  loginUser(userLoginInput: UserLoginInput!): AuthPayload!
   createUser(userRegisterInput: UserRegisterInput): UserOperationResponse!
   updateUser(userUpdateInput: UserUpdateInput!): UserUpdateResponse!
 
