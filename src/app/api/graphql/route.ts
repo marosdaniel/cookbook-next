@@ -13,6 +13,11 @@ import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
 import { rateLimiter } from '@/lib/rateLimit/rateLimit';
+import {
+  createIsFavoriteLoader,
+  createRatingsLoader,
+  createUserRatingLoader,
+} from '@/lib/dataloader/loaders';
 import type { GraphQLContext } from '../../../types/graphql/context';
 
 /**
@@ -78,12 +83,20 @@ const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(
     context: async (): Promise<GraphQLContext> => {
       // Get NextAuth v5 session
       const session = await auth();
+      const userId = session?.user?.id;
 
       return {
-        userId: session?.user?.id,
+        userId,
         role: session?.user?.role,
         operationName: null,
         prisma,
+        // DataLoaders are instantiated fresh per request so their internal
+        // cache is scoped to a single request and never leaks between users.
+        loaders: {
+          ratings: createRatingsLoader(prisma),
+          isFavorite: userId ? createIsFavoriteLoader(prisma, userId) : null,
+          userRating: userId ? createUserRatingLoader(prisma, userId) : null,
+        },
       };
     },
   },

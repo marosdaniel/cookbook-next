@@ -71,47 +71,32 @@ export const resolvers = {
       _: unknown,
       context: import('@/types/graphql/context').GraphQLContext,
     ) => {
-      const agg = await context.prisma.rating.aggregate({
-        where: { recipeId: parent.id },
-        _avg: { ratingValue: true },
-      });
-      return agg._avg?.ratingValue || 0;
+      const data = await context.loaders.ratings.load(parent.id);
+      return data.averageRating;
     },
     ratingsCount: async (
       parent: { id: string },
       _: unknown,
       context: import('@/types/graphql/context').GraphQLContext,
     ) => {
-      return await context.prisma.rating.count({
-        where: { recipeId: parent.id },
-      });
+      const data = await context.loaders.ratings.load(parent.id);
+      return data.ratingsCount;
     },
     userRating: async (
       parent: { id: string },
       _: unknown,
       context: import('@/types/graphql/context').GraphQLContext,
     ) => {
-      if (!context.userId) return null;
-      const rating = await context.prisma.rating.findUnique({
-        where: {
-          recipeId_userId: { recipeId: parent.id, userId: context.userId },
-        },
-      });
-      return rating?.ratingValue || null;
+      if (!context.loaders.userRating) return null;
+      return context.loaders.userRating.load(parent.id);
     },
     isFavorite: async (
       parent: { id: string },
       _: unknown,
       context: import('@/types/graphql/context').GraphQLContext,
     ) => {
-      if (!context.userId) return false;
-      const count = await context.prisma.recipe.count({
-        where: {
-          id: parent.id,
-          favoritedBy: { some: { id: context.userId } },
-        },
-      });
-      return count > 0;
+      if (!context.loaders.isFavorite) return false;
+      return context.loaders.isFavorite.load(parent.id);
     },
   },
 };

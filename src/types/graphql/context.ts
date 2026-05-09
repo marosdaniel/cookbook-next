@@ -1,3 +1,8 @@
+import type {
+  createIsFavoriteLoader,
+  createRatingsLoader,
+  createUserRatingLoader,
+} from '@/lib/dataloader/loaders';
 import type { prisma } from '@/lib/prisma/prisma';
 import type { UserRole } from '../user';
 
@@ -9,4 +14,10 @@ export interface GraphQLContext {
   role?: UserRole;
   operationName?: string | null;
   prisma: typeof prisma;
+  /** DataLoader instances — created fresh per request to scope caching correctly */
+  loaders: {
+    ratings: ReturnType<typeof createRatingsLoader>;
+    isFavorite: ReturnType<typeof createIsFavoriteLoader> | null;
+    userRating: ReturnType<typeof createUserRatingLoader> | null;
+  };
 }
