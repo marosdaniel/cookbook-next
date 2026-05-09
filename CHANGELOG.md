@@ -1,3 +1,10 @@
+# [2.33.0](https://github.com/marosdaniel/cookbook-next/compare/v2.32.0...v2.33.0) (2026-05-09)
+
+
+### Features
+
+* add Hungarian translations for authentication and profile modules ([36e52eb](https://github.com/marosdaniel/cookbook-next/commit/36e52eb9a3c67bf709f0cc6b66263df00d65a9eb))
+
 # [2.32.0](https://github.com/marosdaniel/cookbook-next/compare/v2.31.0...v2.32.0) (2026-05-09)
 
 
