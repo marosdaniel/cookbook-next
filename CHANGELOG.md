@@ -1,3 +1,10 @@
+# [2.32.0](https://github.com/marosdaniel/cookbook-next/compare/v2.31.0...v2.32.0) (2026-05-09)
+
+
+### Features
+
+* implement DataLoader for batching recipe ratings, favorites, and user-specific rating queries in GraphQL resolvers ([c01dbae](https://github.com/marosdaniel/cookbook-next/commit/c01dbaeaec5dae5134ef41ab889fd562de7175db))
+
 # [2.31.0](https://github.com/marosdaniel/cookbook-next/compare/v2.30.0...v2.31.0) (2026-05-09)
 
 
