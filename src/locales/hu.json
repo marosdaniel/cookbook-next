@@ -471,6 +471,9 @@
     "optional": "(opcionális)"
   },
   "recipeCreate": {
+    "headerTitle": "Recept létrehozása",
+    "submitLabel": "Közzététel",
+    "resetLabel": "Piszkozat törlése",
     "sidebar": {
       "basics": "Alapok",
       "media": "Média",
