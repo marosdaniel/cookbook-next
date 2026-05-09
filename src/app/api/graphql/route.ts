@@ -5,6 +5,7 @@ import type {
 import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { GraphQLError } from 'graphql';
+import depthLimit from 'graphql-depth-limit';
 import type { NextRequest } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
@@ -62,6 +63,10 @@ const server = new ApolloServer<GraphQLContext>({
   resolvers: { ...scalarResolvers, ...resolvers },
   plugins: [loggingPlugin, authPlugin],
   introspection: process.env.NODE_ENV !== 'production',
+  validationRules: [
+    // Prevent deeply nested queries that could cause performance issues or DoS
+    depthLimit(7),
+  ],
 });
 
 /**
