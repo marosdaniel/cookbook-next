@@ -73,7 +73,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.14",
+    "@biomejs/biome": "2.4.15",
     "@playwright/test": "^1.59.1",
     "@prisma/config": "^7.8.0",
     "@semantic-release/changelog": "^6.0.3",
@@ -90,7 +90,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/coverage-v8": "4.1.5",
-    "baseline-browser-mapping": "^2.10.28",
+    "baseline-browser-mapping": "^2.10.29",
     "dotenv": "^17.4.2",
     "happy-dom": "^20.9.0",
     "prisma": "7.8.0",
