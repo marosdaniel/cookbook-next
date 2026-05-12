@@ -22,7 +22,6 @@ import { redis } from '@/lib/redis/redis';
 import { sanitizeText } from '@/lib/sanitize/sanitize';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
-import type { ZodIssueMinimal } from '@/lib/validation/types';
 import {
   customValidationSchema,
   nameValidationSchema,
@@ -183,7 +182,7 @@ export const UserService = {
           ErrorTypes.VALIDATION_ERROR,
           {
             messageKey: USER_REGISTER_MESSAGE_KEYS.VALIDATION_ERROR,
-            zodIssues: error.issues as ZodIssueMinimal[],
+            zodIssues: error.issues,
             originalError: error,
           },
         );
