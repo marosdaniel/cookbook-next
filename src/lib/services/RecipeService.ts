@@ -22,46 +22,73 @@ export interface RecipeFilterInput {
   maxCookingTime?: number;
 }
 
+function buildWhereClause(filter?: RecipeFilterInput): Prisma.RecipeWhereInput {
+  const where: Prisma.RecipeWhereInput = {};
+  if (!filter) return where;
+
+  if (filter.title) {
+    where.title = { contains: filter.title, mode: 'insensitive' };
+  }
+  if (filter.categoryKey) {
+    where.category = { path: ['key'], equals: filter.categoryKey };
+  }
+  if (filter.difficultyLevelKey) {
+    where.difficultyLevel = {
+      path: ['key'],
+      equals: filter.difficultyLevelKey,
+    };
+  }
+  if (filter.labelKeys && filter.labelKeys.length > 0) {
+    where.labels = {
+      array_contains: filter.labelKeys.map((key) => ({ key })),
+    };
+  }
+  if (filter.maxCookingTime) {
+    where.cookingTime = { lte: filter.maxCookingTime };
+  }
+
+  return where;
+}
+
+async function getCachedData(key: string) {
+  if (!redis) return null;
+  try {
+    const cached = await redis.get(key);
+    if (cached) return cached;
+  } catch (error) {
+    console.error('Redis cache get error:', error);
+  }
+  return null;
+}
+
+async function setCachedData(key: string, value: unknown, ttl: number = 60) {
+  if (!redis) return;
+  try {
+    await redis.setex(key, ttl, value);
+  } catch (error) {
+    console.error('Redis cache set error:', error);
+  }
+}
+
+async function invalidateCache(keys: string[]) {
+  const currentRedis = redis;
+  if (!currentRedis) return;
+  try {
+    await Promise.all(keys.map((key) => currentRedis.del(key)));
+  } catch (error) {
+    console.error('Redis cache invalidation error:', error);
+  }
+}
+
 export const RecipeService = {
   // Queries
   async getRecipes(limit?: number, filter?: RecipeFilterInput) {
     const cacheKey = `recipes:${limit || 'all'}:${JSON.stringify(filter || {})}`;
 
-    if (redis) {
-      try {
-        const cached = await redis.get(cacheKey);
-        if (cached) {
-          return cached;
-        }
-      } catch (error) {
-        console.error('Redis cache get error:', error);
-      }
-    }
+    const cached = await getCachedData(cacheKey);
+    if (cached) return cached;
 
-    const where: Prisma.RecipeWhereInput = {};
-
-    if (filter) {
-      if (filter.title) {
-        where.title = { contains: filter.title, mode: 'insensitive' };
-      }
-      if (filter.categoryKey) {
-        where.category = { path: ['key'], equals: filter.categoryKey };
-      }
-      if (filter.difficultyLevelKey) {
-        where.difficultyLevel = {
-          path: ['key'],
-          equals: filter.difficultyLevelKey,
-        };
-      }
-      if (filter.labelKeys && filter.labelKeys.length > 0) {
-        where.labels = {
-          array_contains: filter.labelKeys.map((key) => ({ key })),
-        };
-      }
-      if (filter.maxCookingTime) {
-        where.cookingTime = { lte: filter.maxCookingTime };
-      }
-    }
+    const where = buildWhereClause(filter);
 
     const [recipes, totalRecipes] = await Promise.all([
       prisma.recipe.findMany({
@@ -75,14 +102,8 @@ export const RecipeService = {
 
     const result = { recipes, totalRecipes };
 
-    if (redis) {
-      try {
-        // Cache for 60 seconds to provide a quick response for frequent requests while keeping data relatively fresh
-        await redis.setex(cacheKey, 60, result);
-      } catch (error) {
-        console.error('Redis cache set error:', error);
-      }
-    }
+    // Cache for 60 seconds to provide a quick response for frequent requests while keeping data relatively fresh
+    await setCachedData(cacheKey, result, 60);
 
     return result;
   },
@@ -90,16 +111,8 @@ export const RecipeService = {
   async getRecipeById(id: string) {
     const cacheKey = `recipe:${id}`;
 
-    if (redis) {
-      try {
-        const cached = await redis.get(cacheKey);
-        if (cached) {
-          return cached;
-        }
-      } catch (error) {
-        console.error('Redis cache get error:', error);
-      }
-    }
+    const cached = await getCachedData(cacheKey);
+    if (cached) return cached;
 
     const existingRecipe = await prisma.recipe.findUnique({
       where: { id },
@@ -110,13 +123,7 @@ export const RecipeService = {
       return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
     }
 
-    if (redis) {
-      try {
-        await redis.setex(cacheKey, 60, existingRecipe);
-      } catch (error) {
-        console.error('Redis cache set error:', error);
-      }
-    }
+    await setCachedData(cacheKey, existingRecipe, 60);
 
     return existingRecipe;
   },
@@ -124,14 +131,8 @@ export const RecipeService = {
   async getRecipesByUserId(userId: string, limit?: number) {
     const cacheKey = `recipes:user:${userId}:${limit || 'all'}`;
 
-    if (redis) {
-      try {
-        const cached = await redis.get(cacheKey);
-        if (cached) return cached;
-      } catch (error) {
-        console.error('Redis cache get error:', error);
-      }
-    }
+    const cached = await getCachedData(cacheKey);
+    if (cached) return cached;
 
     const [recipes, totalRecipes] = await Promise.all([
       prisma.recipe.findMany({
@@ -145,13 +146,7 @@ export const RecipeService = {
 
     const result = { recipes, totalRecipes };
 
-    if (redis) {
-      try {
-        await redis.setex(cacheKey, 60, result);
-      } catch (error) {
-        console.error('Redis cache set error:', error);
-      }
-    }
+    await setCachedData(cacheKey, result, 60);
 
     return result;
   },
@@ -187,20 +182,14 @@ export const RecipeService = {
       include: { ingredients: true, preparationSteps: true, author: true },
     });
 
-    if (redis) {
-      try {
-        // Invalidate user's recipe list and the general recipes list
-        // Since list keys depend on filters, we can't easily delete all variations without scanning,
-        // but we can at least target the main ones we know.
-        await Promise.all([
-          redis.del(`recipes:user:${userId}:all`),
-          // For general list, we might want to delete the 'all' key
-          redis.del(`recipes:all:{}`),
-        ]);
-      } catch (error) {
-        console.error('Redis cache invalidation error:', error);
-      }
-    }
+    // Invalidate user's recipe list and the general recipes list
+    // Since list keys depend on filters, we can't easily delete all variations without scanning,
+    // but we can at least target the main ones we know.
+    await invalidateCache([
+      `recipes:user:${userId}:all`,
+      // For general list, we might want to delete the 'all' key
+      `recipes:all:{}`,
+    ]);
 
     return newRecipe;
   },
@@ -255,17 +244,11 @@ export const RecipeService = {
       include: { ingredients: true, preparationSteps: true, author: true },
     });
 
-    if (redis) {
-      try {
-        await Promise.all([
-          redis.del(`recipe:${recipeId}`),
-          redis.del(`recipes:user:${userId}:all`),
-          redis.del(`recipes:all:{}`),
-        ]);
-      } catch (error) {
-        console.error('Redis cache invalidation error:', error);
-      }
-    }
+    await invalidateCache([
+      `recipe:${recipeId}`,
+      `recipes:user:${userId}:all`,
+      `recipes:all:{}`,
+    ]);
 
     return updatedRecipe;
   },
@@ -295,13 +278,7 @@ export const RecipeService = {
       include: { ingredients: true, preparationSteps: true },
     });
 
-    if (redis) {
-      try {
-        await redis.del(`recipe:${ratingInput.recipeId}`);
-      } catch (error) {
-        console.error('Redis cache invalidation error:', error);
-      }
-    }
+    await invalidateCache([`recipe:${ratingInput.recipeId}`]);
 
     return updatedRecipe;
   },
@@ -312,12 +289,8 @@ export const RecipeService = {
         where: { recipeId_userId: { recipeId, userId } },
       });
 
-      if (redis && deleted) {
-        try {
-          await redis.del(`recipe:${recipeId}`);
-        } catch (err) {
-          console.error('Redis cache invalidation error:', err);
-        }
+      if (deleted) {
+        await invalidateCache([`recipe:${recipeId}`]);
       }
 
       return !!deleted;
