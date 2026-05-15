@@ -1,9 +1,4 @@
-import {
-  ApolloClient,
-  ApolloLink,
-  HttpLink,
-  InMemoryCache,
-} from '@apollo/client';
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
 // HTTP link to GraphQL API
 const httpLink = new HttpLink({
@@ -15,16 +10,7 @@ export const apolloClient = new ApolloClient({
   link: httpLink,
   cache: new InMemoryCache({
     typePolicies: {
-      Query: {
-        // fields: {
-        //   // for pagination later
-        //   recipes: {
-        //     merge(_existing, incoming) {
-        //       return incoming;
-        //     },
-        //   },
-        // },
-      },
+      Query: {},
     },
   }),
   defaultOptions: {
