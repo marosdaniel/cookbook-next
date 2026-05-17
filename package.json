@@ -90,7 +90,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
     "@vitest/coverage-v8": "4.1.6",
-    "baseline-browser-mapping": "^2.10.29",
+    "baseline-browser-mapping": "^2.10.30",
     "dotenv": "^17.4.2",
     "happy-dom": "^20.9.0",
     "prisma": "7.8.0",
