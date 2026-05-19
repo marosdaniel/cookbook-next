@@ -9,3 +9,7 @@ allowBuilds:
   bcrypt: true
   prisma: true
   sharp: true
+
+minimumReleaseAgeExclude:
+  - '@types/node@25.9.0'
+  - baseline-browser-mapping@2.10.31
