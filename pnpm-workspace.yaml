@@ -14,3 +14,5 @@ minimumReleaseAgeExclude:
   - '@types/node@25.9.0'
   - baseline-browser-mapping@2.10.31
   - isomorphic-dompurify@3.14.0
+  - '@types/node@25.9.1'
+  - '@types/react@19.2.15'
