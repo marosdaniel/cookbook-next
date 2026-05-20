@@ -5,7 +5,7 @@ import { AUTH_ROUTES } from '@/types/routes';
 
 const { auth } = NextAuth(authConfig);
 
-export default auth((req) => {
+export const proxy = auth((req) => {
   const isLoggedIn = !!req.auth;
   const { pathname } = req.nextUrl;
 
@@ -19,6 +19,8 @@ export default auth((req) => {
     }
   }
 });
+
+export default proxy;
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],

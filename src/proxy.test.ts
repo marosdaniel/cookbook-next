@@ -17,16 +17,16 @@ vi.mock('next-auth', () => ({
   default: mockNextAuth,
 }));
 
-describe('middleware.ts', () => {
-  // biome-ignore lint/suspicious/noExplicitAny: middleware type is complex to mock fully
-  let middleware: (req: any) => any;
+describe('proxy.ts', () => {
+  // biome-ignore lint/suspicious/noExplicitAny: proxy type is complex to mock fully
+  let proxyFn: (req: any) => any;
 
   beforeEach(async () => {
     vi.clearAllMocks();
     // Re-import to trigger initialization
-    const middlewareModule = await import('./middleware');
+    const proxyModule = await import('./proxy');
     // biome-ignore lint/suspicious/noExplicitAny: necessary cast for mock
-    middleware = middlewareModule.default as (req: any) => any;
+    proxyFn = proxyModule.default as (req: any) => any;
   });
 
   it('should redirect unauthenticated users from /me routes', () => {
@@ -36,7 +36,7 @@ describe('middleware.ts', () => {
       nextUrl,
     };
 
-    middleware(req);
+    proxyFn(req);
 
     expect(NextResponse.redirect).toHaveBeenCalled();
     const redirectUrl = (
@@ -56,10 +56,10 @@ describe('middleware.ts', () => {
       nextUrl: new URL('http://localhost:3000/me/profile'),
     };
 
-    const result = middleware(req);
+    const result = proxyFn(req);
 
     expect(NextResponse.redirect).not.toHaveBeenCalled();
-    expect(result).toBeUndefined(); // middleware continues
+    expect(result).toBeUndefined(); // proxy continues
   });
 
   it('should not redirect from non-protected routes even if unauthenticated', () => {
@@ -68,7 +68,7 @@ describe('middleware.ts', () => {
       nextUrl: new URL('http://localhost:3000/'),
     };
 
-    const result = middleware(req);
+    const result = proxyFn(req);
 
     expect(NextResponse.redirect).not.toHaveBeenCalled();
     expect(result).toBeUndefined();
