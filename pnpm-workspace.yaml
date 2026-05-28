@@ -41,3 +41,21 @@ minimumReleaseAgeExclude:
   - vite@8.0.14
   - baseline-browser-mapping@2.10.32
   - nodemailer@8.0.9
+  - '@biomejs/biome@2.4.16'
+  - '@biomejs/cli-darwin-arm64@2.4.16'
+  - '@biomejs/cli-darwin-x64@2.4.16'
+  - '@biomejs/cli-linux-arm64-musl@2.4.16'
+  - '@biomejs/cli-linux-arm64@2.4.16'
+  - '@biomejs/cli-linux-x64-musl@2.4.16'
+  - '@biomejs/cli-linux-x64@2.4.16'
+  - '@biomejs/cli-win32-arm64@2.4.16'
+  - '@biomejs/cli-win32-x64@2.4.16'
+  - '@mantine/carousel@9.2.2'
+  - '@mantine/core@9.2.2'
+  - '@mantine/form@9.2.2'
+  - '@mantine/hooks@9.2.2'
+  - '@mantine/modals@9.2.2'
+  - '@mantine/notifications@9.2.2'
+  - '@mantine/nprogress@9.2.2'
+  - '@mantine/spotlight@9.2.2'
+  - '@mantine/store@9.2.2'
