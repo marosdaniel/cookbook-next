@@ -1,5 +1,25 @@
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
+declare module '@apollo/client' {
+  export interface TypeOverrides {
+    signatureStyle: 'classic';
+  }
+
+  namespace ApolloClient {
+    namespace DeclareDefaultOptions {
+      interface WatchQuery {
+        errorPolicy: 'all';
+      }
+      interface Query {
+        errorPolicy: 'all';
+      }
+      interface Mutate {
+        errorPolicy: 'all';
+      }
+    }
+  }
+}
+
 // HTTP link to GraphQL API
 const httpLink = new HttpLink({
   uri: '/api/graphql',
