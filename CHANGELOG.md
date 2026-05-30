@@ -1,3 +1,10 @@
+# [2.34.0](https://github.com/marosdaniel/cookbook-next/compare/v2.33.1...v2.34.0) (2026-05-30)
+
+
+### Features
+
+* configure global Apollo error policy to 'all' and add type overrides ([e397f04](https://github.com/marosdaniel/cookbook-next/commit/e397f04fbe3e13629a0e329e62bc1679ec9f4f6f))
+
 ## [2.33.1](https://github.com/marosdaniel/cookbook-next/compare/v2.33.0...v2.33.1) (2026-05-09)
 
 
