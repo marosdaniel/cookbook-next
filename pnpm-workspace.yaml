@@ -60,3 +60,4 @@ minimumReleaseAgeExclude:
   - '@mantine/spotlight@9.2.2'
   - '@mantine/store@9.2.2'
   - nodemailer@8.0.10
+  - vite@8.0.15
