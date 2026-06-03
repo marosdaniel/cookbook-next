@@ -71,3 +71,4 @@ minimumReleaseAgeExclude:
   - '@vitest/utils@4.1.8'
   - vite@8.0.16
   - vitest@4.1.8
+  - '@apollo/client@4.2.1'
