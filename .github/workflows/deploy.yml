@@ -260,7 +260,7 @@ jobs:
           echo "- [E2E](https://marosdaniel.github.io/cookbook-next/e2e/)" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload to GitHub Pages
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: reports
 
