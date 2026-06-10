@@ -195,6 +195,11 @@ jobs:
           name: coverage-report
           path: coverage
 
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          fail_ci_if_error: false
+
   deploy-coverage-report:
     needs: [test-coverage, e2e]
     runs-on: ubuntu-latest
