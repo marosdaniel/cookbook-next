@@ -208,13 +208,13 @@ jobs:
       id-token: write
     steps:
       - name: Download coverage artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: coverage-report
           path: artifacts/coverage
 
       - name: Download E2E artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: playwright-report
           path: artifacts/e2e
