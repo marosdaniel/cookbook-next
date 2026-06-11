@@ -1,9 +1,173 @@
-import { gql } from '@apollo/client';
+import { gql, type TypedDocumentNode } from '@apollo/client';
+
+export interface UpdateUserMutationData {
+  updateUser: {
+    success: boolean;
+    message: string;
+    user?: {
+      id: string;
+      firstName: string;
+      lastName: string;
+    };
+  };
+}
+
+export interface UpdateUserMutationVariables {
+  userUpdateInput: {
+    firstName: string;
+    lastName: string;
+  };
+}
+
+export interface CreateUserMutationData {
+  createUser: {
+    success: boolean;
+    message: string;
+    messageKey?: string;
+    user?: {
+      id: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+      userName: string;
+    };
+  };
+}
+
+export interface CreateUserMutationVariables {
+  userRegisterInput: Record<string, unknown>;
+}
+
+export interface ResetPasswordMutationData {
+  resetPassword: {
+    success: boolean;
+    message: string;
+  };
+}
+
+export interface ResetPasswordMutationVariables {
+  email: string;
+}
+
+export interface SetNewPasswordMutationData {
+  setNewPassword: {
+    success: boolean;
+    message: string;
+  };
+}
+
+export interface SetNewPasswordMutationVariables {
+  token: string;
+  newPassword: string;
+}
+
+export interface ChangePasswordMutationData {
+  changePassword: {
+    success: boolean;
+    message: string;
+  };
+}
+
+export interface ChangePasswordMutationVariables {
+  passwordEditInput: Record<string, unknown>;
+}
+
+export interface CreateRecipeMutationData {
+  createRecipe: {
+    id: string;
+    title: string;
+  };
+}
+
+export interface CreateRecipeMutationVariables {
+  recipeCreateInput: Record<string, unknown>;
+}
+
+export interface EditRecipeMutationData {
+  editRecipe: {
+    id: string;
+    title: string;
+  };
+}
+
+export interface EditRecipeMutationVariables {
+  id: string;
+  recipeEditInput: Record<string, unknown>;
+}
+
+export interface RateRecipeMutationData {
+  rateRecipe: {
+    id: string;
+    averageRating: number;
+    ratingsCount: number;
+    userRating: number;
+  };
+}
+
+export interface RateRecipeMutationVariables {
+  ratingInput: Record<string, unknown>;
+}
+
+export interface DeleteRatingMutationData {
+  deleteRating: boolean;
+}
+
+export interface DeleteRatingMutationVariables {
+  recipeId: string;
+}
+
+export interface AddToFavoriteMutationData {
+  addToFavoriteRecipes: {
+    success: boolean;
+    message: string;
+    messageKey?: string;
+    statusCode?: number;
+  };
+}
+
+export interface RemoveFromFavoriteMutationData {
+  removeFromFavoriteRecipes: {
+    success: boolean;
+    message: string;
+    messageKey?: string;
+    statusCode?: number;
+  };
+}
+
+export interface FavoriteMutationVariables {
+  userId: string;
+  recipeId: string;
+}
+
+export interface FollowUserMutationData {
+  followUser: {
+    success: boolean;
+    message: string;
+    messageKey?: string;
+    statusCode?: number;
+  };
+}
+
+export interface UnfollowUserMutationData {
+  unfollowUser: {
+    success: boolean;
+    message: string;
+    messageKey?: string;
+    statusCode?: number;
+  };
+}
+
+export interface FollowMutationVariables {
+  targetUserId: string;
+}
 
 /**
  * Mutation to create a new user account
  */
-export const CREATE_USER = gql`
+export const CREATE_USER: TypedDocumentNode<
+  CreateUserMutationData,
+  CreateUserMutationVariables
+> = gql`
   mutation createUser($userRegisterInput: UserRegisterInput!) {
     createUser(userRegisterInput: $userRegisterInput) {
       success
@@ -20,7 +184,10 @@ export const CREATE_USER = gql`
   }
 `;
 
-export const RESET_PASSWORD = gql`
+export const RESET_PASSWORD: TypedDocumentNode<
+  ResetPasswordMutationData,
+  ResetPasswordMutationVariables
+> = gql`
   mutation resetPassword($email: String!) {
     resetPassword(email: $email) {
       success
@@ -29,7 +196,10 @@ export const RESET_PASSWORD = gql`
   }
 `;
 
-export const SET_NEW_PASSWORD = gql`
+export const SET_NEW_PASSWORD: TypedDocumentNode<
+  SetNewPasswordMutationData,
+  SetNewPasswordMutationVariables
+> = gql`
   mutation setNewPassword($token: String!, $newPassword: String!) {
     setNewPassword(token: $token, newPassword: $newPassword) {
       success
@@ -38,7 +208,10 @@ export const SET_NEW_PASSWORD = gql`
   }
 `;
 
-export const CHANGE_PASSWORD = gql`
+export const CHANGE_PASSWORD: TypedDocumentNode<
+  ChangePasswordMutationData,
+  ChangePasswordMutationVariables
+> = gql`
   mutation changePassword($passwordEditInput: PasswordEditInput!) {
     changePassword(passwordEditInput: $passwordEditInput) {
       success
@@ -47,7 +220,10 @@ export const CHANGE_PASSWORD = gql`
   }
 `;
 
-export const UPDATE_USER = gql`
+export const UPDATE_USER: TypedDocumentNode<
+  UpdateUserMutationData,
+  UpdateUserMutationVariables
+> = gql`
   mutation updateUser($userUpdateInput: UserUpdateInput!) {
     updateUser(userUpdateInput: $userUpdateInput) {
       success
@@ -61,7 +237,10 @@ export const UPDATE_USER = gql`
   }
 `;
 
-export const CREATE_RECIPE = gql`
+export const CREATE_RECIPE: TypedDocumentNode<
+  CreateRecipeMutationData,
+  CreateRecipeMutationVariables
+> = gql`
   mutation CreateRecipe($recipeCreateInput: RecipeCreateInput!) {
     createRecipe(recipeCreateInput: $recipeCreateInput) {
       id
@@ -70,7 +249,10 @@ export const CREATE_RECIPE = gql`
   }
 `;
 
-export const EDIT_RECIPE = gql`
+export const EDIT_RECIPE: TypedDocumentNode<
+  EditRecipeMutationData,
+  EditRecipeMutationVariables
+> = gql`
   mutation EditRecipe($id: ID!, $recipeEditInput: RecipeEditInput!) {
     editRecipe(id: $id, recipeEditInput: $recipeEditInput) {
       id
@@ -79,7 +261,10 @@ export const EDIT_RECIPE = gql`
   }
 `;
 
-export const RATE_RECIPE = gql`
+export const RATE_RECIPE: TypedDocumentNode<
+  RateRecipeMutationData,
+  RateRecipeMutationVariables
+> = gql`
   mutation RateRecipe($ratingInput: RatingInput!) {
     rateRecipe(ratingInput: $ratingInput) {
       id
@@ -90,13 +275,19 @@ export const RATE_RECIPE = gql`
   }
 `;
 
-export const DELETE_RATING = gql`
+export const DELETE_RATING: TypedDocumentNode<
+  DeleteRatingMutationData,
+  DeleteRatingMutationVariables
+> = gql`
   mutation DeleteRating($recipeId: ID!) {
     deleteRating(recipeId: $recipeId)
   }
 `;
 
-export const ADD_TO_FAVORITE_RECIPES = gql`
+export const ADD_TO_FAVORITE_RECIPES: TypedDocumentNode<
+  AddToFavoriteMutationData,
+  FavoriteMutationVariables
+> = gql`
   mutation AddToFavoriteRecipes($userId: ID!, $recipeId: ID!) {
     addToFavoriteRecipes(userId: $userId, recipeId: $recipeId) {
       success
@@ -107,7 +298,10 @@ export const ADD_TO_FAVORITE_RECIPES = gql`
   }
 `;
 
-export const REMOVE_FROM_FAVORITE_RECIPES = gql`
+export const REMOVE_FROM_FAVORITE_RECIPES: TypedDocumentNode<
+  RemoveFromFavoriteMutationData,
+  FavoriteMutationVariables
+> = gql`
   mutation RemoveFromFavoriteRecipes($userId: ID!, $recipeId: ID!) {
     removeFromFavoriteRecipes(userId: $userId, recipeId: $recipeId) {
       success
@@ -118,7 +312,10 @@ export const REMOVE_FROM_FAVORITE_RECIPES = gql`
   }
 `;
 
-export const FOLLOW_USER = gql`
+export const FOLLOW_USER: TypedDocumentNode<
+  FollowUserMutationData,
+  FollowMutationVariables
+> = gql`
   mutation FollowUser($targetUserId: ID!) {
     followUser(targetUserId: $targetUserId) {
       success
@@ -129,7 +326,10 @@ export const FOLLOW_USER = gql`
   }
 `;
 
-export const UNFOLLOW_USER = gql`
+export const UNFOLLOW_USER: TypedDocumentNode<
+  UnfollowUserMutationData,
+  FollowMutationVariables
+> = gql`
   mutation UnfollowUser($targetUserId: ID!) {
     unfollowUser(targetUserId: $targetUserId) {
       success

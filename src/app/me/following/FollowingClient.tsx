@@ -32,11 +32,10 @@ import { RecipeCarousel } from '@/components/Recipe/RecipeCarousel';
 import StyledText from '@/components/StyledText';
 import { UNFOLLOW_USER } from '@/lib/graphql/mutations';
 import { GET_FOLLOWING } from '@/lib/graphql/queries';
-import type { OperationResponse } from '@/types/graphql/responses';
+
 import { PUBLIC_ROUTES } from '@/types/routes';
 import classes from './FollowingClient.module.css';
 import StatCard from './StatCard';
-import type { FollowingData } from './types';
 import { getInitials } from './utils';
 
 const SKELETON_CARDS = [1, 2, 3, 4];
@@ -48,15 +47,13 @@ const FollowingClient = () => {
   const userId = (session?.user as { id?: string })?.id;
   const isSessionLoading = status === 'loading';
 
-  const { data, loading } = useQuery<FollowingData>(GET_FOLLOWING, {
+  const { data, loading } = useQuery(GET_FOLLOWING, {
     variables: { userId },
     skip: !userId || isSessionLoading,
     fetchPolicy: 'cache-and-network',
   });
 
-  const [unfollowMutation] = useMutation<{
-    unfollowUser: OperationResponse;
-  }>(UNFOLLOW_USER);
+  const [unfollowMutation] = useMutation(UNFOLLOW_USER);
 
   const handleUnfollow = useCallback(
     async (targetUserId: string) => {

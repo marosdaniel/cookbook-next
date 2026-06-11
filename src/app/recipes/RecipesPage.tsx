@@ -79,13 +79,9 @@ const RecipesPage: FC = () => {
     },
   });
 
-  const recipes: RecipeCardData[] =
-    (data as { getRecipes?: { recipes: RecipeCardData[] } })?.getRecipes
-      ?.recipes ?? [];
+  const recipes: RecipeCardData[] = data?.getRecipes?.recipes ?? [];
 
-  const totalRecipes: number =
-    (data as { getRecipes?: { totalRecipes: number } })?.getRecipes
-      ?.totalRecipes ?? 0;
+  const totalRecipes: number = data?.getRecipes?.totalRecipes ?? 0;
 
   // --- Handlers ---
   const handleSearch = useCallback(

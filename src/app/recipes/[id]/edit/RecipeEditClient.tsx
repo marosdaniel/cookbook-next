@@ -15,7 +15,7 @@ import {
   recipeToFormValues,
 } from '@/components/Recipe/Create/utils';
 import { GET_RECIPE_BY_ID } from '@/lib/graphql/queries';
-import type { RecipeByIdData, RecipeEditClientProps } from './types';
+import type { RecipeEditClientProps } from './types';
 
 const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
   const { data: session, status: authStatus } = useSession();
@@ -33,7 +33,7 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
     data: recipeData,
     loading: recipeLoading,
     error: recipeError,
-  } = useQuery<RecipeByIdData>(GET_RECIPE_BY_ID, {
+  } = useQuery(GET_RECIPE_BY_ID, {
     variables: { id: recipeId },
     skip: !session,
   });

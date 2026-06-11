@@ -18,9 +18,7 @@ const HomePage = () => {
     variables: { limit: 10 },
   });
 
-  const latestRecipes: RecipeCardData[] =
-    (data as { getRecipes?: { recipes: RecipeCardData[] } })?.getRecipes
-      ?.recipes ?? [];
+  const latestRecipes: RecipeCardData[] = data?.getRecipes?.recipes ?? [];
 
   return (
     <Stack gap="xl" p="md">

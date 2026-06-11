@@ -25,15 +25,13 @@ import { isFormSubmitDisabled, signUpValidationSchema } from '@/lib/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
 import PrivacyPolicyLink from '../../../components/PrivacyPolicyLink';
 import { AUTH_ROUTES } from '../../../types/routes';
-import type { CreateUserData, CreateUserVars } from './types';
+
 
 const SignUpForm: FC = () => {
   const translate = useTranslations();
   const router = useRouter();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [createUser, { loading }] = useMutation<CreateUserData, CreateUserVars>(
-    CREATE_USER,
-  );
+  const [createUser, { loading }] = useMutation(CREATE_USER);
 
   const form = useForm({
     mode: 'uncontrolled',

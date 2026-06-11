@@ -12,7 +12,7 @@ import {
 } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import type { ProfileUser } from '../ProfileClient';
+import type { ProfileUser } from '../types';
 
 interface AccountInfoProps {
   user: ProfileUser | undefined;

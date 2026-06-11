@@ -12,7 +12,7 @@ import {
   REMOVE_FROM_FAVORITE_RECIPES,
 } from '@/lib/graphql/mutations';
 import { sizeMap } from '../consts';
-import type { FavoriteButtonProps, FavoriteMutationData } from './types';
+import type { FavoriteButtonProps } from './types';
 
 const FavoriteButton = ({
   recipeId,
@@ -24,10 +24,12 @@ const FavoriteButton = ({
   const tFav = useTranslations('favorites');
   const [optimisticFavorite, setOptimisticFavorite] = useState(isFavorite);
 
-  const [addToFavorite, { loading: addLoading }] =
-    useMutation<FavoriteMutationData>(ADD_TO_FAVORITE_RECIPES);
-  const [removeFromFavorite, { loading: removeLoading }] =
-    useMutation<FavoriteMutationData>(REMOVE_FROM_FAVORITE_RECIPES);
+  const [addToFavorite, { loading: addLoading }] = useMutation(
+    ADD_TO_FAVORITE_RECIPES,
+  );
+  const [removeFromFavorite, { loading: removeLoading }] = useMutation(
+    REMOVE_FROM_FAVORITE_RECIPES,
+  );
 
   const loading = addLoading || removeLoading;
   const userId = (session?.user as { id?: string })?.id;
@@ -50,8 +52,28 @@ const FavoriteButton = ({
         });
 
         const response = previousState
-          ? result.data?.removeFromFavoriteRecipes
-          : result.data?.addToFavoriteRecipes;
+          ? (
+              result.data as
+                | {
+                    removeFromFavoriteRecipes?: {
+                      success: boolean;
+                      message: string;
+                      messageKey?: string;
+                    };
+                  }
+                | undefined
+            )?.removeFromFavoriteRecipes
+          : (
+              result.data as
+                | {
+                    addToFavoriteRecipes?: {
+                      success: boolean;
+                      message: string;
+                      messageKey?: string;
+                    };
+                  }
+                | undefined
+            )?.addToFavoriteRecipes;
 
         if (response && !response.success) {
           setOptimisticFavorite(previousState);

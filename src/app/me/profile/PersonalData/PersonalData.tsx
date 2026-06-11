@@ -8,9 +8,7 @@ import {
   LoadingOverlay,
   Paper,
   SimpleGrid,
-  Skeleton,
   Stack,
-  Text,
   TextInput,
   Title,
   Tooltip,
@@ -24,51 +22,14 @@ import type { z } from 'zod';
 import { UPDATE_USER } from '@/lib/graphql/mutations';
 import { isFormSubmitDisabled, nameValidationSchema } from '@/lib/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
-import type { ProfileUser } from '../ProfileClient';
-
-interface PersonalDataProps {
-  user: ProfileUser | undefined;
-  loading: boolean;
-  refetch: () => Promise<unknown>;
-}
-
-interface UpdateUserData {
-  updateUser: {
-    success: boolean;
-    message: string;
-    user?: { id: string; firstName: string; lastName: string };
-  };
-}
-
-const InfoField = ({
-  label,
-  value,
-  isLoading,
-}: {
-  label: string;
-  value: string;
-  isLoading?: boolean;
-}) => (
-  <Stack gap={2}>
-    <Text size="xs" c="dimmed" tt="uppercase" fw={600}>
-      {label}
-    </Text>
-    {isLoading ? (
-      <Skeleton h={20} w="70%" />
-    ) : (
-      <Text size="sm" fw={500}>
-        {value}
-      </Text>
-    )}
-  </Stack>
-);
+import InfoField from './InfoField';
+import type { PersonalDataProps } from './types';
 
 const PersonalData = ({ user, loading, refetch }: PersonalDataProps) => {
   const translate = useTranslations();
   const [isEditMode, setIsEditMode] = useState(false);
 
-  const [updateUser, { loading: updateLoading }] =
-    useMutation<UpdateUserData>(UPDATE_USER);
+  const [updateUser, { loading: updateLoading }] = useMutation(UPDATE_USER);
 
   const form = useForm<z.infer<typeof nameValidationSchema>>({
     mode: 'controlled',

@@ -24,23 +24,13 @@ import type { Route } from 'next';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import {
-  type RecipeCardData,
-  RecipeGrid,
-} from '@/components/Recipe/RecipeCard';
+import { RecipeGrid } from '@/components/Recipe/RecipeCard';
 import StyledText from '@/components/StyledText';
 import { GET_RECIPES_BY_USER_ID } from '@/lib/graphql/queries';
 import { PROTECTED_ROUTES } from '@/types/routes';
 import classes from './MyRecipesClient.module.css';
 
 const SKELETON_ITEMS = [1, 2, 3, 4, 5, 6, 7, 8];
-
-interface RecipesByUserIdData {
-  getRecipesByUserId: {
-    recipes: RecipeCardData[];
-    totalRecipes: number;
-  };
-}
 
 interface StatCardProps {
   icon: React.ReactNode;
@@ -78,14 +68,11 @@ const MyRecipesClient = () => {
   const userId = (session?.user as { id?: string })?.id;
   const isSessionLoading = status === 'loading';
 
-  const { data, loading } = useQuery<RecipesByUserIdData>(
-    GET_RECIPES_BY_USER_ID,
-    {
-      variables: { userId },
-      skip: !userId || isSessionLoading,
-      fetchPolicy: 'cache-and-network',
-    },
-  );
+  const { data, loading } = useQuery(GET_RECIPES_BY_USER_ID, {
+    variables: { userId },
+    skip: !userId || isSessionLoading,
+    fetchPolicy: 'cache-and-network',
+  });
 
   const recipes = data?.getRecipesByUserId?.recipes ?? [];
   const totalRecipes = data?.getRecipesByUserId?.totalRecipes ?? 0;

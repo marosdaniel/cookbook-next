@@ -30,9 +30,7 @@ export const HeaderSearch = () => {
 
   const shouldSearch = debouncedSearch.length >= 4;
 
-  const { data, loading } = useQuery<{
-    getRecipes?: { recipes: RecipeBase[] };
-  }>(GET_LATEST_RECIPES, {
+  const { data, loading } = useQuery(GET_LATEST_RECIPES, {
     variables: {
       limit: 5,
       filter: { title: debouncedSearch },
@@ -48,7 +46,7 @@ export const HeaderSearch = () => {
     }
   }, [shouldSearch, loading, isFocused, combobox]);
 
-  const recipes = data?.getRecipes?.recipes || [];
+  const recipes = (data?.getRecipes?.recipes ?? []) as RecipeBase[];
   const hasNoResults = shouldSearch && !loading && recipes.length === 0;
 
   const options = recipes.map((recipe: RecipeBase) => (

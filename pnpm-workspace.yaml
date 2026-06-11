@@ -84,3 +84,6 @@ minimumReleaseAgeExclude:
   - baseline-browser-mapping@2.10.35
   - next@16.2.9
   - semantic-release@25.0.5
+  - '@types/node@25.9.3'
+  - '@types/nodemailer@8.0.1'
+  - nodemailer@8.0.11

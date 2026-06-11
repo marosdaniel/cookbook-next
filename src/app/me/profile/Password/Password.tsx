@@ -26,19 +26,11 @@ import {
 } from '@/lib/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
 
-interface ChangePasswordData {
-  changePassword: {
-    success: boolean;
-    message: string;
-  };
-}
-
 const Password = () => {
   const translate = useTranslations();
   const [isEditMode, setIsEditMode] = useState(false);
 
-  const [changePassword, { loading }] =
-    useMutation<ChangePasswordData>(CHANGE_PASSWORD);
+  const [changePassword, { loading }] = useMutation(CHANGE_PASSWORD);
 
   const form = useForm<z.infer<typeof passwordEditValidationSchema>>({
     mode: 'uncontrolled',

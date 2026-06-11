@@ -17,22 +17,6 @@ import AccountInfo from './AccountInfo';
 import Password from './Password';
 import PersonalData from './PersonalData';
 
-export interface ProfileUser {
-  id: string;
-  firstName: string;
-  lastName: string;
-  userName: string;
-  email: string;
-  role: string;
-  locale: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface GetUserData {
-  getUserById: ProfileUser;
-}
-
 const ProfileClient = () => {
   const translate = useTranslations();
   const { data: session, status } = useSession();
@@ -42,7 +26,7 @@ const ProfileClient = () => {
     data: userData,
     loading,
     refetch,
-  } = useQuery<GetUserData>(GET_USER_BY_ID, {
+  } = useQuery(GET_USER_BY_ID, {
     variables: { id: userId ?? '' },
     skip: !userId,
     fetchPolicy: 'network-only',

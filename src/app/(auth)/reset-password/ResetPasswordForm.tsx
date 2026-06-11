@@ -30,12 +30,11 @@ import {
   showErrorNotification,
   showSuccessNotification,
 } from '../../../utils/notifications';
-import type { ResetPasswordFormValues, ResetPasswordResponse } from './types';
+import type { ResetPasswordFormValues } from './types';
 
 export const ResetPasswordForm: FC = () => {
   const translate = useTranslations();
-  const [resetPassword, { loading }] =
-    useMutation<ResetPasswordResponse>(RESET_PASSWORD);
+  const [resetPassword, { loading }] = useMutation(RESET_PASSWORD);
   const [isResetPasswordEmailSent, setIsResetPasswordEmailSent] =
     useState(false);
 

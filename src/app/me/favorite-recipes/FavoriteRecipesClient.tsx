@@ -34,10 +34,6 @@ import classes from './FavoriteRecipesClient.module.css';
 
 const SKELETON_ITEMS = [1, 2, 3, 4, 5, 6, 7, 8];
 
-interface GetFavoriteRecipesData {
-  getFavoriteRecipes: RecipeCardData[];
-}
-
 interface StatCardProps {
   icon: React.ReactNode;
   label: string;
@@ -74,14 +70,11 @@ const FavoriteRecipesClient = () => {
   const userId = (session?.user as { id?: string })?.id;
   const isSessionLoading = status === 'loading';
 
-  const { data, loading } = useQuery<GetFavoriteRecipesData>(
-    GET_FAVORITE_RECIPES,
-    {
-      variables: { userId },
-      skip: !userId || isSessionLoading,
-      fetchPolicy: 'cache-and-network',
-    },
-  );
+  const { data, loading } = useQuery(GET_FAVORITE_RECIPES, {
+    variables: { userId },
+    skip: !userId || isSessionLoading,
+    fetchPolicy: 'cache-and-network',
+  });
 
   const recipes: RecipeCardData[] = data?.getFavoriteRecipes ?? [];
   const totalFavorites = recipes.length;

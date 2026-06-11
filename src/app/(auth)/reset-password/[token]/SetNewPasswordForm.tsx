@@ -28,16 +28,15 @@ import { zodResolver } from '@/lib/validation/zodResolver';
 import { AUTH_ROUTES } from '../../../../types/routes';
 import { showErrorNotification } from '../../../../utils/notifications';
 import { AUTH_CONSTANTS } from '../../consts';
-import type { SetNewPasswordFormValues, SetNewPasswordResponse } from './types';
+import type { SetNewPasswordFormValues } from './types';
 
 export const SetNewPasswordForm: FC = () => {
   const translate = useTranslations();
   const router = useRouter();
   const params = useParams();
-  const token = params?.token;
+  const token = Array.isArray(params?.token) ? params.token[0] : params?.token;
 
-  const [setNewPassword, { loading }] =
-    useMutation<SetNewPasswordResponse>(SET_NEW_PASSWORD);
+  const [setNewPassword, { loading }] = useMutation(SET_NEW_PASSWORD);
   const [isPasswordReset, setIsPasswordReset] = useState(false);
 
   const form = useForm<SetNewPasswordFormValues>({
