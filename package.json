@@ -55,7 +55,7 @@
     "bcrypt": "^6.0.0",
     "clsx": "^2.1.1",
     "dataloader": "^2.2.3",
-    "graphql": "17.0.0-alpha.9",
+    "graphql": "17.0.1",
     "graphql-depth-limit": "^1.1.0",
     "graphql-scalars": "^1.25.0",
     "graphql-tag": "^2.12.6",
