@@ -125,7 +125,7 @@ jobs:
 
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: playwright-report
           path: |
@@ -190,13 +190,13 @@ jobs:
           echo "lines=$LINES" >> $GITHUB_OUTPUT
 
       - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: coverage-report
           path: coverage
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           fail_ci_if_error: false
 
@@ -208,13 +208,13 @@ jobs:
       id-token: write
     steps:
       - name: Download coverage artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: coverage-report
           path: artifacts/coverage
 
       - name: Download E2E artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: playwright-report
           path: artifacts/e2e
