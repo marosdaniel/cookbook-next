@@ -14,28 +14,6 @@
     "indentStyle": "space",
     "indentWidth": 2
   },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true,
-      "a11y": {
-        "useAltText": "error"
-      },
-      "correctness": {
-        "noUnusedImports": "warn",
-        "noUnusedVariables": "error"
-      },
-      "complexity": {
-        "useArrowFunction": "warn"
-      },
-      "suspicious": {
-        "noExplicitAny": "warn"
-      },
-      "performance": {
-        "noImgElement": "warn"
-      }
-    }
-  },
   "javascript": {
     "formatter": {
       "quoteStyle": "single"
