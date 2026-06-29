@@ -8,16 +8,16 @@ import { GraphQLError } from 'graphql';
 import depthLimit from 'graphql-depth-limit';
 import type { NextRequest } from 'next/server';
 import { auth } from '@/lib/auth/auth';
-import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
-import { resolvers } from '@/lib/graphql/resolvers';
-import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
-import { prisma } from '@/lib/prisma/prisma';
-import { rateLimiter } from '@/lib/rateLimit/rateLimit';
 import {
   createIsFavoriteLoader,
   createRatingsLoader,
   createUserRatingLoader,
 } from '@/lib/dataloader/loaders';
+import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
+import { resolvers } from '@/lib/graphql/resolvers';
+import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
+import { prisma } from '@/lib/prisma/prisma';
+import { rateLimiter } from '@/lib/rateLimit/rateLimit';
 import type { GraphQLContext } from '../../../types/graphql/context';
 
 /**

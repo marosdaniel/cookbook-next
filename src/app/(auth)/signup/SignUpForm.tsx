@@ -26,7 +26,6 @@ import { zodResolver } from '@/lib/validation/zodResolver';
 import PrivacyPolicyLink from '../../../components/PrivacyPolicyLink';
 import { AUTH_ROUTES } from '../../../types/routes';
 
-
 const SignUpForm: FC = () => {
   const translate = useTranslations();
   const router = useRouter();
@@ -42,7 +41,7 @@ const SignUpForm: FC = () => {
       email: '',
       password: '',
       confirmPassword: '',
-      privacyAccepted: false as boolean,
+      privacyAccepted: false,
     },
     validate: zodResolver(signUpValidationSchema),
     validateInputOnBlur: true,
