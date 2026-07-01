@@ -1,3 +1,10 @@
+## [2.34.1](https://github.com/marosdaniel/cookbook-next/compare/v2.34.0...v2.34.1) (2026-07-01)
+
+
+### Bug Fixes
+
+* update iome ([c587518](https://github.com/marosdaniel/cookbook-next/commit/c58751828e683b5559f3d9ad982551d99786f68c))
+
 # [2.34.0](https://github.com/marosdaniel/cookbook-next/compare/v2.33.1...v2.34.0) (2026-05-30)
 
 
