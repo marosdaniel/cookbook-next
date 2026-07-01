@@ -9,7 +9,7 @@ allowBuilds:
   prisma: true
   sharp: true
 minimumReleaseAgeExclude:
-  - '@types/node@25.9.1 || 25.9.3'
+  - '@types/node@25.9.1 || 25.9.3 || 26.1.0'
   - '@types/react@19.2.15'
   - isomorphic-dompurify@3.14.0
   - '@vitest/coverage-v8@4.1.7 || 4.1.8'
@@ -21,7 +21,7 @@ minimumReleaseAgeExclude:
   - '@vitest/spy@4.1.7 || 4.1.8'
   - '@vitest/utils@4.1.7 || 4.1.8'
   - vitest@4.1.7 || 4.1.8
-  - '@apollo/client@4.2.0 || 4.2.1'
+  - '@apollo/client@4.2.0 || 4.2.1 || 4.2.4'
   - '@rolldown/binding-android-arm64@1.0.2'
   - '@rolldown/binding-darwin-arm64@1.0.2'
   - '@rolldown/binding-darwin-x64@1.0.2'
@@ -38,18 +38,18 @@ minimumReleaseAgeExclude:
   - '@rolldown/binding-win32-arm64-msvc@1.0.2'
   - '@rolldown/binding-win32-x64-msvc@1.0.2'
   - rolldown@1.0.2
-  - vite@8.0.14 || 8.0.15 || 8.0.16
+  - vite@8.0.14 || 8.0.15 || 8.0.16 || 8.1.2
   - baseline-browser-mapping@2.10.32 || 2.10.35 || 2.10.40
   - nodemailer@8.0.9 || 8.0.10 || 8.0.11
-  - '@biomejs/biome@2.4.16'
-  - '@biomejs/cli-darwin-arm64@2.4.16'
-  - '@biomejs/cli-darwin-x64@2.4.16'
-  - '@biomejs/cli-linux-arm64-musl@2.4.16'
-  - '@biomejs/cli-linux-arm64@2.4.16'
-  - '@biomejs/cli-linux-x64-musl@2.4.16'
-  - '@biomejs/cli-linux-x64@2.4.16'
-  - '@biomejs/cli-win32-arm64@2.4.16'
-  - '@biomejs/cli-win32-x64@2.4.16'
+  - '@biomejs/biome@2.4.16 || 2.5.2'
+  - '@biomejs/cli-darwin-arm64@2.4.16 || 2.5.2'
+  - '@biomejs/cli-darwin-x64@2.4.16 || 2.5.2'
+  - '@biomejs/cli-linux-arm64-musl@2.4.16 || 2.5.2'
+  - '@biomejs/cli-linux-arm64@2.4.16 || 2.5.2'
+  - '@biomejs/cli-linux-x64-musl@2.4.16 || 2.5.2'
+  - '@biomejs/cli-linux-x64@2.4.16 || 2.5.2'
+  - '@biomejs/cli-win32-arm64@2.4.16 || 2.5.2'
+  - '@biomejs/cli-win32-x64@2.4.16 || 2.5.2'
   - '@mantine/carousel@9.2.2'
   - '@mantine/core@9.2.2'
   - '@mantine/form@9.2.2'
@@ -76,3 +76,7 @@ minimumReleaseAgeExclude:
   - js-yaml@4.1.2
   - hono@4.12.25
   - undici@6.27.0 || 7.28.0
+  - icu-minify@4.13.1
+  - next-intl-swc-plugin-extractor@4.13.1
+  - next-intl@4.13.1
+  - use-intl@4.13.1
