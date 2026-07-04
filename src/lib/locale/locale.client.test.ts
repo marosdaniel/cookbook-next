@@ -61,6 +61,11 @@ describe('locale.client', () => {
 
       expect(getStoredLocale()).toBe('en-gb');
     });
+
+    it('should ignore malformed cookie rows', () => {
+      setCookie(`${LOCALE_STORAGE_KEY}=de; other=value`);
+      expect(getStoredLocale()).toBe('de');
+    });
   });
 
   describe('setStoredLocale', () => {

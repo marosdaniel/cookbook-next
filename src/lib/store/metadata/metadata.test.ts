@@ -40,17 +40,33 @@ describe('metadata reducer', () => {
         { key: 'cat', label: 'Cat', type: 'CATEGORY', name: 'cat' },
         { key: 'lab', label: 'Lab', type: 'LABEL', name: 'lab' },
         { key: 'unit', label: 'Unit', type: 'UNIT', name: 'unit' },
+        { key: 'level', label: 'Level', type: 'DIFFICULTY_LEVEL', name: 'level' },
+        { key: 'cuisine', label: 'Cuisine', type: 'CUISINE', name: 'cuisine' },
+        { key: 'serving', label: 'Serving', type: 'SERVING_UNIT', name: 'serving' },
+        { key: 'diet', label: 'Diet', type: 'DIET', name: 'diet' },
+        { key: 'allergen', label: 'Allergen', type: 'ALLERGEN', name: 'allergen' },
+        { key: 'equipment', label: 'Equipment', type: 'EQUIPMENT', name: 'equipment' },
+        { key: 'cost', label: 'Cost', type: 'COST_LEVEL', name: 'cost' },
       ]),
     );
 
     expect(state.categories).toHaveLength(1);
     expect(state.labels).toHaveLength(1);
     expect(state.units).toHaveLength(1);
+    expect(state.levels).toHaveLength(1);
+    expect(state.cuisines).toHaveLength(1);
+    expect(state.servingUnits).toHaveLength(1);
+    expect(state.dietaryFlags).toHaveLength(1);
+    expect(state.allergens).toHaveLength(1);
+    expect(state.equipment).toHaveLength(1);
+    expect(state.costLevels).toHaveLength(1);
     expect(state.isLoaded).toBe(true);
     expect(state.isLoading).toBe(false);
 
     const cleared = metadataReducer(state, clearMetadata());
     expect(cleared.categories).toEqual([]);
+    expect(cleared.levels).toEqual([]);
     expect(cleared.isLoaded).toBe(false);
+    expect(cleared.error).toBeNull();
   });
 });

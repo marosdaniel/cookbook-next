@@ -27,6 +27,18 @@ describe('isFormSubmitDisabled', () => {
     expect(consoleErrorSpy).toHaveBeenCalled();
   });
 
+  it('disables when any extra loading flag is true', () => {
+    expect(isFormSubmitDisabled(createForm(), false, false, true)).toBe(true);
+  });
+
+  it('disables when the form is invalid', () => {
+    expect(isFormSubmitDisabled(createForm({ isValid: () => false }), false)).toBe(true);
+  });
+
+  it('treats a boolean false validation result as invalid', () => {
+    expect(isFormSubmitDisabled(createForm({ isValid: () => false as unknown as boolean }), false)).toBe(true);
+  });
+
   it('enables when the form is valid, dirty, and not loading', () => {
     expect(isFormSubmitDisabled(createForm(), false)).toBe(false);
   });

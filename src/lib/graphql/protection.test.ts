@@ -17,6 +17,13 @@ describe('resolveQueryLimit', () => {
 
   it('returns undefined for empty values', () => {
     expect(resolveQueryLimit(undefined)).toBeUndefined();
+    expect(resolveQueryLimit(null as unknown as number)).toBeUndefined();
+  });
+
+  it('returns undefined for non-finite values and clamps too-small values', () => {
+    expect(resolveQueryLimit(Number.NaN)).toBeUndefined();
+    expect(resolveQueryLimit(0)).toBe(1);
+    expect(resolveQueryLimit(-5)).toBe(1);
   });
 });
 
@@ -32,5 +39,11 @@ describe('validatePersistedQuery', () => {
     const query = 'query GetRecipes { getRecipes(limit: 10) { id } }';
 
     expect(validatePersistedQuery(query, 'invalid-hash')).toBe(false);
+  });
+
+  it('rejects when no persisted hash is provided', () => {
+    const query = 'query GetRecipes { getRecipes(limit: 10) { id } }';
+
+    expect(validatePersistedQuery(query, undefined)).toBe(false);
   });
 });
