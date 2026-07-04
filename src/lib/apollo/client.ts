@@ -36,13 +36,13 @@ export const apolloClient = new ApolloClient({
         fields: {
           getFavoriteRecipes: {
             keyArgs: ['userId', 'limit'],
-            merge(existing = [], incoming) {
+            merge(incoming, existing = []) {
               return [...existing, ...incoming];
             },
           },
           getRecipes: {
             keyArgs: ['limit', 'filter'],
-            merge(existing, incoming) {
+            merge(incoming, existing = []) {
               if (!existing) {
                 return incoming;
               }
@@ -57,7 +57,7 @@ export const apolloClient = new ApolloClient({
           },
           getRecipesByUserId: {
             keyArgs: ['userId', 'limit'],
-            merge(existing, incoming) {
+            merge(incoming, existing = []) {
               if (!existing) {
                 return incoming;
               }
@@ -72,7 +72,7 @@ export const apolloClient = new ApolloClient({
           },
           getFollowing: {
             keyArgs: ['userId', 'limit'],
-            merge(existing, incoming) {
+            merge(incoming, existing = []) {
               if (!existing) {
                 return incoming;
               }

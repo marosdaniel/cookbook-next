@@ -201,12 +201,20 @@ jobs:
           fail_ci_if_error: false
 
   deploy-coverage-report:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     needs: [test-coverage, e2e]
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     permissions:
+      contents: read
       pages: write
       id-token: write
     steps:
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
       - name: Download coverage artifact
         uses: actions/download-artifact@v8
         with:
