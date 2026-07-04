@@ -11,6 +11,7 @@ import {
 } from '@/lib/graphql/resolvers/recipe/utils';
 import { prisma } from '@/lib/prisma/prisma';
 import { redis } from '@/lib/redis/redis';
+import { resolveQueryLimit } from '@/lib/graphql/protection';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
 
@@ -83,7 +84,8 @@ async function invalidateCache(keys: string[]) {
 export const RecipeService = {
   // Queries
   async getRecipes(limit?: number, filter?: RecipeFilterInput) {
-    const cacheKey = `recipes:${limit || 'all'}:${JSON.stringify(filter || {})}`;
+    const normalizedLimit = resolveQueryLimit(limit);
+    const cacheKey = `recipes:${normalizedLimit || 'all'}:${JSON.stringify(filter || {})}`;
 
     const cached = await getCachedData(cacheKey);
     if (cached) return cached;
@@ -95,7 +97,7 @@ export const RecipeService = {
         where,
         include: { ingredients: true, preparationSteps: true, author: true },
         orderBy: { createdAt: 'desc' },
-        ...(limit ? { take: limit } : {}),
+        ...(normalizedLimit ? { take: normalizedLimit } : {}),
       }),
       prisma.recipe.count({ where }),
     ]);
@@ -129,7 +131,8 @@ export const RecipeService = {
   },
 
   async getRecipesByUserId(userId: string, limit?: number) {
-    const cacheKey = `recipes:user:${userId}:${limit || 'all'}`;
+    const normalizedLimit = resolveQueryLimit(limit);
+    const cacheKey = `recipes:user:${userId}:${normalizedLimit || 'all'}`;
 
     const cached = await getCachedData(cacheKey);
     if (cached) return cached;
@@ -139,7 +142,7 @@ export const RecipeService = {
         where: { createdBy: userId },
         include: { ingredients: true, preparationSteps: true, author: true },
         orderBy: { createdAt: 'desc' },
-        ...(limit ? { take: limit } : {}),
+        ...(normalizedLimit ? { take: normalizedLimit } : {}),
       }),
       prisma.recipe.count({ where: { createdBy: userId } }),
     ]);

@@ -13,6 +13,7 @@ import {
   createRatingsLoader,
   createUserRatingLoader,
 } from '@/lib/dataloader/loaders';
+import { validatePersistedQuery } from '@/lib/graphql/protection';
 import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
@@ -70,6 +71,7 @@ const armor = new ApolloArmor({
   },
   costLimit: {
     enabled: true,
+    maxCost: 1000,
   },
   maxAliases: {
     enabled: true,
@@ -87,14 +89,66 @@ const armor = new ApolloArmor({
 
 const protection = armor.protect();
 
+const fieldAuthPlugin: ApolloServerPlugin<GraphQLContext> = {
+  async requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
+    return {
+      async executionDidStart() {
+        return {
+          willResolveField({ contextValue, info, source }) {
+            if (info.parentType.name !== 'User' || info.fieldName !== 'email') {
+              return;
+            }
+
+            const currentUserId = contextValue.userId;
+            const targetUserId = source?.id;
+
+            if (currentUserId && targetUserId && currentUserId === targetUserId) {
+              return;
+            }
+
+            if (contextValue.role === 'ADMIN') {
+              return;
+            }
+
+            throw new GraphQLError('Unauthorized field access', {
+              extensions: {
+                code: 'FORBIDDEN',
+                http: { status: 403 },
+              },
+            });
+          },
+        };
+      },
+    };
+  },
+};
+
 // Create Apollo Server instance
 const server = new ApolloServer<GraphQLContext>({
   typeDefs,
   resolvers: { ...scalarResolvers, ...resolvers },
-  plugins: [...protection.plugins, loggingPlugin, authPlugin],
+  plugins: [...protection.plugins, loggingPlugin, authPlugin, fieldAuthPlugin],
   validationRules: [...protection.validationRules],
   introspection: process.env.NODE_ENV !== 'production',
   allowBatchedHttpRequests: false,
+  formatError: (formattedError) => {
+    const extensions = { ...(formattedError.extensions ?? undefined) };
+
+    if (process.env.NODE_ENV === 'production') {
+      delete extensions.stacktrace;
+      delete extensions.exception;
+    }
+
+    return {
+      ...formattedError,
+      message:
+        process.env.NODE_ENV === 'production' &&
+        formattedError.extensions?.code === 'INTERNAL_SERVER_ERROR'
+          ? 'Internal server error'
+          : formattedError.message,
+      extensions,
+    };
+  },
 });
 
 /**
@@ -169,6 +223,42 @@ const wrappedHandler = async (
       JSON.stringify({
         error: 'Empty request body',
         message: 'GraphQL POST requests must include a JSON body.',
+      }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+  }
+
+  try {
+    const parsedBody = JSON.parse(requestBody) as {
+      query?: string;
+      extensions?: {
+        persistedQuery?: {
+          sha256Hash?: string;
+        };
+      };
+    };
+
+    const persistedHash = parsedBody.extensions?.persistedQuery?.sha256Hash;
+    if (persistedHash && !validatePersistedQuery(parsedBody.query ?? '', persistedHash)) {
+      return new Response(
+        JSON.stringify({
+          error: 'Persisted query verification failed',
+          message: 'The provided persisted query hash does not match the supplied operation.',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+    }
+  } catch {
+    return new Response(
+      JSON.stringify({
+        error: 'Invalid JSON body',
+        message: 'GraphQL POST requests must include valid JSON.',
       }),
       {
         status: 400,

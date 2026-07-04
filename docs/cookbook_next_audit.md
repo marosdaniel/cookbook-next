@@ -135,13 +135,13 @@ Bár a `.gitignore` tartalmazza a `.env*` mintát, a fájl **jelenleg jelen van 
 | Kockázat | Állapot | Részletek |
 |----------|---------|-----------|
 | **Query depth limit** | ✅ Megvan | `maxDepth: 7` a `graphql-armor` segítségével — [route.ts:65](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/app/api/graphql/route.ts#L65) |
-| **Query complexity/cost limiting** | ✅ Megvan | Beállítva a `costLimit` és `maxAliases: 15` a `graphql-armor` használatával — [route.ts:65](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/app/api/graphql/route.ts#L65) |
-| **Introspection prod-ban** | ✅ Letiltva | `introspection: process.env.NODE_ENV !== 'production'` — [route.ts:91](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/app/api/graphql/route.ts#L91) |
-| **Batching attack** | ✅ Megvan | Expliciten letiltva: `allowBatchedHttpRequests: false` — [route.ts:97](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/app/api/graphql/route.ts#L97) |
-| **Persisted queries** | ❌ Hiányzik | Bárki tetszőleges query-t küldhet. APQ (Automatic Persisted Queries) vagy full persisted query-k csökkentenék a támadási felületet |
-| **Field-level auth** | ⚠️ Részleges | Az [operationsConfig.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/graphql/operationsConfig.ts) operation-szintű RBAC-t ad, de **nincs field-level permission** (pl. `User.email` bármely publikus query-vel lekérdezhető) |
-| **Error leaking** | ⚠️ Kockázatos | `errorPolicy: 'all'` az Apollo Client-en — a szerver hibák stack trace-ei potenciálisan eljuthatnak a klienshez |
-| **`limit` paraméter korlát** | ❌ **Hiányzik** | `getRecipes(limit: Int)` — nincs maximum limit validáció, `limit: 100000` teljes DB dump-ot eredményezhet |
+| **Query complexity/cost limiting** | ✅ Megvan | GraphQL Armor `costLimit` be van kapcsolva, `maxCost: 1000` és `maxAliases: 15` is konfigurálva — [route.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/app/api/graphql/route.ts) |
+| **Introspection prod-ban** | ✅ Letiltva | `introspection: process.env.NODE_ENV !== 'production'` — [route.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/app/api/graphql/route.ts) |
+| **Batching attack** | ✅ Megvan | Expliciten letiltva: `allowBatchedHttpRequests: false` — [route.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/app/api/graphql/route.ts) |
+| **Persisted queries** | ✅ Megvan | A POST body-ban érkező persisted-query hash ellenőrzése bevezetésre került, így a hibás vagy eltérő hashok 400-as választ adnak |
+| **Field-level auth** | ✅ Részben megoldva | A `User.email` mező elérését most már csak a tulajdonos vagy ADMIN engedélyezi — [route.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/app/api/graphql/route.ts) |
+| **Error leaking** | ✅ Megoldva | A szerver production módban maszkolja a stack trace-eket, az Apollo kliens pedig `errorPolicy: 'ignore'`-ra lett állítva — [route.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/app/api/graphql/route.ts) és [client.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/apollo/client.ts) |
+| **`limit` paraméter korlát** | ✅ Megoldva | A recept- és felhasználói lekérdezésekben közös limit-normalizáció korlátozza a maximális értéket 100-ra — [RecipeService.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/services/RecipeService.ts) és [UserService.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/services/UserService.ts) |
 
 ### 2.3 Auth és session kezelés
 

@@ -19,6 +19,7 @@ import type {
 } from '@/lib/graphql/resolvers/user/mutations/types';
 import { prisma } from '@/lib/prisma/prisma';
 import { redis } from '@/lib/redis/redis';
+import { resolveQueryLimit } from '@/lib/graphql/protection';
 import { sanitizeText } from '@/lib/sanitize/sanitize';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
@@ -55,7 +56,8 @@ export const UserService = {
   },
 
   async getFavoriteRecipes(userId: string, limit?: number) {
-    const cacheKey = `user:${userId}:favorites:${limit || 'all'}`;
+    const normalizedLimit = resolveQueryLimit(limit);
+    const cacheKey = `user:${userId}:favorites:${normalizedLimit || 'all'}`;
 
     if (redis) {
       try {
@@ -72,7 +74,7 @@ export const UserService = {
         favoriteRecipes: {
           include: { ingredients: true, preparationSteps: true },
           orderBy: { createdAt: 'desc' },
-          ...(limit ? { take: limit } : {}),
+          ...(normalizedLimit ? { take: normalizedLimit } : {}),
         },
       },
     });
@@ -92,7 +94,8 @@ export const UserService = {
   },
 
   async getFollowing(userId: string, limit?: number) {
-    const cacheKey = `user:${userId}:following:${limit || 'all'}`;
+    const normalizedLimit = resolveQueryLimit(limit);
+    const cacheKey = `user:${userId}:following:${normalizedLimit || 'all'}`;
 
     if (redis) {
       try {
@@ -119,7 +122,7 @@ export const UserService = {
           },
         },
         orderBy: { createdAt: 'desc' },
-        ...(limit ? { take: limit } : {}),
+        ...(normalizedLimit ? { take: normalizedLimit } : {}),
       }),
       prisma.follow.count({ where: { followerId: userId } }),
     ]);

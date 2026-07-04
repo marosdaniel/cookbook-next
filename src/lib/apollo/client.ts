@@ -1,5 +1,7 @@
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
+type ErrorPolicy = 'all' | 'ignore' | 'none';
+
 declare module '@apollo/client' {
   export interface TypeOverrides {
     signatureStyle: 'classic';
@@ -8,13 +10,13 @@ declare module '@apollo/client' {
   namespace ApolloClient {
     namespace DeclareDefaultOptions {
       interface WatchQuery {
-        errorPolicy: 'all';
+        errorPolicy: ErrorPolicy;
       }
       interface Query {
-        errorPolicy: 'all';
+        errorPolicy: ErrorPolicy;
       }
       interface Mutate {
-        errorPolicy: 'all';
+        errorPolicy: ErrorPolicy;
       }
     }
   }
@@ -36,14 +38,14 @@ export const apolloClient = new ApolloClient({
   defaultOptions: {
     watchQuery: {
       fetchPolicy: 'cache-and-network',
-      errorPolicy: 'all',
+      errorPolicy: 'ignore',
     },
     query: {
       fetchPolicy: 'network-only',
-      errorPolicy: 'all',
+      errorPolicy: 'ignore',
     },
     mutate: {
-      errorPolicy: 'all',
+      errorPolicy: 'ignore',
     },
   },
 });
