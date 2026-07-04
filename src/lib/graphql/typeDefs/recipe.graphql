@@ -86,6 +86,7 @@ type Recipe {
   id: ID!
   title: String!
   description: String
+  author: User!
   ingredients: [Ingredient]!
   category: Category!
   labels: [Label]!

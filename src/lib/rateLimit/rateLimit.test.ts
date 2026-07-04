@@ -3,7 +3,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('@upstash/ratelimit', () => {
   const Ratelimit = vi.fn().mockImplementation(function (this: { options: unknown }, options: unknown) {
     this.options = options;
-  });
+  }) as unknown as {
+    new (options: unknown): unknown;
+    slidingWindow: ReturnType<typeof vi.fn>;
+  };
+
   Ratelimit.slidingWindow = vi.fn(() => 'window');
 
   return { Ratelimit };
