@@ -84,6 +84,13 @@ describe('NotFound', () => {
     expect(homeIcon).toBeInTheDocument();
   });
 
+  it('renders a single anchor for the home link without nesting', () => {
+    render(<NotFound />);
+    const link = screen.getByRole('link', { name: /vissza a főoldalra/i });
+    expect(link.tagName).toBe('A');
+    expect(link.querySelectorAll('a')).toHaveLength(0);
+  });
+
   it('renders a link to the homepage', () => {
     render(<NotFound />);
     const linkButtons = screen.getAllByText('Vissza a főoldalra');

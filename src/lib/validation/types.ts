@@ -16,7 +16,7 @@ export interface ErrorOptions {
 }
 
 export type FormLike = {
-  errors: Record<string, unknown>;
+  errors?: Record<string, unknown>;
   isDirty: (path?: string) => boolean;
   isValid: () => boolean | Promise<boolean>;
 };

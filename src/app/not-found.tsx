@@ -1,5 +1,4 @@
 import { Container, Stack, Text, Title } from '@mantine/core';
-import Link from 'next/link';
 
 import { useTranslations } from 'next-intl';
 import { FiHome } from 'react-icons/fi';
@@ -37,18 +36,13 @@ const NotFound = () => {
           </Text>
         </Stack>
 
-        <Link
+        <NavButton
+          dataTestId="back-home"
+          label={translate('backButton')}
           href={PUBLIC_ROUTES.HOME}
-          style={{ textDecoration: 'none' }}
-          data-testid="back-home-link"
-        >
-          <NavButton
-            dataTestId="back-home"
-            label={translate('backButton')}
-            href={PUBLIC_ROUTES.HOME}
-            icon={<FiHome size={20} data-testid="icon-home" />}
-          />
-        </Link>
+          icon={<FiHome size={20} data-testid="icon-home" />}
+          linkProps={{ 'data-testid': 'back-home-link' }}
+        />
       </Stack>
     </Container>
   );

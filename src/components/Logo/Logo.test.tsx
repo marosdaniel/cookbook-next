@@ -26,7 +26,7 @@ interface ImageProps extends ComponentProps<'img'> {
 
 // Mock next/image
 vi.mock('next/image', () => ({
-  default: ({ src, alt, width, height, ...props }: ImageProps) => (
+  default: ({ src, alt, width, height, priority, ...props }: ImageProps) => (
     <img
       src={src}
       alt={alt}

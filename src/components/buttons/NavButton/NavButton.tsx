@@ -12,6 +12,7 @@ const NavButton = ({
   size = 'lg',
   fullWidth = false,
   dataTestId,
+  linkProps,
 }: NavButtonProps) => {
   return (
     <Button
@@ -24,6 +25,7 @@ const NavButton = ({
       className={classes.navButton}
       fullWidth={fullWidth}
       data-testid={dataTestId}
+      {...linkProps}
     >
       {label}
     </Button>

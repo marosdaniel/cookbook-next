@@ -8,4 +8,5 @@ export type NavButtonProps = {
   size?: ButtonProps['size'];
   fullWidth?: boolean;
   dataTestId?: string;
+  linkProps?: Record<string, unknown>;
 };
