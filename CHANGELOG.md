@@ -1,3 +1,15 @@
+# [2.37.0](https://github.com/marosdaniel/cookbook-next/compare/v2.36.0...v2.37.0) (2026-07-04)
+
+
+### Bug Fixes
+
+* set argon2 build option to true in pnpm-workspace.yaml ([5c9734b](https://github.com/marosdaniel/cookbook-next/commit/5c9734bb113bb94f3c555b51e64862089748a134))
+
+
+### Features
+
+* implement password hashing utility, add admin destructive action confirmation, and expose deleteAllRecipes mutation. ([5b17a0c](https://github.com/marosdaniel/cookbook-next/commit/5b17a0c69f54ed5567a3faa9cbd3dada33372318))
+
 # [2.36.0](https://github.com/marosdaniel/cookbook-next/compare/v2.35.0...v2.36.0) (2026-07-04)
 
 
