@@ -1,7 +1,7 @@
 import { useLocalStorage } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { act, renderHook } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useRecipeFormHook } from '../FormContext';
 import type { UseRecipeFormProps } from '../types';
 import { useRecipeForm } from './useRecipeForm';
@@ -32,10 +32,6 @@ vi.mock('@mantine/notifications', () => ({
 
 vi.mock('../FormContext', () => ({
   useRecipeFormHook: vi.fn(() => mockForm),
-}));
-
-vi.mock('uuid', () => ({
-  v4: vi.fn(() => 'mock-uuid'),
 }));
 
 vi.mock('../utils', () => ({
@@ -95,6 +91,16 @@ describe('useRecipeForm', () => {
     onSectionChange: vi.fn(),
     labels: [],
   };
+
+  beforeAll(() => {
+    vi.stubGlobal('crypto', {
+      randomUUID: () => 'mock-uuid',
+    });
+  });
+
+  afterAll(() => {
+    vi.unstubAllGlobals();
+  });
 
   beforeEach(() => {
     vi.clearAllMocks();

@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import type { RecipeFormSource, RecipeTaxonomyItem } from '@/types/recipe';
 import type {
   ComposerSection,
@@ -236,7 +235,7 @@ export const recipeToFormValues = (
       note: i.note ?? '',
     })),
     preparationSteps: recipe.preparationSteps.map((s) => ({
-      localId: uuidv4(),
+      localId: crypto.randomUUID(),
       description: s.description,
       order: s.order,
     })),

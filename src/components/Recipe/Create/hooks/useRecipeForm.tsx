@@ -5,7 +5,6 @@ import { IconCheck, IconDeviceFloppy } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { CREATE_RECIPE } from '@/lib/graphql/mutations';
 import { recipeFormValidationSchema } from '@/lib/validation/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
@@ -154,7 +153,7 @@ export const useRecipeForm = ({
   const addIngredient = useCallback(() => {
     const f = formRef.current;
     const newIngredient: FormIngredient = {
-      localId: uuidv4(),
+      localId: crypto.randomUUID(),
       name: '',
       quantity: '',
       unit: '',
@@ -167,7 +166,7 @@ export const useRecipeForm = ({
   const addStep = useCallback(() => {
     const f = formRef.current;
     const newStep: FormPreparationStep = {
-      localId: uuidv4(),
+      localId: crypto.randomUUID(),
       description: '',
       order: f.getValues().preparationSteps.length + 1,
     };

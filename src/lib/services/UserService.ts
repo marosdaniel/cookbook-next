@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import { UserRole } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { ZodError } from 'zod';
 import {
   generateResetToken,

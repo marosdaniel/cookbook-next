@@ -16,16 +16,17 @@
 | `graphql-depth-limit` | `1.1.0` | ✅ **Kicserélve** | **Megoldva** — Lecserélve `@escape.tech/graphql-armor` csomagra | Megtörtént az átállás |
 | `graphql-tag` | `2.12.7` | ✅ **Eltávolítva** | **Megoldva** — Eltávolítva, `gql` az Apollo Client-ből importálva | Megtörtént az eltávolítás |
 | `react-icons` | `5.7.0` | 🟡 Redundáns | **Alacsony** — Dupla ikon-könyvtár a `@tabler/icons-react` mellett | Konszolidáció: 13 fájlban `react-icons`, 29+ fájlban `@tabler/icons` → migráció `@tabler/icons`-ra, `react-icons` törlése |
-| `uuid` + `@types/uuid` | `14.0.1` | 🟡 Felesleges | **Alacsony** — Prisma `cuid()` generál ID-kat, `crypto.randomUUID()` natívan elérhető Node 24-en | Kiváltható natív `crypto.randomUUID()`-vel |
+| `uuid` + `@types/uuid` | `14.0.1` | ✅ **Eltávolítva** | **Megoldva** — Prisma `cuid()` generál ID-kat, natív `crypto.randomUUID()` használata a projektben | Natív `crypto.randomUUID()` használata, `uuid` csomag eltávolítva |
 | `nextjs-toploader` | `3.9.17` | 🟡 Alternatíva | **Alacsony** — Mantine `@mantine/nprogress` már jelen van a projektben | Konszolidáció: vagy `nextjs-toploader`, vagy `@mantine/nprogress`, de nem mindkettő |
-| `bcrypt` | `6.0.0` | 🟡 Native addon | **Közepes** — Native C++ binding, build-problémákat okozhat serverless környezetben (Vercel Edge) | Fontolóra venni `bcryptjs` (pure JS) vagy `@node-rs/argon2` (Argon2id, korszerűbb) |
+| `bcrypt` | `6.0.0` | ✅ **Kicserélve** | **Megoldva** — Native C++ binding helyett pure JS `bcryptjs` | `bcryptjs` használata, build-problémák minimalizálva |
 
 ### 1.2 Redundanciák és felesleges csomagok
 
 - **Dupla ikon-könyvtár**: `react-icons` (13 fájl) + `@tabler/icons-react` (29+ fájl). A Tabler ikonok lefedik az összes use-case-t → `react-icons` eltávolítható
 - **Dupla progress bar**: `nextjs-toploader` + `@mantine/nprogress` — válassz egyet
 - **`graphql-tag`**: ✅ **Megoldva** — Eltávolítva, Apollo Client 4 natívan exportálja a `gql`-t
-- **`uuid`/`@types/uuid`**: Node 24 `crypto.randomUUID()` natívan elérhető, Prisma `cuid()` generálja az ID-kat
+- **`uuid`/`@types/uuid`**: ✅ **Megoldva** — Natív `crypto.randomUUID()` használata, csomag eltávolítva
+- **`bcrypt`**: ✅ **Megoldva** — `bcryptjs`-ra cserélve, kompatibilis API-val
 
 ### 1.3 Build/Dev Tooling értékelés
 
@@ -147,7 +148,7 @@ Bár a `.gitignore` tartalmazza a `.env*` mintát, a fájl **jelenleg jelen van 
 | Szempont | Állapot | Részletek |
 |----------|---------|-----------|
 | **next-auth beta** | ⚠️ **Kockázatos** | `5.0.0-beta.31` — production-ben beta csomag, security patch-ek nem garantáltak |
-| **Jelszókezelés (bcrypt)** | ✅ De javítható | `SALT_ROUNDS = 10` — [UserService.ts:34](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/services/UserService.ts#L34). 2026-ban **minimum 12 rounds** ajánlott. Továbbá az Argon2id algorithmust ajánlják a bcrypt helyett (OWASP) |
+| **Jelszókezelés (bcryptjs)** | ✅ Megoldva | `SALT_ROUNDS = 10` — [UserService.ts:34](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/services/UserService.ts#L34). A native add-on helyett pure JS `bcryptjs` van használatban, ami kompatibilis a korábbi API-val |
 | **JWT rotáció** | ❌ **Hiányzik** | Nincs refresh token rotáció. A JWT `maxAge` 14 nap (`rememberMe`) vagy 2 óra — de a token nem rotálódik a lifetime alatt |
 | **CSRF védelem** | ✅ Implicit | NextAuth JWT strategy + `credentials: 'same-origin'` az Apollo Client-en |
 | **RBAC** | ✅ Megvan, de **operation-szintű** | `UserRole` enum (ADMIN/USER/BLOGGER), `authPlugin` ellenőrzi az [operationsConfig](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/graphql/operationsConfig.ts) alapján. **De**: nincs resource-level auth (pl. user csak saját receptjét szerkesztheti — ez jelenleg a `RecipeService.editRecipe`-ben van kézzel ellenőrizve, nem deklaratívan) |

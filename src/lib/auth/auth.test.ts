@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { prisma } from '@/lib/prisma/prisma';
 
@@ -30,7 +30,7 @@ vi.mock('@/lib/prisma/prisma', () => ({
   },
 }));
 
-vi.mock('bcrypt', () => ({
+vi.mock('bcryptjs', () => ({
   default: {
     compare: vi.fn(),
   },
