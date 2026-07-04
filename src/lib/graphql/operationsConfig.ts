@@ -82,7 +82,7 @@ export const operationsConfig: OperationsConfig = {
   // Admin operations
   adminOperations: [
     // User management
-    'deleteAllUsers',
+    'deleteAllUser',
     'cleanUserRecipes',
 
     // Content moderation

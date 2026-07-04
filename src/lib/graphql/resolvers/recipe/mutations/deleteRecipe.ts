@@ -1,18 +1,12 @@
 import { RecipeService } from '@/lib/services/RecipeService';
 import type { GraphQLContext } from '@/types/graphql/context';
-import type { RecipeEditInput } from '../types';
 import { resolveAuthenticatedUser } from '../utils';
 
-export const editRecipe = async (
+export const deleteRecipe = async (
   _: unknown,
-  { id, recipeEditInput }: { id: string; recipeEditInput: RecipeEditInput },
+  { id }: { id: string },
   context: GraphQLContext,
 ) => {
   const user = await resolveAuthenticatedUser(context);
-  return await RecipeService.editRecipe(
-    user.id,
-    context.role,
-    id,
-    recipeEditInput,
-  );
+  return await RecipeService.deleteRecipe(user.id, context.role, id);
 };

@@ -6,6 +6,7 @@ import {
 import {
   createRecipe,
   deleteRating,
+  deleteRecipe,
   editRecipe,
   rateRecipe,
 } from './resolvers/recipe/mutations';
@@ -19,6 +20,7 @@ import {
   changePassword,
   cleanUserRecipes,
   createUser,
+  deleteAllRecipes,
   deleteAllUser,
   deleteUser,
   followUser,
@@ -52,6 +54,7 @@ export const resolvers = {
     changePassword,
     cleanUserRecipes,
     createUser,
+    deleteAllRecipes,
     deleteAllUser,
     deleteUser,
     followUser,
@@ -62,6 +65,7 @@ export const resolvers = {
     updateUser,
     createRecipe,
     editRecipe,
+    deleteRecipe,
     rateRecipe,
     deleteRating,
   },

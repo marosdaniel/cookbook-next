@@ -1,6 +1,5 @@
 import crypto from 'node:crypto';
 import { UserRole } from '@prisma/client';
-import bcrypt from 'bcryptjs';
 import { ZodError } from 'zod';
 import {
   generateResetToken,
@@ -30,10 +29,11 @@ import {
   resetPasswordValidationSchema,
   setNewPasswordValidationSchema,
 } from '@/lib/validation/validation';
+import { hashPassword, verifyPassword } from '@/lib/auth/password';
 import type { CreateUserArgs } from '@/types/user';
 
-const SALT_ROUNDS = 10;
 const LATEST_RECIPES_LIMIT = 4;
+const ADMIN_DESTRUCTIVE_ACTION_CONFIRMATION = 'DELETE_ALL';
 
 export const UserService = {
   // Queries
@@ -228,7 +228,7 @@ export const UserService = {
       }
     }
 
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    const hashedPassword = await hashPassword(password);
 
     const newUser = await prisma.user.create({
       data: {
@@ -282,7 +282,7 @@ export const UserService = {
       return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
     }
 
-    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    const isMatch = await verifyPassword(currentPassword, user.password);
     if (!isMatch) {
       return throwCustomError(
         'Invalid current password',
@@ -290,7 +290,7 @@ export const UserService = {
       );
     }
 
-    const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    const hashedPassword = await hashPassword(newPassword);
 
     await prisma.user.update({
       where: { id: userId },
@@ -390,7 +390,7 @@ export const UserService = {
       );
     }
 
-    const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    const hashedPassword = await hashPassword(newPassword);
 
     await prisma.user.update({
       where: { id: user.id },
@@ -479,7 +479,11 @@ export const UserService = {
     return true;
   },
 
-  async deleteAllUser(currentUserId: string, currentUserRole: string) {
+  async deleteAllUser(
+    currentUserId: string,
+    currentUserRole: string,
+    confirmation?: string,
+  ) {
     if (currentUserRole !== 'ADMIN') {
       return throwCustomError(
         'Unauthorized operation - admin rights required',
@@ -487,8 +491,48 @@ export const UserService = {
       );
     }
 
+    if (confirmation !== ADMIN_DESTRUCTIVE_ACTION_CONFIRMATION) {
+      return throwCustomError(
+        'Destructive admin action requires explicit confirmation',
+        ErrorTypes.BAD_REQUEST,
+      );
+    }
+
+    console.warn(
+      `[audit] admin deleteAllUser invoked by ${currentUserId} at ${new Date().toISOString()}`,
+    );
+
     const result = await prisma.user.deleteMany({
       where: { id: { not: currentUserId } },
+    });
+    return result.count;
+  },
+
+  async deleteAllRecipes(
+    currentUserId: string,
+    currentUserRole: string,
+    confirmation?: string,
+  ) {
+    if (currentUserRole !== 'ADMIN') {
+      return throwCustomError(
+        'Unauthorized operation - admin rights required',
+        ErrorTypes.FORBIDDEN,
+      );
+    }
+
+    if (confirmation !== ADMIN_DESTRUCTIVE_ACTION_CONFIRMATION) {
+      return throwCustomError(
+        'Destructive admin action requires explicit confirmation',
+        ErrorTypes.BAD_REQUEST,
+      );
+    }
+
+    console.warn(
+      `[audit] admin deleteAllRecipes invoked by ${currentUserId} at ${new Date().toISOString()}`,
+    );
+
+    const result = await prisma.recipe.deleteMany({
+      where: { createdBy: { not: currentUserId } },
     });
     return result.count;
   },

@@ -52,6 +52,8 @@ describe('authConfig', () => {
           locale: 'hu',
           rememberMe: true,
           maxAge: 14 * 24 * 60 * 60,
+          jti: expect.any(String),
+          iat: expect.any(Number),
         });
       });
 

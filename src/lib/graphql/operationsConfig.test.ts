@@ -17,18 +17,18 @@ describe('operationsConfig', () => {
   });
 
   it('allows admins to perform any operation', () => {
-    expect(canUserPerformOperation('deleteAllUsers', 'ADMIN')).toBe(true);
+    expect(canUserPerformOperation('deleteAllUser', 'ADMIN')).toBe(true);
     expect(canUserPerformOperation('createMetadata', 'ADMIN')).toBe(true);
   });
 
   it('allows bloggers to perform user and blogger operations', () => {
     expect(canUserPerformOperation('createRecipe', 'BLOGGER')).toBe(true);
-    expect(canUserPerformOperation('deleteAllUsers', 'BLOGGER')).toBe(false);
+    expect(canUserPerformOperation('deleteAllUser', 'BLOGGER')).toBe(false);
   });
 
   it('allows regular users to perform user operations only', () => {
     expect(canUserPerformOperation('createRecipe', 'USER')).toBe(true);
-    expect(canUserPerformOperation('deleteAllUsers', 'USER')).toBe(false);
+    expect(canUserPerformOperation('deleteAllUser', 'USER')).toBe(false);
   });
 
   it('returns the expected role requirements for known operations', () => {
@@ -38,13 +38,13 @@ describe('operationsConfig', () => {
       'BLOGGER',
       'USER',
     ]);
-    expect(getRequiredRolesForOperation('deleteAllUsers')).toEqual(['ADMIN']);
+    expect(getRequiredRolesForOperation('deleteAllUser')).toEqual(['ADMIN']);
     expect(getRequiredRolesForOperation('unknownOperation')).toEqual(['ADMIN']);
   });
 
   it('keeps the operations config lists populated', () => {
     expect(operationsConfig.publicOperations).toContain('getRecipes');
     expect(operationsConfig.userOperations).toContain('createRecipe');
-    expect(operationsConfig.adminOperations).toContain('deleteAllUsers');
+    expect(operationsConfig.adminOperations).toContain('deleteAllUser');
   });
 });

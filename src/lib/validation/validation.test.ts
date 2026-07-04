@@ -15,8 +15,8 @@ import {
 describe('validation', () => {
   describe('Regex Patterns', () => {
     it('WEAK_PASSWORD_REGEX should validate correctly', () => {
-      expect(WEAK_PASSWORD_REGEX.test('Abc12')).toBe(true);
-      expect(WEAK_PASSWORD_REGEX.test('Ab1')).toBe(false); // Too short (min 5)
+      expect(WEAK_PASSWORD_REGEX.test('Abc1234!')).toBe(true);
+      expect(WEAK_PASSWORD_REGEX.test('Ab1!')).toBe(false); // Too short (min 8)
     });
   });
 
@@ -50,7 +50,7 @@ describe('validation', () => {
     it('should accept valid login info', () => {
       const result = loginValidationSchema.safeParse({
         email: 'test@example.com',
-        password: 'Password1',
+        password: 'Password1!',
       });
       expect(result.success).toBe(true);
     });
@@ -58,7 +58,7 @@ describe('validation', () => {
     it('should reject invalid email', () => {
       const result = loginValidationSchema.safeParse({
         email: 'not-an-email',
-        password: 'Password1',
+        password: 'Password1!',
       });
       expect(result.success).toBe(false);
     });
@@ -75,16 +75,16 @@ describe('validation', () => {
   describe('newPasswordValidationSchema', () => {
     it('should accept matching passwords', () => {
       const result = newPasswordValidationSchema.safeParse({
-        newPassword: 'Password1',
-        confirmNewPassword: 'Password1',
+        newPassword: 'Password1!',
+        confirmNewPassword: 'Password1!',
       });
       expect(result.success).toBe(true);
     });
 
     it('should reject mismatched passwords', () => {
       const result = newPasswordValidationSchema.safeParse({
-        newPassword: 'Password1',
-        confirmNewPassword: 'Password2',
+        newPassword: 'Password1!',
+        confirmNewPassword: 'Password2!',
       });
       expect(result.success).toBe(false);
       if (!result.success) {
@@ -101,12 +101,25 @@ describe('validation', () => {
         firstName: 'Ada',
         lastName: 'Lovelace',
         email: 'ada@example.com',
-        password: 'Password1',
-        confirmPassword: 'Password1',
+        password: 'StrongPassword1!',
+        confirmPassword: 'StrongPassword1!',
         userName: 'ada',
       });
 
       expect(result.success).toBe(true);
+    });
+
+    it('rejects short passwords for registration', () => {
+      const result = customValidationSchema.safeParse({
+        firstName: 'Ada',
+        lastName: 'Lovelace',
+        email: 'ada@example.com',
+        password: 'Pass1!',
+        confirmPassword: 'Pass1!',
+        userName: 'ada',
+      });
+
+      expect(result.success).toBe(false);
     });
 
     it('rejects sign-up form when privacy policy is not accepted', () => {
@@ -127,8 +140,8 @@ describe('validation', () => {
   describe('password-related schemas', () => {
     it('accepts strong passwords for the stricter password reset schema', () => {
       const result = setNewPasswordValidationSchema.safeParse({
-        newPassword: 'StrongPassword1',
-        confirmPassword: 'StrongPassword1',
+        newPassword: 'StrongPassword1!',
+        confirmPassword: 'StrongPassword1!',
       });
 
       expect(result.success).toBe(true);
@@ -136,9 +149,9 @@ describe('validation', () => {
 
     it('rejects mismatched current and new passwords in password edit schema', () => {
       const result = passwordEditValidationSchema.safeParse({
-        currentPassword: 'Password1',
-        newPassword: 'Password2',
-        confirmNewPassword: 'Password3',
+        currentPassword: 'Password1!',
+        newPassword: 'Password2!',
+        confirmNewPassword: 'Password3!',
       });
 
       expect(result.success).toBe(false);

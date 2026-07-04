@@ -3,7 +3,7 @@ import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
 import type { GraphQLContext } from '@/types/graphql/context';
 
-export const deleteAllUser = async (
+export const deleteAllRecipes = async (
   _: unknown,
   { confirmation }: { confirmation?: string },
   { userId: currentUserId, role: currentUserRole }: GraphQLContext,
@@ -15,7 +15,7 @@ export const deleteAllUser = async (
     );
   }
 
-  return await UserService.deleteAllUser(
+  return await UserService.deleteAllRecipes(
     currentUserId,
     currentUserRole,
     confirmation,

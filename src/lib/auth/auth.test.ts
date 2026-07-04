@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+import { verifyPassword } from './password';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { prisma } from '@/lib/prisma/prisma';
 
@@ -30,10 +30,8 @@ vi.mock('@/lib/prisma/prisma', () => ({
   },
 }));
 
-vi.mock('bcryptjs', () => ({
-  default: {
-    compare: vi.fn(),
-  },
+vi.mock('./password', () => ({
+  verifyPassword: vi.fn(),
 }));
 
 describe('auth.ts', () => {
@@ -71,7 +69,7 @@ describe('auth.ts', () => {
         email: 'test@example.com',
         password: 'hashed-password',
       });
-      (bcrypt.compare as Mock).mockResolvedValue(false);
+      (verifyPassword as Mock).mockResolvedValue(false);
 
       await expect(
         authorize({ email: 'test@example.com', password: 'wrong' }),
@@ -90,7 +88,7 @@ describe('auth.ts', () => {
         locale: 'en',
       };
       (prisma.user.findUnique as Mock).mockResolvedValue(mockUser);
-      (bcrypt.compare as Mock).mockResolvedValue(true);
+      (verifyPassword as Mock).mockResolvedValue(true);
 
       const result = await authorize({
         email: 'test@example.com',
@@ -115,7 +113,7 @@ describe('auth.ts', () => {
         id: '1',
         password: 'hp',
       });
-      (bcrypt.compare as Mock).mockResolvedValue(true);
+      (verifyPassword as Mock).mockResolvedValue(true);
 
       const result = (await authorize({
         email: 'a@b.com',

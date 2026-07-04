@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
 /* ─── Constants ───────────────────────────────── */
-// Minimum five characters, at least one letter and one number
-export const WEAK_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.{5,})/;
+// Minimum eight characters, at least one lowercase, one uppercase, one number, and one special character
+export const STRONG_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])(?=.{8,})/;
 
-// Minimum eight characters, at least one lowercase, one uppercase, one number
-export const STRONG_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.{8,})/;
+// Legacy compatibility regex for existing flows that still allow a slightly weaker policy
+export const WEAK_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.{8,})/;
 
 /* ─── Shared Schemas ──────────────────────────── */
 const nameFields = {
@@ -26,11 +26,11 @@ const emailField = {
 const passwordField = {
   password: z
     .string()
-    .min(5, 'Too Short!')
-    .max(20, 'Too Long!')
+    .min(8, 'Password must be at least 8 characters')
+    .max(64, 'Password must be at most 64 characters')
     .regex(
-      WEAK_PASSWORD_REGEX,
-      'Password must contain at least 5 characters, including at least 1 letter and 1 number',
+      STRONG_PASSWORD_REGEX,
+      'Password must contain at least 8 characters, including uppercase, lowercase, number, and special character',
     ),
 };
 
@@ -50,11 +50,11 @@ export const newPasswordValidationSchema = z
   .object({
     newPassword: z
       .string()
-      .min(5, 'Too Short!')
-      .max(20, 'Too Long!')
+      .min(8, 'Password must be at least 8 characters')
+      .max(64, 'Password must be at most 64 characters')
       .regex(
-        WEAK_PASSWORD_REGEX,
-        'Password must contain at least 5 characters, including at least 1 letter and 1 number',
+        STRONG_PASSWORD_REGEX,
+        'Password must contain at least 8 characters, including uppercase, lowercase, number, and special character',
       ),
     confirmNewPassword: z.string(),
   })

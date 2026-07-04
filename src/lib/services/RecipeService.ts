@@ -81,6 +81,21 @@ async function invalidateCache(keys: string[]) {
   }
 }
 
+export const assertRecipeResourceAccess = (
+  userId: string,
+  userRole: string | undefined,
+  recipe: { createdBy: string },
+) => {
+  if (userRole === 'ADMIN' || recipe.createdBy === userId) {
+    return;
+  }
+
+  return throwCustomError(
+    'Not authorized to edit this recipe',
+    ErrorTypes.FORBIDDEN,
+  );
+};
+
 export const RecipeService = {
   // Queries
   async getRecipes(limit?: number, filter?: RecipeFilterInput) {
@@ -199,6 +214,7 @@ export const RecipeService = {
 
   async editRecipe(
     userId: string,
+    userRole: string | undefined,
     recipeId: string,
     recipeEditInput: RecipeEditInput,
   ) {
@@ -211,12 +227,7 @@ export const RecipeService = {
       return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
     }
 
-    if (existingRecipe.createdBy !== userId) {
-      return throwCustomError(
-        'Not authorized to edit this recipe',
-        ErrorTypes.FORBIDDEN,
-      );
-    }
+    assertRecipeResourceAccess(userId, userRole, existingRecipe);
 
     const metadata = await resolveRecipeMetadata(recipeEditInput);
     const data = buildRecipeData(recipeEditInput, metadata);
@@ -254,6 +265,29 @@ export const RecipeService = {
     ]);
 
     return updatedRecipe;
+  },
+
+  async deleteRecipe(
+    userId: string,
+    userRole: string | undefined,
+    recipeId: string,
+  ) {
+    const existingRecipe = await prisma.recipe.findUnique({
+      where: { id: recipeId },
+    });
+    if (!existingRecipe) {
+      return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
+    }
+
+    assertRecipeResourceAccess(userId, userRole, existingRecipe);
+
+    const deletedRecipe = await prisma.recipe.delete({
+      where: { id: recipeId },
+    });
+
+    await invalidateCache([`recipe:${recipeId}`, `recipes:all:{}`]);
+
+    return !!deletedRecipe;
   },
 
   async rateRecipe(userId: string, ratingInput: RatingInput) {

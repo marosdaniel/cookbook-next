@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
+import { createIssuedAt, createTokenId } from './password';
 import { AUTH_ROUTES } from '../../types/routes';
 
 export const authConfig = {
@@ -13,8 +14,8 @@ export const authConfig = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      // Add user data to token on sign in
       if (user) {
+        const sessionMaxAge = user.rememberMe ? 14 * 24 * 60 * 60 : 2 * 60 * 60;
         token.id = user.id;
         token.role = user.role;
         token.userName = user.userName;
@@ -22,7 +23,9 @@ export const authConfig = {
         token.lastName = user.lastName;
         token.locale = user.locale;
         token.rememberMe = user.rememberMe;
-        token.maxAge = user.rememberMe ? 14 * 24 * 60 * 60 : 2 * 60 * 60; // 14 days or 2 hours
+        token.maxAge = sessionMaxAge;
+        token.jti = createTokenId();
+        token.iat = createIssuedAt();
       }
       return token;
     },

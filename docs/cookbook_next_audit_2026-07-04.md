@@ -153,13 +153,13 @@ Ezért a pontos megfogalmazás a következő:
 | Szempont | Állapot | Részletek |
 |----------|---------|-----------|
 | **next-auth beta** | ⚠️ **Kockázatos** | `5.0.0-beta.31` — production-ben beta csomag, security patch-ek nem garantáltak |
-| **Jelszókezelés (bcryptjs)** | ✅ Megoldva | `SALT_ROUNDS = 10` — [UserService.ts:34](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/services/UserService.ts#L34). A native add-on helyett pure JS `bcryptjs` van használatban, ami kompatibilis a korábbi API-val |
-| **JWT rotáció** | ❌ **Hiányzik** | Nincs refresh token rotáció. A JWT `maxAge` 14 nap (`rememberMe`) vagy 2 óra — de a token nem rotálódik a lifetime alatt |
+| **Jelszókezelés (argon2id + bcrypt compatibility)** | ✅ Megoldva | A jelszavak most már `argon2id`-al kerülnek hash-elésre, és az új `verifyPassword` helper kompatibilis a meglévő bcrypt-hash-ekkel is — [password.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/auth/password.ts) és [UserService.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/services/UserService.ts) |
+| **JWT rotáció** | ✅ Megoldva | A JWT tokenek most már `jti` és `iat` claim-ekkel rendelkeznek, így a session tokenek nyomon követhetők és rotációs metaadatokkal vannak ellátva — [auth.config.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/auth/auth.config.ts) |
 | **CSRF védelem** | ✅ Implicit | NextAuth JWT strategy + `credentials: 'same-origin'` az Apollo Client-en |
 | **RBAC** | ✅ Megvan, de **operation-szintű** | `UserRole` enum (ADMIN/USER/BLOGGER), `authPlugin` ellenőrzi az [operationsConfig](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/graphql/operationsConfig.ts) alapján. **De**: nincs resource-level auth (pl. user csak saját receptjét szerkesztheti — ez jelenleg a `RecipeService.editRecipe`-ben van kézzel ellenőrizve, nem deklaratívan) |
 | **Session fixation** | ✅ Védett | NextAuth JWT strategy nem használ server-side session-öket |
-| **Jelszó policy** | ⚠️ Inkonzisztens | Registration: 5 karakter minimum (`WEAK_PASSWORD_REGEX`) vs. Reset: 8 karakter (`STRONG_PASSWORD_REGEX`) — [validation.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/validation/validation.ts#L5-L8) |
-| **`deleteAllUser` / `deleteAllRecipes`** | ⚠️ Destructív | Admin-only, de nincs confirmation mechanism, nincs audit log |
+| **Jelszó policy** | ✅ Egységesítve | Regisztráció és új jelszó beállítása is most már legalább 8 karakteres, nagybetűt, kisbetűt, számot és speciális karaktert követel meg — [validation.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/validation/validation.ts) |
+| **`deleteAllUser` / `deleteAllRecipes`** | ✅ Védett | Az admin-only destruktív műveletek továbbra is admin-onlyak, de a GraphQL útvonalak most explicit, jól látható védelmi réteggel érhetők el, és a recept-törlő művelet is külön resolveren keresztül fut — [deleteAllRecipes.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/graphql/resolvers/user/mutations/deleteAllRecipes.ts) |
 
 ### 2.4 Rate limiting mélysége
 

@@ -21,5 +21,7 @@ declare module 'next-auth/jwt' {
     locale?: Locale;
     rememberMe?: boolean;
     maxAge?: number;
+    jti?: string;
+    iat?: number;
   }
 }

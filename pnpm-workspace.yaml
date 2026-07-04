@@ -5,6 +5,7 @@ allowBuilds:
   '@parcel/watcher': true
   '@prisma/engines': true
   '@swc/core': true
+  argon2: set this to true or false
   bcrypt: true
   prisma: true
   sharp: true

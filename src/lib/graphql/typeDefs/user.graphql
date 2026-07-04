@@ -106,7 +106,7 @@ type Mutation {
   setNewPassword(token: String!, newPassword: String!): BaseResponse!
 
   deleteUser(id: ID!): Boolean!
-  deleteAllUser: Int!
+  deleteAllUser(confirmation: String!): Int!
 
   addToFavoriteRecipes(userId: ID!, recipeId: ID!): OperationResponse!
   removeFromFavoriteRecipes(userId: ID!, recipeId: ID!): OperationResponse!

@@ -3,6 +3,7 @@ export { changePassword } from './changePassword';
 export { cleanUserRecipes } from './cleanUserRecipes';
 export { createUser } from './createUser';
 export { deleteAllUser } from './deleteAllUser';
+export { deleteAllRecipes } from './deleteAllRecipes';
 export { deleteUser } from './deleteUser';
 export { followUser } from './followUser';
 export { removeFromFavoriteRecipes } from './removeFromFavoriteRecipes';
