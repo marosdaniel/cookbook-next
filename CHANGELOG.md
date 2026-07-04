@@ -1,3 +1,12 @@
+# [2.36.0](https://github.com/marosdaniel/cookbook-next/compare/v2.35.0...v2.36.0) (2026-07-04)
+
+
+### Features
+
+* add author field to Recipe schema and verify with new test case ([0399d87](https://github.com/marosdaniel/cookbook-next/commit/0399d8734d466560f60be53a022698505e1450a1))
+* configure Apollo cache policies for pagination and entity normalization and update default fetch policy to cache-first ([255e3f1](https://github.com/marosdaniel/cookbook-next/commit/255e3f13bbc3b51d0ba023bd1c11603901750358))
+* implement DataLoader pattern for recipe authors and user recipes with schema index optimizations ([3977d7d](https://github.com/marosdaniel/cookbook-next/commit/3977d7d4c9872fec18c03055baeb938bb6d31155))
+
 # [2.35.0](https://github.com/marosdaniel/cookbook-next/compare/v2.34.1...v2.35.0) (2026-07-04)
 
 
