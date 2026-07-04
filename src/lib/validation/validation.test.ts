@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import {
+  customValidationSchema,
   loginValidationSchema,
   nameValidationSchema,
   newPasswordValidationSchema,
+  passwordEditValidationSchema,
   recipeFormValidationSchema,
+  resetPasswordValidationSchema,
+  setNewPasswordValidationSchema,
+  signUpValidationSchema,
   WEAK_PASSWORD_REGEX,
 } from './validation';
 
@@ -87,6 +92,62 @@ describe('validation', () => {
         // refine issue usually puts error on the path
         expect(result.error.issues[0].message).toBe('Passwords must match');
       }
+    });
+  });
+
+  describe('custom and sign-up schemas', () => {
+    it('accepts matching passwords for custom validation schema', () => {
+      const result = customValidationSchema.safeParse({
+        firstName: 'Ada',
+        lastName: 'Lovelace',
+        email: 'ada@example.com',
+        password: 'Password1',
+        confirmPassword: 'Password1',
+        userName: 'ada',
+      });
+
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects sign-up form when privacy policy is not accepted', () => {
+      const result = signUpValidationSchema.safeParse({
+        firstName: 'Ada',
+        lastName: 'Lovelace',
+        email: 'ada@example.com',
+        password: 'Password1',
+        confirmPassword: 'Password1',
+        userName: 'ada',
+        privacyAccepted: false,
+      });
+
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe('password-related schemas', () => {
+    it('accepts strong passwords for the stricter password reset schema', () => {
+      const result = setNewPasswordValidationSchema.safeParse({
+        newPassword: 'StrongPassword1',
+        confirmPassword: 'StrongPassword1',
+      });
+
+      expect(result.success).toBe(true);
+    });
+
+    it('rejects mismatched current and new passwords in password edit schema', () => {
+      const result = passwordEditValidationSchema.safeParse({
+        currentPassword: 'Password1',
+        newPassword: 'Password2',
+        confirmNewPassword: 'Password3',
+      });
+
+      expect(result.success).toBe(false);
+    });
+
+    it('accepts reset password email input', () => {
+      const result = resetPasswordValidationSchema.safeParse({ email: 'test@example.com' });
+
+      expect(result.success).toBe(true);
     });
   });
 

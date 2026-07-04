@@ -18,4 +18,50 @@ describe('apollo client cache configuration', () => {
     expect(recipePolicy.keyFn).toBeTypeOf('function');
     expect(userPolicy.keyFn).toBeTypeOf('function');
   });
+
+  it('merges paginated query results for recipes, following lists, and favorites', () => {
+    const cacheWithPolicies = apolloClient.cache as typeof apolloClient.cache & {
+      policies: {
+        getTypePolicy: (typeName: string) => {
+          fields?: Record<string, { merge?: (incoming: unknown, existing: unknown) => unknown }>;
+        };
+      };
+    };
+
+    const queryPolicy = cacheWithPolicies.policies.getTypePolicy('Query');
+    const getFavoriteRecipesMerge = queryPolicy.fields?.getFavoriteRecipes.merge;
+    const getRecipesMerge = queryPolicy.fields?.getRecipes.merge;
+    const getFollowingMerge = queryPolicy.fields?.getFollowing.merge;
+
+    expect(getFavoriteRecipesMerge).toBeTypeOf('function');
+    expect(getRecipesMerge).toBeTypeOf('function');
+    expect(getFollowingMerge).toBeTypeOf('function');
+
+    expect(getFavoriteRecipesMerge?.(['one'], [])).toEqual(['one']);
+
+    expect(getRecipesMerge?.({ recipes: [{ id: 'b' }], totalRecipes: 2 }, undefined)).toEqual({
+      recipes: [{ id: 'b' }],
+      totalRecipes: 2,
+    });
+
+    expect(
+      getRecipesMerge?.(
+        { recipes: [{ id: 'b' }], totalRecipes: 2 },
+        { recipes: [{ id: 'a' }], totalRecipes: 1 },
+      ),
+    ).toEqual({
+      recipes: [{ id: 'a' }, { id: 'b' }],
+      totalRecipes: 2,
+    });
+
+    expect(
+      getFollowingMerge?.(
+        { users: [{ id: 'u2' }], totalFollowing: 2 },
+        { users: [{ id: 'u1' }], totalFollowing: 1 },
+      ),
+    ).toEqual({
+      users: [{ id: 'u1' }, { id: 'u2' }],
+      totalFollowing: 2,
+    });
+  });
 });
