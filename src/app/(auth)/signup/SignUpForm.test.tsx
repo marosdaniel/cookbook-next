@@ -170,9 +170,9 @@ describe('SignUpForm', () => {
       fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
       fireEvent.change(userNameInput, { target: { value: 'johndoe' } });
       fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
-      fireEvent.change(passwordInput, { target: { value: 'Password123!' } });
+      fireEvent.change(passwordInput, { target: { value: 'Example123!' } });
       fireEvent.change(confirmPasswordInput, {
-        target: { value: 'Password123!' },
+        target: { value: 'Example123!' },
       });
       fireEvent.click(privacyCheckbox);
 
@@ -197,9 +197,9 @@ describe('SignUpForm', () => {
       fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
       fireEvent.change(userNameInput, { target: { value: 'johndoe' } });
       fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
-      fireEvent.change(passwordInput, { target: { value: 'Password123!' } });
+      fireEvent.change(passwordInput, { target: { value: 'Example123!' } });
       fireEvent.change(confirmPasswordInput, {
-        target: { value: 'Password123!' },
+        target: { value: 'Example123!' },
       });
       fireEvent.click(privacyCheckbox);
     };
@@ -229,8 +229,8 @@ describe('SignUpForm', () => {
               lastName: 'Doe',
               userName: 'johndoe',
               email: 'john@example.com',
-              password: 'Password123!', // NOSONAR
-              confirmPassword: 'Password123!', // NOSONAR
+              password: 'Example123!',
+              confirmPassword: 'Example123!',
             },
           },
         });
@@ -275,7 +275,7 @@ describe('SignUpForm', () => {
       await waitFor(() => {
         expect(signIn).toHaveBeenCalledWith('credentials', {
           email: 'john@example.com',
-          password: 'Password123!', // NOSONAR
+          password: 'Example123!',
           redirect: false,
         });
       });
@@ -364,9 +364,9 @@ describe('SignUpForm', () => {
       fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
       fireEvent.change(userNameInput, { target: { value: 'johndoe' } });
       fireEvent.change(emailInput, { target: { value: 'john@example.com' } });
-      fireEvent.change(passwordInput, { target: { value: 'Password123!' } });
+      fireEvent.change(passwordInput, { target: { value: 'Example123!' } });
       fireEvent.change(confirmPasswordInput, {
-        target: { value: 'Password123!' },
+        target: { value: 'Example123!' },
       });
 
       // Submit button should still be disabled

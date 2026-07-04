@@ -49,7 +49,7 @@ describe('assertRecipeResourceAccess', () => {
     vi.mocked(prisma.recipe.findUnique).mockResolvedValue({
       id: 'recipe-1',
       createdBy: 'user-2',
-    });
+    } as unknown as Awaited<ReturnType<typeof prisma.recipe.findUnique>>);
 
     await expect(
       RecipeService.deleteRecipe('user-1', 'USER', 'recipe-1'),

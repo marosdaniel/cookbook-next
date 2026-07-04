@@ -50,7 +50,7 @@ describe('validation', () => {
     it('should accept valid login info', () => {
       const result = loginValidationSchema.safeParse({
         email: 'test@example.com',
-        password: 'Password1!',
+        password: 'Example123!',
       });
       expect(result.success).toBe(true);
     });
@@ -58,7 +58,7 @@ describe('validation', () => {
     it('should reject invalid email', () => {
       const result = loginValidationSchema.safeParse({
         email: 'not-an-email',
-        password: 'Password1!',
+        password: 'Example123!',
       });
       expect(result.success).toBe(false);
     });
@@ -75,16 +75,16 @@ describe('validation', () => {
   describe('newPasswordValidationSchema', () => {
     it('should accept matching passwords', () => {
       const result = newPasswordValidationSchema.safeParse({
-        newPassword: 'Password1!',
-        confirmNewPassword: 'Password1!',
+        newPassword: 'Example123!',
+        confirmNewPassword: 'Example123!',
       });
       expect(result.success).toBe(true);
     });
 
     it('should reject mismatched passwords', () => {
       const result = newPasswordValidationSchema.safeParse({
-        newPassword: 'Password1!',
-        confirmNewPassword: 'Password2!',
+        newPassword: 'Example123!',
+        confirmNewPassword: 'Fixture123!',
       });
       expect(result.success).toBe(false);
       if (!result.success) {
@@ -101,8 +101,8 @@ describe('validation', () => {
         firstName: 'Ada',
         lastName: 'Lovelace',
         email: 'ada@example.com',
-        password: 'StrongPassword1!',
-        confirmPassword: 'StrongPassword1!',
+        password: 'StrongExample1!',
+        confirmPassword: 'StrongExample1!',
         userName: 'ada',
       });
 
@@ -114,8 +114,8 @@ describe('validation', () => {
         firstName: 'Ada',
         lastName: 'Lovelace',
         email: 'ada@example.com',
-        password: 'Pass1!',
-        confirmPassword: 'Pass1!',
+        password: 'Abc1!',
+        confirmPassword: 'Abc1!',
         userName: 'ada',
       });
 
@@ -127,8 +127,8 @@ describe('validation', () => {
         firstName: 'Ada',
         lastName: 'Lovelace',
         email: 'ada@example.com',
-        password: 'Password1',
-        confirmPassword: 'Password1',
+        password: 'Example1',
+        confirmPassword: 'Example1',
         userName: 'ada',
         privacyAccepted: false,
       });
@@ -140,8 +140,8 @@ describe('validation', () => {
   describe('password-related schemas', () => {
     it('accepts strong passwords for the stricter password reset schema', () => {
       const result = setNewPasswordValidationSchema.safeParse({
-        newPassword: 'StrongPassword1!',
-        confirmPassword: 'StrongPassword1!',
+        newPassword: 'StrongExample1!',
+        confirmPassword: 'StrongExample1!',
       });
 
       expect(result.success).toBe(true);
@@ -149,9 +149,9 @@ describe('validation', () => {
 
     it('rejects mismatched current and new passwords in password edit schema', () => {
       const result = passwordEditValidationSchema.safeParse({
-        currentPassword: 'Password1!',
-        newPassword: 'Password2!',
-        confirmNewPassword: 'Password3!',
+        currentPassword: 'Example123!',
+        newPassword: 'Fixture123!',
+        confirmNewPassword: 'Sample123!',
       });
 
       expect(result.success).toBe(false);

@@ -128,9 +128,9 @@ describe('UserService', () => {
 
     await expect(
       UserService.changePassword('user-1', {
-        currentPassword: 'Old123!@',
-        newPassword: 'New456!@',
-        confirmNewPassword: 'New456!@',
+        currentPassword: 'Example123!',
+        newPassword: 'Example456!',
+        confirmNewPassword: 'Example456!',
       }),
     ).resolves.toBe(true);
 
@@ -144,9 +144,9 @@ describe('UserService', () => {
 
     await expect(
       UserService.changePassword('user-1', {
-        currentPassword: 'Wrong123!@',
-        newPassword: 'New456!@',
-        confirmNewPassword: 'New456!@',
+        currentPassword: 'Fixture123!',
+        newPassword: 'Example456!',
+        confirmNewPassword: 'Example456!',
       }),
     ).rejects.toThrow('Invalid current password:BAD_REQUEST');
   });
