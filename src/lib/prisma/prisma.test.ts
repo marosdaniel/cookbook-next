@@ -23,6 +23,7 @@ describe('prisma', () => {
   beforeEach(() => {
     vi.resetModules();
     vi.clearAllMocks();
+    vi.unstubAllEnvs();
     // Clean up global prisma instance to ensure a fresh state for each test
     delete (globalThis as unknown as Record<string, unknown>).prisma;
   });
@@ -75,5 +76,24 @@ describe('prisma', () => {
     await import('./prisma');
 
     expect(PrismaNeonSpy).toHaveBeenCalledWith({ connectionString: dbUrl });
+  });
+
+  it('should fallback to DIRECT_URL when DATABASE_URL is not set', async () => {
+    const dbUrl = 'postgresql://direct-user:example-password@neon.db/test-repo';
+    vi.stubEnv('DIRECT_URL', dbUrl);
+    delete process.env.DATABASE_URL;
+
+    await import('./prisma');
+
+    expect(PrismaNeonSpy).toHaveBeenCalledWith({ connectionString: dbUrl });
+  });
+
+  it('should throw when neither DATABASE_URL nor DIRECT_URL is available', async () => {
+    delete process.env.DATABASE_URL;
+    delete process.env.DIRECT_URL;
+
+    await expect(import('./prisma')).rejects.toThrow(
+      'No database connection string found.',
+    );
   });
 });
