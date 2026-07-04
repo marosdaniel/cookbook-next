@@ -1,3 +1,10 @@
+# [2.35.0](https://github.com/marosdaniel/cookbook-next/compare/v2.34.1...v2.35.0) (2026-07-04)
+
+
+### Features
+
+* implement GraphQL query protection with persisted query validation, field-level authorization, and configurable request limits ([3702568](https://github.com/marosdaniel/cookbook-next/commit/370256854afcaeec906957f3c760356c8c38d229))
+
 ## [2.34.1](https://github.com/marosdaniel/cookbook-next/compare/v2.34.0...v2.34.1) (2026-07-01)
 
 
