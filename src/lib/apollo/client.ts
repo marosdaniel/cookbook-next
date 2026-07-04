@@ -32,7 +32,67 @@ export const apolloClient = new ApolloClient({
   link: httpLink,
   cache: new InMemoryCache({
     typePolicies: {
-      Query: {},
+      Query: {
+        fields: {
+          getFavoriteRecipes: {
+            keyArgs: ['userId', 'limit'],
+            merge(existing = [], incoming) {
+              return [...existing, ...incoming];
+            },
+          },
+          getRecipes: {
+            keyArgs: ['limit', 'filter'],
+            merge(existing, incoming) {
+              if (!existing) {
+                return incoming;
+              }
+
+              return {
+                ...incoming,
+                recipes: [...(existing.recipes ?? []), ...(incoming.recipes ?? [])],
+                totalRecipes:
+                  incoming.totalRecipes ?? existing.totalRecipes ?? 0,
+              };
+            },
+          },
+          getRecipesByUserId: {
+            keyArgs: ['userId', 'limit'],
+            merge(existing, incoming) {
+              if (!existing) {
+                return incoming;
+              }
+
+              return {
+                ...incoming,
+                recipes: [...(existing.recipes ?? []), ...(incoming.recipes ?? [])],
+                totalRecipes:
+                  incoming.totalRecipes ?? existing.totalRecipes ?? 0,
+              };
+            },
+          },
+          getFollowing: {
+            keyArgs: ['userId', 'limit'],
+            merge(existing, incoming) {
+              if (!existing) {
+                return incoming;
+              }
+
+              return {
+                ...incoming,
+                users: [...(existing.users ?? []), ...(incoming.users ?? [])],
+                totalFollowing:
+                  incoming.totalFollowing ?? existing.totalFollowing ?? 0,
+              };
+            },
+          },
+        },
+      },
+      Recipe: {
+        keyFields: ['id'],
+      },
+      User: {
+        keyFields: ['id'],
+      },
     },
   }),
   defaultOptions: {
@@ -41,7 +101,7 @@ export const apolloClient = new ApolloClient({
       errorPolicy: 'ignore',
     },
     query: {
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'cache-first',
       errorPolicy: 'ignore',
     },
     mutate: {
