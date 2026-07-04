@@ -18,8 +18,8 @@ export const extractOperationName = (query: string): string | null => {
         return firstSelection.name.value;
       }
     }
-  } catch (error) {
-    console.error('Error parsing GraphQL query:', error);
+  } catch {
+    return null;
   }
 
   return null;
@@ -35,8 +35,7 @@ export const getQueryFromRequest = async (
     // Using Next.js Request API
     const body = await req.clone().json();
     return body.query || null;
-  } catch (error) {
-    console.error('Error reading request body:', error);
+  } catch {
     return null;
   }
 };
@@ -62,8 +61,7 @@ export const getOperationNameFromRequest = async (
     }
 
     return null;
-  } catch (error) {
-    console.error('Error extracting operation name from request:', error);
+  } catch {
     return null;
   }
 };

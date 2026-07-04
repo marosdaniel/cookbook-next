@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   extractOperationName,
@@ -15,8 +15,13 @@ describe('operationUtils', () => {
   });
 
   it('returns null for invalid or non-operational GraphQL text', () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
     expect(extractOperationName('not a graphql query')).toBeNull();
     expect(extractOperationName('fragment RecipeFragment on Recipe { id }')).toBeNull();
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+
+    consoleErrorSpy.mockRestore();
   });
 
   it('reads the query from a request body', async () => {
@@ -29,12 +34,16 @@ describe('operationUtils', () => {
   });
 
   it('returns null when the request body is not valid JSON', async () => {
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const req = new Request('http://localhost', {
       method: 'POST',
       body: 'not-json',
     });
 
     await expect(getQueryFromRequest(req)).resolves.toBeNull();
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+
+    consoleErrorSpy.mockRestore();
   });
 
   it('uses operationName from the request body before parsing the query', async () => {
