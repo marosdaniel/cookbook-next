@@ -5,7 +5,7 @@ import type {
 import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { GraphQLError } from 'graphql';
-import depthLimit from 'graphql-depth-limit';
+import { ApolloArmor } from '@escape.tech/graphql-armor';
 import type { NextRequest } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 import {
@@ -62,16 +62,39 @@ const authPlugin: ApolloServerPlugin<GraphQLContext> = {
   },
 };
 
+// Configure GraphQL Armor
+const armor = new ApolloArmor({
+  maxDepth: {
+    enabled: true,
+    n: 7, // Prevent deeply nested queries that could cause performance issues or DoS
+  },
+  costLimit: {
+    enabled: true,
+  },
+  maxAliases: {
+    enabled: true,
+    n: 15,
+  },
+  maxDirectives: {
+    enabled: true,
+    n: 50,
+  },
+  maxTokens: {
+    enabled: true,
+    n: 1000,
+  },
+});
+
+const protection = armor.protect();
+
 // Create Apollo Server instance
 const server = new ApolloServer<GraphQLContext>({
   typeDefs,
   resolvers: { ...scalarResolvers, ...resolvers },
-  plugins: [loggingPlugin, authPlugin],
+  plugins: [...protection.plugins, loggingPlugin, authPlugin],
+  validationRules: [...protection.validationRules],
   introspection: process.env.NODE_ENV !== 'production',
-  validationRules: [
-    // Prevent deeply nested queries that could cause performance issues or DoS
-    depthLimit(7),
-  ],
+  allowBatchedHttpRequests: false,
 });
 
 /**

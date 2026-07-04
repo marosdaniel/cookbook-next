@@ -1,0 +1,320 @@
+# 🔍 Cookbook-Next — Mélyreható Audit Eredmények
+
+> **Projekt**: cookbook-next v2.34.1  
+> **Stack**: Next.js 16.2.10 / Apollo Server 5 / Prisma 7 / Neon Postgres / React 19  
+> **Audit dátum**: 2026-07-04
+
+---
+
+## 1. Technológiai Audit
+
+### 1.1 Dependency-elemzés — Elavult és instabil csomagok
+
+| Csomag | Verzió | Állapot | Kockázat | Javaslat |
+|--------|--------|---------|----------|----------|
+| `next-auth` | `5.0.0-beta.31` | ⚠️ **Beta** | **Magas** — Breaking change-ek bármikor jöhetnek, nincs LTS garancia, production-ben beta csomagra támaszkodni kockázatos | Migrálás Auth.js v5 stabil kiadásra (ha már elérhető 2026 közepére), vagy átváltás `better-auth`-ra, ami natív Next.js App Router támogatással stabil |
+| `graphql-depth-limit` | `1.1.0` | ✅ **Kicserélve** | **Megoldva** — Lecserélve `@escape.tech/graphql-armor` csomagra | Megtörtént az átállás |
+| `graphql-tag` | `2.12.7` | ✅ **Eltávolítva** | **Megoldva** — Eltávolítva, `gql` az Apollo Client-ből importálva | Megtörtént az eltávolítás |
+| `react-icons` | `5.7.0` | 🟡 Redundáns | **Alacsony** — Dupla ikon-könyvtár a `@tabler/icons-react` mellett | Konszolidáció: 13 fájlban `react-icons`, 29+ fájlban `@tabler/icons` → migráció `@tabler/icons`-ra, `react-icons` törlése |
+| `uuid` + `@types/uuid` | `14.0.1` | 🟡 Felesleges | **Alacsony** — Prisma `cuid()` generál ID-kat, `crypto.randomUUID()` natívan elérhető Node 24-en | Kiváltható natív `crypto.randomUUID()`-vel |
+| `nextjs-toploader` | `3.9.17` | 🟡 Alternatíva | **Alacsony** — Mantine `@mantine/nprogress` már jelen van a projektben | Konszolidáció: vagy `nextjs-toploader`, vagy `@mantine/nprogress`, de nem mindkettő |
+| `bcrypt` | `6.0.0` | 🟡 Native addon | **Közepes** — Native C++ binding, build-problémákat okozhat serverless környezetben (Vercel Edge) | Fontolóra venni `bcryptjs` (pure JS) vagy `@node-rs/argon2` (Argon2id, korszerűbb) |
+
+### 1.2 Redundanciák és felesleges csomagok
+
+- **Dupla ikon-könyvtár**: `react-icons` (13 fájl) + `@tabler/icons-react` (29+ fájl). A Tabler ikonok lefedik az összes use-case-t → `react-icons` eltávolítható
+- **Dupla progress bar**: `nextjs-toploader` + `@mantine/nprogress` — válassz egyet
+- **`graphql-tag`**: ✅ **Megoldva** — Eltávolítva, Apollo Client 4 natívan exportálja a `gql`-t
+- **`uuid`/`@types/uuid`**: Node 24 `crypto.randomUUID()` natívan elérhető, Prisma `cuid()` generálja az ID-kat
+
+### 1.3 Build/Dev Tooling értékelés
+
+| Eszköz | Értékelés |
+|--------|-----------|
+| **Turbopack** (`next dev --turbopack`) | ✅ Kiváló — 2026-ban production-ready, helyes választás |
+| **Biome 2.5** | ✅ Kiváló — A `biome.json` jól konfigurált (format + lint + organize imports). Biome 2026-ban az ESLint+Prettier helyett a legjobb választás |
+| **semantic-release 25** | ✅ Megfelelő — Jól illeszkedik a CI/CD pipeline-hoz. Alternatíva: `changesets` (monorepo-friendlier), de single-repo-hoz a semantic-release tökéletes |
+| **pnpm** | ✅ Kiváló — A legjobb package manager 2026-ban |
+| **TypeScript 6** | ✅ Helyes, de a `tsconfig.json`-ban `"noImplicitAny": false` → **erősebb típusbiztonságot adna, ha `true` lenne** |
+| **`target: "ES2022"`** | ✅ Megfelelő — Node 24 + modern böngészők számára optimalizálva |
+
+### 1.4 GraphQL réteg értékelése
+
+#### Apollo Server/Client vs. alternatívák
+
+| Szempont | Jelenlegi (Apollo) | GraphQL Yoga + Pothos | tRPC |
+|----------|-------------------|----------------------|------|
+| **Schema definition** | SDL-first (.graphql fájlok) | Code-first (TS-native típusbiztonság) | Nincs schema — RPC |
+| **Type safety** | Manuális type sync szükséges | Automatikus type inference | End-to-end type safety |
+| **Teljesítmény** | Jó, de heavy runtime | Könnyebb, Envelop plugin rendszer | Legkönnyebb |
+| **Ökoszisztéma (2026)** | Stabil, de Apollo lassan innovál | Aktívan fejlesztett (The Guild) | Nagyon aktív |
+| **Federation** | Natív támogatás | Mesh/Gateway-vel | N/A |
+
+**Javaslat**: A jelenlegi app méretéhez (egyetlen monolitikus API endpoint) az Apollo tökéletesen megfelel. **Nem indokolt** áttérni tRPC-re, mert:
+- A GraphQL séma jól struktúrált, a kliensoldali query-k field-level szelekciót használnak
+- A DataLoader minta jól ki van használva
+- Federation/subgraph **nem szükséges**, amíg az app egyetlen deployable unit marad
+
+**Középtávon** fontolóra vehető: SDL-first → code-first migráció (`Pothos` + `graphql-yoga`), ami jobb TS type inference-t adna, de **ez nem sürgős**.
+
+#### Apollo Client cache konfiguráció
+
+> [!WARNING]
+> Az Apollo Client cache konfigurációja **szinte üres** — a `typePolicies` csak egy üres `Query: {}` objektumot tartalmaz.
+
+**Problémák**:
+- `fetchPolicy: 'network-only'` a query default → **minden query network request**, nincs cache kihasználás
+- Nincs `keyFields` konfigurálva a `Recipe`, `User` típusokhoz → cache normalizáció nem optimális
+- Nincs `merge` policy a listákhoz (pagination cache merge)
+
+### 1.5 Adatbázis réteg értékelése
+
+#### DataLoader — N+1 probléma
+
+✅ **Jól megoldva** a rating/favorite/userRating aggregációknál:
+- [createRatingsLoader](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/dataloader/loaders.ts#L18-L43) — `groupBy` batch query
+- [createIsFavoriteLoader](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/dataloader/loaders.ts#L52-L68) — batch favorites check
+- [createUserRatingLoader](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/dataloader/loaders.ts#L73-L91) — batch user ratings
+
+⚠️ **Hiányzó DataLoader-ek**:
+- `Recipe.author` — a `getRecipes` query-ben `include: { author: true }` van, ami JOIN-t csinál, de ha az `author` field külön resolver lenne, DataLoader kellene. Jelenleg Prisma `include` megoldja, de ez N+1-re is hajlamos nagy listák esetén
+- `User.recipes` / `User.favoriteRecipes` — a `getUserById`-ban egyszerre include-ol mindent, ami nem ideális nagy adatmennyiségnél
+
+#### Prisma indexelési stratégia
+
+> [!IMPORTANT]
+> **Kritikus hiányosság**: A `Recipe` modellben **egyetlen index sincs definiálva**.
+
+Hiányzó indexek:
+| Mező | Indoklás |
+|------|----------|
+| `Recipe.createdBy` | FK mező — minden „user receptjei" lekérdezés full table scan nélküle |
+| `Recipe.createdAt` | `ORDER BY createdAt DESC` minden listázásnál |
+| `Recipe.slug` | `@unique` van, de explicit index nélkül a lookup lassabb lehet |
+| `Recipe.title` | `contains` + `insensitive` filter → `pg_trgm` GIN index kellene full-text kereséshez |
+| `Ingredient.recipeId` | FK — cascade delete és recipe-alapú lookup |
+| `PreparationStep.recipeId` | FK — cascade delete és recipe-alapú lookup |
+| `Rating.recipeId` | Már van `@@unique([recipeId, userId])`, de külön `recipeId` index kellene a `groupBy`-hoz |
+
+#### Connection pooling Neon-nal
+
+- A [prisma.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/prisma/prisma.ts) a `PrismaNeon` adaptert használja, ami serverless HTTP-n keresztül csatlakozik
+- A `DATABASE_URL` a `-pooler` végpontot használja (Neon built-in pgBouncer) ✅
+- A `DIRECT_URL` a közvetlen endpointot használja migrációkhoz ✅
+- **De**: Nincs explicit connection limit konfigurálva Prisma oldalon — Neon serverless esetén a `PrismaNeon` adapter HTTP-alapú, tehát nincs persistent connection pool, ami megfelelő serverless-hez
+
+### 1.6 Caching stratégia
+
+| Réteg | Állapot | Megjegyzés |
+|-------|---------|------------|
+| **CDN/Edge caching** | ❌ Hiányzik | Nincs `Cache-Control` header a statikus oldalakhoz, nincs `stale-while-revalidate` |
+| **ISR/SSG** | ❌ Nem használt | Minden oldal runtime-rendered (RSC + `connection()`), receptek SSG-vel generálhatók lennének |
+| **Apollo Client cache** | ⚠️ Minimális | `network-only` default → minden query hálózati kérés |
+| **Redis (Upstash)** | ✅ Megvan | 60s TTL a receptlistákra és kedvencekre — jó alapok |
+| **Redis invalidáció** | ⚠️ Részleges | Csak néhány specifikus kulcs invalidálódik (`recipes:all:{}`, `recipe:{id}`), a szűrt listák cache-ei nem invalidálódnak |
+
+---
+
+## 2. Biztonsági Audit
+
+### 2.1 🚨 KRITIKUS: Adatbázis-hitelesítő adatok a repository-ban
+
+> [!CAUTION]
+> A [.env](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/.env) fájl **éles Neon PostgreSQL hitelesítő adatokat tartalmaz** (felhasználónév + jelszó), és **a git repository-ban van**!
+
+Bár a `.gitignore` tartalmazza a `.env*` mintát, a fájl **jelenleg jelen van a munkamappában**. Ha valaha be volt commitolva a git history-ba, a jelszavak kompromittálódtak.
+
+**Azonnali teendők**:
+1. Ellenőrizni: `git log --all --full-history -- .env` — volt-e valaha commitolva
+2. Ha igen: Neon Dashboard-on **azonnal rotálni** a DB jelszót
+3. A `.env` fájl soha nem szabad, hogy éles adatokat tartalmazzon lokálisan — használj `.env.local`-t (ami szintén gitignore-olva van)
+
+### 2.2 GraphQL-specifikus kockázatok
+
+| Kockázat | Állapot | Részletek |
+|----------|---------|-----------|
+| **Query depth limit** | ✅ Megvan | `maxDepth: 7` a `graphql-armor` segítségével — [route.ts:65](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/app/api/graphql/route.ts#L65) |
+| **Query complexity/cost limiting** | ✅ Megvan | Beállítva a `costLimit` és `maxAliases: 15` a `graphql-armor` használatával — [route.ts:65](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/app/api/graphql/route.ts#L65) |
+| **Introspection prod-ban** | ✅ Letiltva | `introspection: process.env.NODE_ENV !== 'production'` — [route.ts:91](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/app/api/graphql/route.ts#L91) |
+| **Batching attack** | ✅ Megvan | Expliciten letiltva: `allowBatchedHttpRequests: false` — [route.ts:97](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/app/api/graphql/route.ts#L97) |
+| **Persisted queries** | ❌ Hiányzik | Bárki tetszőleges query-t küldhet. APQ (Automatic Persisted Queries) vagy full persisted query-k csökkentenék a támadási felületet |
+| **Field-level auth** | ⚠️ Részleges | Az [operationsConfig.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/graphql/operationsConfig.ts) operation-szintű RBAC-t ad, de **nincs field-level permission** (pl. `User.email` bármely publikus query-vel lekérdezhető) |
+| **Error leaking** | ⚠️ Kockázatos | `errorPolicy: 'all'` az Apollo Client-en — a szerver hibák stack trace-ei potenciálisan eljuthatnak a klienshez |
+| **`limit` paraméter korlát** | ❌ **Hiányzik** | `getRecipes(limit: Int)` — nincs maximum limit validáció, `limit: 100000` teljes DB dump-ot eredményezhet |
+
+### 2.3 Auth és session kezelés
+
+| Szempont | Állapot | Részletek |
+|----------|---------|-----------|
+| **next-auth beta** | ⚠️ **Kockázatos** | `5.0.0-beta.31` — production-ben beta csomag, security patch-ek nem garantáltak |
+| **Jelszókezelés (bcrypt)** | ✅ De javítható | `SALT_ROUNDS = 10` — [UserService.ts:34](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/services/UserService.ts#L34). 2026-ban **minimum 12 rounds** ajánlott. Továbbá az Argon2id algorithmust ajánlják a bcrypt helyett (OWASP) |
+| **JWT rotáció** | ❌ **Hiányzik** | Nincs refresh token rotáció. A JWT `maxAge` 14 nap (`rememberMe`) vagy 2 óra — de a token nem rotálódik a lifetime alatt |
+| **CSRF védelem** | ✅ Implicit | NextAuth JWT strategy + `credentials: 'same-origin'` az Apollo Client-en |
+| **RBAC** | ✅ Megvan, de **operation-szintű** | `UserRole` enum (ADMIN/USER/BLOGGER), `authPlugin` ellenőrzi az [operationsConfig](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/graphql/operationsConfig.ts) alapján. **De**: nincs resource-level auth (pl. user csak saját receptjét szerkesztheti — ez jelenleg a `RecipeService.editRecipe`-ben van kézzel ellenőrizve, nem deklaratívan) |
+| **Session fixation** | ✅ Védett | NextAuth JWT strategy nem használ server-side session-öket |
+| **Jelszó policy** | ⚠️ Inkonzisztens | Registration: 5 karakter minimum (`WEAK_PASSWORD_REGEX`) vs. Reset: 8 karakter (`STRONG_PASSWORD_REGEX`) — [validation.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/validation/validation.ts#L5-L8) |
+| **`deleteAllUser` / `deleteAllRecipes`** | ⚠️ Destructív | Admin-only, de nincs confirmation mechanism, nincs audit log |
+
+### 2.4 Rate limiting mélysége
+
+| Szempont | Állapot |
+|----------|---------|
+| **IP-alapú globális limit** | ✅ 100 req / 60s — [rateLimit.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/rateLimit/rateLimit.ts) |
+| **Strict limiter** | ✅ 5 req / 10 min — definiálva, de **nem használt a resolver-ekben** |
+| **User-alapú granularitás** | ❌ Hiányzik | Egy user sok IP-ről támadhat, vagy egy IP mögött sok user lehet (NAT) |
+| **Operation-specifikus limit** | ❌ Hiányzik | Egy `createRecipe` mutation ugyanazt a limitet kapja, mint egy `getRecipes` query |
+| **IP spoofing kockázat** | ⚠️ `x-forwarded-for` fejlécet használ — ez manipulálható, ha nincs trusted proxy konfiguráció |
+| **`strictRateLimiter` tényleges használata** | ❌ **Nincs használva** | Definiálva van, de a `resetPassword` resolver **nem alkalmazza** — [resetPassword.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/graphql/resolvers/user/mutations/resetPassword.ts) |
+
+### 2.5 Input validáció és sanitization
+
+| Szempont | Állapot |
+|----------|---------|
+| **Zod validáció** | ✅ Átfogó | Kliensoldalon és szerveroldalon is van Zod schema a regisztrációhoz, login-hoz, recept-létrehozáshoz |
+| **DOMPurify sanitization** | ✅ Megvan | `sanitizeText()` strip-eli az összes HTML tag-et — [sanitize.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/sanitize/sanitize.ts) |
+| **Sanitization lefedettség** | ⚠️ Részleges | A `buildRecipeData` sanitizálja a title/description/tips/substitutions/SEO mezőket, **de nem sanitizálja az ingredient.name, ingredient.unit, preparationStep.description mezőket** |
+| **SQL injection** | ✅ Védett | Prisma parametrized query-ket használ — nincs raw SQL |
+| **Recept szűrő XSS** | ⚠️ | A `RecipeFilterInput` szűrők (`title`, `categoryKey` stb.) **nincsenek sanitizálva** a szerver oldalon — bár Prisma escape-eli, a nyers input visszakerülhet a válaszba |
+| **`ratingValue` range check** | ❌ **Hiányzik** | Nincs validáció, hogy `ratingValue` 1-5 között van-e — [rateRecipe.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/graphql/resolvers/recipe/mutations/rateRecipe.ts) bármilyen Float-ot elfogad |
+
+### 2.6 CSP és HTTP Security Headers
+
+A [next.config.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/next.config.ts#L4-L21) jó security header-eket definiál, **de van néhány probléma**:
+
+| Header | Érték | Megjegyzés |
+|--------|-------|------------|
+| `Content-Security-Policy` | `script-src 'self' 'unsafe-inline' 'unsafe-eval'` | ⚠️ **`unsafe-inline` és `unsafe-eval` csökkentik a CSP hatékonyságát**. Nonce-alapú CSP-re kellene váltani |
+| `X-Frame-Options` | `SAMEORIGIN` | ✅ Jó |
+| `HSTS` | ✅ Megvan preload-dal | ✅ Kiváló |
+| `Permissions-Policy` | Camera/mic/geo letiltva | ✅ Jó |
+| **Hiányzó header** | `X-Permitted-Cross-Domain-Policies` | ❌ Ajánlott hozzáadni |
+
+### 2.7 Fájlfeltöltés biztonsága
+
+- Jelenleg **nincs recept-kép feltöltés** — az `imgSrc` mező URL-ként van tárolva (external link)
+- A `imgSrc` mezőn van Zod `z.url()` validáció ✅
+- **De**: nincs URL allowlisting (bármelyik domain-ről beágyazható kép), ami SSRF kockázatot jelenthet, ha a szerver fetch-eli a képet
+- Ha képfeltöltés tervezve van: szükséges lesz file type validáció, méretkorlátozás, virus scan, és CDN-en keresztüli kiszolgálás
+
+### 2.8 Dependency vulnerability scan
+
+A `pnpm audit` futtatása szükséges a teljes audithoz. Ismert kockázatok:
+- `bcrypt` native addon — build-time dependency vulnerability lehetséges
+- `isomorphic-dompurify` — függ `jsdom`-tól, ami rendszeresen kap security patch-eket
+
+---
+
+## 3. Tartalmi / Funkcionális Audit
+
+### 3.1 Jelenlegi funkciók összefoglalása
+
+✅ Megvan:
+- Receptek CRUD (létrehozás, szerkesztés, törlés)
+- Felhasználó regisztráció/bejelentkezés (Credentials provider)
+- Kedvenc receptek (add/remove)
+- Felhasználó követés (follow/unfollow)
+- Értékelés (1-N csillag rating)
+- Keresés és szűrés (title, category, difficulty, labels, maxCookingTime)
+- i18n (EN/HU/DE — UI stringek)
+- Metadata rendszer (allergens, dietary flags, cuisine, equipment, cost level)
+- SEO mezők receptekhez (slug, seoTitle, seoDescription, socialImage)
+- Jelszó-visszaállítás email-ben
+
+### 3.2 Hiányzó funkciók — Prioritás szerint
+
+#### P0 — Kritikus (nélkülük az app nem versenyképes)
+
+| Funkció | Részletek | Jelenlegi állapot |
+|---------|-----------|-------------------|
+| **Cursor-alapú pagináció** | A `getRecipes` jelenleg `limit`-tel dolgozik, **nincs `offset`/`cursor`** → az összes receptet egyszerre tölti le limit feletti mennyiségnél. A RecipesPage nem tud „Load More" vagy végtelen scrollt | `take: limit` van, de nincs `skip`/`cursor` |
+| **Full-text keresés** | A `title ILIKE '%xxx%'` keresés **nem talál összetevő, leírás, vagy tipp alapján**. Postgres `tsvector` + `GIN` index kellene minimum, vagy Meilisearch integráció | `contains` + `insensitive` a title mezőn |
+| **Kommentek** | Nincs `Comment` modell a sémában. Egy receptmegosztó platform alapvető funkcionalitása | ❌ Teljesen hiányzik |
+
+#### P1 — Fontos (jelentősen javítaná a felhasználói élményt)
+
+| Funkció | Részletek |
+|---------|-----------|
+| **Összetevő-alapú keresés** | "Mi van a hűtőmben?" típusú keresés — a felhasználó megad összetevőket, és a rendszer visszaadja a releváns recepteket |
+| **Bevásárlólista generálás** | Egy vagy több recept alapján automatikus bevásárlólista, ami összesíti és deduplikálja az összetevőket |
+| **Tápérték kalkuláció** | Integráció egy nutritional API-val (pl. USDA FoodData Central, Edamam) az összetevők alapján |
+| **Receptgyűjtemények / „Cookbook"-ok** | Felhasználók saját tematikus gyűjteményeket hozhatnak létre (pl. „Hétköznapi vacsorák", „Karácsonyi menü") |
+| **Kép feltöltés** | Jelenleg csak URL-t lehet megadni képhez — integráció szükséges (Cloudinary, Uploadthing, Vercel Blob) |
+| **Social login** | Google/GitHub OAuth a Credentials-only auth mellett — a legtöbb felhasználó nem akar új jelszót megjegyezni |
+| **Recept verziókezelés / draft** | Jelenleg a recept szerkesztése azonnal publikus — nem lehet draft-ot menteni |
+| **PWA / Offline mód** | A `site.webmanifest` megvan, de nincs Service Worker → nincs offline támogatás, push notification, vagy „Add to Home Screen" élmény |
+
+#### P2 — Kívánatos (nice-to-have, de nem sürgős)
+
+| Funkció | Részletek |
+|---------|-----------|
+| **AI recept-javaslat** | LLM-alapú recept-generálás megadott összetevőkből, diétás preferenciákból |
+| **Összetevő-helyettesítés AI** | „Nincs tojásom, mivel helyettesítsem?" — kontextus-érzékeny javaslatok |
+| **Multi-language recept tartalom** | A `next-intl` jelenleg **csak UI stringeket** kezel, a recept tartalma (title, description, ingredients) **nem lokalizált** |
+| **Admin dashboard** | Tartalom moderáció, user management, analytics — jelenleg az admin műveletek csak GraphQL-en keresztül érhetők el |
+| **Megosztás / Social features** | Recept megosztása social media-n, beágyazható recept widget más weboldalakba |
+| **Heti menütervező** | Receptek ütemezése napokra, automatikus bevásárlólista a heti menü alapján |
+| **Print-friendly nézet** | Recept nyomtatóbarát formátumban |
+| **JSON-LD / Schema.org Recipe markup** | Strukturált adat Google richmedia keresési eredményekhez |
+
+---
+
+## 4. Konszolidált, Prioritizált Backlog
+
+> Az alábbi táblázat közvetlenül importálható Linear/Jira-ba ticketekként.
+
+| # | Feature / Upgrade neve | Kategória | Prioritás | Komplexitás | Indoklás / Érintett fájlok |
+|---|----------------------|-----------|-----------|-------------|---------------------------|
+| 1 | **DB credentials rotálás + `.env` audit** | Security | **P0** | S | `.env` éles Neon jelszót tartalmaz. Rotálni a jelszót, ellenőrizni git history-t. `.env`, Neon Dashboard |
+| 2 | **Query complexity/cost limiting** | Security | **P0** | M | Nincs max-cost validáció → DoS kockázat. `graphql-armor` csomag bevezetése. `route.ts`, `package.json` |
+| 3 | **`limit` paraméter maximalizálás** | Security | **P0** | S | `getRecipes(limit: 999999)` → DB dump. Maximum limit (pl. 100) bevezetése. `RecipeService.ts`, `UserService.ts`, `recipe.graphql` |
+| 4 | **`ratingValue` range validáció** | Security | **P0** | S | Bármilyen Float elfogadott → adatintegritási probléma. Zod validáció 1.0–5.0 range. `RecipeService.rateRecipe`, `recipe.graphql` |
+| 5 | **Cursor-alapú pagináció** | Tech | **P0** | L | Nincs pagináció → nem skálázódik. `RecipeService.ts`, `recipe.graphql`, `RecipesPage.tsx` |
+| 6 | **Prisma indexek hozzáadása** | Tech | **P0** | M | Recipe.createdBy, Recipe.createdAt, Ingredient.recipeId, PreparationStep.recipeId indexek hiányoznak. `schema.prisma`, migration |
+| 7 | **Ingredient/step sanitization** | Security | **P0** | S | `ingredient.name`, `preparationStep.description` nincs sanitizálva → XSS kockázat. `RecipeService.createRecipe`, `RecipeService.editRecipe` |
+| 8 | **`strictRateLimiter` alkalmazása `resetPassword`-ra** | Security | **P0** | S | A definiált strict limiter nincs használva a jelszó-visszaállítás endpoint-on → brute force kockázat. `resetPassword.ts`, `route.ts` |
+| 9 | **next-auth beta → stabil migrálás** | Tech | **P1** | L | `5.0.0-beta.31` production-ben kockázatos. Auth.js stabil vagy `better-auth`. `auth.ts`, `auth.config.ts`, `client.tsx` |
+| 10 | **bcrypt salt rounds emelése 12-re** | Security | **P1** | S | OWASP 2026: minimum 12 rounds. `UserService.ts:34` |
+| 11 | **Jelszó policy egységesítés** | Security | **P1** | S | Regisztráció: 5 char min vs. Reset: 8 char min → inkonzisztens. `validation.ts` |
+| 12 | **User/operation-alapú rate limiting** | Security | **P1** | M | IP-alapú limit nem elegendő. User-ID + operation-specifikus limiter. `rateLimit.ts`, `route.ts` |
+| 13 | **Persisted queries (APQ)** | Security | **P1** | M | Tetszőleges query-k elküldhetők. Apollo APQ bevezetése. `route.ts`, Apollo Client config |
+| 14 | **Full-text keresés (Postgres tsvector)** | Feature | **P1** | L | Cím-alapú keresés nem elég. `pg_trgm` GIN index + `tsvector` a title/description/ingredients mezőkre. `schema.prisma`, `RecipeService.ts` |
+| 15 | **Komment rendszer** | Feature | **P1** | L | Alapvető közösségi funkció. Új `Comment` modell, resolvers, UI. `schema.prisma`, új resolver/service/component fájlok |
+| 16 | **Kép feltöltés (Cloudinary/Uploadthing)** | Feature | **P1** | L | Jelenleg csak URL-t lehet megadni. File upload + CDN integráció. Új API route, recipe form módosítás |
+| 17 | **Social login (Google/GitHub OAuth)** | Feature | **P1** | M | Credentials-only auth korlátozott. NextAuth provider-ek hozzáadása. `auth.ts`, `auth.config.ts`, login page |
+| 18 | **Nonce-alapú CSP** | Security | **P1** | M | `unsafe-inline`/`unsafe-eval` csökkenti a CSP hatékonyságát. Next.js nonce support bevezetése. `next.config.ts`, `layout.tsx` |
+| 19 | **`react-icons` → `@tabler/icons` konszolidáció** | Tech | **P1** | S | 13 fájl használja a `react-icons`-t, ami redundáns. Csere @tabler-re, `react-icons` törlése. 13 komponens fájl |
+| 20 | **Apollo Client cache optimalizáció** | Tech | **P1** | M | `network-only` default, üres `typePolicies`. `keyFields`, `merge` policy, `cache-first` hozzáadása. `client.ts` |
+| 21 | **`uuid` + `graphql-tag` eltávolítása** | Tech | **P1** | S | ✅ Részben megoldva: `graphql-tag` eltávolítva, `uuid` még hátravan |
+| 22 | **ISR/SSG bevezetése recept oldalakhoz** | Tech | **P1** | M | Minden oldal dinamikus — receptoldalak statikusan generálhatók lennének `generateStaticParams` + revalidation-nel. `recipes/[id]/page.tsx` |
+| 23 | **Összetevő-alapú keresés** | Feature | **P1** | L | "Mi van a hűtőmben?" keresés. Új filter field, Prisma query, UI. `recipe.graphql`, `RecipeService.ts`, `RecipeSearch.tsx` |
+| 24 | **Bevásárlólista generálás** | Feature | **P1** | M | Receptek összetevőinek összesítése. Új UI komponens + aggregáló logika. Kliens-oldali feature, nem igényel új API-t |
+| 25 | **Field-level auth (User.email privacy)** | Security | **P1** | M | `getUserById` publikus query visszaadja az email-t. Field-level auth middleware vagy field removal. `user.graphql`, resolvers |
+| 26 | **Error masking production-ben** | Security | **P1** | S | `errorPolicy: 'all'` + nincs error masking → stack trace leaking. Apollo Server `formatError` hook. `route.ts` |
+| 27 | **Batching attack explicit tiltás** | Security | **P1** | S | Explicit `allowBatchedHttpRequests: false` az Apollo Server config-ban. `route.ts` |
+| 28 | **tsconfig target ES2022+** | Tech | **P2** | S | ✅ Megoldva (`target: "ES2022"` beállítva) |
+| 29 | **`noImplicitAny: true`** | Tech | **P2** | M | Erősebb típusbiztonság. `tsconfig.json`, típusjavítások az érintett fájlokban |
+| 30 | **Recept draft / verziókezelés** | Feature | **P2** | L | `status: DRAFT|PUBLISHED` mező a Recipe modellben. `schema.prisma`, resolvers, UI |
+| 31 | **Receptgyűjtemények ("Cookbook"-ok)** | Feature | **P2** | L | Új `Collection` modell + many-to-many Recipe kapcsolat. `schema.prisma`, resolvers, UI |
+| 32 | **Tápérték kalkuláció (API integráció)** | Feature | **P2** | L | USDA/Edamam API integráció. Új service, UI komponens. |
+| 33 | **PWA / Service Worker** | Feature | **P2** | M | `site.webmanifest` megvan, Service Worker hiányzik. `next-pwa` vagy workbox integráció |
+| 34 | **JSON-LD Schema.org Recipe markup** | Feature | **P2** | S | SEO mező-struktúra megvan, csak JSON-LD generálás kell. `recipes/[id]/page.tsx` |
+| 35 | **Admin dashboard UI** | Feature | **P2** | XL | Jelenleg admin funkciók csak GraphQL-en. React-admin vagy custom dashboard. Új route-ok, komponensek |
+| 36 | **Multi-language recept tartalom** | Feature | **P2** | XL | i18n kiterjesztése recept tartalomra. DB séma módosítás (lokalizált mezők), UI language selector a recept szerkesztőben |
+| 37 | **AI recept-javaslat** | Feature | **P2** | L | LLM API integráció (OpenAI/Gemini). Új service, streaming UI. |
+| 38 | **Heti menütervező** | Feature | **P2** | L | Új `MealPlan` modell, drag-and-drop UI. `schema.prisma`, resolvers, új page |
+| 39 | **Print-friendly recept nézet** | Feature | **P2** | S | CSS `@media print` + dedikált print layout. Recept részletező oldal CSS |
+| 40 | **`nextjs-toploader` / `@mantine/nprogress` konszolidáció** | Tech | **P2** | S | Dupla progress bar. Egyik eltávolítása. `package.json`, `layout.tsx` vagy érintett komponens |
+
+---
+
+### Komplexitás skála
+- **S** (Small): < 1 nap, 1–3 fájl érintett
+- **M** (Medium): 1–3 nap, 3–8 fájl érintett
+- **L** (Large): 3–7 nap, 8+ fájl érintett
+- **XL** (Extra Large): 1–3 hét, jelentős architekturális változás
+
+### Javasolt végrehajtási sorrend
+1. **Azonnali (Sprint 1)**: #1–#8 (P0 Security + Tech alapok)
+2. **Rövid távú (Sprint 2–3)**: #9–#13 (P1 Security hardening)
+3. **Középtávú (Sprint 4–6)**: #14–#27 (P1 Features + Tech debt)
+4. **Hosszú távú (Q3–Q4)**: #28–#40 (P2 Nice-to-have)

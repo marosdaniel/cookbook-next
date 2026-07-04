@@ -80,3 +80,6 @@ minimumReleaseAgeExclude:
   - next-intl-swc-plugin-extractor@4.13.1
   - next-intl@4.13.1
   - use-intl@4.13.1
+
+overrides:
+  graphql: 17.0.2
