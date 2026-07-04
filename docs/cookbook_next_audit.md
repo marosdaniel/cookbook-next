@@ -118,16 +118,21 @@ Hiányzó indexek:
 
 ## 2. Biztonsági Audit
 
-### 2.1 🚨 KRITIKUS: Adatbázis-hitelesítő adatok a repository-ban
+### 2.1 🚨 KRITIKUS: Adatbázis-hitelesítő adatok a munkamappában
 
 > [!CAUTION]
-> A [.env](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/.env) fájl **éles Neon PostgreSQL hitelesítő adatokat tartalmaz** (felhasználónév + jelszó), és **a git repository-ban van**!
+> A [.env](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/.env) fájl **éles Neon PostgreSQL hitelesítő adatokat tartalmaz** (felhasználónév + jelszó), de a jelenlegi ellenőrzés alapján **nem szerepel mint commitolt fájl a git repository-ban**.
 
-Bár a `.gitignore` tartalmazza a `.env*` mintát, a fájl **jelenleg jelen van a munkamappában**. Ha valaha be volt commitolva a git history-ba, a jelszavak kompromittálódtak.
+Tény: a fájl **jelen van a munkamappában**, és tartalmaz éles hitelesítő adatokat, de a repo állapota szerint **nem követett fájl** (a `.gitignore` által fedett `.env*` mintának köszönhetően), és a jelenlegi git history-ban **nem találtunk nyomot arra**, hogy valaha is commitolva lett volna.
+
+Ezért a pontos megfogalmazás a következő:
+- a hitelesítő adatok valóban jelen vannak a lokális munkamappában;
+- a jelenlegi git állapotában nem szerepelnek mint commitolt vagy követett fájlok;
+- a kockázat mégis valós, mert bármelyik másik helyre került fájl vagy export (pl. log, backup, screenshot, véletlen másolás) kompromittálhatja a hitelesítő adatokat.
 
 **Azonnali teendők**:
-1. Ellenőrizni: `git log --all --full-history -- .env` — volt-e valaha commitolva
-2. Ha igen: Neon Dashboard-on **azonnal rotálni** a DB jelszót
+1. Ellenőrizni: `git log --all --full-history -- .env .env.*` — volt-e valaha commitolva
+2. Ha bármilyen környezetben megjelenik a fájl tartalma, Neon Dashboard-on **azonnal rotálni** a DB jelszót
 3. A `.env` fájl soha nem szabad, hogy éles adatokat tartalmazzon lokálisan — használj `.env.local`-t (ami szintén gitignore-olva van)
 
 ### 2.2 GraphQL-specifikus kockázatok
