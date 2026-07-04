@@ -213,7 +213,7 @@ jobs:
       id-token: write
     steps:
       - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Download coverage artifact
         uses: actions/download-artifact@v8
