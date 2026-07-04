@@ -110,10 +110,10 @@ quality-checks + e2e
 
 | Step | Command | What it does |
 |------|---------|--------------|
-| Checkout code | `actions/checkout@v6` | Clones the repository at the triggering commit |
-| Setup pnpm | `pnpm/action-setup@v5` | Installs pnpm v9 as the package manager |
-| Setup Node.js | `actions/setup-node@v6` | Installs Node.js 22 and restores the pnpm dependency cache |
-| Install dependencies | `pnpm install` | Installs all project dependencies (uses cache if available) |
+| Checkout code | `actions/checkout@v7` | Clones the repository at the triggering commit |
+| Setup pnpm | `pnpm/action-setup@v6` | Installs pnpm 11.9.0 as the package manager |
+| Setup Node.js | `actions/setup-node@v6` | Installs Node.js 24 and restores the pnpm dependency cache |
+| Install dependencies | `pnpm install --frozen-lockfile` | Installs all project dependencies from the lockfile |
 | Run Biome Lint | `pnpm lint:fix` | Runs Biome static analysis and auto-fixes formatting issues |
 | Run Type Check | `pnpm run typecheck` | Runs `tsc --noEmit` to catch TypeScript type errors |
 | Run Unit Tests | `pnpm test:unit` | Runs Vitest unit tests |
