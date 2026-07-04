@@ -11,7 +11,10 @@ import { auth } from '@/lib/auth/auth';
 import {
   createIsFavoriteLoader,
   createRatingsLoader,
+  createRecipeAuthorLoader,
+  createUserFavoriteRecipesLoader,
   createUserRatingLoader,
+  createUserRecipesLoader,
 } from '@/lib/dataloader/loaders';
 import { validatePersistedQuery } from '@/lib/graphql/protection';
 import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
@@ -173,6 +176,9 @@ const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(
           ratings: createRatingsLoader(prisma),
           isFavorite: userId ? createIsFavoriteLoader(prisma, userId) : null,
           userRating: userId ? createUserRatingLoader(prisma, userId) : null,
+          recipeAuthor: createRecipeAuthorLoader(prisma),
+          userRecipes: createUserRecipesLoader(prisma),
+          userFavoriteRecipes: createUserFavoriteRecipesLoader(prisma),
         },
       };
     },

@@ -94,6 +94,11 @@ model Recipe {
   // Ratings
   ratings Rating[]
 
+  @@index([createdBy])
+  @@index([createdAt])
+  @@index([slug])
+  @@index([title])
+
   @@map("recipes")
 }
 
@@ -111,6 +116,7 @@ model Ingredient {
   recipeId String
   recipe   Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
+  @@index([recipeId])
   @@map("ingredients")
 }
 
@@ -124,6 +130,7 @@ model PreparationStep {
   recipeId String
   recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
+  @@index([recipeId])
   @@map("preparation_steps")
 }
 
@@ -142,6 +149,7 @@ model Rating {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([recipeId, userId])
+  @@index([recipeId])
   @@map("ratings")
 }
 

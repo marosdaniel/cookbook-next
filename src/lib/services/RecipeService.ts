@@ -95,7 +95,7 @@ export const RecipeService = {
     const [recipes, totalRecipes] = await Promise.all([
       prisma.recipe.findMany({
         where,
-        include: { ingredients: true, preparationSteps: true, author: true },
+        include: { ingredients: true, preparationSteps: true },
         orderBy: { createdAt: 'desc' },
         ...(normalizedLimit ? { take: normalizedLimit } : {}),
       }),
@@ -118,7 +118,7 @@ export const RecipeService = {
 
     const existingRecipe = await prisma.recipe.findUnique({
       where: { id },
-      include: { ingredients: true, preparationSteps: true, author: true },
+      include: { ingredients: true, preparationSteps: true },
     });
 
     if (!existingRecipe) {
@@ -140,7 +140,7 @@ export const RecipeService = {
     const [recipes, totalRecipes] = await Promise.all([
       prisma.recipe.findMany({
         where: { createdBy: userId },
-        include: { ingredients: true, preparationSteps: true, author: true },
+        include: { ingredients: true, preparationSteps: true },
         orderBy: { createdAt: 'desc' },
         ...(normalizedLimit ? { take: normalizedLimit } : {}),
       }),
@@ -182,7 +182,7 @@ export const RecipeService = {
           })),
         },
       },
-      include: { ingredients: true, preparationSteps: true, author: true },
+      include: { ingredients: true, preparationSteps: true },
     });
 
     // Invalidate user's recipe list and the general recipes list
@@ -244,7 +244,7 @@ export const RecipeService = {
           })),
         },
       },
-      include: { ingredients: true, preparationSteps: true, author: true },
+      include: { ingredients: true, preparationSteps: true },
     });
 
     await invalidateCache([

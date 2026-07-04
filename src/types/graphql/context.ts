@@ -1,7 +1,10 @@
 import type {
   createIsFavoriteLoader,
   createRatingsLoader,
+  createRecipeAuthorLoader,
+  createUserFavoriteRecipesLoader,
   createUserRatingLoader,
+  createUserRecipesLoader,
 } from '@/lib/dataloader/loaders';
 import type { prisma } from '@/lib/prisma/prisma';
 import type { UserRole } from '../user';
@@ -19,5 +22,8 @@ export interface GraphQLContext {
     ratings: ReturnType<typeof createRatingsLoader>;
     isFavorite: ReturnType<typeof createIsFavoriteLoader> | null;
     userRating: ReturnType<typeof createUserRatingLoader> | null;
+    recipeAuthor: ReturnType<typeof createRecipeAuthorLoader>;
+    userRecipes: ReturnType<typeof createUserRecipesLoader>;
+    userFavoriteRecipes: ReturnType<typeof createUserFavoriteRecipesLoader>;
   };
 }

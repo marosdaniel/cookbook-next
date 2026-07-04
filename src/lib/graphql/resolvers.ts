@@ -66,6 +66,13 @@ export const resolvers = {
     deleteRating,
   },
   Recipe: {
+    author: async (
+      parent: { createdBy: string },
+      _: unknown,
+      context: import('@/types/graphql/context').GraphQLContext,
+    ) => {
+      return context.loaders.recipeAuthor.load(parent.createdBy);
+    },
     averageRating: async (
       parent: { id: string },
       _: unknown,
@@ -97,6 +104,22 @@ export const resolvers = {
     ) => {
       if (!context.loaders.isFavorite) return false;
       return context.loaders.isFavorite.load(parent.id);
+    },
+  },
+  User: {
+    recipes: async (
+      parent: { id: string },
+      _: unknown,
+      context: import('@/types/graphql/context').GraphQLContext,
+    ) => {
+      return context.loaders.userRecipes.load(parent.id);
+    },
+    favoriteRecipes: async (
+      parent: { id: string },
+      _: unknown,
+      context: import('@/types/graphql/context').GraphQLContext,
+    ) => {
+      return context.loaders.userFavoriteRecipes.load(parent.id);
     },
   },
 };

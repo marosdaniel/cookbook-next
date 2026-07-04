@@ -40,13 +40,16 @@ export const UserService = {
   async getUserById(id: string) {
     const user = await prisma.user.findUnique({
       where: { id },
-      include: {
-        recipes: {
-          include: { ingredients: true, preparationSteps: true },
-        },
-        favoriteRecipes: {
-          include: { ingredients: true, preparationSteps: true },
-        },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        userName: true,
+        email: true,
+        role: true,
+        locale: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
     if (!user) {
