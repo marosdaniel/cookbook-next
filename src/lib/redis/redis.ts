@@ -16,6 +16,12 @@ const REDIS_FAILURE_TTL_MS = 5_000;
 const REDIS_OPERATION_TIMEOUT_MS = 1_000;
 let redisFailureUntil = 0;
 
+interface RedisWithCircuitBreaker {
+  get: (key: string) => Promise<unknown>;
+  setex: (key: string, ttl: number, value: unknown) => Promise<unknown>;
+  del: (key: string) => Promise<unknown>;
+}
+
 const isRedisDisabled = () => Date.now() < redisFailureUntil;
 
 const markRedisFailure = () => {
@@ -25,17 +31,18 @@ const markRedisFailure = () => {
 export const withTimeout = async <T>(
   operation: () => Promise<T>,
   timeoutMs: number = REDIS_OPERATION_TIMEOUT_MS,
-): Promise<T | null> => {
+): Promise<T> => {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-  const timeoutPromise = new Promise<null>((resolve) => {
-    timeoutId = setTimeout(() => resolve(null), timeoutMs);
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(
+      () => reject(new Error(`Redis operation timed out after ${timeoutMs}ms`)),
+      timeoutMs,
+    );
   });
 
   try {
     return await Promise.race([operation(), timeoutPromise]);
-  } catch (error) {
-    throw error;
   } finally {
     if (timeoutId) {
       clearTimeout(timeoutId);
@@ -66,13 +73,14 @@ const redis: Redis | null =
       })
     : null;
 
+export const rawRedisClient: Redis | null = redis;
+
 if (!redis) {
   console.warn('Upstash Redis URL or Token is missing. Caching will not work.');
 }
 
-const redisWithCircuitBreaker = redis
+const redisWithCircuitBreaker: RedisWithCircuitBreaker | null = redis
   ? {
-      ...redis,
       get: (key: string) => wrapWithCircuitBreaker(() => redis.get(key)),
       setex: (key: string, ttl: number, value: unknown) =>
         wrapWithCircuitBreaker(() => redis.setex(key, ttl, value)),

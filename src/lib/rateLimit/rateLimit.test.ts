@@ -14,7 +14,7 @@ vi.mock('@upstash/ratelimit', () => {
 });
 
 vi.mock('@/lib/redis/redis', () => ({
-  redis: {},
+  rawRedisClient: {},
 }));
 
 describe('rate limit setup', () => {
@@ -24,7 +24,7 @@ describe('rate limit setup', () => {
   });
 
   it('creates rate limiters when redis is available', async () => {
-    vi.doMock('@/lib/redis/redis', () => ({ redis: {} }));
+    vi.doMock('@/lib/redis/redis', () => ({ rawRedisClient: {} }));
     const { rateLimiter: configuredRateLimiter, strictRateLimiter: configuredStrictRateLimiter } = await import('./rateLimit');
 
     expect(configuredRateLimiter).toBeDefined();
@@ -40,7 +40,7 @@ describe('rate limit setup', () => {
 
       return { Ratelimit };
     });
-    vi.doMock('@/lib/redis/redis', () => ({ redis: {} }));
+    vi.doMock('@/lib/redis/redis', () => ({ rawRedisClient: {} }));
 
     const { rateLimiter: fallbackRateLimiter, strictRateLimiter: fallbackStrictRateLimiter } = await import('./rateLimit');
 

@@ -1,14 +1,14 @@
-import { Ratelimit } from '@upstash/ratelimit';
-import { redis } from '@/lib/redis/redis';
+import { Ratelimit, type Duration } from '@upstash/ratelimit';
+import { rawRedisClient } from '@/lib/redis/redis';
 
-const createLimiter = (prefix: string, window: string, requests: number) => {
-  if (!redis) {
+const createLimiter = (prefix: string, window: Duration, requests: number) => {
+  if (!rawRedisClient) {
     return null;
   }
 
   try {
     return new Ratelimit({
-      redis,
+      redis: rawRedisClient,
       limiter: Ratelimit.slidingWindow(requests, window),
       analytics: true,
       prefix,
@@ -19,7 +19,7 @@ const createLimiter = (prefix: string, window: string, requests: number) => {
   }
 };
 
-const shouldUseLimiter = Boolean(redis);
+const shouldUseLimiter = Boolean(rawRedisClient);
 
 // Default global rate limiter: 100 requests per 60 seconds per IP
 export const rateLimiter = shouldUseLimiter

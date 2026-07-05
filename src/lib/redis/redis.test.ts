@@ -36,7 +36,7 @@ describe('redis client fallback', () => {
     expect(redisGetMock).toHaveBeenCalledTimes(1);
   });
 
-  it('returns null when a Redis operation times out', async () => {
+  it('throws when a Redis operation times out', async () => {
     vi.useFakeTimers();
     const { withTimeout } = await import('./redis');
 
@@ -44,6 +44,6 @@ describe('redis client fallback', () => {
 
     vi.advanceTimersByTime(250);
 
-    await expect(pendingOperation).resolves.toBeNull();
+    await expect(pendingOperation).rejects.toThrow('Redis operation timed out after 250ms');
   });
 });
