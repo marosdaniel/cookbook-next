@@ -50,18 +50,18 @@ export const withTimeout = async <T>(
   }
 };
 
-const wrapWithCircuitBreaker = <T>(operation: () => Promise<T>): Promise<T | null> => {
+const wrapWithCircuitBreaker = async <T>(operation: () => Promise<T>): Promise<T | null> => {
   if (isRedisDisabled()) {
-    return Promise.resolve(null);
+    return null;
   }
 
-  return withTimeout(operation)
-    .then((result) => result)
-    .catch((error) => {
-      console.warn('Redis unavailable. Disabling cache for a short period.', error);
-      markRedisFailure();
-      return null;
-    });
+  try {
+    return await withTimeout(operation);
+  } catch (error) {
+    console.warn('Redis unavailable. Disabling cache for a short period.', error);
+    markRedisFailure();
+    return null;
+  }
 };
 
 // Only initialize if the environment variables are present to avoid startup crashes if they are not yet configured
