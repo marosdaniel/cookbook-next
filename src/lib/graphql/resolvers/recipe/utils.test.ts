@@ -83,7 +83,7 @@ describe('recipe resolver utils', () => {
         seoTitle: '  Nice title  ',
         seoDescription: '  Nice description  ',
         socialImage: 'https://example.com/image.png',
-      } as never,
+      } ,
       {
         categoryFromInput: { value: 'main', label: 'Main' },
         difficultyLevelFromInput: { value: 'easy', label: 'Easy' },
@@ -113,8 +113,21 @@ describe('recipe resolver utils', () => {
 
   it('resolveAuthenticatedUser returns the user when found', async () => {
     const { prisma } = await import('@/lib/prisma/prisma');
-    vi.mocked(prisma.user.findUnique).mockResolvedValue({ id: 'u1' } as never);
-
-    await expect(resolveAuthenticatedUser({ userId: 'u1' } as never)).resolves.toEqual({ id: 'u1' });
+    const mockUser = {
+      id: 'u1',
+      firstName: '',
+      lastName: '',
+      userName: '',
+      email: '',
+      password: '',
+      locale: '',
+      role: 'ADMIN' as const,
+      resetPasswordToken: null,
+      resetPasswordExpires: null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser);
+    await expect(resolveAuthenticatedUser({ userId: 'u1' } as never)).resolves.toEqual(mockUser);
   });
 });
