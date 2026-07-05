@@ -13,6 +13,7 @@ import type { Route } from 'next';
 import { useTranslations } from 'next-intl';
 import { BackTo } from '@/components/buttons/BackTo';
 import RecipeRating from '@/components/Recipe/Rating';
+import { buildRecipeJsonLd } from '@/lib/seo/seo';
 import { RecipeHero } from './components/RecipeHero';
 import { RecipeIngredients } from './components/RecipeIngredients';
 import { RecipeNotFound } from './components/RecipeNotFound';
@@ -53,8 +54,14 @@ const RecipeDetailClient = ({
     return <RecipeNotFound errorMessage={error?.message} />;
   }
 
+  const recipeJsonLd = buildRecipeJsonLd(recipe);
+
   return (
     <Container size="xl" py="xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(recipeJsonLd) }}
+      />
       <Stack gap="xl">
         <BackTo href={'/recipes' as Route} text={translate('backToRecipes')} />
 

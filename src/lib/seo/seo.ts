@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getLocaleMessages } from '@/lib/locale/locale';
+import type { RecipeDetail } from '@/types/recipe';
 import type { AuthMessages } from '../../types/common';
 
 /**
@@ -88,4 +89,52 @@ export const getAuthMetadata = async (
     titleKey: String(opts.titleKey),
     descriptionKey: String(opts.descriptionKey),
   });
+};
+
+export const buildRecipeJsonLd = (recipe: RecipeDetail) => {
+  const ingredientList = recipe.ingredients
+    .map((ingredient) => {
+      const quantity = Number(ingredient.quantity);
+      const amount = Number.isFinite(quantity) ? quantity : 1;
+      const unit = ingredient.unit?.trim() ? `${ingredient.unit} ` : '';
+      const name = ingredient.name?.trim() ?? '';
+
+      return `${amount} ${unit}${name}`.trim();
+    })
+    .filter(Boolean);
+
+  const instructions = recipe.preparationSteps
+    .slice()
+    .sort((a, b) => a.order - b.order)
+    .map((step) => ({
+      '@type': 'HowToStep' as const,
+      text: step.description,
+    }));
+
+  const totalTimeMinutes = recipe.totalTimeMinutes ?? recipe.cookTimeMinutes ?? recipe.cookingTime;
+  const prepTimeMinutes = recipe.prepTimeMinutes ?? undefined;
+  const cookTimeMinutes = recipe.cookTimeMinutes ?? recipe.cookingTime;
+
+  const formatDuration = (minutes?: number | null) => {
+    if (minutes === undefined || minutes === null || minutes <= 0) {
+      return undefined;
+    }
+
+    return `PT${minutes}M`;
+  };
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Recipe',
+    name: recipe.title,
+    description: recipe.description ?? undefined,
+    image: recipe.imgSrc ?? undefined,
+    recipeYield: String(recipe.servings ?? 1),
+    totalTime: formatDuration(totalTimeMinutes),
+    prepTime: formatDuration(prepTimeMinutes),
+    cookTime: formatDuration(cookTimeMinutes),
+    recipeIngredient: ingredientList,
+    recipeInstructions: instructions,
+    keywords: recipe.labels?.map((label) => label.label).join(', '),
+  };
 };

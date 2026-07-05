@@ -2,7 +2,6 @@ import { useQuery } from '@apollo/client/react';
 import { useSession } from 'next-auth/react';
 import { useCallback, useMemo, useState } from 'react';
 import { GET_RECIPE_BY_ID } from '@/lib/graphql/queries';
-import type { RecipeDetailData } from '../types';
 import { extractYoutubeId, sortByOrder } from '../utils';
 
 const SERVING_MIN = 1;
@@ -10,10 +9,9 @@ const SERVING_MAX = 20;
 
 export const useRecipeDetail = (recipeId: string) => {
   const { data: session } = useSession();
-  const { data, loading, error } = useQuery<RecipeDetailData>(
-    GET_RECIPE_BY_ID,
-    { variables: { id: recipeId } },
-  );
+  const { data, loading, error } = useQuery(GET_RECIPE_BY_ID, {
+    variables: { id: recipeId },
+  });
 
   const recipe = data?.getRecipeById;
 

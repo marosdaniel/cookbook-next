@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import * as locale from '@/lib/locale/locale';
 import type { LocaleMessages } from '@/types/common';
-import { getAuthMetadata, getMetadata } from './seo';
+import type { RecipeDetail } from '@/types/recipe';
+import { buildRecipeJsonLd, getAuthMetadata, getMetadata } from './seo';
 
 vi.mock('@/lib/locale/locale', () => ({
   getLocaleMessages: vi.fn(),
@@ -78,7 +79,7 @@ describe('getAuthMetadata', () => {
         description: 'Custom Description',
         keywords: 'one, two',
       },
-    } as unknown as LocaleMessages);
+    } );
 
     const result = await getMetadata('en-gb', 'seo', {
       titleKey: 'title',
@@ -111,7 +112,7 @@ describe('getAuthMetadata', () => {
         title: 'Title',
         description: 'Description',
       },
-    } as unknown as LocaleMessages);
+    } );
 
     const result = await getMetadata('en-gb', 'seo', {
       titleKey: 'title',
@@ -130,6 +131,52 @@ describe('getAuthMetadata', () => {
       title: 'Title | Cookbook',
       description: 'Description',
       type: 'website',
+    });
+  });
+
+  it('builds recipe schema markup with core recipe fields', () => {
+    const recipe = {
+      id: 'recipe-1',
+      title: 'Tomato Pasta',
+      description: 'A quick pasta recipe',
+      imgSrc: 'https://example.com/pasta.jpg',
+      cookingTime: 20,
+      servings: 2,
+      createdBy: 'user-1',
+      category: { key: 'dinner', label: 'Dinner' },
+      difficultyLevel: { key: 'easy', label: 'Easy' },
+      labels: [{ key: 'vegetarian', label: 'Vegetarian' }],
+      ingredients: [
+        { localId: '1', name: 'Tomato', quantity: 2, unit: 'pcs' },
+      ],
+      preparationSteps: [{ order: 1, description: 'Boil pasta' }],
+      prepTimeMinutes: 5,
+      cookTimeMinutes: 15,
+      totalTimeMinutes: 20,
+      averageRating: 4.5,
+      ratingsCount: 10,
+    } as RecipeDetail;
+
+    const result = buildRecipeJsonLd(recipe);
+
+    expect(result).toMatchObject({
+      '@context': 'https://schema.org',
+      '@type': 'Recipe',
+      name: 'Tomato Pasta',
+      description: 'A quick pasta recipe',
+      image: 'https://example.com/pasta.jpg',
+      recipeYield: '2',
+      totalTime: 'PT20M',
+      prepTime: 'PT5M',
+      cookTime: 'PT15M',
+      recipeIngredient: ['2 pcs Tomato'],
+      recipeInstructions: [
+        {
+          '@type': 'HowToStep',
+          text: 'Boil pasta',
+        },
+      ],
+      keywords: 'Vegetarian',
     });
   });
 });

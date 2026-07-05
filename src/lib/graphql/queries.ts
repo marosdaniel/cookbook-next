@@ -1,6 +1,6 @@
 import { gql, type TypedDocumentNode } from '@apollo/client';
 import type { RecipeCardData } from '@/components/Recipe/RecipeCard';
-import type { RecipeBase } from '@/types/recipe';
+import type { RecipeDetail } from '@/types/recipe';
 
 interface GetUserByIdData {
   getUserById: {
@@ -21,7 +21,7 @@ interface GetUserByIdVariables {
 }
 
 interface GetRecipeByIdData {
-  getRecipeById: RecipeBase;
+  getRecipeById: RecipeDetail;
 }
 
 interface GetRecipeByIdVariables {
