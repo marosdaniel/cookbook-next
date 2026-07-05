@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
-import { throwCustomError } from '@/lib/validation/throwCustomError';
 
 import {
   assertPresent,
