@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from 'node:async_hooks';
 import type {
   ApolloServerPlugin,
   GraphQLRequestListener,
@@ -6,7 +7,8 @@ import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { GraphQLError } from 'graphql';
 import { ApolloArmor } from '@escape.tech/graphql-armor';
-import type { NextRequest } from 'next/server';
+import type { Session } from 'next-auth';
+import { NextRequest } from 'next/server';
 import { auth } from '@/lib/auth/auth';
 import {
   createIsFavoriteLoader,
@@ -21,8 +23,15 @@ import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
+import { createPrismaTimeoutProxy } from '@/lib/prisma/prismaTimeout';
 import { rateLimiter } from '@/lib/rateLimit/rateLimit';
 import type { GraphQLContext } from '../../../types/graphql/context';
+
+const prismaWithTimeout = createPrismaTimeoutProxy(prisma, 10000);
+
+const requestStorage = new AsyncLocalStorage<{
+  session: Session | null;
+}>();
 
 /**
  * Plugin to log GraphQL operations (development only)
@@ -130,7 +139,12 @@ const fieldAuthPlugin: ApolloServerPlugin<GraphQLContext> = {
 const server = new ApolloServer<GraphQLContext>({
   typeDefs,
   resolvers: { ...scalarResolvers, ...resolvers },
-  plugins: [...protection.plugins, loggingPlugin, authPlugin, fieldAuthPlugin],
+  plugins: [
+    ...protection.plugins,
+    ...(process.env.NODE_ENV === 'development' ? [loggingPlugin] : []),
+    authPlugin,
+    fieldAuthPlugin,
+  ],
   validationRules: [...protection.validationRules],
   introspection: process.env.NODE_ENV !== 'production',
   allowBatchedHttpRequests: false,
@@ -161,29 +175,30 @@ const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(
   server,
   {
     context: async (): Promise<GraphQLContext> => {
-      // Get NextAuth v5 session
-      const session = await auth();
+      const session = requestStorage.getStore()?.session ?? (await auth());
       const userId = session?.user?.id;
 
       return {
         userId,
         role: session?.user?.role,
         operationName: null,
-        prisma,
+        prisma: prismaWithTimeout,
         // DataLoaders are instantiated fresh per request so their internal
         // cache is scoped to a single request and never leaks between users.
         loaders: {
-          ratings: createRatingsLoader(prisma),
-          isFavorite: userId ? createIsFavoriteLoader(prisma, userId) : null,
-          userRating: userId ? createUserRatingLoader(prisma, userId) : null,
-          recipeAuthor: createRecipeAuthorLoader(prisma),
-          userRecipes: createUserRecipesLoader(prisma),
-          userFavoriteRecipes: createUserFavoriteRecipesLoader(prisma),
+          ratings: createRatingsLoader(prismaWithTimeout),
+          isFavorite: userId ? createIsFavoriteLoader(prismaWithTimeout, userId) : null,
+          userRating: userId ? createUserRatingLoader(prismaWithTimeout, userId) : null,
+          recipeAuthor: createRecipeAuthorLoader(prismaWithTimeout),
+          userRecipes: createUserRecipesLoader(prismaWithTimeout),
+          userFavoriteRecipes: createUserFavoriteRecipesLoader(prismaWithTimeout),
         },
       };
     },
   },
 );
+
+export const maxDuration = 30;
 
 const wrappedHandler = async (
   request: NextRequest,
@@ -202,6 +217,9 @@ const wrappedHandler = async (
     );
   }
 
+  const session = await auth();
+  const userId = session?.user?.id;
+
   // Apply rate limiting
   if (rateLimiter) {
     const ip =
@@ -209,7 +227,7 @@ const wrappedHandler = async (
       request.headers.get('x-real-ip') ??
       '127.0.0.1';
 
-    const { success, limit, remaining } = await rateLimiter.limit(ip);
+    const { success, limit, remaining } = await rateLimiter.limit(userId ?? ip);
 
     if (!success) {
       return new Response(JSON.stringify({ error: 'Too many requests' }), {
@@ -223,7 +241,7 @@ const wrappedHandler = async (
     }
   }
 
-  const requestBody = await request.clone().text();
+  const requestBody = await request.text();
   if (!requestBody.trim()) {
     return new Response(
       JSON.stringify({
@@ -273,7 +291,14 @@ const wrappedHandler = async (
     );
   }
 
-  return handler(request);
+  const replayedRequest = new NextRequest(request.url, {
+    method: request.method,
+    headers: request.headers,
+    body: requestBody,
+    duplex: 'half',
+  });
+
+  return requestStorage.run({ session }, () => handler(replayedRequest));
 };
 
 // Export Next.js route handlers

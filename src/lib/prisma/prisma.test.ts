@@ -2,9 +2,17 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const PrismaNeonSpy = vi.fn();
 
+vi.mock('@neondatabase/serverless', () => ({
+  neonConfig: {},
+}));
+
+vi.mock('ws', () => ({
+  default: class {},
+}));
+
 vi.mock('@prisma/adapter-neon', () => ({
   PrismaNeon: class {
-    constructor(public options: { connectionString: string }) {
+    constructor(public options: unknown) {
       PrismaNeonSpy(options);
     }
   },
@@ -67,28 +75,33 @@ describe('prisma', () => {
     ).toBeUndefined();
 
     vi.unstubAllEnvs();
+    
   });
 
-  it('should initialize PrismaNeon with DATABASE_URL', async () => {
+  it('should initialize a Neon Pool with DATABASE_URL', async () => {
     const dbUrl = 'postgresql://test-user:test-pass@neon.db/test-repo';
     vi.stubEnv('DATABASE_URL', dbUrl);
 
     await import('./prisma');
 
-    expect(PrismaNeonSpy).toHaveBeenCalledWith({ connectionString: dbUrl });
+    expect(PrismaNeonSpy).toHaveBeenCalledWith({
+      connectionString: dbUrl,
+      max: 10,
+      maxUses: 1,
+    });
   });
 
-  it('should fallback to DIRECT_URL when DATABASE_URL is not set', async () => {
+  it('should require DATABASE_URL for runtime Prisma initialization', async () => {
     const dbUrl = 'postgresql://direct-user:example-password@neon.db/test-repo';
     vi.stubEnv('DIRECT_URL', dbUrl);
     delete process.env.DATABASE_URL;
 
-    await import('./prisma');
-
-    expect(PrismaNeonSpy).toHaveBeenCalledWith({ connectionString: dbUrl });
+    await expect(import('./prisma')).rejects.toThrow(
+      'No database connection string found.',
+    );
   });
 
-  it('should throw when neither DATABASE_URL nor DIRECT_URL is available', async () => {
+  it('should throw when DATABASE_URL is not available', async () => {
     delete process.env.DATABASE_URL;
     delete process.env.DIRECT_URL;
 

@@ -1,5 +1,20 @@
+import { neonConfig } from '@neondatabase/serverless';
+
 import { PrismaNeon } from '@prisma/adapter-neon';
+
+
+
+
+
 import { PrismaClient } from '@prisma/client';
+import ws from 'ws';
+
+
+
+
+
+
+neonConfig.webSocketConstructor = ws;
 
 // PrismaClient is attached to the `global` object in development to prevent
 // exhausting your database connection limit.
@@ -10,22 +25,32 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 const createPrismaClient = () => {
-  const connectionString = process.env.DATABASE_URL ?? process.env.DIRECT_URL;
+  const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
     throw new Error(
-      'No database connection string found. Set DATABASE_URL or DIRECT_URL environment variable.',
+      'No database connection string found. Set DATABASE_URL environment variable.',
     );
   }
+
   const adapter = new PrismaNeon({
     connectionString,
+    max: 10,
+    maxUses: 1,
   });
-  return new PrismaClient({
+
+  const prismaClient = new PrismaClient({
     adapter,
     log:
+
+
+
+    
       process.env.NODE_ENV === 'development'
         ? ['query', 'error', 'warn']
         : ['error'],
   });
+
+  return prismaClient;
 };
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
