@@ -62,10 +62,7 @@ describe('isFormSubmitDisabled', () => {
 
   it('treats a boolean false validation result as invalid', () => {
     expect(
-      isFormSubmitDisabled(
-        createForm({ isValid: () => false as unknown as boolean }),
-        false,
-      ),
+      isFormSubmitDisabled(createForm({ isValid: () => false }), false),
     ).toBe(true);
   });
 

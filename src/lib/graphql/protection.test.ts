@@ -16,7 +16,7 @@ describe('resolveQueryLimit', () => {
   });
 
   it('returns undefined for empty values', () => {
-    expect(resolveQueryLimit(undefined)).toBeUndefined();
+    expect(resolveQueryLimit()).toBeUndefined();
     expect(resolveQueryLimit(null as unknown as number)).toBeUndefined();
   });
 
@@ -44,6 +44,6 @@ describe('validatePersistedQuery', () => {
   it('rejects when no persisted hash is provided', () => {
     const query = 'query GetRecipes { getRecipes(limit: 10) { id } }';
 
-    expect(validatePersistedQuery(query, undefined)).toBe(false);
+    expect(validatePersistedQuery(query)).toBe(false);
   });
 });
