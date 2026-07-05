@@ -57,7 +57,7 @@ async function getCachedData(key: string) {
     const cached = await redis.get(key);
     if (cached) return cached;
   } catch (error) {
-    console.error('Redis cache get error:', error);
+    console.warn('Redis cache get error:', error);
   }
   return null;
 }
@@ -67,7 +67,7 @@ async function setCachedData(key: string, value: unknown, ttl: number = 60) {
   try {
     await redis.setex(key, ttl, value);
   } catch (error) {
-    console.error('Redis cache set error:', error);
+    console.warn('Redis cache set error:', error);
   }
 }
 
@@ -77,7 +77,7 @@ async function invalidateCache(keys: string[]) {
   try {
     await Promise.all(keys.map((key) => currentRedis.del(key)));
   } catch (error) {
-    console.error('Redis cache invalidation error:', error);
+    console.warn('Redis cache invalidation error:', error);
   }
 }
 

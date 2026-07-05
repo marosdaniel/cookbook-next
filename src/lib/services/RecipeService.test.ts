@@ -1,9 +1,19 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+const { mockRedis } = vi.hoisted(() => ({
+  mockRedis: {
+    get: vi.fn(),
+    setex: vi.fn(),
+    del: vi.fn(),
+  },
+}));
 
 vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
     recipe: {
+      findMany: vi.fn(),
       findUnique: vi.fn(),
+      count: vi.fn(),
       delete: vi.fn(),
     },
     rating: {
@@ -14,7 +24,7 @@ vi.mock('@/lib/prisma/prisma', () => ({
 }));
 
 vi.mock('@/lib/redis/redis', () => ({
-  redis: null,
+  redis: mockRedis,
 }));
 
 vi.mock('@/lib/validation/throwCustomError', () => ({
@@ -24,6 +34,25 @@ vi.mock('@/lib/validation/throwCustomError', () => ({
 }));
 
 import { assertRecipeResourceAccess, RecipeService } from './RecipeService';
+
+describe('RecipeService cache resilience', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockRedis.get.mockResolvedValue(null);
+    mockRedis.setex.mockResolvedValue(undefined);
+    mockRedis.del.mockResolvedValue(undefined);
+  });
+
+  it('continues when Redis cache set fails', async () => {
+    const { prisma } = await import('@/lib/prisma/prisma');
+    vi.mocked(prisma.recipe.findMany).mockResolvedValue([]);
+    vi.mocked(prisma.recipe.count).mockResolvedValue(0);
+    vi.mocked(mockRedis.get).mockResolvedValue(null);
+    vi.mocked(mockRedis.setex).mockRejectedValue(new Error('upstash unavailable'));
+
+    await expect(RecipeService.getRecipes()).resolves.toEqual({ recipes: [], totalRecipes: 0 });
+  });
+});
 
 describe('assertRecipeResourceAccess', () => {
   it('allows admins to edit any recipe', () => {

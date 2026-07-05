@@ -25,6 +25,7 @@ import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
 import { createPrismaTimeoutProxy } from '@/lib/prisma/prismaTimeout';
 import { rateLimiter } from '@/lib/rateLimit/rateLimit';
+import { withTimeout } from '@/lib/redis/redis';
 import type { GraphQLContext } from '../../../types/graphql/context';
 
 const prismaWithTimeout = createPrismaTimeoutProxy(prisma, 10000);
@@ -227,17 +228,25 @@ const wrappedHandler = async (
       request.headers.get('x-real-ip') ??
       '127.0.0.1';
 
-    const { success, limit, remaining } = await rateLimiter.limit(userId ?? ip);
+    try {
+      const rateLimitResult = await withTimeout(() => rateLimiter.limit(userId ?? ip), 750);
 
-    if (!success) {
-      return new Response(JSON.stringify({ error: 'Too many requests' }), {
-        status: 429,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-RateLimit-Limit': limit.toString(),
-          'X-RateLimit-Remaining': remaining.toString(),
-        },
-      });
+      if (rateLimitResult) {
+        const { success, limit, remaining } = rateLimitResult;
+
+        if (!success) {
+          return new Response(JSON.stringify({ error: 'Too many requests' }), {
+            status: 429,
+            headers: {
+              'Content-Type': 'application/json',
+              'X-RateLimit-Limit': limit.toString(),
+              'X-RateLimit-Remaining': remaining.toString(),
+            },
+          });
+        }
+      }
+    } catch (error) {
+      console.warn('GraphQL rate limiter failed. Continuing without throttling.', error);
     }
   }
 

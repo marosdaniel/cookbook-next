@@ -17,15 +17,34 @@ vi.mock('@/lib/redis/redis', () => ({
   redis: {},
 }));
 
-import { rateLimiter, strictRateLimiter } from './rateLimit';
-
 describe('rate limit setup', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.resetModules();
   });
 
-  it('creates rate limiters when redis is available', () => {
-    expect(rateLimiter).toBeDefined();
-    expect(strictRateLimiter).toBeDefined();
+  it('creates rate limiters when redis is available', async () => {
+    vi.doMock('@/lib/redis/redis', () => ({ redis: {} }));
+    const { rateLimiter: configuredRateLimiter, strictRateLimiter: configuredStrictRateLimiter } = await import('./rateLimit');
+
+    expect(configuredRateLimiter).toBeDefined();
+    expect(configuredStrictRateLimiter).toBeDefined();
+  });
+
+  it('falls back gracefully when limiter initialization throws', async () => {
+    vi.doMock('@upstash/ratelimit', () => {
+      const Ratelimit = vi.fn().mockImplementation(() => {
+        throw new Error('rate limit init failed');
+      });
+      Ratelimit.slidingWindow = vi.fn(() => 'window');
+
+      return { Ratelimit };
+    });
+    vi.doMock('@/lib/redis/redis', () => ({ redis: {} }));
+
+    const { rateLimiter: fallbackRateLimiter, strictRateLimiter: fallbackStrictRateLimiter } = await import('./rateLimit');
+
+    expect(fallbackRateLimiter).toBeNull();
+    expect(fallbackStrictRateLimiter).toBeNull();
   });
 });
