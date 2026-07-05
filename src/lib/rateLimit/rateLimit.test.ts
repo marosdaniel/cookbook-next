@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@upstash/ratelimit', () => {
+const createRatelimitMock = () => {
+  const slidingWindow = vi.fn(() => 'window');
   const Ratelimit = vi.fn().mockImplementation(function (this: { options: unknown }, options: unknown) {
     this.options = options;
   }) as unknown as {
@@ -8,8 +9,13 @@ vi.mock('@upstash/ratelimit', () => {
     slidingWindow: ReturnType<typeof vi.fn>;
   };
 
-  Ratelimit.slidingWindow = vi.fn(() => 'window');
+  Ratelimit.slidingWindow = slidingWindow;
 
+  return { Ratelimit, slidingWindow };
+};
+
+vi.mock('@upstash/ratelimit', () => {
+  const { Ratelimit } = createRatelimitMock();
   return { Ratelimit };
 });
 
@@ -33,10 +39,10 @@ describe('rate limit setup', () => {
 
   it('falls back gracefully when limiter initialization throws', async () => {
     vi.doMock('@upstash/ratelimit', () => {
-      const Ratelimit = vi.fn().mockImplementation(() => {
+      const { Ratelimit } = createRatelimitMock();
+      vi.mocked(Ratelimit).mockImplementation(() => {
         throw new Error('rate limit init failed');
       });
-      Ratelimit.slidingWindow = vi.fn(() => 'window');
 
       return { Ratelimit };
     });
