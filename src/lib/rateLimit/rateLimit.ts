@@ -1,7 +1,14 @@
 import { Ratelimit, type Duration } from '@upstash/ratelimit';
 import { rawRedisClient } from '@/lib/redis/redis';
 
-export type RateLimitOperation = 'resetPassword' | 'createRecipe' | 'editRecipe' | 'getRecipes';
+export type RateLimitOperation =
+  | 'resetPassword'
+  | 'createRecipe'
+  | 'editRecipe'
+  | 'deleteRecipe'
+  | 'rateRecipe'
+  | 'deleteRating'
+  | 'getRecipes';
 
 const createLimiter = (prefix: string, window: Duration, requests: number) => {
   if (!rawRedisClient) {
@@ -34,10 +41,15 @@ export const strictRateLimiter = shouldUseLimiter
   ? createLimiter('ratelimit:graphql:strict', '10 m', 5)
   : null;
 
-export const getRateLimiterForOperation = (
-  operation: RateLimitOperation,
-) => {
-  if (operation === 'resetPassword' || operation === 'createRecipe' || operation === 'editRecipe') {
+export const getRateLimiterForOperation = (operation: RateLimitOperation) => {
+  if (
+    operation === 'resetPassword' ||
+    operation === 'createRecipe' ||
+    operation === 'editRecipe' ||
+    operation === 'deleteRecipe' ||
+    operation === 'rateRecipe' ||
+    operation === 'deleteRating'
+  ) {
     return strictRateLimiter ?? rateLimiter;
   }
 

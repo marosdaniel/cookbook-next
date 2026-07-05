@@ -63,7 +63,10 @@ async function getCachedData(key: string) {
   return null;
 }
 
-async function setCachedData(key: string, value: unknown, ttl: number = 60) {
+const LIST_CACHE_TTL_SECONDS = 15;
+const DETAIL_CACHE_TTL_SECONDS = 60;
+
+async function setCachedData(key: string, value: unknown, ttl: number = DETAIL_CACHE_TTL_SECONDS) {
   if (!redis) return;
   try {
     await redis.setex(key, ttl, value);
@@ -120,8 +123,7 @@ export const RecipeService = {
 
     const result = { recipes, totalRecipes };
 
-    // Cache for 60 seconds to provide a quick response for frequent requests while keeping data relatively fresh
-    await setCachedData(cacheKey, result, 60);
+    await setCachedData(cacheKey, result, LIST_CACHE_TTL_SECONDS);
 
     return result;
   },
@@ -141,7 +143,7 @@ export const RecipeService = {
       return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
     }
 
-    await setCachedData(cacheKey, existingRecipe, 60);
+    await setCachedData(cacheKey, existingRecipe, DETAIL_CACHE_TTL_SECONDS);
 
     return existingRecipe;
   },
@@ -165,7 +167,7 @@ export const RecipeService = {
 
     const result = { recipes, totalRecipes };
 
-    await setCachedData(cacheKey, result, 60);
+    await setCachedData(cacheKey, result, LIST_CACHE_TTL_SECONDS);
 
     return result;
   },

@@ -62,6 +62,11 @@ describe('rate limit setup', () => {
     const { getRateLimiterForOperation } = await import('./rateLimit');
 
     expect(getRateLimiterForOperation('resetPassword')).toBeDefined();
+    expect(getRateLimiterForOperation('createRecipe')).toBeDefined();
+    expect(getRateLimiterForOperation('editRecipe')).toBeDefined();
+    expect(getRateLimiterForOperation('deleteRecipe')).toBeDefined();
+    expect(getRateLimiterForOperation('rateRecipe')).toBeDefined();
+    expect(getRateLimiterForOperation('deleteRating')).toBeDefined();
     expect(getRateLimiterForOperation('getRecipes')).toBeDefined();
   });
 });

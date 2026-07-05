@@ -53,6 +53,20 @@ describe('RecipeService cache resilience', () => {
     await expect(RecipeService.getRecipes()).resolves.toEqual({ recipes: [], totalRecipes: 0 });
   });
 
+  it('stores recipe list caches with a shorter ttl to reduce stale list data', async () => {
+    const { prisma } = await import('@/lib/prisma/prisma');
+    vi.mocked(prisma.recipe.findMany).mockResolvedValue([]);
+    vi.mocked(prisma.recipe.count).mockResolvedValue(0);
+
+    await RecipeService.getRecipes();
+
+    expect(mockRedis.setex).toHaveBeenCalledWith(
+      expect.any(String),
+      15,
+      expect.objectContaining({ recipes: [], totalRecipes: 0 }),
+    );
+  });
+
   it('rejects ratings outside the supported 1-5 range', async () => {
     const { prisma } = await import('@/lib/prisma/prisma');
     vi.mocked(prisma.recipe.findUnique).mockResolvedValue({
