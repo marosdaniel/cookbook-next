@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const createRatelimitMock = () => {
   const slidingWindow = vi.fn(() => 'window');
-  const Ratelimit = vi.fn().mockImplementation(function (this: { options: unknown }, options: unknown) {
+
+  const Ratelimit = vi.fn(function (this: { options: unknown }, options: unknown) {
     this.options = options;
   }) as unknown as {
     new (options: unknown): unknown;
@@ -39,12 +40,15 @@ describe('rate limit setup', () => {
 
   it('falls back gracefully when limiter initialization throws', async () => {
     vi.doMock('@upstash/ratelimit', () => {
-      const { Ratelimit } = createRatelimitMock();
-      vi.mocked(Ratelimit).mockImplementation(() => {
-        throw new Error('rate limit init failed');
-      });
+      const ThrowingRatelimit = class {
+        static readonly slidingWindow = vi.fn(() => 'window');
 
-      return { Ratelimit };
+        constructor(_options: unknown) {
+          throw new Error('rate limit init failed');
+        }
+      };
+
+      return { Ratelimit: ThrowingRatelimit };
     });
     vi.doMock('@/lib/redis/redis', () => ({ rawRedisClient: {} }));
 
