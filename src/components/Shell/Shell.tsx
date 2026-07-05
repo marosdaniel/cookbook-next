@@ -1,11 +1,11 @@
 'use client';
 
-import { AppShell, Burger, Group } from '@mantine/core';
+import { AppShell, Burger, Group, Skeleton } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import type { FC, PropsWithChildren } from 'react';
-import { isAuthRoute, PUBLIC_ROUTES } from '@/types/routes';
+import { isAuthRoute, PROTECTED_ROUTES, PUBLIC_ROUTES } from '@/types/routes';
 import AuthButton from '../buttons/AuthButton';
 import Footer from '../Footer';
 import { HeaderSearch } from '../HeaderSearch';
@@ -14,21 +14,27 @@ import { Logo } from '../Logo';
 import Navbar from '../Navbar';
 import ThemeSwitcher from '../ThemeSwitcher';
 
+const NAVBAR_WIDTH = 300;
+
 const Shell: FC<PropsWithChildren> = ({ children }) => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
   const { data: session, status } = useSession();
   const isSessionLoading = status === 'loading';
 
   const isAuthPage = isAuthRoute(pathname);
-  const isImmersive = pathname?.startsWith('/recipes/create');
+  const isImmersive = pathname.startsWith(PROTECTED_ROUTES.RECIPES_CREATE);
+  const showShellChrome = !isImmersive;
+
+  // Keep auth and immersive page chrome mutually exclusive to avoid conflicting layout rules.
+  const shouldShowAuthButton = !isSessionLoading && !session && !isAuthPage;
 
   return (
     <AppShell
       padding={isImmersive ? 0 : 'md'}
       header={{ height: 60, collapsed: isImmersive }}
       navbar={{
-        width: 300,
+        width: NAVBAR_WIDTH,
         breakpoint: 'sm',
         collapsed: {
           mobile: !mobileOpened,
@@ -37,7 +43,7 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
       }}
       withBorder={!isImmersive}
     >
-      {!isImmersive && (
+      {showShellChrome && (
         <AppShell.Header>
           <Group h="100%" px="md" justify="space-between">
             <Group>
@@ -61,8 +67,12 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
             </Group>
 
             <Group gap="xs">
-              {!isSessionLoading && !session && !isAuthPage && (
+              {shouldShowAuthButton ? (
                 <AuthButton variant="compact" />
+              ) : (
+                isSessionLoading && (
+                  <Skeleton height={36} width={88} radius="xl" />
+                )
               )}
               <ThemeSwitcher />
               <LanguageSelector />
@@ -79,7 +89,7 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
         </AppShell.Header>
       )}
 
-      {!isImmersive && (
+      {showShellChrome && (
         <AppShell.Navbar>{!isAuthPage && <Navbar />}</AppShell.Navbar>
       )}
 
@@ -87,10 +97,10 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
         {children}
       </AppShell.Main>
 
-      {!isImmersive && (
+      {showShellChrome && (
         <AppShell.Footer
           h={{ base: 100, md: 60 }}
-          ml={{ base: 0, sm: isAuthPage ? 0 : 300 }}
+          ml={{ base: 0, sm: isAuthPage ? 0 : NAVBAR_WIDTH }}
         >
           <Footer />
         </AppShell.Footer>

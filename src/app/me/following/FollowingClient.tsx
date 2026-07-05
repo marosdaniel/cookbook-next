@@ -23,7 +23,6 @@ import {
   IconUsers,
   IconUsersGroup,
 } from '@tabler/icons-react';
-import type { Route } from 'next';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
@@ -44,7 +43,7 @@ const FollowingClient = () => {
   const { data: session, status } = useSession();
   const translate = useTranslations('user');
 
-  const userId = (session?.user as { id?: string })?.id;
+  const userId = session?.user?.id;
   const isSessionLoading = status === 'loading';
 
   const { data, loading } = useQuery(GET_FOLLOWING, {
@@ -139,7 +138,7 @@ const FollowingClient = () => {
             </Text>
             <Button
               component={Link}
-              href={PUBLIC_ROUTES.RECIPES as Route}
+              href={PUBLIC_ROUTES.RECIPES}
               variant="gradient"
               gradient={{ from: 'pink', to: 'violet', deg: 45 }}
               size="lg"

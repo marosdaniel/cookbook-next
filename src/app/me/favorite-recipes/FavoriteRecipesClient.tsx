@@ -19,7 +19,6 @@ import {
   IconSearch,
   IconStar,
 } from '@tabler/icons-react';
-import type { Route } from 'next';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
@@ -67,7 +66,7 @@ const FavoriteRecipesClient = () => {
   const { data: session, status } = useSession();
   const t = useTranslations('user');
 
-  const userId = (session?.user as { id?: string })?.id;
+  const userId = session?.user?.id;
   const isSessionLoading = status === 'loading';
 
   const { data, loading } = useQuery(GET_FAVORITE_RECIPES, {
@@ -127,7 +126,7 @@ const FavoriteRecipesClient = () => {
           {totalFavorites > 0 && (
             <Button
               component={Link}
-              href={PUBLIC_ROUTES.RECIPES as Route}
+              href={PUBLIC_ROUTES.RECIPES}
               leftSection={<IconSearch size={18} />}
               variant="gradient"
               gradient={{ from: 'pink', to: 'violet', deg: 45 }}
@@ -170,7 +169,7 @@ const FavoriteRecipesClient = () => {
             </Text>
             <Button
               component={Link}
-              href={PUBLIC_ROUTES.RECIPES as Route}
+              href={PUBLIC_ROUTES.RECIPES}
               leftSection={<IconSearch size={18} />}
               variant="gradient"
               gradient={{ from: 'pink', to: 'violet', deg: 45 }}

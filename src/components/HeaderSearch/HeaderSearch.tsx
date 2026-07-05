@@ -11,12 +11,12 @@ import {
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconSearch } from '@tabler/icons-react';
-import type { Route } from 'next';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
 import type { RecipeBase } from '@/types/recipe';
+import { PUBLIC_ROUTES } from '@/types/routes';
 
 export const HeaderSearch = () => {
   const t = useTranslations('headerSearch');
@@ -62,7 +62,7 @@ export const HeaderSearch = () => {
       onOptionSubmit={(optionValue) => {
         setSearchQuery('');
         combobox.closeDropdown();
-        router.push(`/recipes/${optionValue}` as Route);
+        router.push(`${PUBLIC_ROUTES.RECIPES}/${optionValue}`);
       }}
       store={combobox}
       withinPortal={true}

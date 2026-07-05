@@ -239,7 +239,7 @@ const createJsonResponse = (
 };
 
 const parseRequestPayload = (requestBody: string): GraphQLRequestPayload => {
-  return JSON.parse(requestBody) as GraphQLRequestPayload;
+  return JSON.parse(requestBody);
 };
 
 const extractOperationName = (

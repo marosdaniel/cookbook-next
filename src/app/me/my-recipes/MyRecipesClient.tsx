@@ -20,7 +20,6 @@ import {
   IconStar,
   IconToolsKitchen2,
 } from '@tabler/icons-react';
-import type { Route } from 'next';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
@@ -65,7 +64,7 @@ const MyRecipesClient = () => {
   const { data: session, status } = useSession();
   const t = useTranslations('user');
 
-  const userId = (session?.user as { id?: string })?.id;
+  const userId = session?.user?.id;
   const isSessionLoading = status === 'loading';
 
   const { data, loading } = useQuery(GET_RECIPES_BY_USER_ID, {
@@ -130,7 +129,7 @@ const MyRecipesClient = () => {
           {totalRecipes > 0 && (
             <Button
               component={Link}
-              href={PROTECTED_ROUTES.RECIPES_CREATE as Route}
+              href={PROTECTED_ROUTES.RECIPES_CREATE}
               leftSection={<IconPlus size={18} />}
               variant="gradient"
               gradient={{ from: 'pink', to: 'violet', deg: 45 }}
@@ -178,7 +177,7 @@ const MyRecipesClient = () => {
             </Text>
             <Button
               component={Link}
-              href={PROTECTED_ROUTES.RECIPES_CREATE as Route}
+              href={PROTECTED_ROUTES.RECIPES_CREATE}
               leftSection={<IconPlus size={18} />}
               variant="gradient"
               gradient={{ from: 'pink', to: 'violet', deg: 45 }}

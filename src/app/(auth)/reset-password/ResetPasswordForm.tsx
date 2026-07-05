@@ -65,7 +65,7 @@ export const ResetPasswordForm: FC = () => {
     } catch (error: unknown) {
       showErrorNotification(
         translate('response.resetPasswordFailed'),
-        translate('response.somethingWentWrong') as string,
+        translate('response.somethingWentWrong'),
         error,
       );
     }

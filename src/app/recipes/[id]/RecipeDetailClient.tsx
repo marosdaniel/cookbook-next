@@ -9,11 +9,11 @@ import {
   Stack,
   Title,
 } from '@mantine/core';
-import type { Route } from 'next';
 import { useTranslations } from 'next-intl';
 import { BackTo } from '@/components/buttons/BackTo';
 import RecipeRating from '@/components/Recipe/Rating';
 import { buildRecipeJsonLd } from '@/lib/seo/seo';
+import { PUBLIC_ROUTES } from '../../../types/routes';
 import { RecipeHero } from './components/RecipeHero';
 import { RecipeIngredients } from './components/RecipeIngredients';
 import { RecipeNotFound } from './components/RecipeNotFound';
@@ -60,7 +60,10 @@ const RecipeDetailClient = ({
     <Container size="xl" py="xl">
       <script type="application/ld+json">{JSON.stringify(recipeJsonLd)}</script>
       <Stack gap="xl">
-        <BackTo href={'/recipes' as Route} text={translate('backToRecipes')} />
+        <BackTo
+          href={PUBLIC_ROUTES.RECIPES}
+          text={translate('backToRecipes')}
+        />
 
         <RecipeHero recipe={recipe} isOwner={isOwner} />
 

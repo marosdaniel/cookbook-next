@@ -14,10 +14,10 @@ import {
   IconFlame,
   IconUsers,
 } from '@tabler/icons-react';
-import type { Route } from 'next';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { FavoriteButton } from '@/components/buttons/FavoriteButton';
+import { PUBLIC_ROUTES } from '@/types/routes';
 import classes from '../RecipeDetail.module.css';
 import type { RecipeHeroProps } from '../types';
 import { getDifficultyColor } from '../utils';
@@ -51,7 +51,10 @@ export const RecipeHero = ({ recipe, isOwner }: Readonly<RecipeHeroProps>) => {
         {isOwner && (
           <ActionIcon
             component={Link}
-            href={`/recipes/${recipe.id}/edit` as Route}
+            href={{
+              pathname: `${PUBLIC_ROUTES.RECIPES}/[id]/edit`,
+              query: { id: recipe.id },
+            }}
             variant="subtle"
             color="white"
             size="lg"

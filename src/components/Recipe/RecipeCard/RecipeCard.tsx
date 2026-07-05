@@ -7,11 +7,11 @@ import {
   IconStar,
   IconUsers,
 } from '@tabler/icons-react';
-import type { Route } from 'next';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { getDifficultyColor } from '@/app/recipes/[id]/utils';
 import { FavoriteButton } from '@/components/buttons/FavoriteButton';
+import { PUBLIC_ROUTES } from '@/types/routes';
 import classes from './RecipeCard.module.css';
 import type { RecipeCardProps } from './types';
 
@@ -37,7 +37,7 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
   return (
     <Card
       component={Link}
-      href={`/recipes/${id}` as Route}
+      href={{ pathname: `${PUBLIC_ROUTES.RECIPES}/[id]`, query: { id } }}
       shadow="sm"
       radius="md"
       withBorder

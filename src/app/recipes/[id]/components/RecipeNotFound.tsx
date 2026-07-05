@@ -1,8 +1,8 @@
 import { Center, Stack, Text, Title } from '@mantine/core';
 import { IconChefHat } from '@tabler/icons-react';
-import type { Route } from 'next';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { PUBLIC_ROUTES } from '../../../../types/routes';
 import type { RecipeNotFoundProps } from '../types';
 
 export const RecipeNotFound = ({
@@ -20,7 +20,7 @@ export const RecipeNotFound = ({
         </Text>
         <Text
           component={Link}
-          href={'/recipes' as Route}
+          href={PUBLIC_ROUTES.RECIPES}
           c="pink"
           fw={600}
           td="underline"

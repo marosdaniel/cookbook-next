@@ -11,5 +11,5 @@ export const AUTH_CONSTANTS = {
   /**
    * Default notification position
    */
-  NOTIFICATION_POSITION: 'top-right' as const,
-} as const;
+  NOTIFICATION_POSITION: 'top-right',
+};
