@@ -23,6 +23,7 @@ describe('RecipeCard', () => {
             imgSrc: '',
             cookingTime: 20,
             servings: 2,
+            createdBy: 'user-1',
             category: { key: 'dessert', label: 'Dessert' },
             difficultyLevel: { key: 'easy', label: 'Easy' },
             averageRating: 4.5,
