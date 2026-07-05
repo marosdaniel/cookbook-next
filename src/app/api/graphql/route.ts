@@ -24,7 +24,11 @@ import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
 import { createPrismaTimeoutProxy } from '@/lib/prisma/prismaTimeout';
-import { getRateLimiterForOperation, rateLimiter } from '@/lib/rateLimit/rateLimit';
+import {
+  getRateLimiterForOperation,
+  isRateLimitOperation,
+  rateLimiter,
+} from '@/lib/rateLimit/rateLimit';
 import { withTimeout } from '@/lib/redis/redis';
 import type { GraphQLContext } from '../../../types/graphql/context';
 
@@ -201,20 +205,111 @@ const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(
 
 export const maxDuration = 30;
 
+type GraphQLRequestPayload = {
+  operationName?: string;
+  query?: string;
+  extensions?: {
+    persistedQuery?: {
+      sha256Hash?: string;
+    };
+  };
+};
+
+const createJsonResponse = (
+  body: unknown,
+  status: number,
+  headers: Record<string, string> = {},
+): Response => {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers,
+    },
+  });
+};
+
+const parseRequestPayload = (requestBody: string): GraphQLRequestPayload => {
+  return JSON.parse(requestBody) as GraphQLRequestPayload;
+};
+
+const extractOperationName = (payload: GraphQLRequestPayload): string | undefined => {
+  // Best-effort fallback for clients that omit operationName; this is only used
+  // to select the rate limiter and is not used for authorization decisions.
+  return payload.operationName ?? payload.query?.match(/(?:query|mutation)\s+(\w+)/i)?.[1];
+};
+
+const enforceRateLimit = async (
+  request: NextRequest,
+  operationName: string | undefined,
+  userId: string | undefined,
+): Promise<Response | null> => {
+  if (!rateLimiter) {
+    return null;
+  }
+
+  const ip = request.headers.get('x-forwarded-for') ?? request.headers.get('x-real-ip') ?? '127.0.0.1';
+  const limiter = isRateLimitOperation(operationName)
+    ? getRateLimiterForOperation(operationName)
+    : rateLimiter;
+
+  if (!limiter) {
+    return createJsonResponse({ error: 'Rate limiter unavailable' }, 503);
+  }
+
+  try {
+    const rateLimitResult = await withTimeout(() => limiter.limit(userId ?? ip), 750);
+
+    if (!rateLimitResult) {
+      return null;
+    }
+
+    const { success, limit, remaining } = rateLimitResult;
+
+    if (success) {
+      return null;
+    }
+
+    return createJsonResponse({ error: 'Too many requests' }, 429, {
+      'X-RateLimit-Limit': limit.toString(),
+      'X-RateLimit-Remaining': remaining.toString(),
+    });
+  } catch (error) {
+    console.warn('GraphQL rate limiter failed. Continuing without throttling.', error);
+    return null;
+  }
+};
+
+const validatePersistedQueryRequest = (payload: GraphQLRequestPayload): Response | null => {
+  const persistedHash = payload.extensions?.persistedQuery?.sha256Hash;
+  if (!persistedHash) {
+    return null;
+  }
+
+  if (validatePersistedQuery(payload.query ?? '', persistedHash)) {
+    return null;
+  }
+
+  return createJsonResponse(
+    {
+      error: 'Persisted query verification failed',
+      message: 'The provided persisted query hash does not match the supplied operation.',
+    },
+    400,
+  );
+};
+
 const wrappedHandler = async (
   request: NextRequest,
   _context: { params: Promise<Record<string, never>> },
 ): Promise<Response> => {
   if (request.method === 'GET') {
-    return new Response(
-      JSON.stringify({
+    return createJsonResponse(
+      {
         message: 'GraphQL API endpoint. Use POST requests.',
         endpoint: '/api/graphql',
-      }),
-      {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
       },
+      200,
     );
   }
 
@@ -223,99 +318,37 @@ const wrappedHandler = async (
 
   const requestBody = await request.text();
   if (!requestBody.trim()) {
-    return new Response(
-      JSON.stringify({
+    return createJsonResponse(
+      {
         error: 'Empty request body',
         message: 'GraphQL POST requests must include a JSON body.',
-      }),
-      {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
       },
+      400,
     );
   }
 
-  let operationName: string | undefined;
+  let payload: GraphQLRequestPayload;
   try {
-    const parsedBody = JSON.parse(requestBody) as {
-      operationName?: string;
-      query?: string;
-      extensions?: {
-        persistedQuery?: {
-          sha256Hash?: string;
-        };
-      };
-    };
-
-    operationName = parsedBody.operationName ?? parsedBody.query?.match(/(?:query|mutation)\s+(\w+)/i)?.[1];
+    payload = parseRequestPayload(requestBody);
   } catch {
-    operationName = undefined;
-  }
-
-  // Apply rate limiting
-  if (rateLimiter) {
-    const ip =
-      request.headers.get('x-forwarded-for') ??
-      request.headers.get('x-real-ip') ??
-      '127.0.0.1';
-    const limiter = getRateLimiterForOperation(operationName as never) ?? rateLimiter;
-
-    try {
-      const rateLimitResult = await withTimeout(() => limiter.limit(userId ?? ip), 750);
-
-      if (rateLimitResult) {
-        const { success, limit, remaining } = rateLimitResult;
-
-        if (!success) {
-          return new Response(JSON.stringify({ error: 'Too many requests' }), {
-            status: 429,
-            headers: {
-              'Content-Type': 'application/json',
-              'X-RateLimit-Limit': limit.toString(),
-              'X-RateLimit-Remaining': remaining.toString(),
-            },
-          });
-        }
-      }
-    } catch (error) {
-      console.warn('GraphQL rate limiter failed. Continuing without throttling.', error);
-    }
-  }
-
-  try {
-    const parsedBody = JSON.parse(requestBody) as {
-      query?: string;
-      extensions?: {
-        persistedQuery?: {
-          sha256Hash?: string;
-        };
-      };
-    };
-
-    const persistedHash = parsedBody.extensions?.persistedQuery?.sha256Hash;
-    if (persistedHash && !validatePersistedQuery(parsedBody.query ?? '', persistedHash)) {
-      return new Response(
-        JSON.stringify({
-          error: 'Persisted query verification failed',
-          message: 'The provided persisted query hash does not match the supplied operation.',
-        }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      );
-    }
-  } catch {
-    return new Response(
-      JSON.stringify({
+    return createJsonResponse(
+      {
         error: 'Invalid JSON body',
         message: 'GraphQL POST requests must include valid JSON.',
-      }),
-      {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
       },
+      400,
     );
+  }
+
+  const operationName = extractOperationName(payload);
+  const rateLimitResponse = await enforceRateLimit(request, operationName, userId);
+  if (rateLimitResponse) {
+    return rateLimitResponse;
+  }
+
+  const persistedQueryResponse = validatePersistedQueryRequest(payload);
+  if (persistedQueryResponse) {
+    return persistedQueryResponse;
   }
 
   const replayedRequest = new NextRequest(request.url, {

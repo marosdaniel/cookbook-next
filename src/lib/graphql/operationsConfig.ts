@@ -9,6 +9,7 @@
  */
 
 import type { UserRole } from '../../types/user';
+import { OPERATION_NAMES } from '@/lib/graphql/operations';
 
 interface OperationsConfig {
   publicOperations: string[];
@@ -21,76 +22,75 @@ export const operationsConfig: OperationsConfig = {
   // Public operations - no auth required
   publicOperations: [
     // Recipe queries
-    'getRecipes',
-    'getRecipeById',
-    'getRecipesByTitle',
-    'getRecipesByUserName',
-    'getRecipesByUserId',
+    OPERATION_NAMES.GET_RECIPES,
+    OPERATION_NAMES.GET_RECIPE_BY_ID,
+    OPERATION_NAMES.GET_RECIPES_BY_TITLE,
+    OPERATION_NAMES.GET_RECIPES_BY_USER_NAME,
+    OPERATION_NAMES.GET_RECIPES_BY_USER_ID,
 
     // User queries
-    'getUserById',
-    'getUserByUserName',
-    'getAllUser',
+    OPERATION_NAMES.GET_USER_BY_ID,
+    OPERATION_NAMES.GET_USER_BY_USER_NAME,
+    OPERATION_NAMES.GET_ALL_USER,
 
     // Auth mutations
-    'createUser',
-    'resetPassword',
-    'setNewPassword',
+    OPERATION_NAMES.CREATE_USER,
+    OPERATION_NAMES.RESET_PASSWORD,
+    OPERATION_NAMES.SET_NEW_PASSWORD,
 
     // Metadata
-    'getMetadataByType',
-    'getAllMetadata',
+    OPERATION_NAMES.GET_METADATA_BY_TYPE,
+    OPERATION_NAMES.GET_ALL_METADATA,
 
     // Ratings
-    'getRatingsByRecipe',
+    OPERATION_NAMES.GET_RATINGS_BY_RECIPE,
   ],
 
   // Authenticated user operations
   userOperations: [
     // Recipe operations
-    'createRecipe',
-    'editRecipe',
-    'deleteRecipe',
+    OPERATION_NAMES.CREATE_RECIPE,
+    OPERATION_NAMES.EDIT_RECIPE,
+    OPERATION_NAMES.DELETE_RECIPE,
 
     // User mutations
-    'updateUser',
-    'deleteUser',
-    'changePassword',
+    OPERATION_NAMES.UPDATE_USER,
+    OPERATION_NAMES.DELETE_USER,
+    OPERATION_NAMES.CHANGE_PASSWORD,
 
     // Favorite recipes
-    'addToFavoriteRecipes',
-    'removeFromFavoriteRecipes',
-    'getFavoriteRecipes',
+    OPERATION_NAMES.ADD_TO_FAVORITE_RECIPES,
+    OPERATION_NAMES.REMOVE_FROM_FAVORITE_RECIPES,
+    OPERATION_NAMES.GET_FAVORITE_RECIPES,
 
     // Following
-    'getFollowing',
-    'followUser',
-    'unfollowUser',
+    OPERATION_NAMES.GET_FOLLOWING,
+    OPERATION_NAMES.FOLLOW_USER,
+    OPERATION_NAMES.UNFOLLOW_USER,
 
     // Metadata
-    'getMetadataByKey',
+    OPERATION_NAMES.GET_METADATA_BY_KEY,
 
     // Ratings
-    'rateRecipe',
-    'deleteRating',
+    OPERATION_NAMES.RATE_RECIPE,
+    OPERATION_NAMES.DELETE_RATING,
   ],
 
-  // Blogger operations (own recipes management)
-  // Currently same as user operations, extend as needed
+  // BLOGGER-specific operations can be added here when the role needs extra access.
   bloggerOperations: [],
 
   // Admin operations
   adminOperations: [
     // User management
-    'deleteAllUser',
-    'cleanUserRecipes',
+    OPERATION_NAMES.DELETE_ALL_USER,
+    OPERATION_NAMES.CLEAN_USER_RECIPES,
 
     // Content moderation
-    'deleteAllRecipes',
+    OPERATION_NAMES.DELETE_ALL_RECIPES,
 
     // Metadata management
-    'createMetadata',
-    'deleteMetadata',
+    OPERATION_NAMES.CREATE_METADATA,
+    OPERATION_NAMES.DELETE_METADATA,
   ],
 };
 

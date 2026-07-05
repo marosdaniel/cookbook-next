@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import { OPERATION_NAMES } from '@/lib/graphql/operations';
+
 import {
   canUserPerformOperation,
   getRequiredRolesForOperation,
@@ -9,7 +11,7 @@ import {
 describe('operationsConfig', () => {
   it('treats public operations as available to everyone', () => {
     expect(canUserPerformOperation('getRecipes')).toBe(true);
-    expect(canUserPerformOperation('getRecipes', undefined)).toBe(true);
+    expect(canUserPerformOperation('getRecipes')).toBe(true);
   });
 
   it('blocks protected operations when there is no user role', () => {
@@ -43,8 +45,21 @@ describe('operationsConfig', () => {
   });
 
   it('keeps the operations config lists populated', () => {
-    expect(operationsConfig.publicOperations).toContain('getRecipes');
-    expect(operationsConfig.userOperations).toContain('createRecipe');
-    expect(operationsConfig.adminOperations).toContain('deleteAllUser');
+    expect(operationsConfig.publicOperations).toContain(OPERATION_NAMES.GET_RECIPES);
+    expect(operationsConfig.userOperations).toContain(OPERATION_NAMES.CREATE_RECIPE);
+    expect(operationsConfig.adminOperations).toContain(OPERATION_NAMES.DELETE_ALL_USER);
+  });
+
+  it('includes every operation name from the shared operation list in the config', () => {
+    const configuredOperations = new Set([
+      ...operationsConfig.publicOperations,
+      ...operationsConfig.userOperations,
+      ...operationsConfig.bloggerOperations,
+      ...operationsConfig.adminOperations,
+    ]);
+
+    Object.values(OPERATION_NAMES).forEach((operationName) => {
+      expect(configuredOperations.has(operationName)).toBe(true);
+    });
   });
 });
