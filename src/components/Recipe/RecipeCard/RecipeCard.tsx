@@ -7,6 +7,7 @@ import {
   IconStar,
   IconUsers,
 } from '@tabler/icons-react';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { getDifficultyColor } from '@/app/recipes/[id]/utils';
@@ -34,10 +35,12 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
   } = recipe;
 
   const difficultyColor = getDifficultyColor(difficultyLevel.key);
+  const recipeHref = `${PUBLIC_ROUTES.RECIPES}/${id}` as Route;
+
   return (
     <Card
       component={Link}
-      href={{ pathname: `${PUBLIC_ROUTES.RECIPES}/[id]`, query: { id } }}
+      href={recipeHref}
       shadow="sm"
       radius="md"
       withBorder

@@ -40,6 +40,13 @@ export const LoginForm: FC = () => {
     validate: zodResolver(loginValidationSchema),
   });
 
+  const handleNavigateToResetPassword = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+  ) => {
+    event.preventDefault();
+    router.push(AUTH_ROUTES.RESET_PASSWORD);
+  };
+
   const handleLogin = async (values: LoginFormValues) => {
     try {
       setIsSigningIn(true);
@@ -140,9 +147,10 @@ export const LoginForm: FC = () => {
           <Anchor
             variant="gradient"
             gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
-            component={Link}
             size="sm"
+            component={Link}
             href={AUTH_ROUTES.RESET_PASSWORD}
+            onClick={handleNavigateToResetPassword}
             data-testid="forgot-password"
           >
             {translate('auth.forgotPassword')}

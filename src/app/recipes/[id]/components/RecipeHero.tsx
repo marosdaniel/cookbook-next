@@ -14,6 +14,7 @@ import {
   IconFlame,
   IconUsers,
 } from '@tabler/icons-react';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { FavoriteButton } from '@/components/buttons/FavoriteButton';
@@ -25,6 +26,7 @@ import { getDifficultyColor } from '../utils';
 export const RecipeHero = ({ recipe, isOwner }: Readonly<RecipeHeroProps>) => {
   const translate = useTranslations('recipeDetail');
   const translateMisc = useTranslations('misc');
+  const editHref = `${PUBLIC_ROUTES.RECIPES}/${recipe.id}/edit` as Route;
 
   return (
     <Box className={classes.hero}>
@@ -51,10 +53,7 @@ export const RecipeHero = ({ recipe, isOwner }: Readonly<RecipeHeroProps>) => {
         {isOwner && (
           <ActionIcon
             component={Link}
-            href={{
-              pathname: `${PUBLIC_ROUTES.RECIPES}/[id]/edit`,
-              query: { id: recipe.id },
-            }}
+            href={editHref}
             variant="subtle"
             color="white"
             size="lg"
