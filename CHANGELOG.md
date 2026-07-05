@@ -1,3 +1,10 @@
+# [2.38.0](https://github.com/marosdaniel/cookbook-next/compare/v2.37.0...v2.38.0) (2026-07-05)
+
+
+### Features
+
+* add ws dependency, implement Prisma timeout proxy, and document Neon + Prisma runtime configuration ([cae977b](https://github.com/marosdaniel/cookbook-next/commit/cae977bf65328e987aadf2d0892ca38e7efb9ab3))
+
 # [2.37.0](https://github.com/marosdaniel/cookbook-next/compare/v2.36.0...v2.37.0) (2026-07-04)
 
 
