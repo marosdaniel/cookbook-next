@@ -18,7 +18,10 @@ export const getPersistedQueryHash = (query: string) => {
   return crypto.createHash('sha256').update(query).digest('hex');
 };
 
-export const validatePersistedQuery = (query: string, persistedHash?: string) => {
+export const validatePersistedQuery = (
+  query: string,
+  persistedHash?: string,
+) => {
   if (!persistedHash) {
     return false;
   }

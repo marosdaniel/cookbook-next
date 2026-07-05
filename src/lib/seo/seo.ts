@@ -111,7 +111,8 @@ export const buildRecipeJsonLd = (recipe: RecipeDetail) => {
       text: step.description,
     }));
 
-  const totalTimeMinutes = recipe.totalTimeMinutes ?? recipe.cookTimeMinutes ?? recipe.cookingTime;
+  const totalTimeMinutes =
+    recipe.totalTimeMinutes ?? recipe.cookTimeMinutes ?? recipe.cookingTime;
   const prepTimeMinutes = recipe.prepTimeMinutes ?? undefined;
   const cookTimeMinutes = recipe.cookTimeMinutes ?? recipe.cookingTime;
 

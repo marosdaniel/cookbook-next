@@ -75,7 +75,6 @@ describe('prisma', () => {
     ).toBeUndefined();
 
     vi.unstubAllEnvs();
-    
   });
 
   it('should initialize a Neon Pool with DATABASE_URL', async () => {

@@ -1,6 +1,6 @@
-import { verifyPassword } from './password';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { prisma } from '@/lib/prisma/prisma';
+import { verifyPassword } from './password';
 
 // Mock NextAuth and capture the config
 let capturedConfig: unknown;

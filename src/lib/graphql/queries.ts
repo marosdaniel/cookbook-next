@@ -2,9 +2,6 @@ import { gql, type TypedDocumentNode } from '@apollo/client';
 import type { RecipeCardData } from '@/components/Recipe/RecipeCard';
 import type { RecipeDetail } from '@/types/recipe';
 
-
-
-
 interface GetUserByIdData {
   getUserById: {
     id: string;

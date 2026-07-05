@@ -158,7 +158,9 @@ describe('validation', () => {
     });
 
     it('accepts reset password email input', () => {
-      const result = resetPasswordValidationSchema.safeParse({ email: 'test@example.com' });
+      const result = resetPasswordValidationSchema.safeParse({
+        email: 'test@example.com',
+      });
 
       expect(result.success).toBe(true);
     });

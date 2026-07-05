@@ -28,9 +28,11 @@ vi.mock('@/lib/redis/redis', () => ({
 }));
 
 vi.mock('@/lib/validation/throwCustomError', () => ({
-  throwCustomError: vi.fn((message: string, errorType: { errorCode: string }) => {
-    throw new Error(`${message}:${errorType.errorCode}`);
-  }),
+  throwCustomError: vi.fn(
+    (message: string, errorType: { errorCode: string }) => {
+      throw new Error(`${message}:${errorType.errorCode}`);
+    },
+  ),
 }));
 
 import { assertRecipeResourceAccess, RecipeService } from './RecipeService';
@@ -48,9 +50,14 @@ describe('RecipeService cache resilience', () => {
     vi.mocked(prisma.recipe.findMany).mockResolvedValue([]);
     vi.mocked(prisma.recipe.count).mockResolvedValue(0);
     vi.mocked(mockRedis.get).mockResolvedValue(null);
-    vi.mocked(mockRedis.setex).mockRejectedValue(new Error('upstash unavailable'));
+    vi.mocked(mockRedis.setex).mockRejectedValue(
+      new Error('upstash unavailable'),
+    );
 
-    await expect(RecipeService.getRecipes()).resolves.toEqual({ recipes: [], totalRecipes: 0 });
+    await expect(RecipeService.getRecipes()).resolves.toEqual({
+      recipes: [],
+      totalRecipes: 0,
+    });
   });
 
   it('stores recipe list caches with a shorter ttl to reduce stale list data', async () => {

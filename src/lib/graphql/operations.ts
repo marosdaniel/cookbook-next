@@ -38,10 +38,15 @@ export const OPERATION_NAMES = {
 export type GraphQLOperationName =
   (typeof OPERATION_NAMES)[keyof typeof OPERATION_NAMES];
 
-export const KNOWN_OPERATION_NAMES = new Set<string>(Object.values(OPERATION_NAMES));
+export const KNOWN_OPERATION_NAMES = new Set<string>(
+  Object.values(OPERATION_NAMES),
+);
 
 export const isKnownGraphQLOperation = (
   operationName: string | undefined,
 ): operationName is GraphQLOperationName => {
-  return typeof operationName === 'string' && KNOWN_OPERATION_NAMES.has(operationName);
+  return (
+    typeof operationName === 'string' &&
+    KNOWN_OPERATION_NAMES.has(operationName)
+  );
 };

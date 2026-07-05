@@ -1,5 +1,8 @@
-import { Ratelimit, type Duration } from '@upstash/ratelimit';
-import { OPERATION_NAMES, type GraphQLOperationName } from '@/lib/graphql/operations';
+import { type Duration, Ratelimit } from '@upstash/ratelimit';
+import {
+  type GraphQLOperationName,
+  OPERATION_NAMES,
+} from '@/lib/graphql/operations';
 import { rawRedisClient } from '@/lib/redis/redis';
 
 export type RateLimitOperation = Extract<

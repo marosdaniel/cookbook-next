@@ -49,7 +49,10 @@ export const apolloClient = new ApolloClient({
 
               return {
                 ...incoming,
-                recipes: [...(existing.recipes ?? []), ...(incoming.recipes ?? [])],
+                recipes: [
+                  ...(existing.recipes ?? []),
+                  ...(incoming.recipes ?? []),
+                ],
                 totalRecipes:
                   incoming.totalRecipes ?? existing.totalRecipes ?? 0,
               };
@@ -64,7 +67,10 @@ export const apolloClient = new ApolloClient({
 
               return {
                 ...incoming,
-                recipes: [...(existing.recipes ?? []), ...(incoming.recipes ?? [])],
+                recipes: [
+                  ...(existing.recipes ?? []),
+                  ...(incoming.recipes ?? []),
+                ],
                 totalRecipes:
                   incoming.totalRecipes ?? existing.totalRecipes ?? 0,
               };

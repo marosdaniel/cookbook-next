@@ -8,8 +8,8 @@
  * - adminOperations: Only for ADMIN role
  */
 
-import type { UserRole } from '../../types/user';
 import { OPERATION_NAMES } from '@/lib/graphql/operations';
+import type { UserRole } from '../../types/user';
 
 interface OperationsConfig {
   publicOperations: string[];

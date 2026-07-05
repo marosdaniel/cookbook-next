@@ -1,23 +1,26 @@
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('../store', () => ({
-  useAppSelector: (selector: (state: unknown) => unknown) => selector({
-    metadata: {
-      categories: [{ key: 'cat', label: 'Cat', type: 'CATEGORY', name: 'cat' }],
-      labels: [{ key: 'label', label: 'Label' }],
-      units: [{ key: 'unit', label: 'Unit' }],
-      levels: [{ key: 'level', label: 'Level' }],
-      cuisines: [{ key: 'cuisine', label: 'Cuisine' }],
-      servingUnits: [{ key: 'serving', label: 'Serving' }],
-      dietaryFlags: [{ key: 'flag', label: 'Flag' }],
-      allergens: [{ key: 'allergen', label: 'Allergen' }],
-      equipment: [{ key: 'equipment', label: 'Equipment' }],
-      costLevels: [{ key: 'cost', label: 'Cost' }],
-      isLoading: false,
-      isLoaded: true,
-      error: 'oops',
-    },
-  }),
+  useAppSelector: (selector: (state: unknown) => unknown) =>
+    selector({
+      metadata: {
+        categories: [
+          { key: 'cat', label: 'Cat', type: 'CATEGORY', name: 'cat' },
+        ],
+        labels: [{ key: 'label', label: 'Label' }],
+        units: [{ key: 'unit', label: 'Unit' }],
+        levels: [{ key: 'level', label: 'Level' }],
+        cuisines: [{ key: 'cuisine', label: 'Cuisine' }],
+        servingUnits: [{ key: 'serving', label: 'Serving' }],
+        dietaryFlags: [{ key: 'flag', label: 'Flag' }],
+        allergens: [{ key: 'allergen', label: 'Allergen' }],
+        equipment: [{ key: 'equipment', label: 'Equipment' }],
+        costLevels: [{ key: 'cost', label: 'Cost' }],
+        isLoading: false,
+        isLoaded: true,
+        error: 'oops',
+      },
+    }),
 }));
 
 import {
@@ -57,7 +60,9 @@ describe('metadata selectors', () => {
   });
 
   it('returns the expected parts of the metadata state', () => {
-    expect(useCategories()).toEqual([{ key: 'cat', label: 'Cat', type: 'CATEGORY', name: 'cat' }]);
+    expect(useCategories()).toEqual([
+      { key: 'cat', label: 'Cat', type: 'CATEGORY', name: 'cat' },
+    ]);
     expect(useLabels()).toEqual([{ key: 'label', label: 'Label' }]);
     expect(useUnits()).toEqual([{ key: 'unit', label: 'Unit' }]);
     expect(useLevels()).toEqual([{ key: 'level', label: 'Level' }]);

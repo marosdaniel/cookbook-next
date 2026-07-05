@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { DateTimeResolver } from 'graphql-scalars';
 import { gql } from '@apollo/client';
+import { DateTimeResolver } from 'graphql-scalars';
 
 const basePath = path.join(process.cwd(), 'src', 'lib', 'graphql', 'typeDefs');
 const commonSDL = readFileSync(path.join(basePath, 'common.graphql'), 'utf8');

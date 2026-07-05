@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import { UserRole } from '@prisma/client';
 import { ZodError } from 'zod';
+import { hashPassword, verifyPassword } from '@/lib/auth/password';
 import {
   generateResetToken,
   sendPasswordResetEmail,
@@ -11,6 +12,7 @@ import {
   USER_FOLLOW_MESSAGE_KEYS,
   USER_REGISTER_MESSAGE_KEYS,
 } from '@/lib/graphql/MESSAGE_KEYS';
+import { resolveQueryLimit } from '@/lib/graphql/protection';
 import type {
   ChangePasswordInput,
   SetNewPasswordInput,
@@ -18,7 +20,6 @@ import type {
 } from '@/lib/graphql/resolvers/user/mutations/types';
 import { prisma } from '@/lib/prisma/prisma';
 import { redis } from '@/lib/redis/redis';
-import { resolveQueryLimit } from '@/lib/graphql/protection';
 import { sanitizeText } from '@/lib/sanitize/sanitize';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
@@ -29,7 +30,6 @@ import {
   resetPasswordValidationSchema,
   setNewPasswordValidationSchema,
 } from '@/lib/validation/validation';
-import { hashPassword, verifyPassword } from '@/lib/auth/password';
 import type { CreateUserArgs } from '@/types/user';
 
 const LATEST_RECIPES_LIMIT = 4;

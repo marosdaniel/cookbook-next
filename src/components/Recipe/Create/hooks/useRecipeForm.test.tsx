@@ -1,7 +1,15 @@
 import { useLocalStorage } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { act, renderHook } from '@testing-library/react';
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 import { useRecipeFormHook } from '../FormContext';
 import type { UseRecipeFormProps } from '../types';
 import { useRecipeForm } from './useRecipeForm';

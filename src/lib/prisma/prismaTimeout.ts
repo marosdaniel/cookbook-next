@@ -7,7 +7,10 @@ const DEFAULT_TIMEOUT_MS = 10000;
  * promise on the application side so GraphQL requests fail fast. Any real database-side
  * cancellation requires a database-specific mechanism such as statement_timeout.
  */
-const withPrismaTimeout = async <T>(operation: Promise<T>, timeoutMs = DEFAULT_TIMEOUT_MS): Promise<T> => {
+const withPrismaTimeout = async <T>(
+  operation: Promise<T>,
+  timeoutMs = DEFAULT_TIMEOUT_MS,
+): Promise<T> => {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   const timeoutPromise = new Promise<T>((_, reject) => {
@@ -42,7 +45,9 @@ export const createPrismaTimeoutProxy = <T extends object>(
               ? async (...callbackArgs: unknown[]) => {
                   const [transaction, ...callbackRest] = callbackArgs;
                   const proxiedTransaction =
-                    transaction && typeof transaction === 'object' && transaction !== null
+                    transaction &&
+                    typeof transaction === 'object' &&
+                    transaction !== null
                       ? createPrismaTimeoutProxy(transaction, timeoutMs)
                       : transaction;
 
@@ -51,14 +56,18 @@ export const createPrismaTimeoutProxy = <T extends object>(
               : callback;
 
           const result = value.apply(targetValue, [wrappedCallback, ...rest]);
-          return result instanceof Promise ? withPrismaTimeout(result, timeoutMs) : result;
+          return result instanceof Promise
+            ? withPrismaTimeout(result, timeoutMs)
+            : result;
         };
       }
 
       if (typeof value === 'function') {
         return (...args: unknown[]) => {
           const result = value.apply(targetValue, args);
-          return result instanceof Promise ? withPrismaTimeout(result, timeoutMs) : result;
+          return result instanceof Promise
+            ? withPrismaTimeout(result, timeoutMs)
+            : result;
         };
       }
 

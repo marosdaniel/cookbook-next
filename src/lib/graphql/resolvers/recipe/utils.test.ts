@@ -26,7 +26,9 @@ vi.mock('@/lib/validation/throwCustomError', () => ({
 
 describe('recipe resolver utils', () => {
   it('assertPresent throws a custom error when a value is missing', () => {
-    expect(() => assertPresent(null, 'Missing', ErrorTypes.BAD_REQUEST)).toThrow('Missing');
+    expect(() =>
+      assertPresent(null, 'Missing', ErrorTypes.BAD_REQUEST),
+    ).toThrow('Missing');
   });
 
   it('validateRequiredFields throws when required fields are missing', () => {
@@ -68,7 +70,9 @@ describe('recipe resolver utils', () => {
       {
         title: '  Pasta  ',
         description: '  Tasty  ',
-        ingredients: [{ localId: '1', name: 'Pasta', quantity: 100, unit: 'g' }],
+        ingredients: [
+          { localId: '1', name: 'Pasta', quantity: 100, unit: 'g' },
+        ],
         preparationSteps: [{ description: 'Boil', order: 1 }],
         category: { value: 'main', label: 'Main' },
         difficultyLevel: { value: 'easy', label: 'Easy' },
@@ -83,7 +87,7 @@ describe('recipe resolver utils', () => {
         seoTitle: '  Nice title  ',
         seoDescription: '  Nice description  ',
         socialImage: 'https://example.com/image.png',
-      } ,
+      },
       {
         categoryFromInput: { value: 'main', label: 'Main' },
         difficultyLevelFromInput: { value: 'easy', label: 'Easy' },
@@ -108,7 +112,9 @@ describe('recipe resolver utils', () => {
   });
 
   it('resolveAuthenticatedUser throws when context user is missing', async () => {
-    await expect(resolveAuthenticatedUser({ userId: undefined } as never)).rejects.toThrow('Unauthenticated');
+    await expect(
+      resolveAuthenticatedUser({ userId: undefined } as never),
+    ).rejects.toThrow('Unauthenticated');
   });
 
   it('resolveAuthenticatedUser returns the user when found', async () => {
@@ -125,9 +131,11 @@ describe('recipe resolver utils', () => {
       resetPasswordToken: null,
       resetPasswordExpires: null,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
     vi.mocked(prisma.user.findUnique).mockResolvedValue(mockUser);
-    await expect(resolveAuthenticatedUser({ userId: 'u1' } as never)).resolves.toEqual(mockUser);
+    await expect(
+      resolveAuthenticatedUser({ userId: 'u1' } as never),
+    ).resolves.toEqual(mockUser);
   });
 });

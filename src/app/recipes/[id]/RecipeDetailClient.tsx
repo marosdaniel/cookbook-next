@@ -58,10 +58,7 @@ const RecipeDetailClient = ({
 
   return (
     <Container size="xl" py="xl">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(recipeJsonLd) }}
-      />
+      <script type="application/ld+json">{JSON.stringify(recipeJsonLd)}</script>
       <Stack gap="xl">
         <BackTo href={'/recipes' as Route} text={translate('backToRecipes')} />
 

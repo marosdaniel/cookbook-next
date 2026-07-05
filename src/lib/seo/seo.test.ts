@@ -79,7 +79,7 @@ describe('getAuthMetadata', () => {
         description: 'Custom Description',
         keywords: 'one, two',
       },
-    } );
+    });
 
     const result = await getMetadata('en-gb', 'seo', {
       titleKey: 'title',
@@ -112,7 +112,7 @@ describe('getAuthMetadata', () => {
         title: 'Title',
         description: 'Description',
       },
-    } );
+    });
 
     const result = await getMetadata('en-gb', 'seo', {
       titleKey: 'title',
@@ -146,9 +146,7 @@ describe('getAuthMetadata', () => {
       category: { key: 'dinner', label: 'Dinner' },
       difficultyLevel: { key: 'easy', label: 'Easy' },
       labels: [{ key: 'vegetarian', label: 'Vegetarian' }],
-      ingredients: [
-        { localId: '1', name: 'Tomato', quantity: 2, unit: 'pcs' },
-      ],
+      ingredients: [{ localId: '1', name: 'Tomato', quantity: 2, unit: 'pcs' }],
       preparationSteps: [{ order: 1, description: 'Boil pasta' }],
       prepTimeMinutes: 5,
       cookTimeMinutes: 15,

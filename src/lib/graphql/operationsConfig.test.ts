@@ -45,9 +45,15 @@ describe('operationsConfig', () => {
   });
 
   it('keeps the operations config lists populated', () => {
-    expect(operationsConfig.publicOperations).toContain(OPERATION_NAMES.GET_RECIPES);
-    expect(operationsConfig.userOperations).toContain(OPERATION_NAMES.CREATE_RECIPE);
-    expect(operationsConfig.adminOperations).toContain(OPERATION_NAMES.DELETE_ALL_USER);
+    expect(operationsConfig.publicOperations).toContain(
+      OPERATION_NAMES.GET_RECIPES,
+    );
+    expect(operationsConfig.userOperations).toContain(
+      OPERATION_NAMES.CREATE_RECIPE,
+    );
+    expect(operationsConfig.adminOperations).toContain(
+      OPERATION_NAMES.DELETE_ALL_USER,
+    );
   });
 
   it('includes every operation name from the shared operation list in the config', () => {

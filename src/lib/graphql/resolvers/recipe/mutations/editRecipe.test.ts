@@ -1,5 +1,5 @@
-import type { GraphQLContext } from '@/types/graphql/context';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { GraphQLContext } from '@/types/graphql/context';
 import type { RecipeEditInput } from '../types';
 
 const mockResolveAuthenticatedUser = vi.fn();

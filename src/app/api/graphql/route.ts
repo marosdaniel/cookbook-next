@@ -5,10 +5,10 @@ import type {
 } from '@apollo/server';
 import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
-import { GraphQLError } from 'graphql';
 import { ApolloArmor } from '@escape.tech/graphql-armor';
-import type { Session } from 'next-auth';
+import { GraphQLError } from 'graphql';
 import { NextRequest } from 'next/server';
+import type { Session } from 'next-auth';
 import { auth } from '@/lib/auth/auth';
 import {
   createIsFavoriteLoader,
@@ -18,8 +18,8 @@ import {
   createUserRatingLoader,
   createUserRecipesLoader,
 } from '@/lib/dataloader/loaders';
-import { validatePersistedQuery } from '@/lib/graphql/protection';
 import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
+import { validatePersistedQuery } from '@/lib/graphql/protection';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
@@ -119,7 +119,11 @@ const fieldAuthPlugin: ApolloServerPlugin<GraphQLContext> = {
             const currentUserId = contextValue.userId;
             const targetUserId = source?.id;
 
-            if (currentUserId && targetUserId && currentUserId === targetUserId) {
+            if (
+              currentUserId &&
+              targetUserId &&
+              currentUserId === targetUserId
+            ) {
               return;
             }
 
@@ -192,11 +196,16 @@ const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(
         // cache is scoped to a single request and never leaks between users.
         loaders: {
           ratings: createRatingsLoader(prismaWithTimeout),
-          isFavorite: userId ? createIsFavoriteLoader(prismaWithTimeout, userId) : null,
-          userRating: userId ? createUserRatingLoader(prismaWithTimeout, userId) : null,
+          isFavorite: userId
+            ? createIsFavoriteLoader(prismaWithTimeout, userId)
+            : null,
+          userRating: userId
+            ? createUserRatingLoader(prismaWithTimeout, userId)
+            : null,
           recipeAuthor: createRecipeAuthorLoader(prismaWithTimeout),
           userRecipes: createUserRecipesLoader(prismaWithTimeout),
-          userFavoriteRecipes: createUserFavoriteRecipesLoader(prismaWithTimeout),
+          userFavoriteRecipes:
+            createUserFavoriteRecipesLoader(prismaWithTimeout),
         },
       };
     },
@@ -233,10 +242,15 @@ const parseRequestPayload = (requestBody: string): GraphQLRequestPayload => {
   return JSON.parse(requestBody) as GraphQLRequestPayload;
 };
 
-const extractOperationName = (payload: GraphQLRequestPayload): string | undefined => {
+const extractOperationName = (
+  payload: GraphQLRequestPayload,
+): string | undefined => {
   // Best-effort fallback for clients that omit operationName; this is only used
   // to select the rate limiter and is not used for authorization decisions.
-  return payload.operationName ?? payload.query?.match(/(?:query|mutation)\s+(\w+)/i)?.[1];
+  return (
+    payload.operationName ??
+    payload.query?.match(/(?:query|mutation)\s+(\w+)/i)?.[1]
+  );
 };
 
 const enforceRateLimit = async (
@@ -248,7 +262,10 @@ const enforceRateLimit = async (
     return null;
   }
 
-  const ip = request.headers.get('x-forwarded-for') ?? request.headers.get('x-real-ip') ?? '127.0.0.1';
+  const ip =
+    request.headers.get('x-forwarded-for') ??
+    request.headers.get('x-real-ip') ??
+    '127.0.0.1';
   const limiter = isRateLimitOperation(operationName)
     ? getRateLimiterForOperation(operationName)
     : rateLimiter;
@@ -258,7 +275,10 @@ const enforceRateLimit = async (
   }
 
   try {
-    const rateLimitResult = await withTimeout(() => limiter.limit(userId ?? ip), 750);
+    const rateLimitResult = await withTimeout(
+      () => limiter.limit(userId ?? ip),
+      750,
+    );
 
     if (!rateLimitResult) {
       return null;
@@ -275,12 +295,17 @@ const enforceRateLimit = async (
       'X-RateLimit-Remaining': remaining.toString(),
     });
   } catch (error) {
-    console.warn('GraphQL rate limiter failed. Continuing without throttling.', error);
+    console.warn(
+      'GraphQL rate limiter failed. Continuing without throttling.',
+      error,
+    );
     return null;
   }
 };
 
-const validatePersistedQueryRequest = (payload: GraphQLRequestPayload): Response | null => {
+const validatePersistedQueryRequest = (
+  payload: GraphQLRequestPayload,
+): Response | null => {
   const persistedHash = payload.extensions?.persistedQuery?.sha256Hash;
   if (!persistedHash) {
     return null;
@@ -293,7 +318,8 @@ const validatePersistedQueryRequest = (payload: GraphQLRequestPayload): Response
   return createJsonResponse(
     {
       error: 'Persisted query verification failed',
-      message: 'The provided persisted query hash does not match the supplied operation.',
+      message:
+        'The provided persisted query hash does not match the supplied operation.',
     },
     400,
   );
@@ -341,7 +367,11 @@ const wrappedHandler = async (
   }
 
   const operationName = extractOperationName(payload);
-  const rateLimitResponse = await enforceRateLimit(request, operationName, userId);
+  const rateLimitResponse = await enforceRateLimit(
+    request,
+    operationName,
+    userId,
+  );
   if (rateLimitResponse) {
     return rateLimitResponse;
   }

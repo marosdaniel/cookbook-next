@@ -15,10 +15,14 @@ describe('operationUtils', () => {
   });
 
   it('returns null for invalid or non-operational GraphQL text', () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleErrorSpy = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
 
     expect(extractOperationName('not a graphql query')).toBeNull();
-    expect(extractOperationName('fragment RecipeFragment on Recipe { id }')).toBeNull();
+    expect(
+      extractOperationName('fragment RecipeFragment on Recipe { id }'),
+    ).toBeNull();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
 
     consoleErrorSpy.mockRestore();
@@ -30,11 +34,15 @@ describe('operationUtils', () => {
       body: JSON.stringify({ query: 'query TestQuery { hello }' }),
     });
 
-    await expect(getQueryFromRequest(req)).resolves.toBe('query TestQuery { hello }');
+    await expect(getQueryFromRequest(req)).resolves.toBe(
+      'query TestQuery { hello }',
+    );
   });
 
   it('returns null when the request body is not valid JSON', async () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleErrorSpy = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
     const req = new Request('http://localhost', {
       method: 'POST',
       body: 'not-json',
@@ -52,7 +60,9 @@ describe('operationUtils', () => {
       body: JSON.stringify({ operationName: 'ExplicitOperation' }),
     });
 
-    await expect(getOperationNameFromRequest(req)).resolves.toBe('ExplicitOperation');
+    await expect(getOperationNameFromRequest(req)).resolves.toBe(
+      'ExplicitOperation',
+    );
   });
 
   it('falls back to parsing the query when no operationName is provided', async () => {

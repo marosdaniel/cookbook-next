@@ -40,10 +40,15 @@ describe('redis client fallback', () => {
     vi.useFakeTimers();
     const { withTimeout } = await import('./redis');
 
-    const pendingOperation = withTimeout(() => new Promise<string>(() => {}), 250);
+    const pendingOperation = withTimeout(
+      () => new Promise<string>(() => {}),
+      250,
+    );
 
     vi.advanceTimersByTime(250);
 
-    await expect(pendingOperation).rejects.toThrow('Redis operation timed out after 250ms');
+    await expect(pendingOperation).rejects.toThrow(
+      'Redis operation timed out after 250ms',
+    );
   });
 });

@@ -5,14 +5,7 @@ import { FiHome } from 'react-icons/fi';
 import { GiChefToque } from 'react-icons/gi';
 import NavButton from '../components/buttons/NavButton';
 import { PUBLIC_ROUTES } from '../types/routes';
-
-
 export const dynamic = 'force-dynamic';
-
-
-
-
-
 
 const NotFound = () => {
   const translate = useTranslations('notFound');

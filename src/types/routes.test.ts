@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import {
   AUTH_ROUTES,
-  PROTECTED_ROUTES,
-  PUBLIC_ROUTES,
   isAuthRoute,
   isProtectedRoute,
   isPublicRoute,
+  PROTECTED_ROUTES,
+  PUBLIC_ROUTES,
 } from './routes';
 
 describe('routes helpers', () => {

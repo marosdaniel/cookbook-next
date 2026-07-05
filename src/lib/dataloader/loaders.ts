@@ -94,22 +94,21 @@ export const createUserRatingLoader = (prisma: PrismaClient, userId: string) =>
  * Batches the author lookup for a set of recipes into a single user query.
  */
 export const createRecipeAuthorLoader = (prisma: PrismaClient) =>
-  new DataLoader<string, { id: string; firstName: string; lastName: string; userName: string } | null>(
-    async (authorIds) => {
-      const ids = [...authorIds];
+  new DataLoader<
+    string,
+    { id: string; firstName: string; lastName: string; userName: string } | null
+  >(async (authorIds) => {
+    const ids = [...authorIds];
 
-      const users = await prisma.user.findMany({
-        where: { id: { in: ids } },
-        select: { id: true, firstName: true, lastName: true, userName: true },
-      });
+    const users = await prisma.user.findMany({
+      where: { id: { in: ids } },
+      select: { id: true, firstName: true, lastName: true, userName: true },
+    });
 
-      const userMap = new Map(
-        users.map((user) => [user.id, user]),
-      );
+    const userMap = new Map(users.map((user) => [user.id, user]));
 
-      return ids.map((id) => userMap.get(id) ?? null);
-    },
-  );
+    return ids.map((id) => userMap.get(id) ?? null);
+  });
 
 /**
  * Batches user recipe lists for a set of user IDs into a single query.
@@ -131,7 +130,10 @@ export const createUserRecipesLoader = (prisma: PrismaClient) =>
 
     const userRecipeMap = new Map<string, Array<Record<string, unknown>>>();
     for (const user of users) {
-      userRecipeMap.set(user.id, user.recipes as Array<Record<string, unknown>>);
+      userRecipeMap.set(
+        user.id,
+        user.recipes as Array<Record<string, unknown>>,
+      );
     }
 
     return ids.map((id) => userRecipeMap.get(id) ?? []);

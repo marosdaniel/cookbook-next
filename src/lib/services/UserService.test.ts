@@ -54,9 +54,11 @@ vi.mock('@/lib/auth/password', () => ({
 }));
 
 vi.mock('@/lib/validation/throwCustomError', () => ({
-  throwCustomError: vi.fn((message: string, errorType: { errorCode: string }) => {
-    throw new Error(`${message}:${errorType.errorCode}`);
-  }),
+  throwCustomError: vi.fn(
+    (message: string, errorType: { errorCode: string }) => {
+      throw new Error(`${message}:${errorType.errorCode}`);
+    },
+  ),
 }));
 
 vi.mock('@/lib/email/nodemailer', () => ({
@@ -66,7 +68,9 @@ vi.mock('@/lib/email/nodemailer', () => ({
 }));
 
 vi.mock('@/lib/validation/validation', async () => {
-  const actual = await vi.importActual<typeof import('@/lib/validation/validation')>('@/lib/validation/validation');
+  const actual = await vi.importActual<
+    typeof import('@/lib/validation/validation')
+  >('@/lib/validation/validation');
   return {
     ...actual,
     customValidationSchema: {
@@ -162,6 +166,8 @@ describe('UserService', () => {
   it('requires confirmation for destructive admin deletion', async () => {
     await expect(
       UserService.deleteAllUser('admin-1', 'ADMIN', 'wrong-confirmation'),
-    ).rejects.toThrow('Destructive admin action requires explicit confirmation:BAD_REQUEST');
+    ).rejects.toThrow(
+      'Destructive admin action requires explicit confirmation:BAD_REQUEST',
+    );
   });
 });

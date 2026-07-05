@@ -9,7 +9,12 @@ describe('data loaders', () => {
   it('batches recipe author lookups into a single query', async () => {
     const findMany = vi.fn().mockResolvedValue([
       { id: 'user-1', firstName: 'Ada', lastName: 'Lovelace', userName: 'ada' },
-      { id: 'user-2', firstName: 'Grace', lastName: 'Hopper', userName: 'grace' },
+      {
+        id: 'user-2',
+        firstName: 'Grace',
+        lastName: 'Hopper',
+        userName: 'grace',
+      },
     ]);
 
     const prisma = {

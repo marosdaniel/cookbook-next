@@ -31,7 +31,9 @@ describe('createPrismaTimeoutProxy', () => {
 
   it('forwards the original arguments to delegated methods while preserving timeout protection', async () => {
     const findMany = vi.fn((_options?: { where?: { id: number } }) => {
-      return new Promise<string>((resolve) => setTimeout(() => resolve('done'), 100));
+      return new Promise<string>((resolve) =>
+        setTimeout(() => resolve('done'), 100),
+      );
     });
 
     const target = {
@@ -52,17 +54,28 @@ describe('createPrismaTimeoutProxy', () => {
   it('wraps transaction callbacks so nested delegate calls are protected', async () => {
     const tx = {
       recipe: {
-        findMany: vi.fn(() => new Promise<string>((resolve) => setTimeout(() => resolve('done'), 100))),
+        findMany: vi.fn(
+          () =>
+            new Promise<string>((resolve) =>
+              setTimeout(() => resolve('done'), 100),
+            ),
+        ),
       },
     };
 
     const target = {
-      $transaction: vi.fn(async (callback: (innerTx: unknown) => Promise<string>) => callback(tx)),
+      $transaction: vi.fn(
+        async (callback: (innerTx: unknown) => Promise<string>) => callback(tx),
+      ),
     };
 
     const wrapped = createPrismaTimeoutProxy(target, 10);
     const promise = wrapped.$transaction((innerTx: unknown) => {
-      if (typeof innerTx !== 'object' || innerTx === null || !('recipe' in innerTx)) {
+      if (
+        typeof innerTx !== 'object' ||
+        innerTx === null ||
+        !('recipe' in innerTx)
+      ) {
         return Promise.reject(new Error('invalid transaction context'));
       }
 

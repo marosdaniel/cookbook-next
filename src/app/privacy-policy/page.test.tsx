@@ -1,10 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 
-const { mockGetLocaleFromCookies, mockGetLocaleMessages, mockGetMetadata } = vi.hoisted(() => ({
-  mockGetLocaleFromCookies: vi.fn(),
-  mockGetLocaleMessages: vi.fn(),
-  mockGetMetadata: vi.fn(),
-}));
+const { mockGetLocaleFromCookies, mockGetLocaleMessages, mockGetMetadata } =
+  vi.hoisted(() => ({
+    mockGetLocaleFromCookies: vi.fn(),
+    mockGetLocaleMessages: vi.fn(),
+    mockGetMetadata: vi.fn(),
+  }));
 
 vi.mock('@/lib/locale/locale.server', () => ({
   getLocaleFromCookies: mockGetLocaleFromCookies,
@@ -39,7 +40,11 @@ describe('privacy policy page', () => {
               usageContent: 'Usage data',
             },
           },
-          howUse: { title: 'How we use', content: 'We use data', list: ['Item 1'] },
+          howUse: {
+            title: 'How we use',
+            content: 'We use data',
+            list: ['Item 1'],
+          },
           contact: { title: 'Contact', content: 'Contact us' },
         },
       },

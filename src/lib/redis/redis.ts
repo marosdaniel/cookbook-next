@@ -50,7 +50,9 @@ export const withTimeout = async <T>(
   }
 };
 
-const wrapWithCircuitBreaker = async <T>(operation: () => Promise<T>): Promise<T | null> => {
+const wrapWithCircuitBreaker = async <T>(
+  operation: () => Promise<T>,
+): Promise<T | null> => {
   if (isRedisDisabled()) {
     return null;
   }
@@ -58,7 +60,10 @@ const wrapWithCircuitBreaker = async <T>(operation: () => Promise<T>): Promise<T
   try {
     return await withTimeout(operation);
   } catch (error) {
-    console.warn('Redis unavailable. Disabling cache for a short period.', error);
+    console.warn(
+      'Redis unavailable. Disabling cache for a short period.',
+      error,
+    );
     markRedisFailure();
     return null;
   }

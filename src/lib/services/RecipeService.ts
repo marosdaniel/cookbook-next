@@ -1,4 +1,5 @@
 import type { Prisma } from '@prisma/client';
+import { resolveQueryLimit } from '@/lib/graphql/protection';
 import type {
   RatingInput,
   RecipeCreateInput,
@@ -12,7 +13,6 @@ import {
 } from '@/lib/graphql/resolvers/recipe/utils';
 import { prisma } from '@/lib/prisma/prisma';
 import { redis } from '@/lib/redis/redis';
-import { resolveQueryLimit } from '@/lib/graphql/protection';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
 
@@ -66,7 +66,11 @@ async function getCachedData(key: string) {
 const LIST_CACHE_TTL_SECONDS = 15;
 const DETAIL_CACHE_TTL_SECONDS = 60;
 
-async function setCachedData(key: string, value: unknown, ttl: number = DETAIL_CACHE_TTL_SECONDS) {
+async function setCachedData(
+  key: string,
+  value: unknown,
+  ttl: number = DETAIL_CACHE_TTL_SECONDS,
+) {
   if (!redis) return;
   try {
     await redis.setex(key, ttl, value);
@@ -296,8 +300,15 @@ export const RecipeService = {
   },
 
   async rateRecipe(userId: string, ratingInput: RatingInput) {
-    if (!Number.isFinite(ratingInput.ratingValue) || ratingInput.ratingValue < 1 || ratingInput.ratingValue > 5) {
-      return throwCustomError('Rating must be between 1 and 5', ErrorTypes.BAD_REQUEST);
+    if (
+      !Number.isFinite(ratingInput.ratingValue) ||
+      ratingInput.ratingValue < 1 ||
+      ratingInput.ratingValue > 5
+    ) {
+      return throwCustomError(
+        'Rating must be between 1 and 5',
+        ErrorTypes.BAD_REQUEST,
+      );
     }
 
     const recipe = await prisma.recipe.findUnique({

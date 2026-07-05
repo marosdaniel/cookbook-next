@@ -1,6 +1,6 @@
 import type { NextAuthConfig } from 'next-auth';
-import { createIssuedAt, createTokenId } from './password';
 import { AUTH_ROUTES } from '../../types/routes';
+import { createIssuedAt, createTokenId } from './password';
 
 export const authConfig = {
   providers: [],

@@ -28,8 +28,14 @@ describe('deleteRecipe resolver', () => {
       role: 'ADMIN',
     } as never);
 
-    expect(mockResolveAuthenticatedUser).toHaveBeenCalledWith({ role: 'ADMIN' });
-    expect(mockDeleteRecipe).toHaveBeenCalledWith('user-1', 'ADMIN', 'recipe-1');
+    expect(mockResolveAuthenticatedUser).toHaveBeenCalledWith({
+      role: 'ADMIN',
+    });
+    expect(mockDeleteRecipe).toHaveBeenCalledWith(
+      'user-1',
+      'ADMIN',
+      'recipe-1',
+    );
     expect(result).toBe(true);
   });
 });

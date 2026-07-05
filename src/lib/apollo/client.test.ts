@@ -6,11 +6,12 @@ describe('apollo client cache configuration', () => {
   it('uses cache-friendly defaults for queries and normalizes Recipe/User entities', () => {
     expect(apolloClient.defaultOptions.query?.fetchPolicy).toBe('cache-first');
 
-    const cacheWithPolicies = apolloClient.cache as typeof apolloClient.cache & {
-      policies: {
-        getTypePolicy: (typeName: string) => { keyFn?: unknown };
+    const cacheWithPolicies =
+      apolloClient.cache as typeof apolloClient.cache & {
+        policies: {
+          getTypePolicy: (typeName: string) => { keyFn?: unknown };
+        };
       };
-    };
 
     const recipePolicy = cacheWithPolicies.policies.getTypePolicy('Recipe');
     const userPolicy = cacheWithPolicies.policies.getTypePolicy('User');
@@ -20,16 +21,21 @@ describe('apollo client cache configuration', () => {
   });
 
   it('merges paginated query results for recipes, following lists, and favorites', () => {
-    const cacheWithPolicies = apolloClient.cache as typeof apolloClient.cache & {
-      policies: {
-        getTypePolicy: (typeName: string) => {
-          fields?: Record<string, { merge?: (incoming: unknown, existing: unknown) => unknown }>;
+    const cacheWithPolicies =
+      apolloClient.cache as typeof apolloClient.cache & {
+        policies: {
+          getTypePolicy: (typeName: string) => {
+            fields?: Record<
+              string,
+              { merge?: (incoming: unknown, existing: unknown) => unknown }
+            >;
+          };
         };
       };
-    };
 
     const queryPolicy = cacheWithPolicies.policies.getTypePolicy('Query');
-    const getFavoriteRecipesMerge = queryPolicy.fields?.getFavoriteRecipes.merge;
+    const getFavoriteRecipesMerge =
+      queryPolicy.fields?.getFavoriteRecipes.merge;
     const getRecipesMerge = queryPolicy.fields?.getRecipes.merge;
     const getFollowingMerge = queryPolicy.fields?.getFollowing.merge;
 
@@ -39,7 +45,9 @@ describe('apollo client cache configuration', () => {
 
     expect(getFavoriteRecipesMerge?.(['one'], [])).toEqual(['one']);
 
-    expect(getRecipesMerge?.({ recipes: [{ id: 'b' }], totalRecipes: 2 }, undefined)).toEqual({
+    expect(
+      getRecipesMerge?.({ recipes: [{ id: 'b' }], totalRecipes: 2 }, undefined),
+    ).toEqual({
       recipes: [{ id: 'b' }],
       totalRecipes: 2,
     });

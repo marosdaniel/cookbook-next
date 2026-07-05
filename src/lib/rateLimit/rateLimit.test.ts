@@ -3,7 +3,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const createRatelimitMock = () => {
   const slidingWindow = vi.fn(() => 'window');
 
-  const Ratelimit = vi.fn(function (this: { options: unknown }, options: unknown) {
+  const Ratelimit = vi.fn(function (
+    this: { options: unknown },
+    options: unknown,
+  ) {
     this.options = options;
   }) as unknown as {
     new (options: unknown): unknown;
@@ -32,7 +35,10 @@ describe('rate limit setup', () => {
 
   it('creates rate limiters when redis is available', async () => {
     vi.doMock('@/lib/redis/redis', () => ({ rawRedisClient: {} }));
-    const { rateLimiter: configuredRateLimiter, strictRateLimiter: configuredStrictRateLimiter } = await import('./rateLimit');
+    const {
+      rateLimiter: configuredRateLimiter,
+      strictRateLimiter: configuredStrictRateLimiter,
+    } = await import('./rateLimit');
 
     expect(configuredRateLimiter).toBeDefined();
     expect(configuredStrictRateLimiter).toBeDefined();
@@ -52,7 +58,10 @@ describe('rate limit setup', () => {
     });
     vi.doMock('@/lib/redis/redis', () => ({ rawRedisClient: {} }));
 
-    const { rateLimiter: fallbackRateLimiter, strictRateLimiter: fallbackStrictRateLimiter } = await import('./rateLimit');
+    const {
+      rateLimiter: fallbackRateLimiter,
+      strictRateLimiter: fallbackStrictRateLimiter,
+    } = await import('./rateLimit');
 
     expect(fallbackRateLimiter).toBeNull();
     expect(fallbackStrictRateLimiter).toBeNull();

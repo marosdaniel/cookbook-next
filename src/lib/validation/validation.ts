@@ -2,7 +2,8 @@ import { z } from 'zod';
 
 /* ─── Constants ───────────────────────────────── */
 // Minimum eight characters, at least one lowercase, one uppercase, one number, and one special character
-export const STRONG_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])(?=.{8,})/;
+export const STRONG_PASSWORD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])(?=.{8,})/;
 
 // Legacy compatibility regex for existing flows that still allow a slightly weaker policy
 export const WEAK_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.{8,})/;
