@@ -1,3 +1,15 @@
+# [2.39.0](https://github.com/marosdaniel/cookbook-next/compare/v2.38.0...v2.39.0) (2026-07-05)
+
+
+### Bug Fixes
+
+* refactor rate limiter usage in wrappedHandler for clarity ([4692829](https://github.com/marosdaniel/cookbook-next/commit/46928298c04e69a5a0fb725f4fc2b1b51dfb59cc))
+
+
+### Features
+
+* implement Redis circuit breaker and timeout handling for rate limiter ([6cbdcd7](https://github.com/marosdaniel/cookbook-next/commit/6cbdcd79d4fb6bf671b641fa5016ed83f3b4c929))
+
 # [2.38.0](https://github.com/marosdaniel/cookbook-next/compare/v2.37.0...v2.38.0) (2026-07-05)
 
 
