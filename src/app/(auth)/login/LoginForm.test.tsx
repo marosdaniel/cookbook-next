@@ -168,6 +168,14 @@ describe('LoginForm', () => {
       expect(forgotPasswordLink).toBeInTheDocument();
     });
 
+    it('navigates to reset password when forgot password link is clicked', () => {
+      render(<LoginForm />);
+
+      fireEvent.click(screen.getByTestId('forgot-password'));
+
+      expect(mockPush).toHaveBeenCalledWith(AUTH_ROUTES.RESET_PASSWORD);
+    });
+
     it('has correct container id', () => {
       const { container } = render(<LoginForm />);
 

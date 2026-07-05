@@ -148,7 +148,7 @@ export const LoginForm: FC = () => {
             variant="gradient"
             gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
             size="sm"
-            component={Link}
+            component="a"
             href={AUTH_ROUTES.RESET_PASSWORD}
             onClick={handleNavigateToResetPassword}
             data-testid="forgot-password"
