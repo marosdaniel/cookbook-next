@@ -55,6 +55,23 @@
     "save": "Speichern",
     "back": "Zurück"
   },
+  "logo": {
+    "alt": {
+      "icon": "Cookbook",
+      "full": "Cookbook-Logo"
+    },
+    "text": "Cookbook"
+  },
+  "headerSearch": {
+    "placeholder": "Suchen...",
+    "searching": "Suchen...",
+    "noResults": "Keine Ergebnisse"
+  },
+  "footer": {
+    "copyright": "© {year} Cookbook. Alle Rechte vorbehalten.",
+    "privacy": "Datenschutzrichtlinie",
+    "cookies": "Cookie-Richtlinie"
+  },
   "user": {
     "editProfilePageTitle": "Ihr Profil bearbeiten",
     "recipes": "Rezepte",

@@ -60,13 +60,12 @@
 
 #### Apollo Client cache konfiguráció
 
-> [!WARNING]
-> Az Apollo Client cache konfigurációja **szinte üres** — a `typePolicies` csak egy üres `Query: {}` objektumot tartalmaz.
+✅ **Megoldva**: az Apollo kliens cache konfigurációja már tartalmaz `typePolicies`-t a `Query` mezőkhez, `Recipe` és `User` `keyFields`-szel, valamint lista-merge stratégiákat az ismételt lekérdezésekhez.
 
-**Problémák**:
-- `fetchPolicy: 'network-only'` a query default → **minden query network request**, nincs cache kihasználás
-- Nincs `keyFields` konfigurálva a `Recipe`, `User` típusokhoz → cache normalizáció nem optimális
-- Nincs `merge` policy a listákhoz (pagination cache merge)
+**Megvalósítottak**:
+- `getRecipes`, `getRecipesByUserId`, `getFavoriteRecipes` és `getFollowing` lekérdezésekhez `merge` policy
+- `Recipe` és `User` típusok `keyFields: ['id']` normalizációja
+- `cache-first` / `cache-and-network` alapértelmezett fetch policy-k a különböző query típusokhoz
 
 ### 1.5 Adatbázis réteg értékelése
 
@@ -83,19 +82,20 @@
 
 #### Prisma indexelési stratégia
 
-> [!IMPORTANT]
-> **Kritikus hiányosság**: A `Recipe` modellben **egyetlen index sincs definiálva**.
+✅ **Megvalósítva**: a `Recipe`, `Ingredient`, `PreparationStep` és `Rating` modellek már tartalmaznak explicit indexeket.
 
-Hiányzó indexek:
-| Mező | Indoklás |
-|------|----------|
-| `Recipe.createdBy` | FK mező — minden „user receptjei" lekérdezés full table scan nélküle |
-| `Recipe.createdAt` | `ORDER BY createdAt DESC` minden listázásnál |
-| `Recipe.slug` | `@unique` van, de explicit index nélkül a lookup lassabb lehet |
-| `Recipe.title` | `contains` + `insensitive` filter → `pg_trgm` GIN index kellene full-text kereséshez |
-| `Ingredient.recipeId` | FK — cascade delete és recipe-alapú lookup |
-| `PreparationStep.recipeId` | FK — cascade delete és recipe-alapú lookup |
-| `Rating.recipeId` | Már van `@@unique([recipeId, userId])`, de külön `recipeId` index kellene a `groupBy`-hoz |
+Meglévő indexek:
+| Mező | Állapot |
+|------|---------|
+| `Recipe.createdBy` | ✅ `@@index([createdBy])` |
+| `Recipe.createdAt` | ✅ `@@index([createdAt])` |
+| `Recipe.slug` | ✅ `@@index([slug])` |
+| `Recipe.title` | ✅ `@@index([title])` |
+| `Ingredient.recipeId` | ✅ `@@index([recipeId])` |
+| `PreparationStep.recipeId` | ✅ `@@index([recipeId])` |
+| `Rating.recipeId` | ✅ `@@index([recipeId])` |
+
+> Megjegyzés: a `title`-szerinti `contains` kereséshez még továbbra is `pg_trgm` GIN index lenne ideális, de az alap indexelés már be van vezetve.
 
 #### Connection pooling Neon-nal
 
@@ -166,11 +166,11 @@ Ezért a pontos megfogalmazás a következő:
 | Szempont | Állapot |
 |----------|---------|
 | **IP-alapú globális limit** | ✅ 100 req / 60s — [rateLimit.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/rateLimit/rateLimit.ts) |
-| **Strict limiter** | ✅ 5 req / 10 min — definiálva, de **nem használt a resolver-ekben** |
+| **Strict limiter** | ✅ 5 req / 10 min — definiálva és a kényes műveletekhez kapcsolva |
 | **User-alapú granularitás** | ❌ Hiányzik | Egy user sok IP-ről támadhat, vagy egy IP mögött sok user lehet (NAT) |
-| **Operation-specifikus limit** | ❌ Hiányzik | Egy `createRecipe` mutation ugyanazt a limitet kapja, mint egy `getRecipes` query |
+| **Operation-specifikus limit** | ⚠️ Részben megvalósult | A GraphQL route most már a `resetPassword`, `createRecipe` és `editRecipe` műveletekhez a strict limiter-t választja |
 | **IP spoofing kockázat** | ⚠️ `x-forwarded-for` fejlécet használ — ez manipulálható, ha nincs trusted proxy konfiguráció |
-| **`strictRateLimiter` tényleges használata** | ❌ **Nincs használva** | Definiálva van, de a `resetPassword` resolver **nem alkalmazza** — [resetPassword.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/graphql/resolvers/user/mutations/resetPassword.ts) |
+| **`strictRateLimiter` tényleges használata** | ✅ **Megvalósult** | A `resetPassword` művelet a strict limiter-t használja a GraphQL route-on |
 
 ### 2.5 Input validáció és sanitization
 
@@ -178,10 +178,10 @@ Ezért a pontos megfogalmazás a következő:
 |----------|---------|
 | **Zod validáció** | ✅ Átfogó | Kliensoldalon és szerveroldalon is van Zod schema a regisztrációhoz, login-hoz, recept-létrehozáshoz |
 | **DOMPurify sanitization** | ✅ Megvan | `sanitizeText()` strip-eli az összes HTML tag-et — [sanitize.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/sanitize/sanitize.ts) |
-| **Sanitization lefedettség** | ⚠️ Részleges | A `buildRecipeData` sanitizálja a title/description/tips/substitutions/SEO mezőket, **de nem sanitizálja az ingredient.name, ingredient.unit, preparationStep.description mezőket** |
+| **Sanitization lefedettség** | ✅ Javítva | A recept létrehozás/szerkesztés során most már az `ingredient.name`, `ingredient.unit`, `ingredient.note` és a `preparationStep.description` mezők is sanitizálódnak |
 | **SQL injection** | ✅ Védett | Prisma parametrized query-ket használ — nincs raw SQL |
-| **Recept szűrő XSS** | ⚠️ | A `RecipeFilterInput` szűrők (`title`, `categoryKey` stb.) **nincsenek sanitizálva** a szerver oldalon — bár Prisma escape-eli, a nyers input visszakerülhet a válaszba |
-| **`ratingValue` range check** | ❌ **Hiányzik** | Nincs validáció, hogy `ratingValue` 1-5 között van-e — [rateRecipe.ts](file:///Users/marosdaniel/Documents/private/home_project/cookbook-next/src/lib/graphql/resolvers/recipe/mutations/rateRecipe.ts) bármilyen Float-ot elfogad |
+| **Recept szűrő XSS** | ⚠️ | A `RecipeFilterInput` szűrők (`title`, `categoryKey` stb.) még nem sanitizáltak a szerver oldalon — bár Prisma escape-eli, a nyers input visszakerülhet a válaszba |
+| **`ratingValue` range check** | ✅ **Megvalósult** | A `RecipeService.rateRecipe()` most 1–5 közötti értéket fogad el, egyébként `BAD_REQUEST`-t dob |
 
 ### 2.6 CSP és HTTP Security Headers
 
@@ -272,12 +272,12 @@ A `pnpm audit` futtatása szükséges a teljes audithoz. Ismert kockázatok:
 |---|----------------------|-----------|-----------|-------------|---------------------------|
 | 1 | **DB credentials rotálás + `.env` audit** | Security | **P0** | S | `.env` éles Neon jelszót tartalmaz. Rotálni a jelszót, ellenőrizni git history-t. `.env`, Neon Dashboard |
 | 2 | **Query complexity/cost limiting** | Security | **P0** | M | Nincs max-cost validáció → DoS kockázat. `graphql-armor` csomag bevezetése. `route.ts`, `package.json` |
-| 3 | **`limit` paraméter maximalizálás** | Security | **P0** | S | `getRecipes(limit: 999999)` → DB dump. Maximum limit (pl. 100) bevezetése. `RecipeService.ts`, `UserService.ts`, `recipe.graphql` |
-| 4 | **`ratingValue` range validáció** | Security | **P0** | S | Bármilyen Float elfogadott → adatintegritási probléma. Zod validáció 1.0–5.0 range. `RecipeService.rateRecipe`, `recipe.graphql` |
+| 3 | **`limit` paraméter maximalizálás** | Security | **P0** | S | ✅ Megvalósult: közös limit-normalizáció 100-ra korlátozza a lekérdezések méretét. `RecipeService.ts`, `UserService.ts`, `recipe.graphql` |
+| 4 | **`ratingValue` range validáció** | Security | **P0** | S | ✅ Megvalósult: `RecipeService.rateRecipe()` 1–5 közötti értéket fogad el. `RecipeService.rateRecipe`, `recipe.graphql` |
 | 5 | **Cursor-alapú pagináció** | Tech | **P0** | L | Nincs pagináció → nem skálázódik. `RecipeService.ts`, `recipe.graphql`, `RecipesPage.tsx` |
 | 6 | **Prisma indexek hozzáadása** | Tech | **P0** | M | Recipe.createdBy, Recipe.createdAt, Ingredient.recipeId, PreparationStep.recipeId indexek hiányoznak. `schema.prisma`, migration |
-| 7 | **Ingredient/step sanitization** | Security | **P0** | S | `ingredient.name`, `preparationStep.description` nincs sanitizálva → XSS kockázat. `RecipeService.createRecipe`, `RecipeService.editRecipe` |
-| 8 | **`strictRateLimiter` alkalmazása `resetPassword`-ra** | Security | **P0** | S | A definiált strict limiter nincs használva a jelszó-visszaállítás endpoint-on → brute force kockázat. `resetPassword.ts`, `route.ts` |
+| 7 | **Ingredient/step sanitization** | Security | **P0** | S | ✅ Megvalósult: recept létrehozás/szerkesztés során a hozzávalók és lépések tartalma is sanitizálódik. `RecipeService.createRecipe`, `RecipeService.editRecipe` |
+| 8 | **`strictRateLimiter` alkalmazása `resetPassword`-ra** | Security | **P0** | S | ✅ Megvalósult: a GraphQL route a `resetPassword` művelethez strict limiter-t használ. `resetPassword.ts`, `route.ts` |
 | 9 | **next-auth beta → stabil migrálás** | Tech | **P1** | L | `5.0.0-beta.31` production-ben kockázatos. Auth.js stabil vagy `better-auth`. `auth.ts`, `auth.config.ts`, `client.tsx` |
 | 10 | **bcrypt salt rounds emelése 12-re** | Security | **P1** | S | OWASP 2026: minimum 12 rounds. `UserService.ts:34` |
 | 11 | **Jelszó policy egységesítés** | Security | **P1** | S | Regisztráció: 5 char min vs. Reset: 8 char min → inkonzisztens. `validation.ts` |
@@ -289,7 +289,7 @@ A `pnpm audit` futtatása szükséges a teljes audithoz. Ismert kockázatok:
 | 17 | **Social login (Google/GitHub OAuth)** | Feature | **P1** | M | Credentials-only auth korlátozott. NextAuth provider-ek hozzáadása. `auth.ts`, `auth.config.ts`, login page |
 | 18 | **Nonce-alapú CSP** | Security | **P1** | M | `unsafe-inline`/`unsafe-eval` csökkenti a CSP hatékonyságát. Next.js nonce support bevezetése. `next.config.ts`, `layout.tsx` |
 | 19 | **`react-icons` → `@tabler/icons` konszolidáció** | Tech | **P1** | S | 13 fájl használja a `react-icons`-t, ami redundáns. Csere @tabler-re, `react-icons` törlése. 13 komponens fájl |
-| 20 | **Apollo Client cache optimalizáció** | Tech | **P1** | M | `network-only` default, üres `typePolicies`. `keyFields`, `merge` policy, `cache-first` hozzáadása. `client.ts` |
+| 20 | **Apollo Client cache optimalizáció** | Tech | **P1** | M | ✅ Megvalósult: `keyFields`, lista-merge policy-k és cache-first/cache-and-network alapértelmezések már be vannak állítva. `client.ts` |
 | 21 | **`uuid` + `graphql-tag` eltávolítása** | Tech | **P1** | S | ✅ Részben megoldva: `graphql-tag` eltávolítva, `uuid` még hátravan |
 | 22 | **ISR/SSG bevezetése recept oldalakhoz** | Tech | **P1** | M | Minden oldal dinamikus — receptoldalak statikusan generálhatók lennének `generateStaticParams` + revalidation-nel. `recipes/[id]/page.tsx` |
 | 23 | **Összetevő-alapú keresés** | Feature | **P1** | L | "Mi van a hűtőmben?" keresés. Új filter field, Prisma query, UI. `recipe.graphql`, `RecipeService.ts`, `RecipeSearch.tsx` |

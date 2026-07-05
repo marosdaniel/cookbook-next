@@ -52,6 +52,18 @@ describe('RecipeService cache resilience', () => {
 
     await expect(RecipeService.getRecipes()).resolves.toEqual({ recipes: [], totalRecipes: 0 });
   });
+
+  it('rejects ratings outside the supported 1-5 range', async () => {
+    const { prisma } = await import('@/lib/prisma/prisma');
+    vi.mocked(prisma.recipe.findUnique).mockResolvedValue({ id: 'recipe-1' } as never);
+
+    await expect(
+      RecipeService.rateRecipe('user-1', {
+        recipeId: 'recipe-1',
+        ratingValue: 6,
+      } as never),
+    ).rejects.toThrow('Rating must be between 1 and 5');
+  });
 });
 
 describe('assertRecipeResourceAccess', () => {

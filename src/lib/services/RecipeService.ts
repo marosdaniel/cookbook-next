@@ -7,6 +7,7 @@ import type {
 import {
   buildRecipeData,
   resolveRecipeMetadata,
+  sanitizeRecipeInput,
   validateRequiredFields,
 } from '@/lib/graphql/resolvers/recipe/utils';
 import { prisma } from '@/lib/prisma/prisma';
@@ -171,17 +172,18 @@ export const RecipeService = {
 
   // Mutations
   async createRecipe(userId: string, recipeCreateInput: RecipeCreateInput) {
-    validateRequiredFields(recipeCreateInput);
+    const sanitizedInput = sanitizeRecipeInput(recipeCreateInput);
+    validateRequiredFields(sanitizedInput);
 
-    const metadata = await resolveRecipeMetadata(recipeCreateInput);
-    const data = buildRecipeData(recipeCreateInput, metadata);
+    const metadata = await resolveRecipeMetadata(sanitizedInput);
+    const data = buildRecipeData(sanitizedInput, metadata);
 
     const newRecipe = await prisma.recipe.create({
       data: {
         ...data,
         createdBy: userId,
         ingredients: {
-          create: recipeCreateInput.ingredients.map((i) => ({
+          create: sanitizedInput.ingredients.map((i) => ({
             localId: i.localId,
             name: i.name,
             quantity: i.quantity,
@@ -191,7 +193,7 @@ export const RecipeService = {
           })),
         },
         preparationSteps: {
-          create: recipeCreateInput.preparationSteps.map((s, index) => ({
+          create: sanitizedInput.preparationSteps.map((s, index) => ({
             description: s.description,
             order: s.order || index + 1,
           })),
@@ -218,7 +220,8 @@ export const RecipeService = {
     recipeId: string,
     recipeEditInput: RecipeEditInput,
   ) {
-    validateRequiredFields(recipeEditInput);
+    const sanitizedInput = sanitizeRecipeInput(recipeEditInput);
+    validateRequiredFields(sanitizedInput);
 
     const existingRecipe = await prisma.recipe.findUnique({
       where: { id: recipeId },
@@ -229,8 +232,8 @@ export const RecipeService = {
 
     assertRecipeResourceAccess(userId, userRole, existingRecipe);
 
-    const metadata = await resolveRecipeMetadata(recipeEditInput);
-    const data = buildRecipeData(recipeEditInput, metadata);
+    const metadata = await resolveRecipeMetadata(sanitizedInput);
+    const data = buildRecipeData(sanitizedInput, metadata);
 
     const updatedRecipe = await prisma.recipe.update({
       where: { id: recipeId },
@@ -238,7 +241,7 @@ export const RecipeService = {
         ...data,
         ingredients: {
           deleteMany: {},
-          create: recipeEditInput.ingredients.map((i) => ({
+          create: sanitizedInput.ingredients.map((i) => ({
             localId: i.localId,
             name: i.name,
             quantity: i.quantity,
@@ -249,7 +252,7 @@ export const RecipeService = {
         },
         preparationSteps: {
           deleteMany: {},
-          create: recipeEditInput.preparationSteps.map((s, index) => ({
+          create: sanitizedInput.preparationSteps.map((s, index) => ({
             description: s.description,
             order: s.order || index + 1,
           })),
@@ -291,6 +294,10 @@ export const RecipeService = {
   },
 
   async rateRecipe(userId: string, ratingInput: RatingInput) {
+    if (!Number.isFinite(ratingInput.ratingValue) || ratingInput.ratingValue < 1 || ratingInput.ratingValue > 5) {
+      return throwCustomError('Rating must be between 1 and 5', ErrorTypes.BAD_REQUEST);
+    }
+
     const recipe = await prisma.recipe.findUnique({
       where: { id: ratingInput.recipeId },
     });

@@ -24,7 +24,7 @@ import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
 import { createPrismaTimeoutProxy } from '@/lib/prisma/prismaTimeout';
-import { rateLimiter } from '@/lib/rateLimit/rateLimit';
+import { getRateLimiterForOperation, rateLimiter } from '@/lib/rateLimit/rateLimit';
 import { withTimeout } from '@/lib/redis/redis';
 import type { GraphQLContext } from '../../../types/graphql/context';
 
@@ -221,13 +221,44 @@ const wrappedHandler = async (
   const session = await auth();
   const userId = session?.user?.id;
 
+  const requestBody = await request.text();
+  if (!requestBody.trim()) {
+    return new Response(
+      JSON.stringify({
+        error: 'Empty request body',
+        message: 'GraphQL POST requests must include a JSON body.',
+      }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+  }
+
+  let operationName: string | undefined;
+  try {
+    const parsedBody = JSON.parse(requestBody) as {
+      operationName?: string;
+      query?: string;
+      extensions?: {
+        persistedQuery?: {
+          sha256Hash?: string;
+        };
+      };
+    };
+
+    operationName = parsedBody.operationName ?? parsedBody.query?.match(/(?:query|mutation)\s+(\w+)/i)?.[1];
+  } catch {
+    operationName = undefined;
+  }
+
   // Apply rate limiting
   if (rateLimiter) {
     const ip =
       request.headers.get('x-forwarded-for') ??
       request.headers.get('x-real-ip') ??
       '127.0.0.1';
-    const limiter = rateLimiter;
+    const limiter = getRateLimiterForOperation(operationName as never) ?? rateLimiter;
 
     try {
       const rateLimitResult = await withTimeout(() => limiter.limit(userId ?? ip), 750);
@@ -249,20 +280,6 @@ const wrappedHandler = async (
     } catch (error) {
       console.warn('GraphQL rate limiter failed. Continuing without throttling.', error);
     }
-  }
-
-  const requestBody = await request.text();
-  if (!requestBody.trim()) {
-    return new Response(
-      JSON.stringify({
-        error: 'Empty request body',
-        message: 'GraphQL POST requests must include a JSON body.',
-      }),
-      {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      },
-    );
   }
 
   try {

@@ -117,6 +117,22 @@ const mapMetadataToJson = (m: MetaInputPartial, type: string) => {
   };
 };
 
+export const sanitizeRecipeInput = (input: RecipeInputBase) => {
+  return {
+    ...input,
+    ingredients: (input.ingredients ?? []).map((ingredient) => ({
+      ...ingredient,
+      name: sanitizeText(ingredient.name),
+      unit: sanitizeText(ingredient.unit),
+      note: ingredient.note ? sanitizeText(ingredient.note) : undefined,
+    })),
+    preparationSteps: (input.preparationSteps ?? []).map((step) => ({
+      ...step,
+      description: sanitizeText(step.description),
+    })),
+  };
+};
+
 export const buildRecipeData = (
   input: RecipeInputBase,
   metadata: Awaited<ReturnType<typeof resolveRecipeMetadata>>,

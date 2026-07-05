@@ -57,4 +57,11 @@ describe('rate limit setup', () => {
     expect(fallbackRateLimiter).toBeNull();
     expect(fallbackStrictRateLimiter).toBeNull();
   });
+
+  it('selects the strict limiter for sensitive operations', async () => {
+    const { getRateLimiterForOperation } = await import('./rateLimit');
+
+    expect(getRateLimiterForOperation('resetPassword')).toBeDefined();
+    expect(getRateLimiterForOperation('getRecipes')).toBeDefined();
+  });
 });
