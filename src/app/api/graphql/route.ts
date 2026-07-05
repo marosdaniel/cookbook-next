@@ -227,9 +227,10 @@ const wrappedHandler = async (
       request.headers.get('x-forwarded-for') ??
       request.headers.get('x-real-ip') ??
       '127.0.0.1';
+    const limiter = rateLimiter;
 
     try {
-      const rateLimitResult = await withTimeout(() => rateLimiter.limit(userId ?? ip), 750);
+      const rateLimitResult = await withTimeout(() => limiter.limit(userId ?? ip), 750);
 
       if (rateLimitResult) {
         const { success, limit, remaining } = rateLimitResult;
