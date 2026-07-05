@@ -1,18 +1,8 @@
 import { neonConfig } from '@neondatabase/serverless';
-
 import { PrismaNeon } from '@prisma/adapter-neon';
-
-
-
-
 
 import { PrismaClient } from '@prisma/client';
 import ws from 'ws';
-
-
-
-
-
 
 neonConfig.webSocketConstructor = ws;
 
@@ -41,10 +31,6 @@ const createPrismaClient = () => {
   const prismaClient = new PrismaClient({
     adapter,
     log:
-
-
-
-    
       process.env.NODE_ENV === 'development'
         ? ['query', 'error', 'warn']
         : ['error'],
