@@ -44,6 +44,12 @@ describe('locale.client', () => {
       expect(getStoredLocale()).toBe('de');
     });
 
+    it('should fall back to cookie when localStorage has an empty value', () => {
+      localStorage.setItem(LOCALE_STORAGE_KEY, '');
+      setCookie(`${LOCALE_STORAGE_KEY}=de`);
+      expect(getStoredLocale()).toBe('de');
+    });
+
     it('should fall back to cookie when localStorage throws an error', () => {
       vi.spyOn(Storage.prototype, 'getItem').mockImplementationOnce(() => {
         throw new Error('Storage error');

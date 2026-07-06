@@ -96,6 +96,14 @@ import { UserService } from './UserService';
 describe('UserService', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockFindUnique.mockReset();
+    mockFindFirst.mockReset();
+    mockCreate.mockReset();
+    mockUpdate.mockReset();
+    mockDelete.mockReset();
+    mockDeleteMany.mockReset();
+    mockCount.mockReset();
+    mockFindMany.mockReset();
   });
 
   it('creates a user and returns the expected payload', async () => {
@@ -169,5 +177,185 @@ describe('UserService', () => {
     ).rejects.toThrow(
       'Destructive admin action requires explicit confirmation:BAD_REQUEST',
     );
+  });
+
+  it('sends a reset email for a known user and stores a hashed reset token', async () => {
+    const { generateResetToken, sendPasswordResetEmail } = await import(
+      '@/lib/email/nodemailer'
+    );
+    mockFindUnique.mockResolvedValueOnce({
+      id: 'user-1',
+      email: 'ada@example.com',
+    });
+    mockUpdate.mockResolvedValue({});
+
+    const result = await UserService.resetPassword('ada@example.com');
+
+    expect(result.success).toBe(true);
+    expect(generateResetToken).toHaveBeenCalled();
+    expect(sendPasswordResetEmail).toHaveBeenCalledWith(
+      'ada@example.com',
+      'reset-token',
+    );
+    expect(mockUpdate).toHaveBeenCalled();
+  });
+
+  it('updates a user profile with sanitized values', async () => {
+    mockFindUnique.mockResolvedValueOnce({
+      id: 'user-1',
+      firstName: 'Ada',
+      lastName: 'Lovelace',
+      locale: 'en-gb',
+    });
+    mockUpdate.mockResolvedValue({
+      id: 'user-1',
+      firstName: 'Ada',
+      lastName: 'Byron',
+      locale: 'hu',
+    });
+
+    const result = await UserService.updateUser('user-1', {
+      firstName: 'Ada',
+      lastName: 'Byron',
+      locale: 'hu',
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.user).toMatchObject({
+      firstName: 'Ada',
+      lastName: 'Byron',
+      locale: 'hu',
+    });
+  });
+
+  it('adds a recipe to favorites for the authorized user', async () => {
+    const prisma = await import('@/lib/prisma/prisma');
+    mockFindUnique.mockResolvedValueOnce({ id: 'user-1' });
+    vi.mocked(prisma.prisma.recipe.findUnique).mockResolvedValueOnce({
+      id: 'recipe-1',
+      title: 'Soup',
+      description: null,
+      category: null,
+      labels: null,
+      imgSrc: null,
+      cookingTime: 20,
+      difficultyLevel: null,
+      servings: 2,
+      youtubeLink: null,
+      createdAt: new Date('2024-01-01T00:00:00.000Z'),
+      updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+      prepTimeMinutes: null,
+      cookTimeMinutes: null,
+      restTimeMinutes: null,
+      totalTimeMinutes: null,
+      servingUnit: null,
+      cuisine: null,
+      dietaryFlags: null,
+      allergens: null,
+      equipment: null,
+      costLevel: null,
+      tips: null,
+      substitutions: null,
+      slug: null,
+      seoTitle: null,
+      seoDescription: null,
+      socialImage: null,
+      createdBy: 'user-1',
+    });
+    mockFindFirst.mockResolvedValue(null);
+    mockUpdate.mockResolvedValue({});
+
+    const result = await UserService.addToFavoriteRecipes(
+      'user-1',
+      'USER',
+      'user-1',
+      'recipe-1',
+    );
+
+    expect(result.success).toBe(true);
+    expect(result.messageKey).toBe('response.userFavoriteSuccess');
+    expect(mockUpdate).toHaveBeenCalled();
+  });
+
+  it('removes a recipe from favorites for the authorized user', async () => {
+    const prisma = await import('@/lib/prisma/prisma');
+    mockFindUnique.mockResolvedValueOnce({ id: 'user-1' });
+    vi.mocked(prisma.prisma.recipe.findUnique).mockResolvedValueOnce({
+      id: 'recipe-1',
+      title: 'Soup',
+      description: null,
+      category: null,
+      labels: null,
+      imgSrc: null,
+      cookingTime: 20,
+      difficultyLevel: null,
+      servings: 2,
+      youtubeLink: null,
+      createdAt: new Date('2024-01-01T00:00:00.000Z'),
+      updatedAt: new Date('2024-01-01T00:00:00.000Z'),
+      prepTimeMinutes: null,
+      cookTimeMinutes: null,
+      restTimeMinutes: null,
+      totalTimeMinutes: null,
+      servingUnit: null,
+      cuisine: null,
+      dietaryFlags: null,
+      allergens: null,
+      equipment: null,
+      costLevel: null,
+      tips: null,
+      substitutions: null,
+      slug: null,
+      seoTitle: null,
+      seoDescription: null,
+      socialImage: null,
+      createdBy: 'user-1',
+    });
+    mockFindFirst.mockResolvedValue({ id: 'user-1' });
+    mockUpdate.mockResolvedValue({});
+
+    const result = await UserService.removeFromFavoriteRecipes(
+      'user-1',
+      'USER',
+      'user-1',
+      'recipe-1',
+    );
+
+    expect(result.success).toBe(true);
+    expect(result.messageKey).toBe('response.userFavoriteSuccess');
+    expect(mockUpdate).toHaveBeenCalled();
+  });
+
+  it('sets a new password when the reset token is valid', async () => {
+    mockFindFirst.mockResolvedValue({ id: 'user-1', email: 'ada@example.com' });
+    mockUpdate.mockResolvedValue({});
+
+    const result = await UserService.setNewPassword({
+      token: 'reset-token',
+      newPassword: 'NewPassword123!',
+    });
+
+    expect(result.success).toBe(true);
+    expect(mockUpdate).toHaveBeenCalled();
+  });
+
+  it('follows a user and invalidates the follow cache', async () => {
+    const { redis } = await import('@/lib/redis/redis');
+    mockFindUnique.mockResolvedValueOnce({ id: 'user-2' });
+    vi.mocked(mockFindUnique).mockResolvedValueOnce({ id: 'user-2' });
+    const followFindUnique = vi.fn().mockResolvedValue(null);
+    const followCreate = vi.fn().mockResolvedValue({});
+    const followDelete = vi.fn().mockResolvedValue({});
+
+    const prisma = await import('@/lib/prisma/prisma');
+    prisma.prisma.follow.findUnique = followFindUnique as never;
+    prisma.prisma.follow.create = followCreate as never;
+    prisma.prisma.follow.delete = followDelete as never;
+
+    const result = await UserService.followUser('user-1', 'user-2');
+
+    expect(result.success).toBe(true);
+    expect(followCreate).toHaveBeenCalled();
+    expect(redis?.del).not.toBeDefined();
   });
 });

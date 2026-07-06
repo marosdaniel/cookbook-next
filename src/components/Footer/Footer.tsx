@@ -9,7 +9,7 @@ import { Logo } from '../Logo';
 
 const Footer: FC = () => {
   const currentYear = new Date().getFullYear();
-  const t = useTranslations('footer');
+  const translate = useTranslations('footer');
 
   return (
     <>
@@ -30,7 +30,7 @@ const Footer: FC = () => {
           href={PUBLIC_ROUTES.HOME}
         />
         <Text size="xs" c="dimmed" data-testid="footer-copyright">
-          {t('copyright', { year: currentYear })}
+          {translate('copyright', { year: currentYear })}
         </Text>
         <Group gap="md">
           <Anchor
@@ -41,7 +41,7 @@ const Footer: FC = () => {
             underline="hover"
             data-testid="footer-privacy"
           >
-            {t('privacy')}
+            {translate('privacy')}
           </Anchor>
           <Anchor
             variant="subtle"
@@ -52,7 +52,7 @@ const Footer: FC = () => {
             underline="hover"
             data-testid="footer-cookie"
           >
-            {t('cookies')}
+            {translate('cookies')}
           </Anchor>
         </Group>
       </Stack>
@@ -74,7 +74,7 @@ const Footer: FC = () => {
             href={PUBLIC_ROUTES.HOME}
           />
           <Text size="xs" c="dimmed" data-testid="footer-copyright">
-            {t('copyright', { year: currentYear })}
+            {translate('copyright', { year: currentYear })}
           </Text>
         </Group>
 
@@ -87,7 +87,7 @@ const Footer: FC = () => {
             underline="hover"
             data-testid="footer-privacy"
           >
-            {t('privacy')}
+            {translate('privacy')}
           </Anchor>
           <Anchor
             component={Link}
@@ -98,7 +98,7 @@ const Footer: FC = () => {
             variant="subtle"
             data-testid="footer-cookie"
           >
-            {t('cookies')}
+            {translate('cookies')}
           </Anchor>
         </Group>
       </Group>

@@ -2,44 +2,50 @@
 
 import { LOCALE_STORAGE_KEY } from './locale';
 
+const DEFAULT_LOCALE = 'en-gb';
+
+const getCookieLocale = (): string | null => {
+  try {
+    const stored = document.cookie
+      .split(';')
+      .map((row) => row.trim())
+      .find((row) => row.startsWith(`${LOCALE_STORAGE_KEY}=`))
+      ?.split('=')
+      .slice(1)
+      .join('=');
+
+    return stored || null;
+  } catch {
+    return null;
+  }
+};
+
 export const getStoredLocale = (): string => {
-  // Try localStorage first (works on both server and client)
-  if (globalThis.window !== undefined) {
-    try {
-      const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
-      if (stored) return stored;
-    } catch {
-      // Ignore localStorage errors
-    }
-  }
+  if (globalThis.window === undefined) return DEFAULT_LOCALE;
 
-  // Fallback to cookies
-  if (globalThis.window !== undefined) {
-    try {
-      const stored = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith(`${LOCALE_STORAGE_KEY}=`))
-        ?.split('=')[1];
-      if (stored) return stored;
-    } catch {
-      // Ignore cookie errors
-    }
-  }
+  try {
+    const localStorageLocale =
+      globalThis.localStorage.getItem(LOCALE_STORAGE_KEY);
 
-  return 'en-gb';
+    if (localStorageLocale) {
+      return localStorageLocale;
+    }
+
+    return getCookieLocale() || DEFAULT_LOCALE;
+  } catch {
+    return getCookieLocale() || DEFAULT_LOCALE;
+  }
 };
 
 export const setStoredLocale = (locale: string): void => {
   if (globalThis.window === undefined) return;
 
   try {
-    // Set in localStorage
-    localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+    globalThis.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
 
-    // Set in cookies (expires in 1 year)
     const maxAge = 60 * 60 * 24 * 365;
     // biome-ignore lint/suspicious/noDocumentCookie: We need to set the cookie manually for i18n
-    document.cookie = `${LOCALE_STORAGE_KEY}=${locale}; path=/; max-age=${maxAge}`;
+    document.cookie = `${LOCALE_STORAGE_KEY}=${locale}; path=/; max-age=${maxAge}; samesite=lax`;
   } catch (error) {
     console.error('[setStoredLocale] Error setting locale:', error);
   }

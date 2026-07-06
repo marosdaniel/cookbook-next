@@ -13,93 +13,74 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { IconSearch } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
 import type { RecipeBase } from '@/types/recipe';
 import { PUBLIC_ROUTES } from '@/types/routes';
 
+const MIN_SEARCH_LENGTH = 4;
+const SEARCH_LIMIT = 5;
+const DEBOUNCE_MS = 800;
+
 export const HeaderSearch = () => {
-  const t = useTranslations('headerSearch');
+  const translate = useTranslations('headerSearch');
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
-  const [debouncedSearch] = useDebouncedValue(searchQuery, 800);
+  const [debouncedSearch] = useDebouncedValue(searchQuery, DEBOUNCE_MS);
+
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
-  const [isFocused, setIsFocused] = useState(false);
 
-  const shouldSearch = debouncedSearch.length >= 4;
+  const shouldSearch = debouncedSearch.trim().length >= MIN_SEARCH_LENGTH;
 
-  const { data, loading } = useQuery(GET_LATEST_RECIPES, {
-    variables: {
-      limit: 5,
-      filter: { title: debouncedSearch },
-    },
+  const { data, loading, error } = useQuery(GET_LATEST_RECIPES, {
+    variables: { limit: SEARCH_LIMIT, filter: { title: debouncedSearch } },
     skip: !shouldSearch,
   });
 
-  useEffect(() => {
-    if (!shouldSearch) {
-      combobox.closeDropdown();
-    } else if (isFocused && loading) {
+  const recipes = useMemo(
+    () => (data?.getRecipes?.recipes ?? []) as RecipeBase[],
+    [data],
+  );
+
+  const hasNoResults =
+    shouldSearch && !loading && !error && recipes.length === 0;
+
+  const handleChange = (value: string) => {
+    setSearchQuery(value);
+    combobox.resetSelectedOption();
+    if (value.trim().length >= MIN_SEARCH_LENGTH) {
       combobox.openDropdown();
+    } else {
+      combobox.closeDropdown();
     }
-  }, [shouldSearch, loading, isFocused, combobox]);
+  };
 
-  const recipes = (data?.getRecipes?.recipes ?? []) as RecipeBase[];
-  const hasNoResults = shouldSearch && !loading && recipes.length === 0;
-
-  const options = recipes.map((recipe: RecipeBase) => (
-    <Combobox.Option value={recipe.slug || recipe.id} key={recipe.id}>
-      <Group>
-        <Text size="sm">{recipe.title}</Text>
-      </Group>
-    </Combobox.Option>
-  ));
+  const handleSubmit = (optionValue: string) => {
+    setSearchQuery('');
+    combobox.closeDropdown();
+    router.push(`${PUBLIC_ROUTES.RECIPES}/${optionValue}`);
+  };
 
   return (
     <Combobox
-      onOptionSubmit={(optionValue) => {
-        setSearchQuery('');
-        combobox.closeDropdown();
-        router.push(`${PUBLIC_ROUTES.RECIPES}/${optionValue}`);
-      }}
       store={combobox}
-      withinPortal={true}
+      withinPortal
       transitionProps={{
         transition: 'fade',
         duration: 200,
         timingFunction: 'ease',
       }}
+      onOptionSubmit={handleSubmit}
     >
       <Combobox.Target>
         <TextInput
-          placeholder={t('placeholder')}
+          placeholder={translate('placeholder')}
           value={searchQuery}
-          onChange={(event) => {
-            setSearchQuery(event.currentTarget.value);
-            combobox.resetSelectedOption();
-            if (event.currentTarget.value.length < 4) {
-              combobox.closeDropdown();
-            } else if (recipes.length > 0) {
-              combobox.openDropdown();
-            }
-          }}
-          onClick={() => {
-            if (shouldSearch && recipes.length > 0) {
-              combobox.openDropdown();
-            }
-          }}
-          onFocus={() => {
-            setIsFocused(true);
-            if (shouldSearch && recipes.length > 0) {
-              combobox.openDropdown();
-            }
-          }}
-          onBlur={() => {
-            setIsFocused(false);
-            combobox.closeDropdown();
-          }}
+          onChange={(event) => handleChange(event.currentTarget.value)}
+          onFocus={() => shouldSearch && combobox.openDropdown()}
+          onBlur={() => combobox.closeDropdown()}
           rightSection={
             loading ? <Loader size={18} /> : <IconSearch size={18} />
           }
@@ -115,17 +96,33 @@ export const HeaderSearch = () => {
           {loading && (
             <Combobox.Empty>
               <Text size="sm" c="dimmed">
-                {t('searching')}
+                {translate('searching')}
               </Text>
             </Combobox.Empty>
           )}
 
-          {!loading && options.length > 0 && options}
+          {error && (
+            <Combobox.Empty>
+              <Text size="sm" c="red">
+                {translate('searchError')}
+              </Text>
+            </Combobox.Empty>
+          )}
+
+          {!loading &&
+            !error &&
+            recipes.map((recipe) => (
+              <Combobox.Option value={recipe.slug || recipe.id} key={recipe.id}>
+                <Group>
+                  <Text size="sm">{recipe.title}</Text>
+                </Group>
+              </Combobox.Option>
+            ))}
 
           {hasNoResults && (
             <Combobox.Empty>
               <Text size="sm" c="dimmed">
-                {t('noResults')}
+                {translate('noResults')}
               </Text>
             </Combobox.Empty>
           )}
