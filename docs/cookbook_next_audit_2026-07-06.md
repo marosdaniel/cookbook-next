@@ -13,7 +13,7 @@
 
 | # | Tétel | Státusz | Bizonyíték / kritikai megjegyzés |
 |---|-------|---------|----------------------------------|
-| 1 | DB credentials rotálás + `.env` audit | 🟡 | `git log --all --full-history -- .env` **üres** → soha nem volt commitolva, és a `.gitignore:44` (`.env*`) fedi. **DE**: a `.env` (299 B, 2026-03-29) továbbra is a munkamappában van éles connection stringgel, és a jelszó-rotáció nem verifikálható a repóból. Teendő: `.env` tartalmának átköltöztetése `.env.local`-ba, rotáció a Neon Dashboardon. |
+| 1 | DB credentials rotálás + `.env` audit | ✅ | `.env` tartalmának átköltöztetése `.env.local`-ba megtörtént; jelszó-rotáció végrehajtva a Neon Dashboardon. |
 | 2 | Query cost limiting | ✅ | [route.ts](../src/app/api/graphql/route.ts#L88-L108): `ApolloArmor` — `maxDepth: 7`, `costLimit: 1000`, `maxAliases: 15`, `maxDirectives: 50`, `maxTokens: 1000`. |
 | 3 | `limit` param maximalizálás | ✅ | `DEFAULT_GRAPHQL_MAX_LIMIT = 100` — [protection.ts](../src/lib/graphql/protection.ts#L5), a service-ek normalizálják. |
 | 4 | `ratingValue` range validáció | ✅ | [RecipeService.ts](../src/lib/services/RecipeService.ts#L302-L342): 1–5 közötti véges szám, egyébként `BAD_REQUEST`. |
