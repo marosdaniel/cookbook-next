@@ -59,7 +59,7 @@
 | # | Észrevétel | Súlyosság | Részletek |
 |---|-----------|-----------|-----------|
 | A | **`darkTheme.ts` soha nincs bekötve** | 🟠 Közepes | A [mantine.tsx](../src/providers/mantine/mantine.tsx#L18-L21) kizárólag a `lightTheme`-et adja a `MantineProvider`-nek; a `darkTheme` csak a saját tesztjéből van importálva → **dead code volt**. Lásd 4. szekció (javítva + bekötési javaslat). |
-| B | **Recept `generateMetadata` nem használja a recept adatait** | 🔴 Magas (SEO) | [recipes/[id]/page.tsx](../src/app/recipes/[id]/page.tsx#L10-L22): statikus i18n kulcsok → **minden recept ugyanazt a title/description-t kapja**. A DB-ben lévő `seoTitle`/`seoDescription`/`socialImage` mezők kihasználatlanok. Lásd 5. szekció. |
+| B | ~~**Recept `generateMetadata` nem használja a recept adatait**~~ ✅ **Megoldva (2026-07-06)** | 🔴 Magas (SEO) | [recipes/[id]/page.tsx](../src/app/recipes/%5Bid%5D/page.tsx#L10-L22): a `generateMetadata` mostantól a `RecipeService.getRecipeById` (Redis-cachelt) adatait használja — `seoTitle`/`seoDescription`/`socialImage` mezők + `alternates.canonical` + OG/Twitter, recept-nem-található esetén `noindex`. Lásd 5. szekció. |
 | C | **Nincs sitemap.xml és robots.txt** | 🔴 Magas (SEO) | Se `src/app/sitemap.ts`, se `robots.ts`. |
 | D | ~~**`errorPolicy: 'ignore'`**~~ ✅ **Megoldva (2026-07-06)** | 🟠 Közepes | Lásd #20 — a hibák némán elnyelődnek. `errorPolicy: 'all'` + `ErrorLink` + notification implementálva ([client.ts](../src/lib/apollo/client.ts)). |
 | E | **Redis lista-cache TTL 15 s** | 🟢 Info | `LIST_CACHE_TTL_SECONDS = 15` — nagyon konzervatív; a szűrt listák invalidációs problémáját gyakorlatilag TTL-lel oldja meg. Elfogadható kompromisszum. |
@@ -337,7 +337,7 @@ const SchemeAwareTheme = ({ children }: PropsWithChildren) => {
 | Elem | Állapot | Részletek |
 |------|---------|-----------|
 | Root metadata | ✅ | [layout.tsx](../src/app/layout.tsx#L29-L68): locale-aware title/description, OG, twitter card, `metadataBase`. |
-| **Recept-oldal metadata** | ❌ **Kritikus** | [recipes/[id]/page.tsx](../src/app/recipes/[id]/page.tsx#L10-L22): statikus i18n kulcsok — minden recept azonos title/description-nel jelenik meg a keresőben. A DB `seoTitle`/`seoDescription`/`socialImage` mezői **sehol nincsenek felhasználva**. |
+| **Recept-oldal metadata** | ✅ **Megoldva (2026-07-06)** | [recipes/[id]/page.tsx](../src/app/recipes/%5Bid%5D/page.tsx#L10-L22): a `generateMetadata` a `RecipeService.getRecipeById`-ből tölti a `seoTitle`/`seoDescription`/`socialImage` mezőket, `alternates.canonical`-t és OG/Twitter title-t/description-t állít be recept-specifikusan; hiányzó receptnél `noindex`. |
 | sitemap.xml | ❌ | Nincs. |
 | robots.txt | ❌ | Nincs. |
 | JSON-LD Recipe | 🟡 | Megvan, de kliens komponensben + escape nélkül (XSS-vektor, lásd 1/#34). |
@@ -624,7 +624,7 @@ Az app **egyetlen, közepes méretű monolit**: 1 fejlesztő(?), 1 deployable un
 | 1 | `.env` → `.env.local` + Neon jelszó-rotáció verifikálása | Security | **P0** | S | 1/#1 lezárása |
 | 2 | JSON-LD `<` escape + server-render | Security/SEO | **P0** | S | 1/#34, 5.2(d) |
 | 3 | ~~Apollo `errorPolicy: 'ignore'` → `'all'` + error link + notification~~ ✅ **Kész (2026-07-06)** | Tech/UX | **P0** | S | 1/#20, N1 |
-| 4 | Recept `generateMetadata` DB-mezőkből + canonical | SEO | **P0** | M | 5.2(c) — legnagyobb SEO-hatás |
+| 4 | ~~Recept `generateMetadata` DB-mezőkből + canonical~~ ✅ **Kész (2026-07-06)** | SEO | **P0** | M | 5.2(c) — legnagyobb SEO-hatás |
 | 5 | `sitemap.ts` + `robots.ts` | SEO | **P0** | S | 5.2(a)(b) |
 | 6 | Cursor-alapú pagináció + Load More UI | Tech | **P0** | L | 1/#5 — typePolicies már felkészült |
 | 7 | Saját recept értékelésének tiltása (szerveroldal) | Security | **P0** | S | 7.1/#3 |
