@@ -1,3 +1,17 @@
+# [2.40.0](https://github.com/marosdaniel/cookbook-next/compare/v2.39.0...v2.40.0) (2026-07-06)
+
+
+### Bug Fixes
+
+* update DB credentials audit status to reflect successful rotation and migration to .env.local ([bbf1478](https://github.com/marosdaniel/cookbook-next/commit/bbf1478600dfe326928e5c483d5590e40d73439f))
+* update recipe metadata generation to utilize SEO fields from RecipeService ([895d587](https://github.com/marosdaniel/cookbook-next/commit/895d587f8706ae471006450d2819eb0f4620ec88))
+
+
+### Features
+
+* implement centralized error handling with notifications for GraphQL errors ([9989dbf](https://github.com/marosdaniel/cookbook-next/commit/9989dbf31fa50c0af81938b5d4afab3b41eff089))
+* implement slug-based routing and SEO improvements for recipes ([4f95166](https://github.com/marosdaniel/cookbook-next/commit/4f951660aa73c6f0a2bb7c979ac258ce7744337d))
+
 # [2.39.0](https://github.com/marosdaniel/cookbook-next/compare/v2.38.0...v2.39.0) (2026-07-05)
 
 
