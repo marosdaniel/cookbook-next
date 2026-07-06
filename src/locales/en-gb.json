@@ -421,7 +421,9 @@
     "changesResetTitle": "Changes reset",
     "changesResetMessage": "Reverted to the original recipe.",
     "personalDataUpdatedMessage": "Your personal data has been updated",
-    "passwordChangedMessage": "Your password has been changed successfully!"
+    "passwordChangedMessage": "Your password has been changed successfully!",
+    "apiErrorTitle": "Something went wrong",
+    "apiErrorMessage": "We couldn't complete your request. Please try again."
   },
   "recipeIngredients": {
     "decreaseServings": "Decrease servings",

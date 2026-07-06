@@ -420,7 +420,9 @@
     "changesResetTitle": "Módosítások visszaállítva",
     "changesResetMessage": "Visszaállt az eredeti receptre.",
     "personalDataUpdatedMessage": "Személyes adataid sikeresen frissítve lettek",
-    "passwordChangedMessage": "Jelszavad sikeresen módosítva!"
+    "passwordChangedMessage": "Jelszavad sikeresen módosítva!",
+    "apiErrorTitle": "Hiba történt",
+    "apiErrorMessage": "Nem sikerült teljesíteni a kérésed. Kérlek, próbáld újra."
   },
   "recipeIngredients": {
     "decreaseServings": "Adagok csökkentése",

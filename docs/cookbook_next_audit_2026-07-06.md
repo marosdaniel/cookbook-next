@@ -32,7 +32,7 @@
 | 17 | Social login | ❌ | [auth.ts](../src/lib/auth/auth.ts#L12-L34): csak Credentials provider. |
 | 18 | Nonce-alapú CSP | 🟡 | [next.config.ts](../next.config.ts#L6-L8): prod-ban az `unsafe-eval` **kikerült** a `script-src`-ből (javulás), de az `unsafe-inline` maradt, nonce nincs. |
 | 19 | `react-icons` konszolidáció | ❌ | Még mindig 9 fájl importál `react-icons`-ból (Navbar, ThemeSwitcher, LanguageSelector, AuthButton, not-found, UnderConstruction, reset-password ×2, NavbarLinksGroup), a csomag a `dependencies`-ben van. |
-| 20 | Apollo Client cache | ✅⚠️ | typePolicies + merge policy-k + `cache-first` megvan ([client.ts](../src/lib/apollo/client.ts)). **ÚJ KRITIKUS ÉSZREVÉTEL**: `errorPolicy: 'ignore'` query-kre ÉS mutation-ökre → a hibák **némán elnyelődnek**, a UI „üres siker”-ként érzékeli a szerverhibát. Ez rosszabb, mint az eredeti stack-trace-leaking probléma UX-oldala. Javasolt: `errorPolicy: 'all'` + központi error link + felhasználóbarát notification. |
+| 20 | Apollo Client cache | ✅ | typePolicies + merge policy-k + `cache-first` megvan ([client.ts](../src/lib/apollo/client.ts)). ~~**ÚJ KRITIKUS ÉSZREVÉTEL**: `errorPolicy: 'ignore'` query-kre ÉS mutation-ökre → a hibák **némán elnyelődnek**, a UI „üres siker”-ként érzékeli a szerverhibát.~~ **✅ MEGOLDVA (2026-07-06)**: `errorPolicy: 'all'` + központi `ErrorLink` ([client.ts](../src/lib/apollo/client.ts)) → lokalizált Mantine notification minden GraphQL/protocol/network hibánál. |
 | 21 | `uuid` + `graphql-tag` eltávolítás | ✅ | Egyik sincs már a `package.json`-ban. |
 | 22 | ISR/SSG recept oldalakra | ❌ | Nincs `generateStaticParams`, se `revalidate`, se `"use cache"`. A [layout.tsx](../src/app/layout.tsx#L31) `connection()` hívása + `cacheComponents: false` minden oldalt dinamikussá tesz. |
 | 23 | Összetevő-alapú keresés | ❌ | `RecipeFilterInput` változatlan (title/categoryKey/difficultyLevelKey/labelKeys/maxCookingTime). |
@@ -61,7 +61,7 @@
 | A | **`darkTheme.ts` soha nincs bekötve** | 🟠 Közepes | A [mantine.tsx](../src/providers/mantine/mantine.tsx#L18-L21) kizárólag a `lightTheme`-et adja a `MantineProvider`-nek; a `darkTheme` csak a saját tesztjéből van importálva → **dead code volt**. Lásd 4. szekció (javítva + bekötési javaslat). |
 | B | **Recept `generateMetadata` nem használja a recept adatait** | 🔴 Magas (SEO) | [recipes/[id]/page.tsx](../src/app/recipes/[id]/page.tsx#L10-L22): statikus i18n kulcsok → **minden recept ugyanazt a title/description-t kapja**. A DB-ben lévő `seoTitle`/`seoDescription`/`socialImage` mezők kihasználatlanok. Lásd 5. szekció. |
 | C | **Nincs sitemap.xml és robots.txt** | 🔴 Magas (SEO) | Se `src/app/sitemap.ts`, se `robots.ts`. |
-| D | **`errorPolicy: 'ignore'`** | 🟠 Közepes | Lásd #20 — a hibák némán elnyelődnek. |
+| D | ~~**`errorPolicy: 'ignore'`**~~ ✅ **Megoldva (2026-07-06)** | 🟠 Közepes | Lásd #20 — a hibák némán elnyelődnek. `errorPolicy: 'all'` + `ErrorLink` + notification implementálva ([client.ts](../src/lib/apollo/client.ts)). |
 | E | **Redis lista-cache TTL 15 s** | 🟢 Info | `LIST_CACHE_TTL_SECONDS = 15` — nagyon konzervatív; a szűrt listák invalidációs problémáját gyakorlatilag TTL-lel oldja meg. Elfogadható kompromisszum. |
 | F | **`slug` mező létezik, de a routing ID-alapú** | 🟠 Közepes (SEO) | `recipes/[id]` — a `slug @unique` + index megvan a sémában, de URL-ben nem használt. |
 
@@ -71,7 +71,7 @@
 
 | # | Javaslat | Kategória | Komplexitás | Indoklás / ingyenes eszköz |
 |---|----------|-----------|-------------|---------------------------|
-| N1 | **`errorPolicy: 'all'` + Apollo error link + notification** | Tech/UX | **S** | A néma hibaelnyelés ma minden hibát „üres állapotnak” mutat. `onError` link → Mantine notification. Ingyenes, csak kód. |
+| N1 | ~~**`errorPolicy: 'all'` + Apollo error link + notification**~~ ✅ **Megvalósítva (2026-07-06)** | Tech/UX | **S** | A néma hibaelnyelés ma minden hibát „üres állapotnak” mutat. `ErrorLink` → Mantine notification, lokalizált (`en-gb`/`de`/`hu`) szöveggel ([client.ts](../src/lib/apollo/client.ts)). |
 | N2 | **JSON-LD `<` escape + áthelyezés server komponensbe** | Security/SEO | **S** | Lásd 1/#34. `JSON.stringify(x).replace(/</g, '\\u003c')`. |
 | N3 | **`pgvector` alapú „hasonló receptek”** | Feature | **M/L** | Neon free tier natívan támogatja a `pgvector` extensiont. Embedding: ingyenes modell (pl. Gemini API free tier `text-embedding-004`, vagy lokálisan generált a build/seed során). „Hasonló receptek” blokk a detail oldalon. |
 | N4 | **Recept-import URL-ből (schema.org parser)** | Feature | **M** | A legtöbb receptoldal JSON-LD Recipe markupot publikál → fetch + parse + előtöltött create form. Csak szerveroldali fetch allowlist-tel (SSRF-védelem!). Teljesen ingyenes. |
@@ -623,7 +623,7 @@ Az app **egyetlen, közepes méretű monolit**: 1 fejlesztő(?), 1 deployable un
 |---|-------|-----------|------|--------|------------|
 | 1 | `.env` → `.env.local` + Neon jelszó-rotáció verifikálása | Security | **P0** | S | 1/#1 lezárása |
 | 2 | JSON-LD `<` escape + server-render | Security/SEO | **P0** | S | 1/#34, 5.2(d) |
-| 3 | Apollo `errorPolicy: 'ignore'` → `'all'` + error link + notification | Tech/UX | **P0** | S | 1/#20, N1 |
+| 3 | ~~Apollo `errorPolicy: 'ignore'` → `'all'` + error link + notification~~ ✅ **Kész (2026-07-06)** | Tech/UX | **P0** | S | 1/#20, N1 |
 | 4 | Recept `generateMetadata` DB-mezőkből + canonical | SEO | **P0** | M | 5.2(c) — legnagyobb SEO-hatás |
 | 5 | `sitemap.ts` + `robots.ts` | SEO | **P0** | S | 5.2(a)(b) |
 | 6 | Cursor-alapú pagináció + Load More UI | Tech | **P0** | L | 1/#5 — typePolicies már felkészült |

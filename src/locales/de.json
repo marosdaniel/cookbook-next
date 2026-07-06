@@ -433,7 +433,9 @@
     "changesResetTitle": "Änderungen zurückgesetzt",
     "changesResetMessage": "Auf das Originalrezept zurückgesetzt.",
     "personalDataUpdatedMessage": "Ihre persönlichen Daten wurden aktualisiert",
-    "passwordChangedMessage": "Ihr Passwort wurde erfolgreich geändert!"
+    "passwordChangedMessage": "Ihr Passwort wurde erfolgreich geändert!",
+    "apiErrorTitle": "Etwas ist schief gelaufen",
+    "apiErrorMessage": "Ihre Anfrage konnte nicht abgeschlossen werden. Bitte versuchen Sie es erneut."
   },
   "recipeSearch": {
     "searchPlaceholder": "Rezepte nach Name suchen...",
