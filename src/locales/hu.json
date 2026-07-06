@@ -588,6 +588,7 @@
         "seoSection": "SEO és közösségi",
         "slug": "URL slug",
         "slugPlaceholder": "finom-receptem",
+        "regenerateSlugFromTitle": "Generálás a címből",
         "seoTitle": "SEO cím",
         "seoTitlePlaceholder": "Keresőmotor-optimalizált cím",
         "seoDescription": "SEO leírás",

@@ -29,13 +29,14 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
     servings,
     category,
     difficultyLevel,
+    slug,
     averageRating = 0,
     ratingsCount = 0,
     isFavorite = false,
   } = recipe;
 
   const difficultyColor = getDifficultyColor(difficultyLevel.key);
-  const recipeHref = `${PUBLIC_ROUTES.RECIPES}/${id}` as Route;
+  const recipeHref = `${PUBLIC_ROUTES.RECIPES}/${slug || id}` as Route;
 
   return (
     <Card

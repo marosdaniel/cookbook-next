@@ -104,6 +104,28 @@ export const assertRecipeResourceAccess = (
   );
 };
 
+async function assertSlugAvailable(
+  slug: string | null | undefined,
+  excludeRecipeId?: string,
+) {
+  if (!slug) return;
+
+  const conflict = await prisma.recipe.findFirst({
+    where: {
+      slug: { equals: slug, mode: 'insensitive' },
+      ...(excludeRecipeId ? { id: { not: excludeRecipeId } } : {}),
+    },
+    select: { id: true },
+  });
+
+  if (conflict) {
+    return throwCustomError(
+      'This slug is already in use, please choose another one',
+      ErrorTypes.CONFLICT,
+    );
+  }
+}
+
 export const RecipeService = {
   // Queries
   async getRecipes(limit?: number, filter?: RecipeFilterInput) {
@@ -152,6 +174,29 @@ export const RecipeService = {
     return existingRecipe;
   },
 
+  // Resolves either a slug (preferred, SEO-friendly) or a raw id — used by the
+  // recipe detail route so old id-based links keep working while new links
+  // can be slug-based.
+  async getRecipeBySlugOrId(idOrSlug: string) {
+    const cacheKey = `recipe:lookup:${idOrSlug}`;
+
+    const cached = await getCachedData(cacheKey);
+    if (cached) return cached;
+
+    const recipe = await prisma.recipe.findFirst({
+      where: { OR: [{ slug: idOrSlug }, { id: idOrSlug }] },
+      include: { ingredients: true, preparationSteps: true },
+    });
+
+    if (!recipe) {
+      return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
+    }
+
+    await setCachedData(cacheKey, recipe, DETAIL_CACHE_TTL_SECONDS);
+
+    return recipe;
+  },
+
   async getRecipesByUserId(userId: string, limit?: number) {
     const normalizedLimit = resolveQueryLimit(limit);
     const cacheKey = `recipes:user:${userId}:${normalizedLimit || 'all'}`;
@@ -183,6 +228,8 @@ export const RecipeService = {
 
     const metadata = await resolveRecipeMetadata(sanitizedInput);
     const data = buildRecipeData(sanitizedInput, metadata);
+
+    await assertSlugAvailable(data.slug);
 
     const newRecipe = await prisma.recipe.create({
       data: {
@@ -241,6 +288,8 @@ export const RecipeService = {
     const metadata = await resolveRecipeMetadata(sanitizedInput);
     const data = buildRecipeData(sanitizedInput, metadata);
 
+    await assertSlugAvailable(data.slug, recipeId);
+
     const updatedRecipe = await prisma.recipe.update({
       where: { id: recipeId },
       data: {
@@ -269,6 +318,9 @@ export const RecipeService = {
 
     await invalidateCache([
       `recipe:${recipeId}`,
+      `recipe:lookup:${recipeId}`,
+      ...(existingRecipe.slug ? [`recipe:lookup:${existingRecipe.slug}`] : []),
+      ...(data.slug ? [`recipe:lookup:${data.slug}`] : []),
       `recipes:user:${userId}:all`,
       `recipes:all:{}`,
     ]);
@@ -294,7 +346,12 @@ export const RecipeService = {
       where: { id: recipeId },
     });
 
-    await invalidateCache([`recipe:${recipeId}`, `recipes:all:{}`]);
+    await invalidateCache([
+      `recipe:${recipeId}`,
+      `recipe:lookup:${recipeId}`,
+      ...(existingRecipe.slug ? [`recipe:lookup:${existingRecipe.slug}`] : []),
+      `recipes:all:{}`,
+    ]);
 
     return !!deletedRecipe;
   },

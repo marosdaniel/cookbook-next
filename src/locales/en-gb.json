@@ -585,6 +585,7 @@
         "seoSection": "SEO & Social",
         "slug": "URL Slug",
         "slugPlaceholder": "my-delicious-recipe",
+        "regenerateSlugFromTitle": "Generate from title",
         "seoTitle": "SEO Title",
         "seoTitlePlaceholder": "Optimised title for search engines",
         "seoDescription": "SEO Description",

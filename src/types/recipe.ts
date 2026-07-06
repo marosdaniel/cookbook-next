@@ -113,4 +113,5 @@ export type RecipeCardDataBase = Pick<
   | 'createdBy'
   | 'category'
   | 'difficultyLevel'
+  | 'slug'
 >;

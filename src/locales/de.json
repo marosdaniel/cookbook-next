@@ -512,6 +512,7 @@
         "seoSection": "SEO & Social",
         "slug": "URL-Slug",
         "slugPlaceholder": "mein-leckeres-rezept",
+        "regenerateSlugFromTitle": "Aus dem Titel generieren",
         "seoTitle": "SEO-Titel",
         "seoTitlePlaceholder": "Suchmaschinenoptimierter Titel",
         "seoDescription": "SEO-Beschreibung",

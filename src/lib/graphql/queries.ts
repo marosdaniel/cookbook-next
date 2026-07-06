@@ -226,6 +226,7 @@ export const GET_FAVORITE_RECIPES: TypedDocumentNode<
       averageRating
       ratingsCount
       isFavorite
+      slug
     }
   }
 `;
@@ -255,6 +256,7 @@ export const GET_LATEST_RECIPES: TypedDocumentNode<
         averageRating
         ratingsCount
         isFavorite
+        slug
       }
       totalRecipes
     }
@@ -286,6 +288,7 @@ export const GET_RECIPES_BY_USER_ID: TypedDocumentNode<
         averageRating
         ratingsCount
         isFavorite
+        slug
       }
       totalRecipes
     }

@@ -11,17 +11,20 @@ import {
   TextInput,
   ThemeIcon,
   Title,
+  Tooltip,
 } from '@mantine/core';
 import {
   IconArrowLeft,
   IconLink,
   IconPhoto,
+  IconRefresh,
   IconSearch,
   IconToolsKitchen2,
   IconVideo,
   IconX,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
+import { slugify } from '@/utils/slugify';
 import { useRecipeFormContext } from '../../FormContext';
 import { useFormError } from '../../hooks/useFormError';
 import { SEO_DESCRIPTION_MAX_LENGTH, SEO_TITLE_MAX_LENGTH } from '../../utils';
@@ -129,6 +132,21 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
                 revalidateOnChange('slug');
               }}
               error={getFieldError('slug')}
+              rightSection={
+                <Tooltip label={translate('regenerateSlugFromTitle')}>
+                  <ActionIcon
+                    variant="subtle"
+                    color="gray"
+                    disabled={!values.title.trim()}
+                    onClick={() => {
+                      setFieldValue('slug', slugify(values.title));
+                      revalidateOnChange('slug');
+                    }}
+                  >
+                    <IconRefresh size={14} />
+                  </ActionIcon>
+                </Tooltip>
+              }
             />
 
             <Box>

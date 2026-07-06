@@ -13,6 +13,7 @@ vi.mock('@/lib/prisma/prisma', () => ({
     recipe: {
       findMany: vi.fn(),
       findUnique: vi.fn(),
+      findFirst: vi.fn(),
       count: vi.fn(),
       delete: vi.fn(),
     },
@@ -114,6 +115,56 @@ describe('RecipeService cache resilience', () => {
         ratingValue: 6,
       }),
     ).rejects.toThrow('Rating must be between 1 and 5');
+  });
+});
+
+describe('getRecipeBySlugOrId', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockRedis.get.mockResolvedValue(null);
+    mockRedis.setex.mockResolvedValue(undefined);
+    mockRedis.del.mockResolvedValue(undefined);
+  });
+
+  it('looks up a recipe by slug or id and caches the result', async () => {
+    const { prisma } = await import('@/lib/prisma/prisma');
+    vi.mocked(prisma.recipe.findFirst).mockResolvedValue({
+      id: 'recipe-1',
+      slug: 'my-recipe',
+    } as Awaited<ReturnType<typeof prisma.recipe.findFirst>>);
+
+    const result = await RecipeService.getRecipeBySlugOrId('my-recipe');
+
+    expect(prisma.recipe.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { OR: [{ slug: 'my-recipe' }, { id: 'my-recipe' }] },
+      }),
+    );
+    expect(result).toEqual({ id: 'recipe-1', slug: 'my-recipe' });
+    expect(mockRedis.setex).toHaveBeenCalledWith(
+      'recipe:lookup:my-recipe',
+      60,
+      expect.objectContaining({ id: 'recipe-1' }),
+    );
+  });
+
+  it('returns the cached value without hitting the database again', async () => {
+    const { prisma } = await import('@/lib/prisma/prisma');
+    mockRedis.get.mockResolvedValue({ id: 'recipe-1', slug: 'my-recipe' });
+
+    const result = await RecipeService.getRecipeBySlugOrId('my-recipe');
+
+    expect(prisma.recipe.findFirst).not.toHaveBeenCalled();
+    expect(result).toEqual({ id: 'recipe-1', slug: 'my-recipe' });
+  });
+
+  it('throws NOT_FOUND when neither slug nor id matches', async () => {
+    const { prisma } = await import('@/lib/prisma/prisma');
+    vi.mocked(prisma.recipe.findFirst).mockResolvedValue(null);
+
+    await expect(RecipeService.getRecipeBySlugOrId('missing')).rejects.toThrow(
+      'Recipe not found:NOT_FOUND',
+    );
   });
 });
 

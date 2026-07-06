@@ -63,7 +63,7 @@
 | C | **Nincs sitemap.xml és robots.txt** | 🔴 Magas (SEO) | Se `src/app/sitemap.ts`, se `robots.ts`. |
 | D | ~~**`errorPolicy: 'ignore'`**~~ ✅ **Megoldva (2026-07-06)** | 🟠 Közepes | Lásd #20 — a hibák némán elnyelődnek. `errorPolicy: 'all'` + `ErrorLink` + notification implementálva ([client.ts](../src/lib/apollo/client.ts)). |
 | E | **Redis lista-cache TTL 15 s** | 🟢 Info | `LIST_CACHE_TTL_SECONDS = 15` — nagyon konzervatív; a szűrt listák invalidációs problémáját gyakorlatilag TTL-lel oldja meg. Elfogadható kompromisszum. |
-| F | **`slug` mező létezik, de a routing ID-alapú** | 🟠 Közepes (SEO) | `recipes/[id]` — a `slug @unique` + index megvan a sémában, de URL-ben nem használt. |
+| F | ~~**`slug` mező létezik, de a routing ID-alapú**~~ ✅ **Megoldva (2026-07-06)** | 🟠 Közepes (SEO) | `recipes/[id]` — a `slug @unique` mostantól a routingban is használva van: `RecipeService.getRecipeBySlugOrId` slug VAGY id alapján felold, id-vel elérve permanent redirect a slug URL-re ([page.tsx](../src/app/recipes/%5Bid%5D/page.tsx)). |
 
 ---
 
@@ -341,9 +341,9 @@ const SchemeAwareTheme = ({ children }: PropsWithChildren) => {
 | sitemap.xml | ❌ | Nincs. |
 | robots.txt | ❌ | Nincs. |
 | JSON-LD Recipe | 🟡 | Megvan, de kliens komponensben + escape nélkül (XSS-vektor, lásd 1/#34). |
-| Canonical URL | ❌ | Nincs `alternates.canonical`. |
+| Canonical URL | ✅ **Megoldva (2026-07-06)** | `alternates.canonical` beállítva a recept-oldalon, slug-alapú útvonalra mutat ([page.tsx](../src/app/recipes/%5Bid%5D/page.tsx)). |
 | hreflang | ❌/N.A. | A locale cookie-alapú, nincs locale-prefixes URL → hreflang jelenleg nem is értelmezhető. Hosszú távon `/{locale}/` prefix kellene a lokalizált indexeléshez. |
-| Slug URL-ek | ❌ | `slug @unique` + index a DB-ben, de a routing `[id]`-alapú. |
+| Slug URL-ek | ✅ **Megoldva (2026-07-06)** | `slug @unique` + index a DB-ben és mostantól a routing is használja: `getRecipeBySlugOrId` + permanent redirect id→slug ([RecipeService.ts](../src/lib/services/RecipeService.ts), [page.tsx](../src/app/recipes/%5Bid%5D/page.tsx)); kártya-linkek ([RecipeCard.tsx](../src/components/Recipe/RecipeCard/RecipeCard.tsx)) is slug-ot preferják. |
 | OG image | 🟡 | Statikus; nincs recept-specifikus `socialImage` vagy `next/og` generálás. |
 
 ### 5.2 Konkrét javítások
@@ -442,7 +442,7 @@ const jsonLd = JSON.stringify(buildRecipeJsonLd(recipe)).replace(/</g, '\\u003c'
 
 Bővítendő a `buildRecipeJsonLd` is: `aggregateRating` (megvan az adat!), `author`, `datePublished` mezőkkel — a Google rich result feltételei.
 
-**(e) Slug-alapú URL-ek**: `recipes/[id]` → a param értelmezése „slug VAGY id”-ként (`RecipeService.getRecipeBySlugOrId`), és ha id-vel hívták, `permanentRedirect(`/recipes/${slug}`)`. Így a régi linkek nem törnek el.
+**(e) Slug-alapú URL-ek**: ~~`recipes/[id]` → a param értelmezése „slug VAGY id”-ként (`RecipeService.getRecipeBySlugOrId`), és ha id-vel hívták, `permanentRedirect(`/recipes/${slug}`)`. Így a régi linkek nem törnek el.~~ ✅ **Megvalósítva (2026-07-06)**: `RecipeService.getRecipeBySlugOrId` (slug VAGY id, közös Redis-cache-lookuppal) + `redirect()` id→slug-ra a recept-oldalon; a `getRecipeById` GraphQL resolver is ezt használja, így a kliens-oldali lekérdezés is működik slug-gal.
 
 **(f) ISR a recept-oldalakra**: `generateMetadata` + oldal `revalidate = 300` exporttal (a `connection()` hívás kivezetése után) — a receptoldal tartalma ritkán változik, a rating-blokk kliensoldali marad.
 
@@ -552,7 +552,7 @@ A flow már most **4 szekciós multi-step composer** ([RecipeComposer.tsx](../sr
 |---|----------|-------------|-----------|
 | R1 | **Drag-and-drop átrendezés** | M | Ingredients: jelenleg **semmilyen** átrendezés nincs; Steps: csak fel/le nyilak. Javasolt: `@hello-pangea/dnd` (ingyenes, karbantartott) vagy `@dnd-kit` — mindkét listára, mobile touch-támogatással. A `order`/`localId` mezők már felkészültek erre. |
 | R2 | **Szekció-szintű hibajelzés a sidebarban** | S | A sidebar nav elemekre piros pötty/`Badge` a hibás mezőszámmal — most a user csak submitkor tudja meg, melyik szekció hiányos. A `computeCompletion` mintájára `computeSectionErrors(form.errors)`. |
-| R3 | **Slug auto-generálás** | S | A `slug` mezőt a title-ből generálni (diakritika-mentesítés + kebab-case) egy „↻” gombbal; ütközés-ellenőrzés a submitnál (`slug @unique`). Enélkül a slug-alapú SEO URL (5. szekció) nem tud elterjedni. |
+| R3 | ~~**Slug auto-generálás**~~ ✅ **Megvalósítva (2026-07-06)** | S | A `slug` mezőt a title-ből generálni (diakritika-mentesítés + kebab-case) egy „↻” gombbal ([MediaSection.tsx](../src/components/Recipe/Create/sections/MediaSection/MediaSection.tsx), [slugify.ts](../src/utils/slugify.ts)); ütközés-ellenőrzés a submitnál (`slug @unique`, `RecipeService` `assertSlugAvailable` → `CONFLICT` hiba). |
 | R4 | **Server-side draft** (`RecipeStatus.DRAFT`) | M | A 3.4-es `status` mezővel: „Save as draft” gomb → a draft eszközfüggetlen, és az edit-flow is drafttá tud válni. A localStorage-draft marad offline fallbacknek. |
 | R5 | **Kép-URL élő validáció** | S | `onBlur`-ra egy rejtett `<img>` betöltési próba → azonnali visszajelzés törött URL-nél (a Zod `z.url()` csak formátumot ellenőriz). |
 | R6 | **Mennyiség-input törtekkel** | S | `1/2`, `1,5` elfogadása és normalizálása a quantity mezőben — a receptek világában alapelvárás. |
@@ -630,7 +630,7 @@ Az app **egyetlen, közepes méretű monolit**: 1 fejlesztő(?), 1 deployable un
 | 7 | Saját recept értékelésének tiltása (szerveroldal) | Security | **P0** | S | 7.1/#3 |
 | 8 | next-auth beta → stabil Auth.js / better-auth | Tech | **P1** | L | 1/#9 — még mindig nyitott |
 | 9 | Rating UI szétválasztás + optimista update + törlés gomb | UX | **P1** | M | 7.2 |
-| 10 | Slug-alapú recept URL-ek + redirect | SEO | **P1** | M | 5.2(e) |
+| 10 | ~~Slug-alapú recept URL-ek + redirect~~ ✅ **Kész (2026-07-06)** | SEO | **P1** | M | 5.2(e) |
 | 11 | ISR/`revalidate` a recept-oldalakra | Tech | **P1** | M | 1/#22, 5.2(f) |
 | 12 | Full-text keresés (Postgres `tsvector` + GIN, Neon free) | Feature | **P1** | L | 1/#14 |
 | 13 | Admin: RBAC guard + AppShell + Users/Recipes moderáció | Feature | **P1** | L | 3.2, 3.4 |
