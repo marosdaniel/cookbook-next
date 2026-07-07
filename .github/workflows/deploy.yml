@@ -205,6 +205,7 @@ jobs:
       contents: read
       pages: write
       id-token: write
+      actions: write
     steps:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
@@ -260,6 +261,18 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- [Coverage](https://marosdaniel.github.io/cookbook-next/coverage/)" >> $GITHUB_STEP_SUMMARY
           echo "- [E2E](https://marosdaniel.github.io/cookbook-next/e2e/)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Remove stale github-pages artifacts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPO="${{ github.repository }}"
+          RUN_ID="${{ github.run_id }}"
+          ARTIFACT_IDS=$(gh api "repos/$REPO/actions/runs/$RUN_ID/artifacts" --jq '.artifacts[] | select(.name=="github-pages") | .id')
+          for ID in $ARTIFACT_IDS; do
+            echo "Deleting stale github-pages artifact $ID"
+            gh api -X DELETE "repos/$REPO/actions/artifacts/$ID" || true
+          done
 
       - name: Upload to GitHub Pages
         uses: actions/upload-pages-artifact@v5
