@@ -1,3 +1,10 @@
+# [2.41.0](https://github.com/marosdaniel/cookbook-next/compare/v2.40.0...v2.41.0) (2026-07-07)
+
+
+### Features
+
+* add cleanup step for stale GitHub Pages artifacts in deployment workflow ([2c8382c](https://github.com/marosdaniel/cookbook-next/commit/2c8382cd0bcfc92190bb08fcab3d3b637664dcf9))
+
 # [2.40.0](https://github.com/marosdaniel/cookbook-next/compare/v2.39.0...v2.40.0) (2026-07-06)
 
 
