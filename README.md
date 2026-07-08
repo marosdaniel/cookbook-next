@@ -4,9 +4,9 @@
 
 **A modern recipe sharing platform built with Next.js, Apollo Server, and Neon (Serverless Postgres)**
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.0.8-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.2.1-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.2.10-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2.7-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 [🚀 Live Demo](https://cookbook-next.vercel.app) • [📊 Coverage Report](https://marosdaniel.github.io/cookbook-next/) • [📝 Changelog](./CHANGELOG.md)
@@ -17,43 +17,50 @@
 
 ## ✨ Features
 
-- 🔐 **Secure Authentication** - NextAuth v5 with JWT & credentials provider
-- 🌍 **Internationalization** - Multi-language support (English, Hungarian, German)
+- 🔐 **Secure Authentication** - NextAuth v5 (JWT strategy), Argon2id password hashing with legacy bcrypt fallback
+- 🌍 **Internationalization** - Multi-language support (English, Hungarian, German) via next-intl
 - 🎨 **Modern UI** - Mantine UI components with dark/light theme
 - 📱 **Responsive Design** - Mobile-first approach
-- 🔍 **GraphQL API** - Apollo Server with type-safe operations
-- 🗄️ **Database** - Serverless Postgres (Neon) with Prisma ORM
+- 🔍 **GraphQL API** - Apollo Server with a domain-driven schema, DataLoader batching & graphql-armor hardening
+- 🗄️ **Database** - Serverless Postgres (Neon) with Prisma ORM, connection pooling
+- 🧑‍🍳 **Recipe management** - Multi-step recipe composer with draft persistence, slug-based SEO routing, favorites, ratings & user-follow graph
+- ⚡ **Caching & rate limiting** - Upstash Redis caching (with circuit-breaker fallback) and sliding-window rate limiting on sensitive operations
+- 🛡️ **Security hardening** - Zod input validation, HTML sanitization, strict CSP/HSTS/security headers
+- 🔎 **SEO** - Dynamic per-recipe metadata (Open Graph, Twitter cards, canonical URLs, localized fallbacks)
 - ✅ **Type Safety** - Full TypeScript coverage
-- 🧪 **Testing** - Comprehensive unit & integration tests with Vitest
+- 🧪 **Testing** - Unit & integration tests with Vitest, E2E tests with Playwright
 - 🚀 **Performance** - Next.js App Router with Turbopack
 - 📊 **State Management** - Redux Toolkit
 - 🎯 **Code Quality** - Biome for linting & formatting
-- 🔄 **CI/CD** - Automated releases with Semantic Release
+- 🔄 **CI/CD** - GitHub Actions pipeline (lint/typecheck/tests → E2E & coverage → Vercel deploy → semantic-release)
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework:** Next.js 16 (App Router)
-- **Language:** TypeScript 5.9
-- **UI Library:** Mantine 8.3
+- **Framework:** Next.js 16 (App Router, Turbopack)
+- **Language:** TypeScript 6.0
+- **UI Library:** Mantine 9 (core, form, hooks, notifications, modals, spotlight, carousel)
 - **State Management:** Redux Toolkit
-- **Forms:** Formik + Zod validation
-- **Icons:** React Icons
-- **i18n:** next-intl
+- **Forms:** Mantine Form + `mantine-form-zod-resolver` (Zod validation)
+- **Data fetching:** Apollo Client (custom error-handling link with localized notifications)
+- **Icons:** Tabler Icons / React Icons
+- **i18n:** next-intl (English, Hungarian, German)
 
 ### Backend
--**API:** Apollo Server + GraphQL
--**Database:** Serverless Postgres via Neon (primary).
-- **ORM:** Prisma 6.19
-- **Authentication:** NextAuth v5 (beta)
-- **Password:** bcrypt
-- **JWT:** jsonwebtoken
+- **API:** Apollo Server 5 + GraphQL (`@as-integrations/next`), modular schema (user/recipe/metadata), `graphql-armor` hardening, DataLoader batching
+- **Database:** Serverless Postgres via Neon (`@neondatabase/serverless` + `@prisma/adapter-neon`, connection pooling)
+- **ORM:** Prisma 7
+- **Authentication:** NextAuth v5 (beta), JWT session strategy
+- **Password hashing:** Argon2id (primary) with legacy bcryptjs fallback
+- **Caching:** Upstash Redis (circuit-breaker fallback, TTL-based query caching)
+- **Rate limiting:** Upstash Ratelimit (sliding window) on auth & mutation-heavy operations
+- **Validation & sanitization:** Zod schemas + isomorphic-dompurify
 
 ### DevOps & Tools
 - **Build Tool:** Turbopack
-- **Testing:** Vitest + Testing Library + Happy DOM
+- **Testing:** Vitest + Testing Library + Happy DOM (unit/integration), Playwright (E2E)
 - **Code Quality:** Biome
 - **Package Manager:** pnpm
 - **Deployment:** Vercel
@@ -65,8 +72,8 @@
 
 ### Prerequisites
 
-- **Node.js** 22.x
-- **pnpm** 10.x
+- **Node.js** 24.x
+- **pnpm** 11.x
 - **Postgres / Neon** (Postgres-compatible, e.g. Neon serverless)
 
 ### Installation
@@ -226,33 +233,37 @@ POST /api/graphql
 
 ### Key Operations
 
-**Queries:**
-- `me` - Get current user
-- `user(id)` - Get user by ID
-- `users` - List all users
+**User queries/mutations:**
+- `me`, `user(id)`, `users` - Get current/single/all users
+- `registerUser`, `updateUser`, `deleteUser` - Account lifecycle
 
-**Mutations:**
-- `registerUser` - Create new account
-- `updateUser` - Update user profile
-- `deleteUser` - Delete account
+**Recipe queries/mutations:**
+- `recipes` (filterable by title, category, difficulty, labels, max cooking time), `recipe(idOrSlug)`
+- `createRecipe`, `editRecipe`, `deleteRecipe`
+- `rateRecipe`, `deleteRating`, `addToFavoriteRecipes`, `removeFromFavoriteRecipes`
 
-### Authentication
+**Metadata queries:**
+- Static reference data (categories, labels, units, difficulty levels, cuisines, dietary flags, allergens, equipment)
 
-GraphQL operations are protected based on user roles:
-- **Public:** Registration
-- **Authenticated:** Profile updates, queries
-- **Admin:** User management
+### Authentication & Protection
+
+GraphQL operations are protected based on user roles (public / authenticated user / blogger / admin) via an operation-permission plugin, and additionally hardened with:
+- **graphql-armor** (depth/complexity/amount limiting)
+- **Persisted query validation** (SHA-256 hash)
+- **Rate limiting** (sliding window via Upstash) on sensitive mutations (create/edit/delete recipe, rate recipe, reset password)
+- **Query result limits** (max 100 items per request)
 
 ---
 
 ## 🔐 Authentication Flow
 
-1. **Registration:** User signs up with email/password
-2. **Login:** Credentials verified with bcrypt
-3. **JWT Token:** Generated with user data
+1. **Registration:** User signs up with email/password (Zod-validated, sanitized input)
+2. **Login:** Credentials verified with Argon2id (legacy accounts fall back to bcrypt)
+3. **JWT Token:** Generated via NextAuth v5, enriched with user data (id, role, username, locale)
 4. **Session:** Stored in secure HTTP-only cookie
 5. **Remember Me:** Extended session (14 days vs 2 hours)
 6. **Password Reset:** Token-based email recovery
+7. **Route protection:** Middleware (`src/proxy.ts`) guards authenticated areas (`/me/*`), redirecting to `/login` with a callback URL
 
 ---
 
@@ -279,7 +290,14 @@ Theme configurations:
 
 ## 📦 Database Schema
 
-The Prisma schema is located at `prisma/schema.prisma`. Below is a Postgres-friendly example `User` model suitable for Neon/Postgres:
+The Prisma schema is located at `prisma/schema.prisma`, running on Neon (serverless Postgres) with connection pooling (`@prisma/adapter-neon`, max 10 connections, 1 use per connection).
+
+**Models:**
+- **User** - profile, unique email/username, locale, `role` (`ADMIN` / `USER` / `BLOGGER`), reset-password token/expiry
+- **Recipe** - title/description, unique+indexed `slug`, author (FK), JSON metadata fields (category, labels, difficulty, cuisine, cost level, dietary flags, allergens, equipment), SEO fields (`seoTitle`, `seoDescription`, `socialImage`), time-tracking fields (prep/cook/rest/total minutes), `favoritedBy` (M2M with User)
+- **Ingredient** / **PreparationStep** - recipe sub-entities with cascading delete on recipe removal
+- **Rating** - one rating per user per recipe (composite unique index), aggregated via DataLoader
+- **Follow** - explicit join table modeling a user-follows-user graph
 
 ```prisma
 model User {
@@ -289,7 +307,7 @@ model User {
    userName             String   @unique
    email                String   @unique
    password             String
-   locale               String   @default("en")
+   locale               String   @default("en-gb")
    role                 UserRole @default(USER)
    resetPasswordToken   String?
    resetPasswordExpires DateTime?
