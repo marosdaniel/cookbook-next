@@ -31,7 +31,7 @@
     "lint:fix": "biome check --write .",
     "deps:update": "pnpm dlx npm-check-updates -u",
     "analyze": "pnpm prisma generate && next build --experimental-analyze",
-    "audit:fix": "pnpm audit --fix=update || pnpm audit --fix"
+    "audit:fix": "pnpm audit --fix=update || pnpm audit --fix=override"
   },
   "dependencies": {
     "@apollo/client": "^4.2.6",
