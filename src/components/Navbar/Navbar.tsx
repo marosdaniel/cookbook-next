@@ -75,10 +75,6 @@ const Navbar: FC = () => {
           label: translate('allRecipes'),
           link: PUBLIC_ROUTES.RECIPES as unknown as Route,
         },
-        {
-          label: translate('latestRecipes'),
-          link: PUBLIC_ROUTES.RECIPES_LATEST as unknown as Route,
-        },
       ],
     },
     ...(session

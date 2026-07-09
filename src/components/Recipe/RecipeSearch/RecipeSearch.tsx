@@ -61,6 +61,9 @@ const RecipeSearch = ({
     form.values.labelKeys.length > 0 ||
     form.values.maxCookingTime;
 
+  const trimmedTitle = form.values.title.trim();
+  const canSearch = trimmedTitle.length >= 3;
+
   const filterIconColor = hasActiveFilters || opened ? 'pink' : 'gray';
 
   return (
@@ -93,7 +96,12 @@ const RecipeSearch = ({
           >
             {opened ? <IconFilterOff size={20} /> : <IconFilter size={20} />}
           </ActionIcon>
-          <Button type="submit" loading={loading} className={classes.searchBtn}>
+          <Button
+            type="submit"
+            loading={loading}
+            disabled={!canSearch || loading}
+            className={classes.searchBtn}
+          >
             {translate('search')}
           </Button>
         </Group>

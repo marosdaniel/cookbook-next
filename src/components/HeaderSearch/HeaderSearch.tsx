@@ -32,10 +32,11 @@ export const HeaderSearch = () => {
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
 
-  const shouldSearch = debouncedSearch.trim().length >= MIN_SEARCH_LENGTH;
+  const trimmedSearchQuery = debouncedSearch.trim();
+  const shouldSearch = trimmedSearchQuery.length >= MIN_SEARCH_LENGTH;
 
   const { data, loading, error } = useQuery(GET_LATEST_RECIPES, {
-    variables: { limit: SEARCH_LIMIT, filter: { title: debouncedSearch } },
+    variables: { limit: SEARCH_LIMIT, filter: { title: trimmedSearchQuery } },
     skip: !shouldSearch,
   });
 
