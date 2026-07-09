@@ -16,12 +16,31 @@ body {
   overflow-x: hidden;
 }
 
+html,
+body,
+button,
+a {
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   /* font-family: Arial, Helvetica, sans-serif; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body,
+  button,
+  a {
+    transition: none !important;
+  }
 }
 
 * {
