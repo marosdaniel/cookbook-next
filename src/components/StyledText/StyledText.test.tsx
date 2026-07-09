@@ -7,17 +7,17 @@ describe('StyledText', () => {
   describe('Text component type', () => {
     it('renders as Text component by default', () => {
       render(<StyledText>Test content</StyledText>);
-      expect(screen.getByText('Test content')).toBeInTheDocument();
+      expect(screen.getByTestId('styled-text')).toHaveTextContent('Test content');
     });
 
     it('renders as Text component when componentType is explicitly "text"', () => {
       render(<StyledText componentType="text">Test content</StyledText>);
-      expect(screen.getByText('Test content')).toBeInTheDocument();
+      expect(screen.getByTestId('styled-text')).toHaveTextContent('Test content');
     });
 
     it('renders text content correctly', () => {
       render(<StyledText>Hello World</StyledText>);
-      expect(screen.getByText('Hello World')).toBeInTheDocument();
+      expect(screen.getByTestId('styled-text')).toHaveTextContent('Hello World');
     });
 
     it('applies Text component props correctly', () => {
@@ -26,8 +26,9 @@ describe('StyledText', () => {
           Styled text
         </StyledText>,
       );
-      const element = screen.getByText('Styled text');
+      const element = screen.getByTestId('styled-text');
       expect(element).toBeInTheDocument();
+      expect(element).toHaveTextContent('Styled text');
     });
   });
 
@@ -36,14 +37,14 @@ describe('StyledText', () => {
       const { container } = render(
         <StyledText componentType="title">Test Title</StyledText>,
       );
-      expect(screen.getByText('Test Title')).toBeInTheDocument();
+      expect(screen.getByTestId('styled-text')).toHaveTextContent('Test Title');
       const titleElement = container.querySelector('.mantine-Title-root');
       expect(titleElement).toBeInTheDocument();
     });
 
     it('renders title content correctly', () => {
       render(<StyledText componentType="title">Main Title</StyledText>);
-      expect(screen.getByText('Main Title')).toBeInTheDocument();
+      expect(screen.getByTestId('styled-text')).toHaveTextContent('Main Title');
     });
 
     it('applies Title component props correctly', () => {
@@ -52,8 +53,9 @@ describe('StyledText', () => {
           Page Title
         </StyledText>,
       );
-      const element = screen.getByText('Page Title');
+      const element = screen.getByTestId('styled-text');
       expect(element).toBeInTheDocument();
+      expect(element).toHaveTextContent('Page Title');
     });
 
     it('applies different title orders', () => {
@@ -70,22 +72,23 @@ describe('StyledText', () => {
           </StyledText>
         </>,
       );
-      expect(screen.getByText('H1 Title')).toBeInTheDocument();
-      expect(screen.getByText('H2 Title')).toBeInTheDocument();
-      expect(screen.getByText('H3 Title')).toBeInTheDocument();
+      const titleElements = screen.getAllByTestId('styled-text');
+      expect(titleElements[0]).toHaveTextContent('H1 Title');
+      expect(titleElements[1]).toHaveTextContent('H2 Title');
+      expect(titleElements[2]).toHaveTextContent('H3 Title');
     });
   });
 
   describe('Gradient styling', () => {
     it('does not apply gradient class by default', () => {
       render(<StyledText>No gradient</StyledText>);
-      const element = screen.getByText('No gradient');
+      const element = screen.getByTestId('styled-text');
       expect(element.className).not.toContain('gradientText');
     });
 
     it('applies gradient class when gradient prop is true for Text', () => {
       render(<StyledText gradient={true}>Gradient text</StyledText>);
-      const element = screen.getByText('Gradient text');
+      const element = screen.getByTestId('styled-text');
       expect(element.className).toContain('gradientText');
     });
 
@@ -95,13 +98,13 @@ describe('StyledText', () => {
           Gradient title
         </StyledText>,
       );
-      const element = screen.getByText('Gradient title');
+      const element = screen.getByTestId('styled-text');
       expect(element.className).toContain('gradientText');
     });
 
     it('does not apply gradient class when gradient is false', () => {
       render(<StyledText gradient={false}>No gradient</StyledText>);
-      const element = screen.getByText('No gradient');
+      const element = screen.getByTestId('styled-text');
       expect(element.className).not.toContain('gradientText');
     });
   });
@@ -109,7 +112,7 @@ describe('StyledText', () => {
   describe('Custom className', () => {
     it('applies custom className to Text component', () => {
       render(<StyledText className="custom-class">Custom styled</StyledText>);
-      const element = screen.getByText('Custom styled');
+      const element = screen.getByTestId('styled-text');
       expect(element.className).toContain('custom-class');
     });
 
@@ -119,7 +122,7 @@ describe('StyledText', () => {
           Custom title
         </StyledText>,
       );
-      const element = screen.getByText('Custom title');
+      const element = screen.getByTestId('styled-text');
       expect(element.className).toContain('custom-title');
     });
 
@@ -129,7 +132,7 @@ describe('StyledText', () => {
           Combined classes
         </StyledText>,
       );
-      const element = screen.getByText('Combined classes');
+      const element = screen.getByTestId('styled-text');
       expect(element.className).toContain('custom-class');
       expect(element.className).toContain('gradientText');
     });
@@ -140,7 +143,7 @@ describe('StyledText', () => {
           Multiple classes
         </StyledText>,
       );
-      const element = screen.getByText('Multiple classes');
+      const element = screen.getByTestId('styled-text');
       expect(element.className).toContain('class-one');
       expect(element.className).toContain('class-two');
     });
@@ -159,7 +162,7 @@ describe('StyledText', () => {
           Combined text
         </StyledText>,
       );
-      const element = screen.getByText('Combined text');
+      const element = screen.getByTestId('styled-text');
       expect(element).toBeInTheDocument();
       expect(element.className).toContain('combined');
       expect(element.className).toContain('gradientText');
@@ -176,7 +179,7 @@ describe('StyledText', () => {
           Combined title
         </StyledText>,
       );
-      const element = screen.getByText('Combined title');
+      const element = screen.getByTestId('styled-text');
       expect(element).toBeInTheDocument();
       expect(element.className).toContain('combined-title');
       expect(element.className).toContain('gradientText');
@@ -186,12 +189,12 @@ describe('StyledText', () => {
   describe('Children rendering', () => {
     it('renders string children', () => {
       render(<StyledText>String content</StyledText>);
-      expect(screen.getByText('String content')).toBeInTheDocument();
+      expect(screen.getByTestId('styled-text')).toHaveTextContent('String content');
     });
 
     it('renders number children', () => {
       render(<StyledText>{42}</StyledText>);
-      expect(screen.getByText('42')).toBeInTheDocument();
+      expect(screen.getByTestId('styled-text')).toHaveTextContent('42');
     });
 
     it('renders multiple children', () => {
@@ -200,8 +203,8 @@ describe('StyledText', () => {
           Multiple <strong>children</strong> elements
         </StyledText>,
       );
-      expect(screen.getByText(/Multiple/)).toBeInTheDocument();
-      expect(screen.getByText('children')).toBeInTheDocument();
+      expect(screen.getByTestId('styled-text')).toHaveTextContent(/Multiple/);
+      expect(screen.getByTestId('styled-text')).toHaveTextContent('children');
     });
   });
 
@@ -214,12 +217,12 @@ describe('StyledText', () => {
 
     it('handles null className gracefully', () => {
       render(<StyledText className={undefined}>Text</StyledText>);
-      expect(screen.getByText('Text')).toBeInTheDocument();
+      expect(screen.getByTestId('styled-text')).toHaveTextContent('Text');
     });
 
     it('renders with all default props', () => {
       render(<StyledText>Default props</StyledText>);
-      expect(screen.getByText('Default props')).toBeInTheDocument();
+      expect(screen.getByTestId('styled-text')).toHaveTextContent('Default props');
     });
   });
 });

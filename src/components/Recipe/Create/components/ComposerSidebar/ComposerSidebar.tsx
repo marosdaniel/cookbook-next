@@ -62,6 +62,7 @@ const ComposerSidebar = memo(
         visibleFrom="md"
         w={280}
         p="sm"
+        data-testid="recipe-composer-sidebar"
         style={{
           borderRight: '1px solid var(--mantine-color-gray-2)',
           overflowY: 'auto',
@@ -91,6 +92,7 @@ const ComposerSidebar = memo(
               <SectionNavItem
                 key={s.key}
                 label={s.label}
+                data-testid={`recipe-composer-sidebar-item-${s.key}`}
                 hint={hint}
                 icon={s.icon}
                 active={activeSection === s.key}

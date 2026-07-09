@@ -47,20 +47,26 @@ const RecipeRating = ({
   };
 
   return (
-    <Stack gap="xs">
+    <Stack gap="xs" data-testid="recipe-rating">
       <Group gap="sm">
         <Rating
           value={userRating || averageRating}
           onChange={handleRatingChange}
           readOnly={readOnly || loading}
           fractions={2}
+          data-testid="recipe-rating-control"
         />
-        <Text size="sm" c="dimmed">
+        <Text size="sm" c="dimmed" data-testid="recipe-rating-count">
           ({ratingsCount} {translate('ratingsCount')})
         </Text>
       </Group>
       {userRating && (
-        <Text size="xs" c="dimmed" style={{ fontStyle: 'italic' }}>
+        <Text
+          size="xs"
+          c="dimmed"
+          style={{ fontStyle: 'italic' }}
+          data-testid="recipe-rating-user-rating"
+        >
           {translate('yourRating')}: {userRating}
         </Text>
       )}

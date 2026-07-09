@@ -142,12 +142,14 @@ const Navbar: FC = () => {
   };
 
   return (
-    <div className={classes.navbar}>
-      <ScrollArea className={classes.links}>
+    <div className={classes.navbar} data-testid="navbar">
+      <ScrollArea className={classes.links} data-testid="navbar-links">
         <div className={classes.linksInner}>{links}</div>
       </ScrollArea>
 
-      <div className={classes.footer}>{renderFooterContent()}</div>
+      <div className={classes.footer} data-testid="navbar-footer">
+        {renderFooterContent()}
+      </div>
     </div>
   );
 };

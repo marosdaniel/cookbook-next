@@ -22,6 +22,10 @@ const NavbarLinksGroup = ({
     initiallyOpened || isChildActive || false,
   );
   const ChevronIcon = FiChevronRight;
+  const normalizedLabel =
+    typeof label === 'string' || typeof label === 'number'
+      ? String(label)
+      : 'group';
 
   const items = (hasLinks ? links : []).map((link) => (
     <Text
@@ -30,6 +34,7 @@ const NavbarLinksGroup = ({
       href={link.link}
       key={link.label}
       data-active={pathname === link.link || undefined}
+      data-testid={`navbar-link-${link.label}`}
     >
       {link.label}
     </Text>
@@ -63,6 +68,7 @@ const NavbarLinksGroup = ({
         href={link}
         className={classes.control}
         data-active={pathname === link || undefined}
+        data-testid={`navbar-control-${link}`}
       >
         {content}
       </UnstyledButton>
@@ -75,6 +81,7 @@ const NavbarLinksGroup = ({
         onClick={() => setExpanded((o) => !o)}
         className={classes.control}
         data-active-child={isChildActive || undefined}
+        data-testid={`navbar-group-${normalizedLabel}`}
       >
         {content}
       </UnstyledButton>

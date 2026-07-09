@@ -17,6 +17,7 @@ const PrivacyPolicyLink: FC = () => {
       href={PUBLIC_ROUTES.PRIVACY_POLICY}
       target="_blank"
       rel="noopener noreferrer"
+      data-testid="privacy-policy-link"
     >
       {translate('auth.iAcceptThePrivacyPolicy')}
     </Anchor>

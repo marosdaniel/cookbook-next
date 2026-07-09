@@ -47,8 +47,9 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
       withBorder
       className={classes.card}
       padding={0}
+      data-testid="recipe-card"
     >
-      <Card.Section className={classes.imageSection}>
+      <Card.Section className={classes.imageSection} data-testid="recipe-card-image">
         {imgSrc ? (
           <Image src={imgSrc} height={180} alt={title} fit="cover" />
         ) : (
@@ -57,7 +58,7 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
           </Box>
         )}
         {withFavorite && (
-          <Box className={classes.favoriteButton}>
+          <Box className={classes.favoriteButton} data-testid="recipe-card-favorite">
             <FavoriteButton recipeId={id} isFavorite={isFavorite} size="sm" />
           </Box>
         )}
@@ -78,17 +79,17 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
           </Badge>
         </Group>
 
-        <Text fw={600} size="md" mt={4} className={classes.title}>
+        <Text fw={600} size="md" mt={4} className={classes.title} data-testid="recipe-card-title">
           {title}
         </Text>
 
         {description && (
-          <Text size="xs" c="dimmed" mt={4} className={classes.description}>
+          <Text size="xs" c="dimmed" mt={4} className={classes.description} data-testid="recipe-card-description">
             {description}
           </Text>
         )}
 
-        <Group mt="sm" gap="md">
+        <Group mt="sm" gap="md" data-testid="recipe-card-meta">
           <Group gap={4} className={classes.metaRow}>
             <IconClock size={14} color="var(--mantine-color-dimmed)" />
             <Text size="xs" c="dimmed">
@@ -104,7 +105,7 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
         </Group>
 
         {ratingsCount > 0 && (
-          <Group mt="xs" gap="xs">
+          <Group mt="xs" gap="xs" data-testid="recipe-card-rating">
             <Rating value={averageRating} readOnly fractions={2} size="xs" />
             <Group gap={2}>
               <IconStar size={12} color="var(--mantine-color-dimmed)" />

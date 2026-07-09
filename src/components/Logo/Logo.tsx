@@ -33,6 +33,7 @@ export const Logo = ({
       width={width ?? size}
       height={height ?? size}
       priority={priority}
+      data-testid="logo-image"
     />
   );
 
@@ -66,6 +67,7 @@ export const Logo = ({
       href={href}
       style={{ textDecoration: 'none', color: 'inherit' }}
       onClick={(e) => pathname === href && e.preventDefault()}
+      data-testid="logo-link"
     >
       {logo}
     </Link>

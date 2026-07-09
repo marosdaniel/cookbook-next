@@ -132,7 +132,7 @@ const BasicsSection = ({
   const totalTime = prep + cook + rest;
 
   return (
-    <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm">
+    <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm" data-testid="recipe-basics-section">
       <Stack gap="lg">
         <Group justify="space-between" align="baseline">
           <Group gap="xs">
@@ -153,6 +153,7 @@ const BasicsSection = ({
 
         <TextInput
           placeholder={translate('recipeNamePlaceholder')}
+          data-testid="recipe-basics-title"
           variant="unstyled"
           size="xl"
           value={localTitle}
@@ -171,6 +172,7 @@ const BasicsSection = ({
         <Box>
           <Textarea
             placeholder={translate('recipeStoryPlaceholder')}
+            data-testid="recipe-basics-description"
             autosize
             minRows={3}
             variant="unstyled"
@@ -199,6 +201,7 @@ const BasicsSection = ({
           <Group grow align="flex-start">
             <TextInput
               placeholder={translate('prepTimePlaceholder')}
+              data-testid="recipe-basics-prep-time"
               label={translate('prepTime')}
               value={values.prepTimeMinutes}
               onChange={(e) => {
@@ -210,6 +213,7 @@ const BasicsSection = ({
             />
             <TextInput
               placeholder={translate('cookTimePlaceholder')}
+              data-testid="recipe-basics-cook-time"
               label={translate('cookTime')}
               value={values.cookTimeMinutes}
               onChange={(e) => {
@@ -221,6 +225,7 @@ const BasicsSection = ({
             />
             <TextInput
               placeholder={translate('restTimePlaceholder')}
+              data-testid="recipe-basics-rest-time"
               label={translate('restTime')}
               value={values.restTimeMinutes}
               onChange={(e) => {
@@ -249,6 +254,7 @@ const BasicsSection = ({
             </Text>
             <TextInput
               placeholder={translate('cookingTimePlaceholder')}
+              data-testid="recipe-basics-cooking-time"
               value={values.cookingTime}
               onChange={(e) => {
                 const val = e.target.value ? Number(e.target.value) : '';
@@ -268,6 +274,7 @@ const BasicsSection = ({
             <Group grow align="flex-start">
               <TextInput
                 placeholder={translate('servingsPlaceholder')}
+                data-testid="recipe-basics-servings"
                 value={values.servings}
                 onChange={(e) => {
                   const val = e.target.value ? Number(e.target.value) : '';
@@ -278,6 +285,7 @@ const BasicsSection = ({
               />
               <Select
                 placeholder={translate('servingUnitPlaceholder')}
+                data-testid="recipe-basics-serving-unit"
                 data={servingUnits}
                 value={values.servingUnit?.value ?? null}
                 onChange={(value) => {
@@ -295,6 +303,7 @@ const BasicsSection = ({
         <Group grow align="flex-start">
           <Select
             label={translate('category')}
+            data-testid="recipe-basics-category"
             placeholder={translate('select')}
             searchable
             data={categories}
@@ -308,6 +317,7 @@ const BasicsSection = ({
           />
           <Select
             label={translate('difficulty')}
+            data-testid="recipe-basics-difficulty"
             placeholder={translate('select')}
             searchable
             data={levels}
@@ -325,6 +335,7 @@ const BasicsSection = ({
         <Group grow align="flex-start">
           <Select
             label={translate('cuisine')}
+            data-testid="recipe-basics-cuisine"
             placeholder={translate('select')}
             searchable
             clearable
@@ -338,6 +349,7 @@ const BasicsSection = ({
           />
           <Select
             label={translate('costLevel')}
+            data-testid="recipe-basics-cost-level"
             placeholder={translate('select')}
             searchable
             clearable
@@ -353,6 +365,7 @@ const BasicsSection = ({
 
         <MultiSelect
           label={translate('tags')}
+          data-testid="recipe-basics-tags"
           placeholder={translate('tagsPlaceholder')}
           searchable
           clearable
@@ -367,6 +380,7 @@ const BasicsSection = ({
         <Group grow align="flex-start">
           <MultiSelect
             label={translate('dietaryFlags')}
+            data-testid="recipe-basics-dietary-flags"
             placeholder={translate('dietaryFlagsPlaceholder')}
             searchable
             clearable
@@ -376,6 +390,7 @@ const BasicsSection = ({
           />
           <MultiSelect
             label={translate('allergens')}
+            data-testid="recipe-basics-allergens"
             placeholder={translate('allergensPlaceholder')}
             searchable
             clearable
@@ -388,6 +403,7 @@ const BasicsSection = ({
         {/* ── Equipment ── */}
         <MultiSelect
           label={translate('equipment')}
+          data-testid="recipe-basics-equipment"
           placeholder={translate('equipmentPlaceholder')}
           searchable
           clearable
@@ -401,6 +417,7 @@ const BasicsSection = ({
         <Group grow align="flex-start">
           <Textarea
             label={translate('tips')}
+            data-testid="recipe-basics-tips"
             placeholder={translate('tipsPlaceholder')}
             autosize
             minRows={2}
@@ -409,6 +426,7 @@ const BasicsSection = ({
           />
           <Textarea
             label={translate('substitutions')}
+            data-testid="recipe-basics-substitutions"
             placeholder={translate('substitutionsPlaceholder')}
             autosize
             minRows={2}
@@ -422,6 +440,7 @@ const BasicsSection = ({
             variant="light"
             onClick={onNext}
             rightSection={<IconPhoto size={16} />}
+            data-testid="recipe-basics-next"
           >
             {translate('next')}
           </Button>

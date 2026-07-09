@@ -122,6 +122,7 @@ const FavoriteButton = ({
         loading={loading}
         aria-label={optimisticFavorite ? tFav('remove') : tFav('add')}
         size={size}
+        data-testid="favorite-button"
       >
         <HeartIcon
           size={iconSize}

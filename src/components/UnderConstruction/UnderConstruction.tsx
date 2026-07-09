@@ -12,7 +12,7 @@ const UnderConstruction = () => {
   const translate = useTranslations('underConstruction');
 
   return (
-    <Container className={classes.container}>
+    <Container className={classes.container} data-testid="underconstruction-container">
       <div className={classes.iconWrapper}>
         <svg width="0" height="0">
           <title>{translate('gradientIconTitle')}</title>

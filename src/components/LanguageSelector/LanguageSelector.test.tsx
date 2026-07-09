@@ -59,9 +59,9 @@ describe('LanguageSelector', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText('English')).toBeInTheDocument();
-      expect(screen.getByText('Magyar')).toBeInTheDocument();
-      expect(screen.getByText('Deutsch')).toBeInTheDocument();
+      expect(screen.getByTestId('language-item-en-gb')).toBeInTheDocument();
+      expect(screen.getByTestId('language-item-hu')).toBeInTheDocument();
+      expect(screen.getByTestId('language-item-de')).toBeInTheDocument();
     });
   });
 
@@ -72,12 +72,12 @@ describe('LanguageSelector', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText('English')).toBeInTheDocument();
-      expect(screen.getByText('Magyar')).toBeInTheDocument();
-      expect(screen.getByText('Deutsch')).toBeInTheDocument();
-      expect(screen.getByText('🇬🇧')).toBeInTheDocument();
-      expect(screen.getByText('🇭🇺')).toBeInTheDocument();
-      expect(screen.getByText('🇩🇪')).toBeInTheDocument();
+      expect(screen.getByTestId('language-item-en-gb')).toBeInTheDocument();
+      expect(screen.getByTestId('language-item-hu')).toBeInTheDocument();
+      expect(screen.getByTestId('language-item-de')).toBeInTheDocument();
+      expect(screen.getByTestId('language-item-en-gb')).toHaveTextContent('English');
+      expect(screen.getByTestId('language-item-hu')).toHaveTextContent('Magyar');
+      expect(screen.getByTestId('language-item-de')).toHaveTextContent('Deutsch');
     });
   });
 
@@ -88,7 +88,7 @@ describe('LanguageSelector', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      const englishItem = screen.getByText('English').closest('button');
+      const englishItem = screen.getByTestId('language-item-en-gb');
       expect(englishItem).toBeInTheDocument();
       // The checkmark should be present for the current locale (en)
     });
@@ -101,10 +101,10 @@ describe('LanguageSelector', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText('Magyar')).toBeInTheDocument();
+      expect(screen.getByTestId('language-item-hu')).toBeInTheDocument();
     });
 
-    const magyarOption = screen.getByText('Magyar');
+    const magyarOption = screen.getByTestId('language-item-hu');
     fireEvent.click(magyarOption);
 
     await waitFor(() => {
@@ -120,10 +120,10 @@ describe('LanguageSelector', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText('English')).toBeInTheDocument();
+      expect(screen.getByTestId('language-item-en-gb')).toBeInTheDocument();
     });
 
-    const englishOption = screen.getByText('English');
+    const englishOption = screen.getByTestId('language-item-en-gb');
     fireEvent.click(englishOption);
 
     // Should not be called because 'en' is already the current locale
@@ -138,7 +138,7 @@ describe('LanguageSelector', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText('language')).toBeInTheDocument();
+      expect(screen.getByTestId('language-selector-label')).toBeInTheDocument();
     });
   });
 });

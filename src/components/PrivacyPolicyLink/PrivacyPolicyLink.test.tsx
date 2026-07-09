@@ -37,25 +37,27 @@ vi.mock('next/link', () => {
 describe('PrivacyPolicyLink', () => {
   it('renders the privacy policy link text', () => {
     render(<PrivacyPolicyLink />);
-    expect(screen.getByText('I accept the Privacy Policy')).toBeInTheDocument();
+    expect(screen.getByTestId('privacy-policy-link')).toHaveTextContent(
+      'I accept the Privacy Policy',
+    );
   });
 
   it('renders as a link with correct href', () => {
     render(<PrivacyPolicyLink />);
-    const link = screen.getByText('I accept the Privacy Policy');
+    const link = screen.getByTestId('privacy-policy-link');
     expect(link).toHaveAttribute('href', PUBLIC_ROUTES.PRIVACY_POLICY);
   });
 
   it('opens in a new tab with correct security attributes', () => {
     render(<PrivacyPolicyLink />);
-    const link = screen.getByText('I accept the Privacy Policy');
+    const link = screen.getByTestId('privacy-policy-link');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
   it('renders as an Anchor component with gradient variant', () => {
     render(<PrivacyPolicyLink />);
-    const link = screen.getByText('I accept the Privacy Policy');
+    const link = screen.getByTestId('privacy-policy-link');
     expect(link.tagName).toBe('A');
   });
 });

@@ -74,6 +74,7 @@ const RecipeSearch = ({
       className={classes.wrapper}
       component="form"
       onSubmit={form.onSubmit(handleSubmit)}
+      data-testid="recipe-search"
     >
       <Stack gap="md">
         <Group align="flex-end" gap="sm">
@@ -83,6 +84,7 @@ const RecipeSearch = ({
             label={translate('recipeName')}
             leftSection={<IconSearch size={16} stroke={1.5} />}
             key={form.key('title')}
+            data-testid="recipe-search-title-input"
             {...form.getInputProps('title')}
           />
           <ActionIcon
@@ -93,6 +95,7 @@ const RecipeSearch = ({
             type="button"
             aria-label={translate('toggleFilters')}
             className={classes.filterToggleBtn}
+            data-testid="recipe-search-toggle-filters"
           >
             {opened ? <IconFilterOff size={20} /> : <IconFilter size={20} />}
           </ActionIcon>
@@ -101,6 +104,7 @@ const RecipeSearch = ({
             loading={loading}
             disabled={!canSearch || loading}
             className={classes.searchBtn}
+            data-testid="recipe-search-submit"
           >
             {translate('search')}
           </Button>
@@ -119,6 +123,7 @@ const RecipeSearch = ({
                 type="button"
                 onClick={handleClear}
                 rightSection={<IconX size={14} />}
+                data-testid="recipe-search-clear-filters"
               >
                 {translate('clearFilters')}
               </Button>
@@ -130,6 +135,7 @@ const RecipeSearch = ({
                 data={categoryOptions}
                 clearable
                 key={form.key('categoryKey')}
+                data-testid="recipe-search-category-select"
                 {...form.getInputProps('categoryKey')}
               />
               <Select
@@ -138,6 +144,7 @@ const RecipeSearch = ({
                 data={difficultyOptions}
                 clearable
                 key={form.key('difficultyLevelKey')}
+                data-testid="recipe-search-difficulty-select"
                 {...form.getInputProps('difficultyLevelKey')}
               />
             </Group>
@@ -154,6 +161,7 @@ const RecipeSearch = ({
                 clearable
                 searchable
                 key={form.key('labelKeys')}
+                data-testid="recipe-search-labels-select"
                 {...form.getInputProps('labelKeys')}
               />
               <NumberInput
@@ -162,6 +170,7 @@ const RecipeSearch = ({
                 min={0}
                 hideControls
                 key={form.key('maxCookingTime')}
+                data-testid="recipe-search-max-time-input"
                 {...form.getInputProps('maxCookingTime')}
               />
             </Group>
@@ -172,6 +181,7 @@ const RecipeSearch = ({
               loading={loading}
               mt="md"
               className={classes.applyBtn}
+              data-testid="recipe-search-apply-filters"
             >
               {translate('applyFilters')}
             </Button>

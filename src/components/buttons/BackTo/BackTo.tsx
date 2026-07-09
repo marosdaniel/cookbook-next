@@ -12,10 +12,11 @@ const BackTo = ({ href, text }: Readonly<BackToProps>) => {
         variant="subtle"
         color="gray"
         size="lg"
+        data-testid="back-to-link"
       >
         <IconArrowLeft size={20} />
       </ActionIcon>
-      <Text component={Link} href={href} c="dimmed" size="sm">
+      <Text component={Link} href={href} c="dimmed" size="sm" data-testid="back-to-text">
         {text}
       </Text>
     </Group>

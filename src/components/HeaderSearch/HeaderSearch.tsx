@@ -82,6 +82,7 @@ export const HeaderSearch = () => {
           onChange={(event) => handleChange(event.currentTarget.value)}
           onFocus={() => shouldSearch && combobox.openDropdown()}
           onBlur={() => combobox.closeDropdown()}
+          data-testid="header-search-input"
           rightSection={
             loading ? <Loader size={18} /> : <IconSearch size={18} />
           }
@@ -92,7 +93,7 @@ export const HeaderSearch = () => {
         />
       </Combobox.Target>
 
-      <Combobox.Dropdown display={{ base: 'none', sm: 'block' }}>
+      <Combobox.Dropdown display={{ base: 'none', sm: 'block' }} data-testid="header-search-dropdown">
         <Combobox.Options>
           {loading && (
             <Combobox.Empty>
@@ -113,7 +114,7 @@ export const HeaderSearch = () => {
           {!loading &&
             !error &&
             recipes.map((recipe) => (
-              <Combobox.Option value={recipe.slug || recipe.id} key={recipe.id}>
+              <Combobox.Option value={recipe.slug || recipe.id} key={recipe.id} data-testid="header-search-option">
                 <Group>
                   <Text size="sm">{recipe.title}</Text>
                 </Group>

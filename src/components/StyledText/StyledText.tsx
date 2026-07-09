@@ -11,15 +11,18 @@ export const StyledText = <C extends 'title' | 'text' = 'text'>({
   className,
   ...props
 }: StyledTextProps<C>) => {
+  const testId = props['data-testid'] ?? 'styled-text';
   const combinedClassName = clsx(className, {
     [classes.gradientText]: gradient,
   });
 
   if (componentType === 'title') {
-    return <Title className={combinedClassName} {...(props as TitleProps)} />;
+    return (
+      <Title className={combinedClassName} data-testid={testId} {...(props as TitleProps)} />
+    );
   }
 
-  return <Text className={combinedClassName} {...(props as TextProps)} />;
+  return <Text className={combinedClassName} data-testid={testId} {...(props as TextProps)} />;
 };
 
 export default StyledText;

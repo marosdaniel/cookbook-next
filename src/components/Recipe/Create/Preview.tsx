@@ -57,6 +57,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
       radius="lg"
       p={0}
       h="100%"
+      data-testid="recipe-preview"
       style={{
         overflow: 'hidden',
         backgroundColor: 'var(--mantine-color-body)',
@@ -170,6 +171,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
             <Title
               order={1}
               c="white"
+              data-testid="recipe-preview-title"
               style={{
                 fontSize: 'clamp(1.5rem, 4vw, 2.2rem)',
                 lineHeight: 1.1,
@@ -190,7 +192,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
         {/* CONTENT SECTION */}
         <Container size="md" p={{ base: 'md', sm: 'xl' }}>
           {/* Stats Grid */}
-          <Group grow mb="xl">
+          <Group grow mb="xl" data-testid="recipe-preview-stats">
             <Paper withBorder p="sm" radius="md">
               <Stack gap={4} align="center">
                 <Text c="dimmed" size="xs" tt="uppercase" fw={700}>
@@ -272,6 +274,7 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
               lh={1.6}
               c="dimmed"
               mb="xl"
+              data-testid="recipe-preview-description"
               style={{ whiteSpace: 'pre-wrap' }}
             >
               {values.description}

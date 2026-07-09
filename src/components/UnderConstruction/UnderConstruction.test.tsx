@@ -52,12 +52,14 @@ vi.mock('../buttons/NavButton', () => ({
     label,
     href,
     icon,
+    dataTestId,
   }: {
     label: string;
     href: string;
     icon: React.ReactNode;
+    dataTestId?: string;
   }) => (
-    <a href={href} data-testid="nav-button">
+    <a href={href} data-testid={dataTestId ?? 'nav-button'}>
       {icon}
       <button type="button">{label}</button>
     </a>
@@ -191,6 +193,7 @@ describe('UnderConstruction', () => {
       render(<UnderConstruction />);
       const title = screen.getByTestId('underconstruction-title');
       expect(title).toBeInTheDocument();
+      expect(title).toHaveTextContent('Under Construction');
     });
 
     it('title is rendered as StyledText with title component type', () => {
@@ -223,6 +226,7 @@ describe('UnderConstruction', () => {
       render(<UnderConstruction />);
       const subtitle = screen.getByTestId('underconstruction-subtitle');
       expect(subtitle).toBeInTheDocument();
+      expect(subtitle).toHaveTextContent('We are cooking up something special!');
     });
 
     it('subtitle is a Mantine Text component', () => {
@@ -238,6 +242,9 @@ describe('UnderConstruction', () => {
       render(<UnderConstruction />);
       const description = screen.getByTestId('underconstruction-description');
       expect(description).toBeInTheDocument();
+      expect(description).toHaveTextContent(
+        'This page is currently being prepared. Please check back soon.',
+      );
     });
 
     it('description is a Mantine Text component', () => {
@@ -251,19 +258,19 @@ describe('UnderConstruction', () => {
   describe('Navigation button', () => {
     it('renders the NavButton component', () => {
       render(<UnderConstruction />);
-      const navButton = screen.getByTestId('nav-button');
+      const navButton = screen.getByTestId('underconstruction-back');
       expect(navButton).toBeInTheDocument();
     });
 
     it('NavButton has correct label', () => {
       render(<UnderConstruction />);
-      const button = screen.getByRole('button', { name: /Back to Home/i });
-      expect(button).toBeInTheDocument();
+      const button = screen.getByTestId('underconstruction-back');
+      expect(button).toHaveTextContent('Back to Home');
     });
 
     it('NavButton links to homepage', () => {
       render(<UnderConstruction />);
-      const navButton = screen.getByTestId('nav-button');
+      const navButton = screen.getByTestId('underconstruction-back');
       expect(navButton).toHaveAttribute('href', '/');
     });
 
@@ -284,28 +291,30 @@ describe('UnderConstruction', () => {
   describe('Translations integration', () => {
     it('uses translations for title', () => {
       render(<UnderConstruction />);
-      expect(screen.getByText('Under Construction')).toBeInTheDocument();
+      expect(screen.getByTestId('underconstruction-title')).toHaveTextContent(
+        'Under Construction',
+      );
     });
 
     it('uses translations for subtitle', () => {
       render(<UnderConstruction />);
-      expect(
-        screen.getByText('We are cooking up something special!'),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('underconstruction-subtitle')).toHaveTextContent(
+        'We are cooking up something special!',
+      );
     });
 
     it('uses translations for description', () => {
       render(<UnderConstruction />);
-      expect(
-        screen.getByText(
-          'This page is currently being prepared. Please check back soon.',
-        ),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('underconstruction-description')).toHaveTextContent(
+        'This page is currently being prepared. Please check back soon.',
+      );
     });
 
     it('uses translations for button label', () => {
       render(<UnderConstruction />);
-      expect(screen.getByText('Back to Home')).toBeInTheDocument();
+      expect(screen.getByTestId('underconstruction-back')).toHaveTextContent(
+        'Back to Home',
+      );
     });
 
     it('uses translations for gradient icon title', () => {
@@ -323,7 +332,9 @@ describe('UnderConstruction', () => {
       expect(screen.getByTestId('cooking-pot-icon')).toBeInTheDocument();
 
       // Check for title
-      expect(screen.getByText('Under Construction')).toBeInTheDocument();
+      expect(screen.getByTestId('underconstruction-title')).toHaveTextContent(
+        'Under Construction',
+      );
 
       const iconWrapper = document.querySelector('[class*="iconWrapper"]');
       expect(iconWrapper).toBeInTheDocument();
@@ -336,22 +347,22 @@ describe('UnderConstruction', () => {
       expect(screen.getByTestId('cooking-pot-icon')).toBeInTheDocument();
 
       // Check for title
-      expect(screen.getByText('Under Construction')).toBeInTheDocument();
+      expect(screen.getByTestId('underconstruction-title')).toHaveTextContent(
+        'Under Construction',
+      );
 
       // Check for subtitle
-      expect(
-        screen.getByText('We are cooking up something special!'),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('underconstruction-subtitle')).toHaveTextContent(
+        'We are cooking up something special!',
+      );
 
       // Check for description
-      expect(
-        screen.getByText(
-          'This page is currently being prepared. Please check back soon.',
-        ),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('underconstruction-description')).toHaveTextContent(
+        'This page is currently being prepared. Please check back soon.',
+      );
 
       // Check for button
-      expect(screen.getByTestId('nav-button')).toBeInTheDocument();
+      expect(screen.getByTestId('underconstruction-back')).toBeInTheDocument();
     });
 
     it('icon wrapper contains SVG and icon', () => {
@@ -395,18 +406,20 @@ describe('UnderConstruction', () => {
       expect(screen.getByTestId('cooking-pot-icon')).toBeInTheDocument();
 
       // Text elements
-      expect(screen.getByText('Under Construction')).toBeInTheDocument();
-      expect(
-        screen.getByText('We are cooking up something special!'),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(
-          'This page is currently being prepared. Please check back soon.',
-        ),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('underconstruction-title')).toHaveTextContent(
+        'Under Construction',
+      );
+      expect(screen.getByTestId('underconstruction-subtitle')).toHaveTextContent(
+        'We are cooking up something special!',
+      );
+      expect(screen.getByTestId('underconstruction-description')).toHaveTextContent(
+        'This page is currently being prepared. Please check back soon.',
+      );
 
       // Navigation
-      expect(screen.getByText('Back to Home')).toBeInTheDocument();
+      expect(screen.getByTestId('underconstruction-back')).toHaveTextContent(
+        'Back to Home',
+      );
       expect(screen.getByTestId('arrow-left-icon')).toBeInTheDocument();
     });
   });

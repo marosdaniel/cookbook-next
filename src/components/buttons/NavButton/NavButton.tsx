@@ -15,20 +15,21 @@ const NavButton = ({
   linkProps,
 }: NavButtonProps) => {
   return (
-    <Button
-      component={Link}
-      href={href}
-      size={size}
-      variant="gradient"
-      gradient={{ from: 'pink', to: 'violet', deg: 45 }}
-      leftSection={icon}
-      className={classes.navButton}
-      fullWidth={fullWidth}
-      data-testid={dataTestId}
-      {...linkProps}
-    >
-      {label}
-    </Button>
+    <span data-testid={dataTestId ?? 'nav-button'}>
+      <Button
+        component={Link}
+        href={href}
+        size={size}
+        variant="gradient"
+        gradient={{ from: 'pink', to: 'violet', deg: 45 }}
+        leftSection={icon}
+        className={classes.navButton}
+        fullWidth={fullWidth}
+        {...linkProps}
+      >
+        {label}
+      </Button>
+    </span>
   );
 };
 

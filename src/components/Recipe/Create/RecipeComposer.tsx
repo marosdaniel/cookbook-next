@@ -101,6 +101,7 @@ export const RecipeComposer = ({
     <RecipeFormProvider form={form}>
       <Box
         style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}
+        data-testid="recipe-composer"
       >
         <LoadingOverlay
           visible={submitLoading || metadataLoading}
@@ -126,6 +127,7 @@ export const RecipeComposer = ({
           align="stretch"
           gap={0}
           style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}
+          data-testid="recipe-composer-workspace"
         >
           {/* ── SIDEBAR NAV (desktop) ── */}
           <ComposerSidebar

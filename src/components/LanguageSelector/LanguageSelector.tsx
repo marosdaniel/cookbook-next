@@ -49,7 +49,9 @@ const LanguageSelector: FC = () => {
       </Menu.Target>
 
       <Menu.Dropdown>
-        <Menu.Label>{translate('language')}</Menu.Label>
+        <Menu.Label data-testid="language-selector-label">
+          {translate('language')}
+        </Menu.Label>
         {LANGUAGES.map((lang) => (
           <Menu.Item
             key={lang.code}

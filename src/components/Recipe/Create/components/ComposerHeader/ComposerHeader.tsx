@@ -40,6 +40,7 @@ const ComposerHeader = memo(
         h={64}
         px="md"
         radius={0}
+        data-testid="recipe-composer-header"
         style={{
           borderBottom: '1px solid var(--mantine-color-gray-2)',
           flexShrink: 0,
@@ -53,6 +54,7 @@ const ComposerHeader = memo(
               color="gray"
               onClick={onBack}
               size="lg"
+              data-testid="recipe-composer-back"
             >
               <IconArrowLeft size={20} />
             </ActionIcon>
@@ -95,6 +97,7 @@ const ComposerHeader = memo(
                 leftSection={<IconDeviceFloppy size={16} />}
                 onClick={onSave}
                 visibleFrom="sm"
+                data-testid="recipe-composer-save"
               >
                 {t('save.button')}
               </Button>
@@ -104,6 +107,7 @@ const ComposerHeader = memo(
               size="lg"
               onClick={onSave}
               hiddenFrom="sm"
+              data-testid="recipe-composer-save-mobile"
             >
               <IconDeviceFloppy size={18} />
             </ActionIcon>
@@ -113,6 +117,7 @@ const ComposerHeader = memo(
               leftSection={<IconEye size={16} />}
               onClick={onPreview}
               hiddenFrom="lg"
+              data-testid="recipe-composer-preview"
             >
               {t('preview.button')}
             </Button>
@@ -123,6 +128,7 @@ const ComposerHeader = memo(
               loading={publishLoading}
               leftSection={<IconWand size={16} />}
               radius="xl"
+              data-testid="recipe-composer-publish"
             >
               {submitLabel}
             </Button>

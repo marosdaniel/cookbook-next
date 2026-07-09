@@ -37,7 +37,7 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
   const { getFieldError, revalidateOnChange } = useFormError(form);
 
   return (
-    <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm">
+    <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm" data-testid="recipe-media-section">
       <Stack gap="lg">
         <Group justify="space-between" align="baseline">
           <Group gap="xs">
@@ -62,6 +62,7 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
 
         <TextInput
           label={translate('coverImageUrl')}
+          data-testid="recipe-media-cover-url"
           placeholder={translate('imageUrlPlaceholder')}
           leftSection={<IconPhoto size={16} />}
           value={values.imgSrc}
@@ -100,6 +101,7 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
 
         <TextInput
           label={translate('youtubeVideo')}
+          data-testid="recipe-media-youtube-url"
           placeholder={translate('youtubeUrlPlaceholder')}
           leftSection={<IconVideo size={16} />}
           value={values.youtubeLink}
@@ -124,6 +126,7 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
           <Stack gap="sm">
             <TextInput
               label={translate('slug')}
+              data-testid="recipe-media-slug"
               placeholder={translate('slugPlaceholder')}
               leftSection={<IconLink size={16} />}
               value={values.slug}
@@ -152,6 +155,7 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
             <Box>
               <TextInput
                 label={translate('seoTitle')}
+                data-testid="recipe-media-seo-title"
                 placeholder={translate('seoTitlePlaceholder')}
                 value={values.seoTitle}
                 onChange={(e) => {
@@ -176,6 +180,7 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
             <Box>
               <TextInput
                 label={translate('seoDescription')}
+                data-testid="recipe-media-seo-description"
                 placeholder={translate('seoDescriptionPlaceholder')}
                 value={values.seoDescription}
                 onChange={(e) => {
@@ -201,6 +206,7 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
 
             <TextInput
               label={translate('socialImage')}
+              data-testid="recipe-media-social-image"
               placeholder={translate('socialImagePlaceholder')}
               leftSection={<IconPhoto size={16} />}
               value={values.socialImage}

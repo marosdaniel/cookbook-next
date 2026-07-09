@@ -42,10 +42,11 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
         },
       }}
       withBorder={!isImmersive}
+      data-testid="shell"
     >
       {showShellChrome && (
-        <AppShell.Header>
-          <Group h="100%" px="md" justify="space-between">
+        <AppShell.Header data-testid="shell-header">
+          <Group h="100%" px="md" justify="space-between" data-testid="shell-header-content">
             <Group>
               <Logo
                 variant="icon"
@@ -90,10 +91,12 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
       )}
 
       {showShellChrome && (
-        <AppShell.Navbar>{!isAuthPage && <Navbar />}</AppShell.Navbar>
+        <AppShell.Navbar data-testid="shell-navbar">
+          {!isAuthPage && <Navbar />}
+        </AppShell.Navbar>
       )}
 
-      <AppShell.Main pb={isImmersive ? 0 : { base: 100, md: 60 }}>
+      <AppShell.Main pb={isImmersive ? 0 : { base: 100, md: 60 }} data-testid="shell-main">
         {children}
       </AppShell.Main>
 
@@ -101,6 +104,7 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
         <AppShell.Footer
           h={{ base: 100, md: 60 }}
           ml={{ base: 0, sm: isAuthPage ? 0 : NAVBAR_WIDTH }}
+          data-testid="shell-footer"
         >
           <Footer />
         </AppShell.Footer>

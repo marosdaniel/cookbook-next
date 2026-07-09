@@ -19,9 +19,14 @@ const RecipeGrid = ({
   const empty = emptyMessage ?? t('empty');
   if (loading) {
     return (
-      <SimpleGrid cols={columns}>
+      <SimpleGrid cols={columns} data-testid="recipe-grid">
         {SKELETON_ITEMS.map((item) => (
-          <Skeleton key={`skeleton-${item}`} height={320} radius="md" />
+          <Skeleton
+            key={`skeleton-${item}`}
+            height={320}
+            radius="md"
+            data-testid="recipe-grid-skeleton"
+          />
         ))}
       </SimpleGrid>
     );
@@ -29,7 +34,7 @@ const RecipeGrid = ({
 
   if (!recipes.length) {
     return (
-      <Center py="xl">
+      <Center py="xl" data-testid="recipe-grid-empty">
         <Stack align="center" gap="xs">
           <IconMoodSad size={48} color="var(--mantine-color-dimmed)" />
           <Text c="dimmed" size="lg">
@@ -41,7 +46,7 @@ const RecipeGrid = ({
   }
 
   return (
-    <SimpleGrid cols={columns}>
+    <SimpleGrid cols={columns} data-testid="recipe-grid">
       {recipes.map((recipe) => (
         <RecipeCard
           key={recipe.id}

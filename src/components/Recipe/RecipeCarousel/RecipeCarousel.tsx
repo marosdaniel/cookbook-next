@@ -26,11 +26,12 @@ const RecipeCarousel = ({
   if (loading) {
     const skeletonItems = Array.from({ length: skeletonCount }, (_, i) => i);
     return (
-      <Carousel {...CAROUSEL_PROPS}>
+      <Carousel {...CAROUSEL_PROPS} data-testid="recipe-carousel">
         {skeletonItems.map((item) => (
           <Carousel.Slide
             key={`carousel-skeleton-${item}`}
             className={classes.carouselSlide}
+            data-testid="recipe-carousel-skeleton"
           >
             <Skeleton height={320} radius="md" />
           </Carousel.Slide>
@@ -41,7 +42,7 @@ const RecipeCarousel = ({
 
   if (recipes.length === 0) {
     return (
-      <Box className={classes.emptyCarousel}>
+      <Box className={classes.emptyCarousel} data-testid="recipe-carousel-empty">
         <Text c="dimmed" size="lg">
           {empty}
         </Text>
@@ -55,9 +56,14 @@ const RecipeCarousel = ({
     <Carousel
       {...CAROUSEL_PROPS}
       emblaOptions={{ ...CAROUSEL_PROPS.emblaOptions, loop: shouldLoop }}
+      data-testid="recipe-carousel"
     >
       {recipes.map((recipe) => (
-        <Carousel.Slide key={recipe.id} className={classes.carouselSlide}>
+        <Carousel.Slide
+          key={recipe.id}
+          className={classes.carouselSlide}
+          data-testid="recipe-carousel-slide"
+        >
           <RecipeCard recipe={recipe} withFavorite={withFavorite} />
         </Carousel.Slide>
       ))}

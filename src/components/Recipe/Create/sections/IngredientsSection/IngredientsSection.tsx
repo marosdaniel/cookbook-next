@@ -41,7 +41,7 @@ const IngredientsSection = ({
   };
 
   return (
-    <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm">
+    <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm" data-testid="recipe-ingredients-section">
       <Stack gap="lg">
         <Group justify="space-between" align="baseline">
           <Group gap="xs">
@@ -67,6 +67,7 @@ const IngredientsSection = ({
           variant="light"
           leftSection={<IconPlus size={16} />}
           onClick={onAdd}
+          data-testid="recipe-ingredients-add"
         >
           {translate('addIngredient')}
         </Button>
@@ -90,6 +91,7 @@ const IngredientsSection = ({
                 <Group gap="xs" align="flex-start" wrap="nowrap">
                   <TextInput
                     placeholder={translate('itemName')}
+                    data-testid="recipe-ingredient-name"
                     value={ing.name}
                     onChange={(e) => {
                       const path = `ingredients[${idx}].name`;
@@ -102,6 +104,7 @@ const IngredientsSection = ({
                   />
                   <TextInput
                     placeholder={translate('qty')}
+                    data-testid="recipe-ingredient-quantity"
                     value={ing.quantity}
                     onChange={(e) => {
                       const path = `ingredients[${idx}].quantity`;
@@ -114,6 +117,7 @@ const IngredientsSection = ({
                   />
                   <Select
                     placeholder={translate('unit')}
+                    data-testid="recipe-ingredient-unit"
                     data={unitOptions}
                     value={ing.unit || null}
                     onChange={(val) => {
@@ -132,6 +136,7 @@ const IngredientsSection = ({
                     variant="subtle"
                     onClick={() => removeIngredient(idx)}
                     mt={4}
+                    data-testid="recipe-ingredient-remove"
                   >
                     <IconTrash size={16} />
                   </ActionIcon>
@@ -139,6 +144,7 @@ const IngredientsSection = ({
                 <Group gap="xs" align="center">
                   <Switch
                     label={translate('optional')}
+                    data-testid="recipe-ingredient-optional"
                     size="xs"
                     checked={ing.isOptional ?? false}
                     onChange={(e) => {
@@ -150,6 +156,7 @@ const IngredientsSection = ({
                   />
                   <TextInput
                     placeholder={translate('notePlaceholder')}
+                    data-testid="recipe-ingredient-note"
                     value={ing.note ?? ''}
                     onChange={(e) => {
                       setFieldValue(`ingredients[${idx}].note`, e.target.value);
@@ -217,6 +224,7 @@ const IngredientsSection = ({
             variant="light"
             onClick={onNext}
             rightSection={<IconChefHat size={16} />}
+            data-testid="recipe-ingredients-next"
           >
             {translate('next')}
           </Button>

@@ -52,7 +52,7 @@ const StepsSection = ({
   };
 
   return (
-    <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm">
+    <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm" data-testid="recipe-steps-section">
       <Stack gap="lg">
         <Group justify="space-between" align="baseline">
           <Group gap="xs">
@@ -78,6 +78,7 @@ const StepsSection = ({
           variant="light"
           leftSection={<IconPlus size={16} />}
           onClick={onAdd}
+          data-testid="recipe-steps-add"
         >
           {translate('addStep')}
         </Button>
@@ -127,6 +128,7 @@ const StepsSection = ({
                 </ThemeIcon>
                 <Textarea
                   placeholder={translate('stepPlaceholder', { index: idx + 1 })}
+                  data-testid="recipe-step-textarea"
                   autosize
                   minRows={2}
                   value={step.description}
@@ -144,6 +146,7 @@ const StepsSection = ({
                     size="sm"
                     disabled={idx === 0}
                     onClick={() => moveStep(idx, 'up')}
+                    data-testid="recipe-step-move-up"
                   >
                     <IconArrowUp size={14} />
                   </ActionIcon>
@@ -152,6 +155,7 @@ const StepsSection = ({
                     size="sm"
                     disabled={idx === values.preparationSteps.length - 1}
                     onClick={() => moveStep(idx, 'down')}
+                    data-testid="recipe-step-move-down"
                   >
                     <IconArrowDown size={14} />
                   </ActionIcon>
@@ -160,6 +164,7 @@ const StepsSection = ({
                     color="red"
                     size="sm"
                     onClick={() => removeStep(idx)}
+                    data-testid="recipe-step-remove"
                   >
                     <IconTrash size={14} />
                   </ActionIcon>
@@ -196,6 +201,7 @@ const StepsSection = ({
             loading={isSubmitting}
             onClick={onSubmit}
             leftSection={<IconWand size={16} />}
+            data-testid="recipe-steps-publish"
           >
             {submitLabel ?? translate('publish')}
           </Button>

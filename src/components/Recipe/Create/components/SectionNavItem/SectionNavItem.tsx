@@ -24,6 +24,7 @@ const SectionNavItem = memo(
         radius="md"
         withBorder={active}
         onClick={onClick}
+        data-testid={`recipe-section-nav-item-${label.toLowerCase()}`}
         style={{
           cursor: 'pointer',
           borderColor: active
