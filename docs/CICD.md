@@ -82,15 +82,17 @@ The jobs form a directed acyclic graph (DAG). They do not all run sequentially �
 ```
 quality-checks
     ├── e2e ──────────────────────────┐
-    │                                 ├── deploy-coverage-report
+    │                                 ├── deploy-coverage-report (main only)
     └── test-coverage ────────────────┘
               │
               └── (used by deploy-coverage-report)
 
 quality-checks + e2e
-    └── deploy-production
+    └── deploy-production (main only)
               └── semantic-release
 ```
+
+**Note**: `deploy-coverage-report` also has its own guard (`if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'`), so it never runs for pull requests even though it depends on jobs that do.
 
 **Key insight**: `e2e` and `test-coverage` both run **in parallel** after `quality-checks` passes. This makes the pipeline faster — E2E tests and coverage collection don't wait on each other.
 
@@ -111,7 +113,7 @@ quality-checks + e2e
 | Step | Command | What it does |
 |------|---------|--------------|
 | Checkout code | `actions/checkout@v7` | Clones the repository at the triggering commit |
-| Setup pnpm | `pnpm/action-setup@v6` | Installs pnpm 11.9.0 as the package manager |
+| Setup pnpm | `pnpm/action-setup@v6` | Installs pnpm as the package manager (version pinned via the `packageManager` field in `package.json`, currently `11.10.0`) |
 | Setup Node.js | `actions/setup-node@v6` | Installs Node.js 24 and restores the pnpm dependency cache |
 | Install dependencies | `pnpm install --frozen-lockfile` | Installs all project dependencies from the lockfile |
 | Run Biome Lint | `pnpm lint:fix` | Runs Biome static analysis and auto-fixes formatting issues |
@@ -161,6 +163,7 @@ quality-checks + e2e
 | Run Coverage | Runs `pnpm test:coverage` (Vitest with `--coverage`), producing `coverage/coverage-summary.json` and an HTML report |
 | Generate Coverage Summary | Parses the JSON and appends a coverage table (Lines, Statements, Functions, Branches %) to the step summary |
 | Upload coverage artifact | Stores the `coverage/` directory as a GitHub artifact named `coverage-report` |
+| Upload coverage to Codecov | Uploads the coverage report to Codecov via `codecov/codecov-action@v7` (`fail_ci_if_error: false`, so a Codecov outage never fails the pipeline) |
 
 **Why this job matters**: Code coverage gives a quantitative signal about test thoroughness. A sudden drop in coverage on a PR is a warning that new code was added without corresponding tests.
 
@@ -172,16 +175,20 @@ quality-checks + e2e
 
 **Depends on**: both `test-coverage` and `e2e` (waits for both to complete)
 
-**Permissions required**: `pages: write`, `id-token: write` (for OIDC-based GitHub Pages deployment)
+**Only runs when**: `github.event_name != 'pull_request' && github.ref == 'refs/heads/main'` — i.e. only for pushes to `main`, never for PRs
+
+**Permissions required**: `contents: read`, `pages: write`, `id-token: write` (for OIDC-based GitHub Pages deployment), `actions: write` (to delete stale artifacts)
 
 **Steps:**
 
 | Step | What it does |
 |------|--------------|
+| Configure GitHub Pages | Sets up the Pages environment via `actions/configure-pages@v6` |
 | Download coverage artifact | Downloads the `coverage-report` artifact into `artifacts/coverage/` |
 | Download E2E artifact | Downloads the `playwright-report` artifact into `artifacts/e2e/` |
 | Build reports site | Creates a `reports/` directory, copies the coverage HTML and Playwright HTML report into it, and generates an `index.html` landing page linking to both |
 | Add published links to summary | Appends links to the live GitHub Pages URLs in the step summary |
+| Remove stale github-pages artifacts | Uses the GitHub API (`gh api`) to delete any leftover `github-pages` artifacts from the current run before deploying, avoiding upload conflicts |
 | Upload to GitHub Pages | Packages the `reports/` directory as a Pages artifact |
 | Deploy to GitHub Pages | Deploys the artifact to `https://marosdaniel.github.io/cookbook-next/` |
 
@@ -257,7 +264,9 @@ The pipeline relies on the following secrets configured in the repository's GitH
 | `VERCEL_TOKEN` | `deploy-production` | Personal access token for authenticating with the Vercel API |
 | `VERCEL_ORG_ID` | `deploy-production` | Identifies the Vercel organization/team |
 | `VERCEL_PROJECT_ID` | `deploy-production` | Identifies the specific Vercel project to deploy to |
-| `GITHUB_TOKEN` | `semantic-release` | Automatically provided by GitHub Actions. Used by semantic-release to create tags and releases |
+| `GITHUB_TOKEN` | `semantic-release`, `deploy-coverage-report` | Automatically provided by GitHub Actions. Used by semantic-release to create tags and releases, and by `deploy-coverage-report` to clean up stale `github-pages` artifacts via the GitHub API |
+
+Codecov upload in `test-coverage` uses `codecov/codecov-action@v7` without an explicit token secret (`fail_ci_if_error: false`), relying on tokenless upload for public repos.
 
 ---
 

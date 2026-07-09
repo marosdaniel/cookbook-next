@@ -23,4 +23,4 @@
 ## Environment variables
 
 - `DATABASE_URL`: pooled Neon connection string for runtime queries.
-- `DIRECT_URL`: direct Neon connection string for Prisma migrations.
+- `DIRECT_URL`: direct Neon connection string for Prisma migrations. Used by `prisma.config.ts` (CLI only), falling back to `DATABASE_URL` if unset. Not used by the runtime client in [src/lib/prisma/prisma.ts](../src/lib/prisma/prisma.ts).
