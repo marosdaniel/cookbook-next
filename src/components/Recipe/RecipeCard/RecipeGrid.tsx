@@ -2,7 +2,9 @@
 
 import { Center, SimpleGrid, Skeleton, Stack, Text } from '@mantine/core';
 import { IconMoodSad } from '@tabler/icons-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
+import { MOTION_TRANSITION } from '@/lib/motion/transitions';
 import RecipeCard from './RecipeCard';
 import type { RecipeGridProps } from './types';
 
@@ -47,13 +49,20 @@ const RecipeGrid = ({
 
   return (
     <SimpleGrid cols={columns} data-testid="recipe-grid">
-      {recipes.map((recipe) => (
-        <RecipeCard
-          key={recipe.id}
-          recipe={recipe}
-          withFavorite={withFavorite}
-        />
-      ))}
+      <AnimatePresence mode="popLayout" initial={false}>
+        {recipes.map((recipe) => (
+          <motion.div
+            key={recipe.id}
+            layout
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={MOTION_TRANSITION.standard}
+          >
+            <RecipeCard recipe={recipe} withFavorite={withFavorite} />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </SimpleGrid>
   );
 };

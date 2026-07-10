@@ -1,6 +1,5 @@
 import {
   ActionIcon,
-  Box,
   Checkbox,
   Group,
   NumberInput,
@@ -10,7 +9,9 @@ import {
   Title,
 } from '@mantine/core';
 import { IconMinus, IconPlus } from '@tabler/icons-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
+import { MOTION_TRANSITION } from '@/lib/motion/transitions';
 import classes from '../RecipeDetail.module.css';
 import type { RecipeIngredientsProps } from '../types';
 import { scaleQuantity } from '../utils';
@@ -85,7 +86,11 @@ export const RecipeIngredients = ({
           const checked = checkedIngredients.has(ing.localId);
           const scaledQty = scaleQuantity(ing.quantity, servingMultiplier);
           return (
-            <Box
+            <motion.div
+              layout="position"
+              initial={false}
+              animate={{ opacity: checked ? 0.5 : 1 }}
+              transition={MOTION_TRANSITION.fast}
               key={ing.localId}
               className={`${classes.ingredientItem} ${checked ? classes.ingredientChecked : ''}`}
               onClick={() => onToggleIngredient(ing.localId)}
@@ -102,12 +107,24 @@ export const RecipeIngredients = ({
                 size="sm"
                 className={`${classes.ingredientText} ${checked ? classes.ingredientTextChecked : ''}`}
               >
-                <Text component="span" fw={700}>
-                  {scaledQty} {ing.unit}
+                <AnimatePresence mode="popLayout">
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={MOTION_TRANSITION.fast}
+                    key={scaledQty}
+                    style={{ fontWeight: 700, display: 'inline-block' }}
+                  >
+                    {scaledQty}
+                  </motion.span>
+                </AnimatePresence>
+                <Text component="span" fw={700} ml={4}>
+                  {ing.unit}
                 </Text>{' '}
                 {ing.name}
               </Text>
-            </Box>
+            </motion.div>
           );
         })}
       </Stack>

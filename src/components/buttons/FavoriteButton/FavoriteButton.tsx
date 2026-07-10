@@ -4,6 +4,7 @@ import { useMutation } from '@apollo/client/react';
 import { ActionIcon, Tooltip } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
+import { motion } from 'motion/react';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useState } from 'react';
@@ -23,6 +24,7 @@ const FavoriteButton = ({
   const translate = useTranslations('response');
   const tFav = useTranslations('favorites');
   const [optimisticFavorite, setOptimisticFavorite] = useState(isFavorite);
+  const [animationKey, setAnimationKey] = useState(0);
 
   const [addToFavorite, { loading: addLoading }] = useMutation(
     ADD_TO_FAVORITE_RECIPES,
@@ -84,6 +86,9 @@ const FavoriteButton = ({
             ),
             color: 'red',
           });
+        } else {
+          // Trigger animation only on success
+          setAnimationKey((prev) => prev + 1);
         }
       } catch {
         setOptimisticFavorite(previousState);
@@ -124,14 +129,32 @@ const FavoriteButton = ({
         size={size}
         data-testid="favorite-button"
       >
-        <HeartIcon
-          size={iconSize}
+        <motion.div
+          key={animationKey}
+          initial={false}
+          animate={
+            animationKey > 0
+              ? optimisticFavorite
+                ? { scale: [0.85, 1.18, 1] }
+                : { opacity: [0.5, 1], scale: [0.95, 1] }
+              : {}
+          }
+          transition={{ duration: 0.25 }}
           style={{
-            color: optimisticFavorite
-              ? 'var(--mantine-color-red-6)'
-              : undefined,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
-        />
+        >
+          <HeartIcon
+            size={iconSize}
+            style={{
+              color: optimisticFavorite
+                ? 'var(--mantine-color-red-6)'
+                : undefined,
+            }}
+          />
+        </motion.div>
       </ActionIcon>
     </Tooltip>
   );
