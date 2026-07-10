@@ -1,6 +1,7 @@
 'use client';
 
 import { ActionIcon, Button } from '@mantine/core';
+import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { type FC, useTransition } from 'react';
@@ -9,12 +10,23 @@ import { AUTH_ROUTES } from '@/types/routes';
 import classes from './AuthButton.module.css';
 import type { AuthButtonProps } from './types';
 
+const BUTTON_TRANSITION = {
+  type: 'spring',
+  stiffness: 420,
+  damping: 24,
+  mass: 0.65,
+} as const;
+
 const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const translate = useTranslations('auth');
 
   const handleClick = () => {
+    if (isPending) {
+      return;
+    }
+
     startTransition(() => {
       router.push(AUTH_ROUTES.LOGIN);
     });
@@ -24,59 +36,81 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
     return (
       <>
         {/* Icon only on mobile */}
-        <ActionIcon
-          variant="gradient"
-          gradient={{ from: 'pink', to: 'violet', deg: 45 }}
-          size="lg"
-          onClick={handleClick}
-          aria-label={translate('login')}
-          data-testid="auth-login"
-          hiddenFrom="sm"
-          loading={isPending}
+        <motion.div
+          whileHover={isPending ? undefined : { scale: 1.04 }}
+          whileTap={isPending ? undefined : { scale: 0.96 }}
+          transition={BUTTON_TRANSITION}
+          style={{ display: 'contents' }}
         >
-          <FiLogIn size={18} />
-        </ActionIcon>
+          <ActionIcon
+            variant="gradient"
+            gradient={{ from: 'pink', to: 'violet', deg: 45 }}
+            size="lg"
+            onClick={handleClick}
+            aria-label={translate('login')}
+            data-testid="auth-login"
+            hiddenFrom="sm"
+            loading={isPending}
+          >
+            <FiLogIn size={18} />
+          </ActionIcon>
+        </motion.div>
 
         {/* Full button on desktop */}
-        <Button
-          variant="gradient"
-          gradient={{ from: 'pink', to: 'violet', deg: 45 }}
-          size="sm"
-          leftSection={<FiLogIn size={16} />}
-          onClick={handleClick}
-          visibleFrom="sm"
-          loading={isPending}
-          className={classes.authButton}
-          styles={{
-            root: {
-              fontWeight: 600,
-            },
-          }}
-          data-testid="auth-login"
+        <motion.div
+          whileHover={isPending ? undefined : { scale: 1.02 }}
+          whileTap={isPending ? undefined : { scale: 0.98 }}
+          transition={BUTTON_TRANSITION}
+          style={{ display: 'contents' }}
         >
-          {translate('login')}
-        </Button>
+          <Button
+            variant="gradient"
+            gradient={{ from: 'pink', to: 'violet', deg: 45 }}
+            size="sm"
+            leftSection={<FiLogIn size={16} />}
+            onClick={handleClick}
+            visibleFrom="sm"
+            loading={isPending}
+            className={classes.authButton}
+            styles={{
+              root: {
+                fontWeight: 600,
+              },
+            }}
+            data-testid="auth-login"
+          >
+            {translate('login')}
+          </Button>
+        </motion.div>
       </>
     );
   }
 
   return (
-    <Button
-      variant="gradient"
-      gradient={{ from: 'pink', to: 'violet', deg: 45 }}
-      size="sm"
-      leftSection={<FiLogIn size={16} />}
-      onClick={handleClick}
-      className={classes.authButton}
-      styles={{
-        root: {
-          fontWeight: 600,
-        },
-      }}
-      data-testid="auth-login"
+    <motion.div
+      whileHover={isPending ? undefined : { scale: 1.02 }}
+      whileTap={isPending ? undefined : { scale: 0.98 }}
+      transition={BUTTON_TRANSITION}
+      style={{ display: 'inline-block' }}
     >
-      {translate('login')}
-    </Button>
+      <Button
+        variant="gradient"
+        gradient={{ from: 'pink', to: 'violet', deg: 45 }}
+        size="sm"
+        leftSection={<FiLogIn size={16} />}
+        onClick={handleClick}
+        loading={isPending}
+        className={classes.authButton}
+        styles={{
+          root: {
+            fontWeight: 600,
+          },
+        }}
+        data-testid="auth-login"
+      >
+        {translate('login')}
+      </Button>
+    </motion.div>
   );
 };
 

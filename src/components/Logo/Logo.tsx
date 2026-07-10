@@ -1,12 +1,20 @@
 'use client';
 
 import { Group, Text, useComputedColorScheme } from '@mantine/core';
+import { motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { LOGO_SRC_DARK, LOGO_SRC_LIGHT } from './consts';
 import type { LogoProps } from './types';
+
+const LOGO_TRANSITION = {
+  type: 'spring',
+  stiffness: 400,
+  damping: 24,
+  mass: 0.7,
+} as const;
 
 export const Logo = ({
   variant = 'default',
@@ -21,10 +29,10 @@ export const Logo = ({
     getInitialValueInEffect: true,
   });
   const pathname = usePathname();
+  const t = useTranslations('logo');
 
   const size = variant === 'icon' ? 40 : 120;
   const logoSrc = colorScheme === 'dark' ? LOGO_SRC_DARK : LOGO_SRC_LIGHT;
-  const t = useTranslations('logo');
 
   const image = (
     <Image
@@ -60,17 +68,40 @@ export const Logo = ({
     image
   );
 
-  if (!href) return logo;
+  if (!href) {
+    return logo;
+  }
+
+  const isCurrentPage = pathname === href;
 
   return (
-    <Link
-      href={href}
-      style={{ textDecoration: 'none', color: 'inherit' }}
-      onClick={(e) => pathname === href && e.preventDefault()}
-      data-testid="logo-link"
+    <motion.div
+      whileHover={isCurrentPage ? undefined : { scale: 1.025 }}
+      whileTap={isCurrentPage ? undefined : { scale: 0.98 }}
+      transition={LOGO_TRANSITION}
+      style={{
+        display: 'inline-flex',
+        transformOrigin: 'left center',
+      }}
     >
-      {logo}
-    </Link>
+      <Link
+        href={href}
+        style={{
+          color: 'inherit',
+          cursor: isCurrentPage ? 'default' : 'pointer',
+          textDecoration: 'none',
+        }}
+        onClick={(event) => {
+          if (isCurrentPage) {
+            event.preventDefault();
+          }
+        }}
+        aria-current={isCurrentPage ? 'page' : undefined}
+        data-testid="logo-link"
+      >
+        {logo}
+      </Link>
+    </motion.div>
   );
 };
 
