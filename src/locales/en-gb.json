@@ -327,6 +327,7 @@
     "subtitle": "Missing ingredients...",
     "description": "Our chef is currently working on this section. They might have burnt the previous version, or they're just looking for the perfect seasoning. Check back later!",
     "backButton": "Back to homepage",
+    "browseRecipes": "Browse recipes",
     "gradientIconTitle": "Cooking pot icon gradient"
   },
   "notFound": {

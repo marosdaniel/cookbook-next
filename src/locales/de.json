@@ -340,6 +340,7 @@
     "subtitle": "Fehlende Zutaten...",
     "description": "Unser Koch arbeitet gerade an diesem Bereich. Vielleicht hat er die vorherige Version verbrannt, oder er sucht nur nach der perfekten Würze. Schauen Sie später noch einmal vorbei!",
     "backButton": "Zurück zur Startseite",
+    "browseRecipes": "Rezepte durchsuchen",
     "gradientIconTitle": "Kochtopf-Symbol Farbverlauf"
   },
   "notFound": {

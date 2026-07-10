@@ -326,6 +326,7 @@
     "subtitle": "Hiányzó hozzávalók...",
     "description": "A séfünk éppen most dolgozik ezen a részen. Lehet, hogy odaégette az előző verziót, vagy csak még keresi a tökéletes fűszerezést. Nézz vissza később!",
     "backButton": "Vissza a főoldalra",
+    "browseRecipes": "Receptek böngészése",
     "gradientIconTitle": "Főzőüst ikon színátmenet"
   },
   "notFound": {
