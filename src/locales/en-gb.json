@@ -482,12 +482,19 @@
       "media": "Media",
       "ingredients": "Ingredients",
       "steps": "Steps",
+      "sections": {
+        "basics": "Basics",
+        "media": "Media",
+        "ingredients": "Ingredients",
+        "steps": "Steps"
+      },
       "sectionsTitle": "Sections",
       "itemsCount": "{count} items",
       "stepsCount": "{count} steps",
       "mediaCoverSet": "Cover set",
       "mediaOptional": "Optional",
       "progressPercent": "{percent}% complete",
+      "fieldsFilled": "{completed}/{total} filled",
       "quickAddIngredient": "Quick add ingredient",
       "quickAddStep": "Quick add step",
       "resetButton": "Reset"

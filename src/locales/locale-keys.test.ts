@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import de from './de.json';
 import enGb from './en-gb.json';
+import hu from './hu.json';
 
 const getValue = (source: Record<string, unknown>, key: string) =>
   key.split('.').reduce<unknown>((acc, part) => {
@@ -24,6 +25,9 @@ describe('locale translations', () => {
     ['en-gb', enGb, 'recipeCreate.headerTitle'],
     ['en-gb', enGb, 'recipeCreate.submitLabel'],
     ['en-gb', enGb, 'recipeCreate.resetLabel'],
+    ['hu', hu, 'recipeCreate.sidebar.sections.basics'],
+    ['hu', hu, 'recipeCreate.sidebar.sections.media'],
+    ['hu', hu, 'recipeCreate.sidebar.fieldsFilled'],
   ])('keeps the %s translation key %s available', (_locale, source, key) => {
     expect(getValue(source as Record<string, unknown>, key)).toBeDefined();
     expect(getValue(source as Record<string, unknown>, key)).not.toBe('');

@@ -471,12 +471,19 @@
       "media": "Medien",
       "ingredients": "Zutaten",
       "steps": "Schritte",
+      "sections": {
+        "basics": "Grundlagen",
+        "media": "Medien",
+        "ingredients": "Zutaten",
+        "steps": "Schritte"
+      },
       "sectionsTitle": "Abschnitte",
       "itemsCount": "{count} Elemente",
       "stepsCount": "{count} Schritte",
       "mediaCoverSet": "Cover gesetzt",
       "mediaOptional": "Optional",
       "progressPercent": "{percent}% abgeschlossen",
+      "fieldsFilled": "{completed}/{total} ausgefüllt",
       "quickAddIngredient": "Schnell Zutat hinzufügen",
       "quickAddStep": "Schnell Schritt hinzufügen",
       "resetButton": "Zurücksetzen"

@@ -482,12 +482,19 @@
       "media": "Média",
       "ingredients": "Hozzávalók",
       "steps": "Lépések",
+      "sections": {
+        "basics": "Alapok",
+        "media": "Média",
+        "ingredients": "Hozzávalók",
+        "steps": "Lépések"
+      },
       "sectionsTitle": "Szekciók",
       "itemsCount": "{count} elem",
       "stepsCount": "{count} lépés",
       "mediaCoverSet": "Borító beállítva",
       "mediaOptional": "Opcionális",
       "progressPercent": "{percent}% kész",
+      "fieldsFilled": "{completed}/{total} kitöltve",
       "quickAddIngredient": "Gyors hozzávaló hozzáadása",
       "quickAddStep": "Gyors lépés hozzáadása",
       "resetButton": "Visszaállítás"

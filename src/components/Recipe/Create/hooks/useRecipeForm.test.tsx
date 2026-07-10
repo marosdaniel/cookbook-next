@@ -1,6 +1,9 @@
+import { useMutation } from '@apollo/client/react';
 import { useLocalStorage } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { act, renderHook } from '@testing-library/react';
+import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import {
   afterAll,
   beforeAll,
@@ -11,25 +14,25 @@ import {
   vi,
 } from 'vitest';
 import { useRecipeFormHook } from '../FormContext';
-import type { UseRecipeFormProps } from '../types';
+import type { RecipeFormValues, UseRecipeFormProps } from '../types';
 import { useRecipeForm } from './useRecipeForm';
 
 // Mock dependencies
 vi.mock('next/navigation', () => ({
-  useRouter: vi.fn(() => ({ push: vi.fn() })),
+  useRouter: vi.fn(),
 }));
 
 vi.mock('next-intl', () => ({
-  useTranslations: vi.fn(() => (key: string) => key),
+  useTranslations: vi.fn(),
 }));
 
 vi.mock('@apollo/client/react', () => ({
-  useMutation: vi.fn(() => [vi.fn(), { loading: false }]),
+  useMutation: vi.fn(),
 }));
 
 vi.mock('@mantine/hooks', () => ({
-  useLocalStorage: vi.fn(() => [null, vi.fn(), vi.fn()]),
-  useDebouncedValue: vi.fn((value) => [value]),
+  useLocalStorage: vi.fn(),
+  useDebouncedValue: vi.fn((value) => [value, vi.fn()]),
 }));
 
 vi.mock('@mantine/notifications', () => ({
@@ -73,25 +76,63 @@ vi.mock('mantine-form-zod-resolver', () => ({
   zodResolver: vi.fn(() => ({})),
 }));
 
-const mockForm = {
-  getValues: () => ({
-    title: '',
-    description: '',
-    imgSrc: '',
-    cookingTime: '',
-    servings: '',
-    difficultyLevel: null,
-    category: null,
-    labels: [],
-    youtubeLink: '',
-    ingredients: [],
-    preparationSteps: [],
-  }),
-  setValues: vi.fn(),
-  reset: vi.fn(),
-  onSubmit: vi.fn(),
-  insertListItem: vi.fn(),
+const createEmptyRecipeFormValues = (): RecipeFormValues => ({
+  title: '',
+  description: '',
+  imgSrc: '',
+  cookingTime: '',
+  servings: '',
+  difficultyLevel: null,
+  category: null,
+  labels: [],
+  youtubeLink: '',
+  ingredients: [],
+  preparationSteps: [],
+  prepTimeMinutes: '',
+  cookTimeMinutes: '',
+  restTimeMinutes: '',
+  servingUnit: null,
+  cuisine: null,
+  dietaryFlags: [],
+  allergens: [],
+  equipment: [],
+  costLevel: null,
+  tips: '',
+  substitutions: '',
+  slug: '',
+  seoTitle: '',
+  seoDescription: '',
+  socialImage: '',
+});
+
+const createMockForm = () => {
+  const form = {
+    values: createEmptyRecipeFormValues(),
+    errors: {},
+    getValues: vi.fn(),
+    setValues: vi.fn(),
+    reset: vi.fn(),
+    onSubmit: vi.fn(),
+    insertListItem: vi.fn(),
+    isDirty: vi.fn(),
+    resetDirty: vi.fn(),
+    validateField: vi.fn(),
+  };
+
+  form.getValues = vi.fn(() => form.values);
+  form.setValues = vi.fn((nextValues) => {
+    form.values = nextValues;
+  });
+  form.resetDirty = vi.fn((nextValues) => {
+    form.values = nextValues ?? form.values;
+    form.isDirty.mockReturnValue(false);
+  });
+  form.isDirty = vi.fn(() => false);
+
+  return form;
 };
+
+let mockForm: ReturnType<typeof createMockForm>;
 
 describe('useRecipeForm', () => {
   const mockProps: UseRecipeFormProps = {
@@ -99,6 +140,17 @@ describe('useRecipeForm', () => {
     onSectionChange: vi.fn(),
     labels: [],
   };
+
+  const routerPush = vi.fn();
+  const mockCreateRecipe = vi.fn();
+  let mutationOptions:
+    | {
+        onCompleted?: () => void;
+        onError?: (error: { message?: string }) => void;
+      }
+    | undefined;
+  const setDraft = vi.fn();
+  const removeDraft = vi.fn();
 
   beforeAll(() => {
     vi.stubGlobal('crypto', {
@@ -112,10 +164,27 @@ describe('useRecipeForm', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockForm = createMockForm();
+    mutationOptions = undefined;
+    mockCreateRecipe.mockResolvedValue(undefined);
+
+    vi.mocked(useRouter).mockReturnValue({
+      push: routerPush,
+    } as unknown as ReturnType<typeof useRouter>);
+    vi.mocked(useTranslations).mockReturnValue(
+      ((key: string) => key) as ReturnType<typeof useTranslations>,
+    );
+    vi.mocked(useMutation).mockImplementation((_, options) => {
+      mutationOptions = options as typeof mutationOptions;
+      return [mockCreateRecipe, { loading: false }] as never;
+    });
+    vi.mocked(useLocalStorage).mockImplementation(
+      () => [null, setDraft, removeDraft] as never,
+    );
   });
 
   it('should initialize with default values when no draft', () => {
-    const { result: _result } = renderHook(() => useRecipeForm(mockProps));
+    renderHook(() => useRecipeForm(mockProps));
 
     expect(vi.mocked(useRecipeFormHook)).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -129,11 +198,14 @@ describe('useRecipeForm', () => {
 
   it('should initialize with draft values when draft exists', () => {
     const draftValues = { title: 'Draft Recipe', ingredients: [] };
-    vi.mocked(useLocalStorage).mockReturnValue([
-      { values: draftValues, updatedAt: Date.now() },
-      vi.fn(),
-      vi.fn(),
-    ]);
+    vi.mocked(useLocalStorage).mockImplementation(
+      () =>
+        [
+          { values: draftValues, updatedAt: Date.now() },
+          setDraft,
+          removeDraft,
+        ] as never,
+    );
 
     renderHook(() => useRecipeForm(mockProps));
 
@@ -145,10 +217,10 @@ describe('useRecipeForm', () => {
   });
 
   it('should add ingredient', () => {
-    const { result: _result } = renderHook(() => useRecipeForm(mockProps));
+    const { result } = renderHook(() => useRecipeForm(mockProps));
 
     act(() => {
-      _result.current.addIngredient();
+      result.current.addIngredient();
     });
 
     expect(mockForm.insertListItem).toHaveBeenCalledWith(
@@ -163,10 +235,10 @@ describe('useRecipeForm', () => {
   });
 
   it('should add step', () => {
-    const { result: _result } = renderHook(() => useRecipeForm(mockProps));
+    const { result } = renderHook(() => useRecipeForm(mockProps));
 
     act(() => {
-      _result.current.addStep();
+      result.current.addStep();
     });
 
     expect(mockForm.insertListItem).toHaveBeenCalledWith(
@@ -179,14 +251,30 @@ describe('useRecipeForm', () => {
     );
   });
 
-  it('should save draft now', () => {
-    const setDraft = vi.fn();
-    vi.mocked(useLocalStorage).mockReturnValue([null, setDraft, vi.fn()]);
+  it('should save draft when metadata is loaded and the form is dirty', () => {
+    mockForm.isDirty.mockReturnValue(true);
 
-    const { result: _result } = renderHook(() => useRecipeForm(mockProps));
+    renderHook(() => useRecipeForm(mockProps));
+
+    expect(setDraft).toHaveBeenCalledWith({
+      updatedAt: expect.any(Number),
+      values: mockForm.values,
+    });
+  });
+
+  it('should skip autosave when metadata is not loaded', () => {
+    mockForm.isDirty.mockReturnValue(true);
+
+    renderHook(() => useRecipeForm({ ...mockProps, metadataLoaded: false }));
+
+    expect(setDraft).not.toHaveBeenCalled();
+  });
+
+  it('should save draft now', () => {
+    const { result } = renderHook(() => useRecipeForm(mockProps));
 
     act(() => {
-      _result.current.saveDraftNow();
+      result.current.saveDraftNow();
     });
 
     expect(setDraft).toHaveBeenCalledWith({
@@ -202,23 +290,20 @@ describe('useRecipeForm', () => {
   });
 
   it('should reset draft', () => {
-    const setDraft = vi.fn();
-    vi.mocked(useLocalStorage).mockReturnValue([null, setDraft, vi.fn()]);
-
-    const { result: _result } = renderHook(() => useRecipeForm(mockProps));
+    const { result } = renderHook(() => useRecipeForm(mockProps));
 
     act(() => {
-      _result.current.resetDraft();
+      result.current.resetDraft();
     });
 
     expect(setDraft).toHaveBeenCalledWith(null);
-    expect(mockForm.reset).toHaveBeenCalled();
     expect(mockForm.setValues).toHaveBeenCalledWith(
       expect.objectContaining({
         title: '',
         ingredients: [],
       }),
     );
+    expect(mockForm.resetDirty).toHaveBeenCalled();
     expect(mockProps.onSectionChange).toHaveBeenCalledWith('basics');
     expect(notifications.show).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -227,10 +312,83 @@ describe('useRecipeForm', () => {
     );
   });
 
-  it('should return correct completion', () => {
-    const { result: _result } = renderHook(() => useRecipeForm(mockProps));
+  it('should publish the recipe with transformed values', async () => {
+    const values = {
+      ...mockForm.values,
+      difficultyLevel: 'easy',
+      category: 'dessert',
+    };
 
-    expect(_result.current.completion).toEqual({
+    const { result } = renderHook(() => useRecipeForm(mockProps));
+
+    await act(async () => {
+      await result.current.handlePublish(values as never);
+    });
+
+    expect(mockCreateRecipe).toHaveBeenCalledWith({
+      variables: {
+        recipeCreateInput: values,
+      },
+    });
+  });
+
+  it('should stop publish when required fields are missing', async () => {
+    const values = {
+      ...mockForm.values,
+      difficultyLevel: 'easy',
+      category: null,
+    };
+
+    const { result } = renderHook(() => useRecipeForm(mockProps));
+
+    await act(async () => {
+      await result.current.handlePublish(values as never);
+    });
+
+    expect(mockCreateRecipe).not.toHaveBeenCalled();
+    expect(notifications.show).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'notifications.missingFieldsTitle',
+      }),
+    );
+    expect(mockProps.onSectionChange).toHaveBeenCalledWith('basics');
+  });
+
+  it('should handle successful publish completion', () => {
+    renderHook(() => useRecipeForm(mockProps));
+
+    act(() => {
+      mutationOptions?.onCompleted?.();
+    });
+
+    expect(setDraft).toHaveBeenCalledWith(null);
+    expect(routerPush).toHaveBeenCalledWith('/me/my-recipes');
+    expect(notifications.show).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'notifications.recipeCreatedTitle',
+      }),
+    );
+  });
+
+  it('should handle publish errors', () => {
+    renderHook(() => useRecipeForm(mockProps));
+
+    act(() => {
+      mutationOptions?.onError?.({ message: 'Boom' });
+    });
+
+    expect(notifications.show).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'notifications.recipeCreateFailedTitle',
+        message: 'Boom',
+      }),
+    );
+  });
+
+  it('should return correct completion', () => {
+    const { result } = renderHook(() => useRecipeForm(mockProps));
+
+    expect(result.current.completion).toEqual({
       done: 5,
       total: 8,
       percent: 62,
@@ -238,33 +396,34 @@ describe('useRecipeForm', () => {
   });
 
   it('should return last saved label for unsaved', () => {
-    const { result: _result } = renderHook(() => useRecipeForm(mockProps));
+    const { result } = renderHook(() => useRecipeForm(mockProps));
 
-    expect(_result.current.lastSavedLabel).toBe('sidebar.unsaved');
+    expect(result.current.lastSavedLabel).toBe('sidebar.unsaved');
   });
 
   it('should return last saved label for just saved', () => {
-    vi.mocked(useLocalStorage).mockReturnValue([
-      { updatedAt: Date.now() - 1000 },
-      vi.fn(),
-      vi.fn(),
-    ]);
+    vi.mocked(useLocalStorage).mockImplementation(
+      () => [{ updatedAt: Date.now() - 1000 }, setDraft, removeDraft] as never,
+    );
 
-    const { result: _result } = renderHook(() => useRecipeForm(mockProps));
+    const { result } = renderHook(() => useRecipeForm(mockProps));
 
-    expect(_result.current.lastSavedLabel).toBe('sidebar.justSaved');
+    expect(result.current.lastSavedLabel).toBe('sidebar.justSaved');
   });
 
   it('should return last saved label for saved ago', () => {
-    vi.mocked(useLocalStorage).mockReturnValue([
-      { updatedAt: Date.now() - 5 * 60 * 1000 }, // 5 minutes ago
-      vi.fn(),
-      vi.fn(),
-    ]);
+    vi.mocked(useLocalStorage).mockImplementation(
+      () =>
+        [
+          { updatedAt: Date.now() - 5 * 60 * 1000 },
+          setDraft,
+          removeDraft,
+        ] as never,
+    );
 
-    const { result: _result } = renderHook(() => useRecipeForm(mockProps));
+    const { result } = renderHook(() => useRecipeForm(mockProps));
 
-    expect(_result.current.lastSavedLabel).toBe(
+    expect(result.current.lastSavedLabel).toBe(
       'sidebar.savedAgo'.replace('{minutes}', '5'),
     );
   });
