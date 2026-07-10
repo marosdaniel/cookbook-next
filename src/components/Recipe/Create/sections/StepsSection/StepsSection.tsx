@@ -27,7 +27,10 @@ import { useTranslations } from 'next-intl';
 import { useCallback, useMemo } from 'react';
 import { MOTION_TRANSITION } from '../../../../../lib/motion/transitions';
 import { useRecipeFormContext } from '../../FormContext';
-import { useFormError } from '../../hooks/useFormError';
+import {
+  type RecipeFormFieldPath,
+  useFormError,
+} from '../../hooks/useFormError';
 import { getPublishButtonState } from '../../utils';
 import type { StepsSectionProps } from './types';
 
@@ -121,7 +124,7 @@ const StepsSection = ({
         return;
       }
 
-      const fieldPath = `preparationSteps[${stepIndex}].description`;
+      const fieldPath: RecipeFormFieldPath = `preparationSteps[${stepIndex}].description`;
 
       setFieldValue(fieldPath, description);
       revalidateOnChange(fieldPath);
@@ -139,7 +142,9 @@ const StepsSection = ({
         return undefined;
       }
 
-      return getFieldError(`preparationSteps[${stepIndex}].description`);
+      return getFieldError(
+        `preparationSteps[${stepIndex}].description` as RecipeFormFieldPath,
+      );
     },
     [getFieldError, values.preparationSteps],
   );

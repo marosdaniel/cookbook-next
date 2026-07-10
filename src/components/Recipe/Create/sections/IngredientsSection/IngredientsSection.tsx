@@ -26,7 +26,10 @@ import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
 import { MOTION_TRANSITION } from '../../../../../lib/motion/transitions';
 import { useRecipeFormContext } from '../../FormContext';
-import { useFormError } from '../../hooks/useFormError';
+import {
+  type RecipeFormFieldPath,
+  useFormError,
+} from '../../hooks/useFormError';
 import type { IngredientsSectionProps } from './types';
 
 const IngredientsSection = ({
@@ -97,11 +100,11 @@ const IngredientsSection = ({
           <Stack gap="xs">
             <AnimatePresence initial={false} mode="popLayout">
               {values.ingredients.map((ingredient, index) => {
-                const nameFieldPath = `ingredients[${index}].name`;
-                const quantityFieldPath = `ingredients[${index}].quantity`;
-                const unitFieldPath = `ingredients[${index}].unit`;
-                const optionalFieldPath = `ingredients[${index}].isOptional`;
-                const noteFieldPath = `ingredients[${index}].note`;
+                const nameFieldPath: RecipeFormFieldPath = `ingredients[${index}].name`;
+                const quantityFieldPath: RecipeFormFieldPath = `ingredients[${index}].quantity`;
+                const unitFieldPath: RecipeFormFieldPath = `ingredients[${index}].unit`;
+                const optionalFieldPath: RecipeFormFieldPath = `ingredients[${index}].isOptional`;
+                const noteFieldPath: RecipeFormFieldPath = `ingredients[${index}].note`;
 
                 return (
                   <motion.div
