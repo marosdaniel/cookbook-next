@@ -460,6 +460,34 @@
     "recentlyAdded": "Kürzlich hinzugefügte Rezepte",
     "noRecipes": "Keine Rezepte gefunden. Erstelle das erste!"
   },
+  "recipeCreate": {
+    "headerTitle": "Rezept erstellen",
+    "submitLabel": "Veröffentlichen",
+    "resetLabel": "Zurücksetzen",
+    "sidebar": {
+      "basics": "Grundlagen",
+      "media": "Medien",
+      "ingredients": "Zutaten",
+      "steps": "Schritte",
+      "sectionsTitle": "Abschnitte",
+      "itemsCount": "{count} Elemente",
+      "stepsCount": "{count} Schritte",
+      "mediaCoverSet": "Cover gesetzt",
+      "mediaOptional": "Optional",
+      "progressPercent": "{percent}% abgeschlossen",
+      "quickAddIngredient": "Schnell Zutat hinzufügen",
+      "quickAddStep": "Schnell Schritt hinzufügen",
+      "resetButton": "Zurücksetzen"
+    }
+  },
+  "home": {
+    "carouselEmpty": "Noch keine Rezepte. Sei der Erste, der eines teilt!",
+    "recentlyViewed": "Zuletzt angesehen",
+    "recentlyViewedHint": "* Zuletzt angesehene Rezepte – bald verfügbar"
+  },
+  "units": {
+    "minuteShort": "Min."
+  },
   "recipeComposer": {
     "sections": {
       "basics": {

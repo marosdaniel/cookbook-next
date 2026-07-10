@@ -473,6 +473,9 @@
     }
   },
   "recipeCreate": {
+    "headerTitle": "Create Recipe",
+    "submitLabel": "Publish",
+    "resetLabel": "Reset",
     "sidebar": {
       "basics": "Basics",
       "media": "Media",

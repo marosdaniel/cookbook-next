@@ -9,6 +9,7 @@ import {
   Textarea,
   ThemeIcon,
   Title,
+  Tooltip,
 } from '@mantine/core';
 import {
   IconArrowDown,
@@ -22,6 +23,7 @@ import {
 import { useTranslations } from 'next-intl';
 import { useRecipeFormContext } from '../../FormContext';
 import { useFormError } from '../../hooks/useFormError';
+import { getPublishButtonState } from '../../utils';
 import type { StepsSectionProps } from './types';
 
 const StepsSection = ({
@@ -35,6 +37,7 @@ const StepsSection = ({
   const form = useRecipeFormContext();
   const { values, setFieldValue } = form;
   const { getFieldError, revalidateOnChange } = useFormError(form);
+  const publishButtonState = getPublishButtonState(values);
 
   const removeStep = (idx: number) => {
     const next = values.preparationSteps.filter((_, i) => i !== idx);
@@ -196,15 +199,23 @@ const StepsSection = ({
           >
             {translate('back')}
           </Button>
-          <Button
-            color="dark"
-            loading={isSubmitting}
-            onClick={onSubmit}
-            leftSection={<IconWand size={16} />}
-            data-testid="recipe-steps-publish"
+          <Tooltip
+            label={publishButtonState.tooltip}
+            disabled={!publishButtonState.disabled}
+            withArrow
+            multiline
           >
-            {submitLabel ?? translate('publish')}
-          </Button>
+            <Button
+              color="dark"
+              loading={isSubmitting}
+              onClick={onSubmit}
+              leftSection={<IconWand size={16} />}
+              disabled={publishButtonState.disabled}
+              data-testid="recipe-steps-publish"
+            >
+              {submitLabel ?? translate('publish')}
+            </Button>
+          </Tooltip>
         </Group>
       </Stack>
     </Paper>

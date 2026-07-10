@@ -3,6 +3,7 @@ import type { MetadataOption, RecipeFormValues } from './types';
 import {
   computeCompletion,
   getProgressColor,
+  getPublishButtonState,
   getStatusColor,
   sectionCompletion,
   toCleanedOptions,
@@ -270,6 +271,37 @@ describe('transformValuesToInput', () => {
       { value: 'equipment-blender', label: 'equipment-blender' },
     ]);
     expect(result.tips).toBe('cook al dente');
+  });
+});
+
+describe('getPublishButtonState', () => {
+  it('should allow publishing when the form is valid', () => {
+    const result = getPublishButtonState(mockRecipeFormValues);
+
+    expect(result.disabled).toBe(false);
+    expect(result.tooltip).toBe('');
+  });
+
+  it('should block publishing and explain what is missing when the form is invalid', () => {
+    const invalidValues: RecipeFormValues = {
+      ...mockRecipeFormValues,
+      title: '',
+      description: '',
+      category: null,
+      difficultyLevel: null,
+      ingredients: [],
+      preparationSteps: [],
+    };
+
+    const result = getPublishButtonState(invalidValues);
+
+    expect(result.disabled).toBe(true);
+    expect(result.tooltip).toContain('title');
+    expect(result.tooltip).toContain('description');
+    expect(result.tooltip).toContain('category');
+    expect(result.tooltip).toContain('difficultyLevel');
+    expect(result.tooltip).toContain('ingredients');
+    expect(result.tooltip).toContain('preparationSteps');
   });
 });
 

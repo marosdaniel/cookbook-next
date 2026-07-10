@@ -31,6 +31,50 @@ export const computeCompletion = (values: RecipeFormValues) => {
   };
 };
 
+export const getPublishButtonState = (values: RecipeFormValues) => {
+  const missingFields: string[] = [];
+
+  if (!values.title?.trim()) {
+    missingFields.push('title');
+  }
+
+  if (!values.description?.trim()) {
+    missingFields.push('description');
+  }
+
+  if (!values.cookingTime) {
+    missingFields.push('cookingTime');
+  }
+
+  if (!values.servings) {
+    missingFields.push('servings');
+  }
+
+  if (!values.category) {
+    missingFields.push('category');
+  }
+
+  if (!values.difficultyLevel) {
+    missingFields.push('difficultyLevel');
+  }
+
+  if (values.ingredients.length === 0) {
+    missingFields.push('ingredients');
+  }
+
+  if (values.preparationSteps.length === 0) {
+    missingFields.push('preparationSteps');
+  }
+
+  return {
+    disabled: missingFields.length > 0,
+    tooltip:
+      missingFields.length > 0
+        ? `Complete the required fields before publishing: ${missingFields.join(', ')}`
+        : '',
+  };
+};
+
 export const sectionCompletion = (
   section: ComposerSection,
   values: RecipeFormValues,

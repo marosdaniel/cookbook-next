@@ -31,6 +31,8 @@ const ComposerHeader = memo(
     onPublish,
     publishLoading,
     submitLabel,
+    isPublishDisabled,
+    publishTooltip,
   }: Readonly<ComposerHeaderProps>) => {
     const ringColor = getProgressColor(completion.percent);
     const t = useTranslations('composerHeader');
@@ -122,16 +124,24 @@ const ComposerHeader = memo(
               {t('preview.button')}
             </Button>
 
-            <Button
-              color="dark"
-              onClick={onPublish}
-              loading={publishLoading}
-              leftSection={<IconWand size={16} />}
-              radius="xl"
-              data-testid="recipe-composer-publish"
+            <Tooltip
+              label={publishTooltip}
+              disabled={!isPublishDisabled}
+              withArrow
+              multiline
             >
-              {submitLabel}
-            </Button>
+              <Button
+                color="dark"
+                onClick={onPublish}
+                loading={publishLoading}
+                leftSection={<IconWand size={16} />}
+                radius="xl"
+                disabled={isPublishDisabled}
+                data-testid="recipe-composer-publish"
+              >
+                {submitLabel}
+              </Button>
+            </Tooltip>
           </Group>
         </Group>
       </Paper>

@@ -18,6 +18,7 @@ import { RecipeFormProvider } from './FormContext';
 import { useRecipeMetadata } from './hooks/useRecipeMetadata';
 import { Preview } from './Preview';
 import BasicsSection from './sections/BasicsSection';
+import { getPublishButtonState } from './utils';
 import IngredientsSection from './sections/IngredientsSection';
 import MediaSection from './sections/MediaSection';
 import StepsSection from './sections/StepsSection';
@@ -42,6 +43,7 @@ export const RecipeComposer = ({
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState<ComposerSection>('basics');
   const [previewOpen, setPreviewOpen] = useState(false);
+  const publishButtonState = getPublishButtonState(form.values);
 
   /* Metadata */
   const {
@@ -120,6 +122,8 @@ export const RecipeComposer = ({
           onPublish={form.onSubmit(handlePublish)}
           publishLoading={submitLoading}
           submitLabel={submitLabel}
+          isPublishDisabled={publishButtonState.disabled}
+          publishTooltip={publishButtonState.tooltip}
         />
 
         {/* ═══ WORKSPACE ═══ */}

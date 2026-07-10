@@ -8,4 +8,6 @@ export interface ComposerHeaderProps {
   onPublish: () => void;
   publishLoading: boolean;
   submitLabel: string;
+  isPublishDisabled: boolean;
+  publishTooltip: string;
 }
