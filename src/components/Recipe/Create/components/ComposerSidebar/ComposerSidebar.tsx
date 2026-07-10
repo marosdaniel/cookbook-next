@@ -27,7 +27,7 @@ const ComposerSidebar = memo(
     onReset,
     resetLabel,
   }: Readonly<ComposerSidebarProps>) => {
-    const t = useTranslations('recipeCreate.sidebar');
+    const translate = useTranslations('recipeCreate.sidebar');
 
     return (
       <Box
@@ -44,7 +44,7 @@ const ComposerSidebar = memo(
       >
         <Stack gap="xs">
           <Text size="xs" tt="uppercase" fw={700} c="dimmed" mb={4}>
-            {t('sectionsTitle')}
+            {translate('sectionsTitle')}
           </Text>
           {SECTION_ITEMS.map(({ key, labelKey, Icon }) => {
             const sectionState = sectionCompletion(key, values);
@@ -52,8 +52,8 @@ const ComposerSidebar = memo(
             return (
               <SectionNavItem
                 key={key}
-                label={t(`sections.${labelKey}`)}
-                hint={getSectionHint(key, sectionState, values, t)}
+                label={translate(`sections.${labelKey}`)}
+                hint={getSectionHint(key, sectionState, values, translate)}
                 icon={<Icon size={18} />}
                 active={activeSection === key}
                 completionDone={sectionState.done}
@@ -71,7 +71,7 @@ const ComposerSidebar = memo(
             color={getProgressColor(completion.percent)}
           />
           <Text size="xs" c="dimmed" ta="center">
-            {t('progressPercent', { percent: completion.percent })}
+            {translate('progressPercent', { percent: completion.percent })}
           </Text>
 
           <Divider my="sm" />
@@ -87,7 +87,7 @@ const ComposerSidebar = memo(
               }}
               fullWidth
             >
-              {t('quickAddIngredient')}
+              {translate('quickAddIngredient')}
             </Button>
             <Button
               size="xs"
@@ -99,7 +99,7 @@ const ComposerSidebar = memo(
               }}
               fullWidth
             >
-              {t('quickAddStep')}
+              {translate('quickAddStep')}
             </Button>
           </Group>
 
@@ -113,7 +113,7 @@ const ComposerSidebar = memo(
             onClick={onReset}
             fullWidth
           >
-            {resetLabel || t('resetButton')}
+            {resetLabel || translate('resetButton')}
           </Button>
         </Stack>
       </Box>

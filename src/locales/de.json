@@ -141,10 +141,10 @@
     "followings": "Folge ich",
     "allRecipes": "Alle Rezepte",
     "latestRecipes": "Neueste Rezepte",
-    "unsaved": "Nicht gespeichert",
+    "unsaved": "Kein gespeicherter Entwurf",
     "justSaved": "Gerade gespeichert",
     "savedRecently": "Vor kurzem gespeichert",
-    "savedAgo": "Vor {minutes}m gespeichert"
+    "savedAgo": "Vor {minutes} Minuten gespeichert"
   },
   "recipe": {
     "notRatedYet": "Noch nicht bewertet",

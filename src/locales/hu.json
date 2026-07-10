@@ -124,10 +124,10 @@
     "followings": "Követések",
     "allRecipes": "Összes recept",
     "latestRecipes": "Legfrissebb receptek",
-    "unsaved": "Nincs mentve",
+    "unsaved": "Nincs mentett vázlat",
     "justSaved": "Épp most mentve",
     "savedRecently": "Nemrég mentve",
-    "savedAgo": "Mentve {minutes} perce"
+    "savedAgo": "{minutes} perce mentve"
   },
   "recipe": {
     "notRatedYet": "Még nincs értékelve",

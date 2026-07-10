@@ -128,10 +128,10 @@
     "followings": "Following",
     "allRecipes": "All Recipes",
     "latestRecipes": "Latest Recipes",
-    "unsaved": "Unsaved",
+    "unsaved": "No saved draft",
     "justSaved": "Just saved",
     "savedRecently": "Saved recently",
-    "savedAgo": "Saved {minutes}m ago"
+    "savedAgo": "{minutes} minutes ago"
   },
   "recipe": {
     "notRatedYet": "Not rated yet",

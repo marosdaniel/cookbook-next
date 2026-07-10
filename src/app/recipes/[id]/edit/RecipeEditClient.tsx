@@ -57,9 +57,12 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
     return recipeToFormValues(recipe);
   }, [recipe]);
 
+  const initialValuesKey = recipe ? recipe.id : `loading:${recipeId}`;
+
   const editForm = useRecipeEditForm({
     recipeId,
-    initialValues,
+    initialValues: initialValues ?? EMPTY_FORM_VALUES,
+    initialValuesKey,
     onSectionChange: goToSection,
     labels,
   });

@@ -102,3 +102,8 @@ export interface PreviewProps {
   labels: MetadataOption[];
   values: RecipeFormValues;
 }
+
+export type RecipeFormFieldPath =
+  | keyof RecipeFormValues
+  | `ingredients[${number}].${keyof FormIngredient}`
+  | `preparationSteps[${number}].${keyof FormPreparationStep}`;

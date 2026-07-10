@@ -4,7 +4,7 @@ import { notifications } from '@mantine/notifications';
 import { IconCheck, IconDeviceFloppy } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CREATE_RECIPE } from '@/lib/graphql/mutations';
 import { recipeFormValidationSchema } from '@/lib/validation/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
@@ -23,6 +23,18 @@ import {
   transformValuesToInput,
 } from '../utils';
 
+const AUTOSAVE_DELAY_MS = 1_000;
+const LAST_SAVED_REFRESH_MS = 15_000;
+
+const getNextStepOrder = (steps: FormPreparationStep[]): number => {
+  const highestOrder = steps.reduce(
+    (currentHighestOrder, step) => Math.max(currentHighestOrder, step.order),
+    0,
+  );
+
+  return highestOrder + 1;
+};
+
 export const useRecipeForm = ({
   metadataLoaded,
   onSectionChange,
@@ -36,17 +48,21 @@ export const useRecipeForm = ({
     defaultValue: null,
   });
 
+  const [now, setNow] = useState(() => Date.now());
+
   const [createRecipe, { loading: publishLoading }] = useMutation(
     CREATE_RECIPE,
     {
       onCompleted: () => {
         setDraft(null);
+
         notifications.show({
           title: translate('notifications.recipeCreatedTitle'),
           message: translate('notifications.recipeCreatedMessage'),
           color: 'teal',
           icon: <IconCheck size={18} />,
         });
+
         router.push('/me/my-recipes');
       },
       onError: (error) => {
@@ -68,90 +84,137 @@ export const useRecipeForm = ({
     validateInputOnBlur: true,
   });
 
-  const handlePublish = async (values: RecipeFormValues) => {
-    if (!values.difficultyLevel || !values.category) {
-      notifications.show({
-        title: translate('notifications.missingFieldsTitle'),
-        message: translate('notifications.missingFieldsMessage'),
-        color: 'orange',
-      });
-      onSectionChange('basics');
+  const formRef = useRef(form);
+  const hydratedDraftRef = useRef<DraftState | null | undefined>(undefined);
+
+  formRef.current = form;
+
+  useEffect(() => {
+    if (hydratedDraftRef.current === draft) {
       return;
     }
 
-    const input = transformValuesToInput(values, labels);
+    if (draft?.values) {
+      form.setValues(draft.values);
+      form.resetDirty(draft.values);
+    }
 
-    await createRecipe({
-      variables: { recipeCreateInput: input },
-    });
-  };
-
-  const formRef = useRef(form);
-  formRef.current = form;
+    hydratedDraftRef.current = draft;
+  }, [draft, form]);
 
   const completion = useMemo(
     () => computeCompletion(form.values),
     [form.values],
   );
 
-  const [debouncedValues] = useDebouncedValue(form.values, 800);
+  const [debouncedValues, cancelDebouncedDraftSave] = useDebouncedValue(
+    form.values,
+    AUTOSAVE_DELAY_MS,
+  );
 
   useEffect(() => {
-    if (!metadataLoaded) return;
+    if (!metadataLoaded || !form.isDirty()) {
+      return;
+    }
+
     setDraft({
       updatedAt: Date.now(),
       values: debouncedValues,
     });
-  }, [debouncedValues, metadataLoaded, setDraft]);
+  }, [debouncedValues, form, metadataLoaded, setDraft]);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setNow(Date.now());
+    }, LAST_SAVED_REFRESH_MS);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
+  const handlePublish = useCallback(
+    async (values: RecipeFormValues) => {
+      if (!values.difficultyLevel || !values.category) {
+        notifications.show({
+          title: translate('notifications.missingFieldsTitle'),
+          message: translate('notifications.missingFieldsMessage'),
+          color: 'orange',
+        });
+
+        onSectionChange('basics');
+        return;
+      }
+
+      const input = transformValuesToInput(values, labels);
+
+      await createRecipe({
+        variables: {
+          recipeCreateInput: input,
+        },
+      });
+    },
+    [createRecipe, labels, onSectionChange, translate],
+  );
 
   const lastSavedLabel = useMemo(() => {
-    const unsaved = translate('sidebar.unsaved') || 'Unsaved';
-    const justSaved = translate('sidebar.justSaved') || 'Just saved';
-    const savedRecently =
-      translate('sidebar.savedRecently') || 'Saved recently';
-    const savedAgoTemplate = 'Saved {minutes}m ago';
-
-    if (!draft?.updatedAt) return unsaved;
-    const delta = Date.now() - draft.updatedAt;
-    if (delta < 3_000) return justSaved;
-    if (delta < 60_000) return savedRecently;
-
-    const minutes = Math.floor(delta / 60_000);
-    try {
-      return translate('sidebar.savedAgo', { minutes });
-    } catch (e) {
-      console.error(e);
-      return savedAgoTemplate.replace('{minutes}', minutes.toString());
+    if (!draft?.updatedAt) {
+      return translate('sidebar.unsaved');
     }
-  }, [draft?.updatedAt, translate]);
+
+    const elapsedMilliseconds = Math.max(0, now - draft.updatedAt);
+
+    if (elapsedMilliseconds < 3_000) {
+      return translate('sidebar.justSaved');
+    }
+
+    if (elapsedMilliseconds < 60_000) {
+      return translate('sidebar.savedRecently');
+    }
+
+    return translate('sidebar.savedAgo', {
+      minutes: Math.floor(elapsedMilliseconds / 60_000),
+    });
+  }, [draft?.updatedAt, now, translate]);
 
   const saveDraftNow = useCallback(() => {
+    cancelDebouncedDraftSave();
+
     setDraft({
       updatedAt: Date.now(),
       values: formRef.current.getValues(),
     });
+
     notifications.show({
       message: translate('notifications.draftSavedMessage'),
       color: 'blue',
       icon: <IconDeviceFloppy size={16} />,
       withBorder: true,
     });
-  }, [setDraft, translate]);
+  }, [cancelDebouncedDraftSave, setDraft, translate]);
 
   const resetDraft = useCallback(() => {
+    const currentForm = formRef.current;
+
+    cancelDebouncedDraftSave();
+
     setDraft(null);
-    formRef.current.reset();
-    formRef.current.setValues(EMPTY_FORM_VALUES);
+
+    currentForm.setValues(EMPTY_FORM_VALUES);
+    currentForm.resetDirty(EMPTY_FORM_VALUES);
+
     onSectionChange('basics');
+
     notifications.show({
       title: translate('notifications.draftClearedTitle'),
       message: translate('notifications.draftClearedMessage'),
       color: 'gray',
     });
-  }, [setDraft, onSectionChange, translate]);
+  }, [cancelDebouncedDraftSave, onSectionChange, setDraft, translate]);
 
   const addIngredient = useCallback(() => {
-    const f = formRef.current;
+    const currentForm = formRef.current;
+
     const newIngredient: FormIngredient = {
       localId: crypto.randomUUID(),
       name: '',
@@ -160,17 +223,21 @@ export const useRecipeForm = ({
       isOptional: false,
       note: '',
     };
-    f.insertListItem('ingredients', newIngredient);
+
+    currentForm.insertListItem('ingredients', newIngredient);
   }, []);
 
   const addStep = useCallback(() => {
-    const f = formRef.current;
+    const currentForm = formRef.current;
+    const currentSteps = currentForm.getValues().preparationSteps;
+
     const newStep: FormPreparationStep = {
       localId: crypto.randomUUID(),
       description: '',
-      order: f.getValues().preparationSteps.length + 1,
+      order: getNextStepOrder(currentSteps),
     };
-    f.insertListItem('preparationSteps', newStep);
+
+    currentForm.insertListItem('preparationSteps', newStep);
   }, []);
 
   return {

@@ -20,38 +20,35 @@ import { computeCompletion, transformValuesToInput } from '../utils';
 export interface UseRecipeEditFormProps {
   recipeId: string;
   initialValues: RecipeFormValues;
+  /**
+   * Stable identifier for the server version currently loaded into the form.
+   * Recommended value: `${recipe.id}:${recipe.updatedAt}`.
+   */
+  initialValuesKey: string;
   onSectionChange: (section: ComposerSection) => void;
   labels: MetadataOption[];
 }
 
+const getNextStepOrder = (steps: FormPreparationStep[]): number => {
+  const highestOrder = steps.reduce(
+    (currentHighestOrder, step) => Math.max(currentHighestOrder, step.order),
+    0,
+  );
+
+  return highestOrder + 1;
+};
+
 export const useRecipeEditForm = ({
   recipeId,
   initialValues,
+  initialValuesKey,
   onSectionChange,
   labels,
 }: UseRecipeEditFormProps) => {
   const router = useRouter();
   const translate = useTranslations();
 
-  const [editRecipe, { loading: submitLoading }] = useMutation(EDIT_RECIPE, {
-    onCompleted: () => {
-      notifications.show({
-        title: translate('notifications.recipeUpdatedTitle'),
-        message: translate('notifications.recipeUpdatedMessage'),
-        color: 'teal',
-        icon: <IconCheck size={18} />,
-      });
-      router.push('/me/my-recipes');
-    },
-    onError: (error) => {
-      notifications.show({
-        title: translate('notifications.recipeUpdateFailedTitle'),
-        message:
-          error.message || translate('notifications.recipeUpdateFailedMessage'),
-        color: 'red',
-      });
-    },
-  });
+  const [editRecipe, { loading: submitLoading }] = useMutation(EDIT_RECIPE);
 
   const form = useRecipeFormHook({
     mode: 'controlled',
@@ -60,42 +57,88 @@ export const useRecipeEditForm = ({
     validateInputOnBlur: true,
   });
 
-  // Since it's uncontrolled, to handle initial values loading async, we use `useEffect`
-  useEffect(() => {
-    form.setValues(initialValues);
-    form.resetDirty(initialValues);
-  }, [initialValues, form]);
+  const formRef = useRef(form);
+  const hydratedValuesKeyRef = useRef<string | null>(null);
 
-  const handlePublish = async (values: RecipeFormValues) => {
-    if (!values.difficultyLevel || !values.category) {
-      notifications.show({
-        title: translate('notifications.missingFieldsTitle'),
-        message: translate('notifications.missingFieldsMessage'),
-        color: 'orange',
-      });
-      onSectionChange('basics');
+  formRef.current = form;
+
+  /**
+   * Hydrate only when a different server-side recipe version arrives.
+   * Do not synchronize all initialValues reference changes: that would
+   * overwrite the user while they are editing.
+   */
+  useEffect(() => {
+    if (hydratedValuesKeyRef.current === initialValuesKey) {
       return;
     }
 
-    const input = transformValuesToInput(values, labels);
+    form.setValues(initialValues);
+    form.resetDirty(initialValues);
 
-    await editRecipe({
-      variables: { id: recipeId, recipeEditInput: input },
-    });
-  };
-
-  const formRef = useRef(form);
-  formRef.current = form;
+    hydratedValuesKeyRef.current = initialValuesKey;
+  }, [form, initialValues, initialValuesKey]);
 
   const completion = useMemo(
     () => computeCompletion(form.values),
     [form.values],
   );
 
+  const handlePublish = useCallback(
+    async (values: RecipeFormValues) => {
+      if (!values.difficultyLevel || !values.category) {
+        notifications.show({
+          title: translate('notifications.missingFieldsTitle'),
+          message: translate('notifications.missingFieldsMessage'),
+          color: 'orange',
+        });
+
+        onSectionChange('basics');
+        return;
+      }
+
+      const input = transformValuesToInput(values, labels);
+
+      try {
+        await editRecipe({
+          variables: {
+            id: recipeId,
+            recipeEditInput: input,
+          },
+        });
+
+        notifications.show({
+          title: translate('notifications.recipeUpdatedTitle'),
+          message: translate('notifications.recipeUpdatedMessage'),
+          color: 'teal',
+          icon: <IconCheck size={18} />,
+        });
+
+        router.push('/me/my-recipes');
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : translate('notifications.recipeUpdateFailedMessage');
+
+        notifications.show({
+          title: translate('notifications.recipeUpdateFailedTitle'),
+          message,
+          color: 'red',
+        });
+      }
+    },
+    [editRecipe, labels, onSectionChange, recipeId, router, translate],
+  );
+
   const resetToOriginal = useCallback(() => {
-    formRef.current.reset();
-    formRef.current.setValues(initialValues);
+    const currentForm = formRef.current;
+
+    currentForm.setValues(initialValues);
+    currentForm.resetDirty(initialValues);
+    currentForm.resetTouched();
+
     onSectionChange('basics');
+
     notifications.show({
       title: translate('notifications.changesResetTitle'),
       message: translate('notifications.changesResetMessage'),
@@ -104,7 +147,6 @@ export const useRecipeEditForm = ({
   }, [initialValues, onSectionChange, translate]);
 
   const addIngredient = useCallback(() => {
-    const f = formRef.current;
     const newIngredient: FormIngredient = {
       localId: crypto.randomUUID(),
       name: '',
@@ -113,17 +155,21 @@ export const useRecipeEditForm = ({
       isOptional: false,
       note: '',
     };
-    f.insertListItem('ingredients', newIngredient);
+
+    formRef.current.insertListItem('ingredients', newIngredient);
   }, []);
 
   const addStep = useCallback(() => {
-    const f = formRef.current;
+    const currentForm = formRef.current;
+    const currentSteps = currentForm.getValues().preparationSteps;
+
     const newStep: FormPreparationStep = {
       localId: crypto.randomUUID(),
       description: '',
-      order: f.getValues().preparationSteps.length + 1,
+      order: getNextStepOrder(currentSteps),
     };
-    f.insertListItem('preparationSteps', newStep);
+
+    currentForm.insertListItem('preparationSteps', newStep);
   }, []);
 
   return {

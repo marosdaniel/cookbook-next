@@ -17,9 +17,8 @@ import {
 import { toCleanedOptions } from '../utils';
 
 export const useRecipeMetadata = () => {
-  const tMisc = useTranslations('misc');
+  const translateMisc = useTranslations('misc');
 
-  /* Metadata from Redux store */
   const categoriesFromStore = useCategories();
   const levelsFromStore = useLevels();
   const labelsFromStore = useLabels();
@@ -30,48 +29,58 @@ export const useRecipeMetadata = () => {
   const allergensFromStore = useAllergens();
   const equipmentFromStore = useEquipment();
   const costLevelsFromStore = useCostLevels();
+
   const metadataLoading = useMetadataLoading();
   const metadataLoaded = useMetadataLoaded();
 
   const categories = useMemo(
-    () => toCleanedOptions(categoriesFromStore, tMisc),
-    [categoriesFromStore, tMisc],
+    () => toCleanedOptions(categoriesFromStore, translateMisc),
+    [categoriesFromStore, translateMisc],
   );
+
   const levels = useMemo(
-    () => toCleanedOptions(levelsFromStore, tMisc),
-    [levelsFromStore, tMisc],
+    () => toCleanedOptions(levelsFromStore, translateMisc),
+    [levelsFromStore, translateMisc],
   );
+
   const labels = useMemo(
-    () => toCleanedOptions(labelsFromStore, tMisc),
-    [labelsFromStore, tMisc],
+    () => toCleanedOptions(labelsFromStore, translateMisc),
+    [labelsFromStore, translateMisc],
   );
+
   const unitOptions = useMemo(
-    () => toCleanedOptions(unitsFromStore, tMisc),
-    [unitsFromStore, tMisc],
+    () => toCleanedOptions(unitsFromStore, translateMisc),
+    [translateMisc, unitsFromStore],
   );
+
   const cuisines = useMemo(
-    () => toCleanedOptions(cuisinesFromStore, tMisc),
-    [cuisinesFromStore, tMisc],
+    () => toCleanedOptions(cuisinesFromStore, translateMisc),
+    [cuisinesFromStore, translateMisc],
   );
+
   const servingUnits = useMemo(
-    () => toCleanedOptions(servingUnitsFromStore, tMisc),
-    [servingUnitsFromStore, tMisc],
+    () => toCleanedOptions(servingUnitsFromStore, translateMisc),
+    [servingUnitsFromStore, translateMisc],
   );
+
   const dietaryFlags = useMemo(
-    () => toCleanedOptions(dietaryFlagsFromStore, tMisc),
-    [dietaryFlagsFromStore, tMisc],
+    () => toCleanedOptions(dietaryFlagsFromStore, translateMisc),
+    [dietaryFlagsFromStore, translateMisc],
   );
+
   const allergens = useMemo(
-    () => toCleanedOptions(allergensFromStore, tMisc),
-    [allergensFromStore, tMisc],
+    () => toCleanedOptions(allergensFromStore, translateMisc),
+    [allergensFromStore, translateMisc],
   );
+
   const equipment = useMemo(
-    () => toCleanedOptions(equipmentFromStore, tMisc),
-    [equipmentFromStore, tMisc],
+    () => toCleanedOptions(equipmentFromStore, translateMisc),
+    [equipmentFromStore, translateMisc],
   );
+
   const costLevels = useMemo(
-    () => toCleanedOptions(costLevelsFromStore, tMisc),
-    [costLevelsFromStore, tMisc],
+    () => toCleanedOptions(costLevelsFromStore, translateMisc),
+    [costLevelsFromStore, translateMisc],
   );
 
   return {
