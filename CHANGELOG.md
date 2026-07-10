@@ -1,3 +1,10 @@
+# [2.42.0](https://github.com/marosdaniel/cookbook-next/compare/v2.41.0...v2.42.0) (2026-07-10)
+
+
+### Features
+
+* integrate framer-motion for animated transitions in RecipeIngredients and RecipeGrid components ([0ec42b9](https://github.com/marosdaniel/cookbook-next/commit/0ec42b922bc0c484ec2022c1788d79757435f9e1))
+
 # [2.41.0](https://github.com/marosdaniel/cookbook-next/compare/v2.40.0...v2.41.0) (2026-07-07)
 
 
