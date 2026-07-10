@@ -1,3 +1,10 @@
+# [2.50.0](https://github.com/marosdaniel/cookbook-next/compare/v2.49.0...v2.50.0) (2026-07-10)
+
+
+### Features
+
+* Enhance recipe creation sections with animations and improved input handling ([3f3ac7f](https://github.com/marosdaniel/cookbook-next/commit/3f3ac7f1edcab8bf89380a000cc9a926d63c9ae1))
+
 # [2.49.0](https://github.com/marosdaniel/cookbook-next/compare/v2.48.0...v2.49.0) (2026-07-10)
 
 
