@@ -1,3 +1,5 @@
+'use client';
+
 import {
   ActionIcon,
   Checkbox,
@@ -11,7 +13,7 @@ import {
 import { IconMinus, IconPlus } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
-import { MOTION_TRANSITION } from '@/lib/motion/transitions';
+import { MOTION_TRANSITION } from '../../../../lib/motion/transitions';
 import classes from '../RecipeDetail.module.css';
 import type { RecipeIngredientsProps } from '../types';
 import { scaleQuantity } from '../utils';
@@ -29,7 +31,7 @@ export const RecipeIngredients = ({
   onDecrementServings,
 }: Readonly<RecipeIngredientsProps>) => {
   const translate = useTranslations('recipeDetail');
-  const ingTranslate = useTranslations('recipeIngredients');
+  const translateIngredients = useTranslations('recipeIngredients');
 
   return (
     <Paper p="lg" radius="md" withBorder className={classes.ingredientsCard}>
@@ -37,6 +39,7 @@ export const RecipeIngredients = ({
         <Title order={2} size="h3" c="pink">
           {translate('ingredients')}
         </Title>
+
         <Text size="xs" c="dimmed">
           {translate('checkedOff', {
             count: checkedIngredients.size,
@@ -45,85 +48,130 @@ export const RecipeIngredients = ({
         </Text>
       </Group>
 
-      {/* Serving adjuster */}
       <Group gap="xs" mb="lg" justify="center">
         <Text fw={700} size="sm" tt="uppercase">
           {translate('servings')}:
         </Text>
-        <ActionIcon
-          variant="filled"
-          color="pink"
-          size="sm"
-          onClick={onDecrementServings}
-          disabled={servingMultiplier <= SERVING_MIN}
-          aria-label={ingTranslate('decreaseServings')}
+
+        <motion.div
+          whileTap={
+            servingMultiplier > SERVING_MIN ? { scale: 0.9 } : undefined
+          }
+          transition={MOTION_TRANSITION.interactive}
         >
-          <IconMinus size={14} />
-        </ActionIcon>
+          <ActionIcon
+            type="button"
+            variant="filled"
+            color="pink"
+            size="sm"
+            onClick={onDecrementServings}
+            disabled={servingMultiplier <= SERVING_MIN}
+            aria-label={translateIngredients('decreaseServings')}
+          >
+            <IconMinus size={14} />
+          </ActionIcon>
+        </motion.div>
+
         <NumberInput
           value={adjustedServings}
           readOnly
           hideControls
           w={50}
           size="xs"
-          styles={{ input: { textAlign: 'center', fontWeight: 700 } }}
+          aria-label={translate('servings')}
+          styles={{
+            input: {
+              textAlign: 'center',
+              fontWeight: 700,
+            },
+          }}
         />
-        <ActionIcon
-          variant="filled"
-          color="pink"
-          size="sm"
-          onClick={onIncrementServings}
-          disabled={servingMultiplier >= SERVING_MAX}
-          aria-label={ingTranslate('increaseServings')}
+
+        <motion.div
+          whileTap={
+            servingMultiplier < SERVING_MAX ? { scale: 0.9 } : undefined
+          }
+          transition={MOTION_TRANSITION.interactive}
         >
-          <IconPlus size={14} />
-        </ActionIcon>
+          <ActionIcon
+            type="button"
+            variant="filled"
+            color="pink"
+            size="sm"
+            onClick={onIncrementServings}
+            disabled={servingMultiplier >= SERVING_MAX}
+            aria-label={translateIngredients('increaseServings')}
+          >
+            <IconPlus size={14} />
+          </ActionIcon>
+        </motion.div>
       </Group>
 
-      {/* Ingredient list */}
       <Stack gap={0}>
-        {ingredients.map((ing) => {
-          const checked = checkedIngredients.has(ing.localId);
-          const scaledQty = scaleQuantity(ing.quantity, servingMultiplier);
+        {ingredients.map((ingredient) => {
+          const isChecked = checkedIngredients.has(ingredient.localId);
+          const scaledQuantity = scaleQuantity(
+            ingredient.quantity,
+            servingMultiplier,
+          );
+
           return (
             <motion.div
+              key={ingredient.localId}
               layout="position"
+              className={`${classes.ingredientItem} ${
+                isChecked ? classes.ingredientChecked : ''
+              }`}
               initial={false}
-              animate={{ opacity: checked ? 0.5 : 1 }}
+              animate={{ opacity: isChecked ? 0.5 : 1 }}
+              whileHover={{ x: 2 }}
               transition={MOTION_TRANSITION.fast}
-              key={ing.localId}
-              className={`${classes.ingredientItem} ${checked ? classes.ingredientChecked : ''}`}
-              onClick={() => onToggleIngredient(ing.localId)}
             >
               <Checkbox
-                checked={checked}
-                onChange={() => onToggleIngredient(ing.localId)}
+                checked={isChecked}
+                onChange={() => onToggleIngredient(ingredient.localId)}
                 color="pink"
                 size="sm"
-                tabIndex={-1}
-                aria-label={ing.name}
-              />
-              <Text
-                size="sm"
-                className={`${classes.ingredientText} ${checked ? classes.ingredientTextChecked : ''}`}
-              >
-                <AnimatePresence mode="popLayout">
-                  <motion.span
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={MOTION_TRANSITION.fast}
-                    key={scaledQty}
-                    style={{ fontWeight: 700, display: 'inline-block' }}
+                label={
+                  <Text
+                    size="sm"
+                    className={`${classes.ingredientText} ${
+                      isChecked ? classes.ingredientTextChecked : ''
+                    }`}
                   >
-                    {scaledQty}
-                  </motion.span>
-                </AnimatePresence>
-                <Text component="span" fw={700} ml={4}>
-                  {ing.unit}
-                </Text>{' '}
-                {ing.name}
-              </Text>
+                    <AnimatePresence initial={false} mode="popLayout">
+                      <motion.span
+                        key={String(scaledQuantity)}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={MOTION_TRANSITION.fast}
+                        style={{
+                          display: 'inline-block',
+                          fontWeight: 700,
+                        }}
+                      >
+                        {scaledQuantity}
+                      </motion.span>
+                    </AnimatePresence>
+                    <Text component="span" fw={700} ml={4}>
+                      {ingredient.unit}
+                    </Text>{' '}
+                    {ingredient.name}
+                  </Text>
+                }
+                styles={{
+                  root: {
+                    width: '100%',
+                  },
+                  body: {
+                    alignItems: 'center',
+                  },
+                  label: {
+                    flex: 1,
+                  },
+                }}
+              />
             </motion.div>
           );
         })}
