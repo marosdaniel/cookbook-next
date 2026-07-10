@@ -1,3 +1,10 @@
+# [2.49.0](https://github.com/marosdaniel/cookbook-next/compare/v2.48.0...v2.49.0) (2026-07-10)
+
+
+### Features
+
+* enhance recipe components with animations and improved ingredient handling ([a1ecc98](https://github.com/marosdaniel/cookbook-next/commit/a1ecc98f10582b021c7233992a9cbd16735d91a0))
+
 # [2.48.0](https://github.com/marosdaniel/cookbook-next/compare/v2.47.0...v2.48.0) (2026-07-10)
 
 
