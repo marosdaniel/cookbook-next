@@ -1,12 +1,9 @@
 import { Badge, Box, Group, Text } from '@mantine/core';
 import { useTranslations } from 'next-intl';
+import type { RecipeEquipmentProps } from './types';
 
-type RecipeEquipmentProps = {
-  equipment: string[];
-};
-
-export const RecipeEquipment = ({ equipment }: RecipeEquipmentProps) => {
-  const t = useTranslations('recipePreview');
+const RecipeEquipment = ({ equipment }: RecipeEquipmentProps) => {
+  const translate = useTranslations('recipePreview');
 
   if (equipment.length === 0) {
     return null;
@@ -15,7 +12,7 @@ export const RecipeEquipment = ({ equipment }: RecipeEquipmentProps) => {
   return (
     <Box mb="md">
       <Text size="sm" fw={600} mb="xs" c="dimmed" tt="uppercase">
-        {t('equipment.label')}
+        {translate('equipment.label')}
       </Text>
 
       <Group gap="xs">
@@ -28,3 +25,4 @@ export const RecipeEquipment = ({ equipment }: RecipeEquipmentProps) => {
     </Box>
   );
 };
+export default RecipeEquipment;

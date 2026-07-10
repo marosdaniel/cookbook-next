@@ -6,13 +6,13 @@ import { LayoutGroup } from 'motion/react';
 import { memo, useMemo } from 'react';
 import type { PreviewProps } from '../types';
 import IngredientsSection from './components/IngredientsSection';
-import { PreparationSection } from './components/PreparationSection';
-import { RecipeDescription } from './components/RecipeDescription';
-import { RecipeEquipment } from './components/RecipeEquipment';
-import { RecipeHero } from './components/RecipeHero';
-import { RecipeNotes } from './components/RecipeNotes';
-import { RecipeStats } from './components/RecipeStats';
-import { RecipeTags } from './components/RecipeTags';
+import PreparationSection from './components/PreparationSection';
+import RecipeDescription from './components/RecipeDescription';
+import RecipeEquipment from './components/RecipeEquipment';
+import RecipeHero from './components/RecipeHero';
+import RecipeNotes from './components/RecipeNotes';
+import RecipeStats from './components/RecipeStats';
+import RecipeTags from './components/RecipeTags';
 
 const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
   const tags = useMemo(

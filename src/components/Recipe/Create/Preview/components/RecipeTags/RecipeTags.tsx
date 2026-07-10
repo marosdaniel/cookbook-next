@@ -1,10 +1,7 @@
 import { Badge, Group } from '@mantine/core';
+import type { RecipeTagsProps } from './types';
 
-type RecipeTagsProps = {
-  tags: string[];
-};
-
-export const RecipeTags = ({ tags }: RecipeTagsProps) => {
+const RecipeTags = ({ tags }: RecipeTagsProps) => {
   if (tags.length === 0) {
     return null;
   }
@@ -19,3 +16,5 @@ export const RecipeTags = ({ tags }: RecipeTagsProps) => {
     </Group>
   );
 };
+
+export default RecipeTags;

@@ -15,14 +15,10 @@ import {
   IconWorld,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import type { RecipePreviewValues } from './types';
+import type { RecipeHeroProps } from './types';
 
-type RecipeHeroProps = {
-  values: RecipePreviewValues;
-};
-
-export const RecipeHero = ({ values }: RecipeHeroProps) => {
-  const t = useTranslations('recipePreview');
+const RecipeHero = ({ values }: RecipeHeroProps) => {
+  const translate = useTranslations('recipePreview');
 
   const categoryLabel = values.category?.label;
   const difficultyLabel = values.difficultyLevel?.label;
@@ -34,7 +30,7 @@ export const RecipeHero = ({ values }: RecipeHeroProps) => {
       {values.imgSrc ? (
         <Image
           src={values.imgSrc}
-          alt={t('imageAlt')}
+          alt={translate('imageAlt')}
           h="100%"
           w="100%"
           fit="cover"
@@ -53,7 +49,7 @@ export const RecipeHero = ({ values }: RecipeHeroProps) => {
           </ThemeIcon>
 
           <Text c="dimmed" fw={500}>
-            {t('noCover')}
+            {translate('noCover')}
           </Text>
         </Stack>
       )}
@@ -137,15 +133,16 @@ export const RecipeHero = ({ values }: RecipeHeroProps) => {
             textShadow: '0 2px 10px rgba(0,0,0,0.3)',
           }}
         >
-          {values.title?.trim() || t('title.untitled')}
+          {values.title?.trim() || translate('title.untitled')}
         </Title>
 
         {!values.title?.trim() && (
           <Text c="dimmed" size="sm" mt="xs" fs="italic" opacity={0.7}>
-            {t('title.addHint')}
+            {translate('title.addHint')}
           </Text>
         )}
       </Box>
     </Box>
   );
 };
+export default RecipeHero;

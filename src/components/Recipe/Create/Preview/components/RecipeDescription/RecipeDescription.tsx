@@ -1,17 +1,14 @@
 import { Text } from '@mantine/core';
 import { useTranslations } from 'next-intl';
+import type { RecipeDescriptionProps } from './types';
 
-type RecipeDescriptionProps = {
-  description?: string | null;
-};
-
-export const RecipeDescription = ({ description }: RecipeDescriptionProps) => {
-  const t = useTranslations('recipePreview');
+const RecipeDescription = ({ description }: RecipeDescriptionProps) => {
+  const translate = useTranslations('recipePreview');
 
   if (!description?.trim()) {
     return (
       <Text c="dimmed" fs="italic" opacity={0.5} mb="xl">
-        {t('description.placeholder')}
+        {translate('description.placeholder')}
       </Text>
     );
   }
@@ -29,3 +26,4 @@ export const RecipeDescription = ({ description }: RecipeDescriptionProps) => {
     </Text>
   );
 };
+export default RecipeDescription;

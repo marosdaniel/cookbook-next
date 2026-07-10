@@ -1,12 +1,20 @@
 import { Box, Text } from '@mantine/core';
 import { useTranslations } from 'next-intl';
+import type { RecipeNoteProps, RecipeNotesProps } from './types';
 
-type RecipeNotesProps = {
-  tips?: string | null;
-  substitutions?: string | null;
-};
+const RecipeNote = ({ title, content, mt }: RecipeNoteProps) => (
+  <Box mt={mt}>
+    <Text size="sm" fw={600} mb="xs" c="dimmed" tt="uppercase">
+      {title}
+    </Text>
 
-export const RecipeNotes = ({ tips, substitutions }: RecipeNotesProps) => {
+    <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
+      {content}
+    </Text>
+  </Box>
+);
+
+const RecipeNotes = ({ tips, substitutions }: RecipeNotesProps) => {
   const t = useTranslations('recipePreview');
 
   const hasTips = Boolean(tips?.trim());
@@ -33,20 +41,4 @@ export const RecipeNotes = ({ tips, substitutions }: RecipeNotesProps) => {
   );
 };
 
-type RecipeNoteProps = {
-  title: string;
-  content: string;
-  mt: 'md' | 'xl';
-};
-
-const RecipeNote = ({ title, content, mt }: RecipeNoteProps) => (
-  <Box mt={mt}>
-    <Text size="sm" fw={600} mb="xs" c="dimmed" tt="uppercase">
-      {title}
-    </Text>
-
-    <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>
-      {content}
-    </Text>
-  </Box>
-);
+export default RecipeNotes;

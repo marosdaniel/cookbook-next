@@ -1,18 +1,22 @@
 import { Group, Paper, Stack, Text } from '@mantine/core';
 import { IconClock, IconUsers } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { NO_VALUE_FALLBACK } from '../../consts';
-import type { RecipePreviewValues } from './types';
+import { NO_VALUE_FALLBACK } from '../../../consts';
+import type { RecipeStatsProps, StatCardProps, TimePartProps } from './types';
 
-type RecipeStatsProps = {
-  values: RecipePreviewValues;
-};
+const TimePart = ({ label, value }: TimePartProps) => (
+  <Paper withBorder p="xs" radius="md">
+    <Stack gap={2} align="center">
+      <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
+        {label}
+      </Text>
 
-type StatCardProps = {
-  label: string;
-  value: string;
-  icon: React.ReactNode;
-};
+      <Text size="sm" fw={600}>
+        {value} min
+      </Text>
+    </Stack>
+  </Paper>
+);
 
 const StatCard = ({ label, value, icon }: StatCardProps) => (
   <Paper withBorder p="sm" radius="md">
@@ -29,8 +33,8 @@ const StatCard = ({ label, value, icon }: StatCardProps) => (
   </Paper>
 );
 
-export const RecipeStats = ({ values }: RecipeStatsProps) => {
-  const t = useTranslations('recipePreview');
+const RecipeStats = ({ values }: RecipeStatsProps) => {
+  const translate = useTranslations('recipePreview');
 
   const servingUnitLabel = values.servingUnit?.label;
   const hasTimeParts =
@@ -42,7 +46,7 @@ export const RecipeStats = ({ values }: RecipeStatsProps) => {
     <>
       <Group grow mb="xl" data-testid="recipe-preview-stats">
         <StatCard
-          label={t('totalTime.label')}
+          label={translate('totalTime.label')}
           value={
             values.cookingTime ? `${values.cookingTime} m` : NO_VALUE_FALLBACK
           }
@@ -50,11 +54,11 @@ export const RecipeStats = ({ values }: RecipeStatsProps) => {
         />
 
         <StatCard
-          label={t('servings.label')}
+          label={translate('servings.label')}
           value={
             values.servings
               ? `${values.servings} ${
-                  servingUnitLabel || t('servings.fallbackUnit')
+                  servingUnitLabel || translate('servings.fallbackUnit')
                 }`
               : NO_VALUE_FALLBACK
           }
@@ -65,15 +69,24 @@ export const RecipeStats = ({ values }: RecipeStatsProps) => {
       {hasTimeParts && (
         <Group grow mb="md">
           {values.prepTimeMinutes ? (
-            <TimePart label={t('time.prep')} value={values.prepTimeMinutes} />
+            <TimePart
+              label={translate('time.prep')}
+              value={values.prepTimeMinutes}
+            />
           ) : null}
 
           {values.cookTimeMinutes ? (
-            <TimePart label={t('time.cook')} value={values.cookTimeMinutes} />
+            <TimePart
+              label={translate('time.cook')}
+              value={values.cookTimeMinutes}
+            />
           ) : null}
 
           {values.restTimeMinutes ? (
-            <TimePart label={t('time.rest')} value={values.restTimeMinutes} />
+            <TimePart
+              label={translate('time.rest')}
+              value={values.restTimeMinutes}
+            />
           ) : null}
         </Group>
       )}
@@ -81,21 +94,4 @@ export const RecipeStats = ({ values }: RecipeStatsProps) => {
   );
 };
 
-type TimePartProps = {
-  label: string;
-  value: number;
-};
-
-const TimePart = ({ label, value }: TimePartProps) => (
-  <Paper withBorder p="xs" radius="md">
-    <Stack gap={2} align="center">
-      <Text c="dimmed" size="xs" tt="uppercase" fw={600}>
-        {label}
-      </Text>
-
-      <Text size="sm" fw={600}>
-        {value} min
-      </Text>
-    </Stack>
-  </Paper>
-);
+export default RecipeStats;
