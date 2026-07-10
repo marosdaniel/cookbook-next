@@ -147,7 +147,9 @@ describe('getAuthMetadata', () => {
       difficultyLevel: { key: 'easy', label: 'Easy' },
       labels: [{ key: 'vegetarian', label: 'Vegetarian' }],
       ingredients: [{ localId: '1', name: 'Tomato', quantity: 2, unit: 'pcs' }],
-      preparationSteps: [{ order: 1, description: 'Boil pasta' }],
+      preparationSteps: [
+        { localId: 'step-1', order: 1, description: 'Boil pasta' },
+      ],
       prepTimeMinutes: 5,
       cookTimeMinutes: 15,
       totalTimeMinutes: 20,

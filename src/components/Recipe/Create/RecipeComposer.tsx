@@ -10,19 +10,38 @@ import {
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconArrowLeft } from '@tabler/icons-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { MOTION_TRANSITION } from '../../../lib/motion/transitions';
 import ComposerHeader from './components/ComposerHeader';
 import ComposerSidebar from './components/ComposerSidebar';
 import { RecipeFormProvider } from './FormContext';
 import { useRecipeMetadata } from './hooks/useRecipeMetadata';
 import { Preview } from './Preview';
 import BasicsSection from './sections/BasicsSection';
-import { getPublishButtonState } from './utils';
 import IngredientsSection from './sections/IngredientsSection';
 import MediaSection from './sections/MediaSection';
 import StepsSection from './sections/StepsSection';
 import type { ComposerSection, RecipeComposerProps } from './types';
+import { getPublishButtonState } from './utils';
+
+const sectionVariants = {
+  initial: {
+    opacity: 0,
+    y: 12,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: MOTION_TRANSITION.standard,
+  },
+  exit: {
+    opacity: 0,
+    y: -8,
+    transition: MOTION_TRANSITION.fast,
+  },
+} as const;
 
 export const RecipeComposer = ({
   form,
@@ -41,11 +60,10 @@ export const RecipeComposer = ({
 }: Readonly<RecipeComposerProps>) => {
   const router = useRouter();
   const scrollRef = useRef<HTMLDivElement>(null);
+
   const [activeSection, setActiveSection] = useState<ComposerSection>('basics');
   const [previewOpen, setPreviewOpen] = useState(false);
-  const publishButtonState = getPublishButtonState(form.values);
 
-  /* Metadata */
   const {
     categories,
     levels,
@@ -61,25 +79,37 @@ export const RecipeComposer = ({
     metadataLoaded,
   } = useRecipeMetadata();
 
+  const [debouncedPreviewValues] = useDebouncedValue(form.values, 300);
+
+  const publishButtonState = useMemo(
+    () => getPublishButtonState(form.values),
+    [form.values],
+  );
+
   const goToSection = useCallback((section: ComposerSection) => {
     setActiveSection(section);
-    scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollRef.current?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   }, []);
 
-  /* Expose goToSection to parent via ref */
   useEffect(() => {
     if (goToSectionRef) {
       goToSectionRef.current = goToSection;
     }
+
+    return () => {
+      if (goToSectionRef) {
+        goToSectionRef.current = null;
+      }
+    };
   }, [goToSection, goToSectionRef]);
 
-  /* Debounced values for Preview – avoids heavy re-render on every keystroke */
-  const [debouncedPreviewValues] = useDebouncedValue(form.values, 300);
-
-  /* Stable navigation callbacks */
   const handleBack = useCallback(() => router.back(), [router]);
   const handleOpenPreview = useCallback(() => setPreviewOpen(true), []);
   const handleClosePreview = useCallback(() => setPreviewOpen(false), []);
+
   const goToBasics = useCallback(() => goToSection('basics'), [goToSection]);
   const goToMedia = useCallback(() => goToSection('media'), [goToSection]);
   const goToIngredients = useCallback(
@@ -88,7 +118,72 @@ export const RecipeComposer = ({
   );
   const goToSteps = useCallback(() => goToSection('steps'), [goToSection]);
 
-  /* Loading gate */
+  const sectionContent = useMemo(() => {
+    switch (activeSection) {
+      case 'basics':
+        return (
+          <BasicsSection
+            categories={categories}
+            levels={levels}
+            labels={labels}
+            cuisines={cuisines}
+            servingUnits={servingUnits}
+            costLevels={costLevels}
+            dietaryFlags={dietaryFlags}
+            allergens={allergens}
+            equipment={equipment}
+            onNext={goToMedia}
+          />
+        );
+
+      case 'media':
+        return <MediaSection onBack={goToBasics} onNext={goToIngredients} />;
+
+      case 'ingredients':
+        return (
+          <IngredientsSection
+            unitOptions={unitOptions}
+            onAdd={addIngredient}
+            onBack={goToMedia}
+            onNext={goToSteps}
+          />
+        );
+
+      case 'steps':
+        return (
+          <StepsSection
+            onAdd={addStep}
+            onBack={goToIngredients}
+            onSubmit={form.onSubmit(handlePublish)}
+            isSubmitting={submitLoading}
+            submitLabel={submitLabel}
+          />
+        );
+    }
+  }, [
+    activeSection,
+    addIngredient,
+    categories,
+    costLevels,
+    dietaryFlags,
+    equipment,
+    form,
+    goToBasics,
+    goToIngredients,
+    goToMedia,
+    goToSteps,
+    handlePublish,
+    labels,
+    levels,
+    servingUnits,
+    submitLabel,
+    submitLoading,
+    unitOptions,
+    allergens,
+    cuisines,
+    addStep,
+  ]);
+
   if (!metadataLoaded && metadataLoading) {
     return (
       <LoadingOverlay
@@ -102,7 +197,8 @@ export const RecipeComposer = ({
   return (
     <RecipeFormProvider form={form}>
       <Box
-        style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}
+        h="100vh"
+        style={{ display: 'flex', flexDirection: 'column' }}
         data-testid="recipe-composer"
       >
         <LoadingOverlay
@@ -111,7 +207,6 @@ export const RecipeComposer = ({
           overlayProps={{ blur: 2, radius: 'sm' }}
         />
 
-        {/* ═══ HEADER ═══ */}
         <ComposerHeader
           title={headerTitle}
           onBack={handleBack}
@@ -123,17 +218,15 @@ export const RecipeComposer = ({
           publishLoading={submitLoading}
           submitLabel={submitLabel}
           isPublishDisabled={publishButtonState.disabled}
-          publishTooltip={publishButtonState.tooltip}
+          publishTooltip={publishButtonState.missingFields.join(', ')}
         />
 
-        {/* ═══ WORKSPACE ═══ */}
         <Group
           align="stretch"
           gap={0}
           style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}
           data-testid="recipe-composer-workspace"
         >
-          {/* ── SIDEBAR NAV (desktop) ── */}
           <ComposerSidebar
             activeSection={activeSection}
             onSectionChange={goToSection}
@@ -145,7 +238,6 @@ export const RecipeComposer = ({
             resetLabel={resetLabel}
           />
 
-          {/* ── EDITOR (center) ── */}
           <ScrollArea
             viewportRef={scrollRef}
             style={{ flex: 1, height: '100%' }}
@@ -159,50 +251,23 @@ export const RecipeComposer = ({
               mx="auto"
               style={{
                 background:
-                  'radial-gradient(1200px 500px at 0% 0%, rgba(99,102,241,0.04), transparent 60%), radial-gradient(900px 400px at 100% 0%, rgba(236,72,153,0.04), transparent 55%)',
+                  'radial-gradient(1200px 500px at 0% 0%, rgba(99, 102, 241, 0.04), transparent 60%), radial-gradient(900px 400px at 100% 0%, rgba(236, 72, 153, 0.04), transparent 55%)',
               }}
             >
-              {activeSection === 'basics' && (
-                <BasicsSection
-                  categories={categories}
-                  levels={levels}
-                  labels={labels}
-                  cuisines={cuisines}
-                  servingUnits={servingUnits}
-                  costLevels={costLevels}
-                  dietaryFlags={dietaryFlags}
-                  allergens={allergens}
-                  equipment={equipment}
-                  onNext={goToMedia}
-                />
-              )}
-
-              {activeSection === 'media' && (
-                <MediaSection onBack={goToBasics} onNext={goToIngredients} />
-              )}
-
-              {activeSection === 'ingredients' && (
-                <IngredientsSection
-                  unitOptions={unitOptions}
-                  onAdd={addIngredient}
-                  onBack={goToMedia}
-                  onNext={goToSteps}
-                />
-              )}
-
-              {activeSection === 'steps' && (
-                <StepsSection
-                  onAdd={addStep}
-                  onBack={goToIngredients}
-                  onSubmit={form.onSubmit(handlePublish)}
-                  isSubmitting={submitLoading}
-                  submitLabel={submitLabel}
-                />
-              )}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={activeSection}
+                  variants={sectionVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                >
+                  {sectionContent}
+                </motion.div>
+              </AnimatePresence>
             </Box>
           </ScrollArea>
 
-          {/* ── PREVIEW (desktop right / drawer on mobile) ── */}
           <Box
             visibleFrom="lg"
             w={400}
@@ -224,12 +289,14 @@ export const RecipeComposer = ({
           styles={{ body: { height: '100%', padding: 0 } }}
         >
           <Preview labels={labels} values={debouncedPreviewValues} />
+
           <ActionIcon
             variant="filled"
             color="dark"
             radius="xl"
             size="lg"
             onClick={handleClosePreview}
+            aria-label="Close preview"
             style={{
               position: 'absolute',
               top: 16,

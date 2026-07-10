@@ -55,7 +55,13 @@ const StepsSection = ({
   };
 
   return (
-    <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm" data-testid="recipe-steps-section">
+    <Paper
+      p={{ base: 'md', sm: 'xl' }}
+      radius="lg"
+      withBorder
+      shadow="sm"
+      data-testid="recipe-steps-section"
+    >
       <Stack gap="lg">
         <Group justify="space-between" align="baseline">
           <Group gap="xs">
@@ -200,7 +206,7 @@ const StepsSection = ({
             {translate('back')}
           </Button>
           <Tooltip
-            label={publishButtonState.tooltip}
+            label={publishButtonState.missingFields.join(', ')}
             disabled={!publishButtonState.disabled}
             withArrow
             multiline

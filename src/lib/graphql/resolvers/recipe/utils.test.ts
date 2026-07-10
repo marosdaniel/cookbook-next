@@ -73,7 +73,9 @@ describe('recipe resolver utils', () => {
         ingredients: [
           { localId: '1', name: 'Pasta', quantity: 100, unit: 'g' },
         ],
-        preparationSteps: [{ description: 'Boil', order: 1 }],
+        preparationSteps: [
+          { localId: 'step-1', description: 'Boil', order: 1 },
+        ],
         category: { value: 'main', label: 'Main' },
         difficultyLevel: { value: 'easy', label: 'Easy' },
         cookingTime: 20,

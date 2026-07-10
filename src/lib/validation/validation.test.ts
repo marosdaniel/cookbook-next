@@ -177,8 +177,8 @@ describe('validation', () => {
       labels: [],
       ingredients: [{ localId: '1', name: 'Pasta', quantity: 200, unit: 'g' }],
       preparationSteps: [
-        { description: 'Boil water', order: 1 },
-        { description: 'Cook pasta', order: 2 },
+        { localId: 'step-1', description: 'Boil water', order: 1 },
+        { localId: 'step-2', description: 'Cook pasta', order: 2 },
       ],
     };
 

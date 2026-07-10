@@ -20,6 +20,7 @@ export interface RecipeIngredient {
 export type RecipeIngredientId = RecipeIngredient['localId'];
 
 export interface RecipePreparationStep {
+  localId: string;
   description: string;
   order: number;
 }

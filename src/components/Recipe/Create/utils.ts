@@ -68,10 +68,7 @@ export const getPublishButtonState = (values: RecipeFormValues) => {
 
   return {
     disabled: missingFields.length > 0,
-    tooltip:
-      missingFields.length > 0
-        ? `Complete the required fields before publishing: ${missingFields.join(', ')}`
-        : '',
+    missingFields,
   };
 };
 
@@ -279,7 +276,7 @@ export const recipeToFormValues = (
       note: i.note ?? '',
     })),
     preparationSteps: recipe.preparationSteps.map((s) => ({
-      localId: crypto.randomUUID(),
+      localId: s.localId ?? crypto.randomUUID(),
       description: s.description,
       order: s.order,
     })),
@@ -288,7 +285,6 @@ export const recipeToFormValues = (
     prepTimeMinutes: recipe.prepTimeMinutes ?? '',
     cookTimeMinutes: recipe.cookTimeMinutes ?? '',
     restTimeMinutes: recipe.restTimeMinutes ?? '',
-
     // New metadata fields
     servingUnit: recipe.servingUnit
       ? { value: recipe.servingUnit.key, label: recipe.servingUnit.label }

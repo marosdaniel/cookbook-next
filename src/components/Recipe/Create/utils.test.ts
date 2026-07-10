@@ -279,10 +279,10 @@ describe('getPublishButtonState', () => {
     const result = getPublishButtonState(mockRecipeFormValues);
 
     expect(result.disabled).toBe(false);
-    expect(result.tooltip).toBe('');
+    expect(result.missingFields).toEqual([]);
   });
 
-  it('should block publishing and explain what is missing when the form is invalid', () => {
+  it('should block publishing and list what is missing when the form is invalid', () => {
     const invalidValues: RecipeFormValues = {
       ...mockRecipeFormValues,
       title: '',
@@ -296,12 +296,14 @@ describe('getPublishButtonState', () => {
     const result = getPublishButtonState(invalidValues);
 
     expect(result.disabled).toBe(true);
-    expect(result.tooltip).toContain('title');
-    expect(result.tooltip).toContain('description');
-    expect(result.tooltip).toContain('category');
-    expect(result.tooltip).toContain('difficultyLevel');
-    expect(result.tooltip).toContain('ingredients');
-    expect(result.tooltip).toContain('preparationSteps');
+    expect(result.missingFields).toEqual([
+      'title',
+      'description',
+      'category',
+      'difficultyLevel',
+      'ingredients',
+      'preparationSteps',
+    ]);
   });
 });
 
