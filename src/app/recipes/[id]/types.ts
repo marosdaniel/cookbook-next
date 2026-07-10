@@ -5,27 +5,16 @@ import type {
 } from '@/types/recipe';
 
 export type Recipe = RecipeDetail;
+export type Ingredient = RecipeIngredient;
+export type IngredientId = Ingredient['localId'];
+export type PreparationStep = RecipePreparationStep;
 
 export interface RecipeDetailData {
   getRecipeById: Recipe;
 }
 
-export type Ingredient = RecipeIngredient;
-export type PreparationStep = RecipePreparationStep;
-export type RecipeIngredientId = RecipeIngredient['localId'];
-
 export interface RecipeDetailClientProps {
   recipeId: string;
-}
-
-export interface RecipeIngredientsProps {
-  ingredients: RecipeIngredient[];
-  servingMultiplier: number;
-  adjustedServings: number;
-  checkedIngredients: Set<RecipeIngredientId>;
-  onToggleIngredient: (localId: RecipeIngredientId) => void;
-  onIncrementServings: () => void;
-  onDecrementServings: () => void;
 }
 
 export interface RecipeNotFoundProps {
@@ -37,8 +26,18 @@ export interface RecipeHeroProps {
   isOwner: boolean;
 }
 
+export interface RecipeIngredientsProps {
+  ingredients: Ingredient[];
+  servingMultiplier: number;
+  adjustedServings: number;
+  checkedIngredients: ReadonlySet<IngredientId>;
+  onToggleIngredient: (localId: IngredientId) => void;
+  onIncrementServings: () => void;
+  onDecrementServings: () => void;
+}
+
 export interface RecipeStepsProps {
-  steps: RecipePreparationStep[];
+  steps: PreparationStep[];
 }
 
 export interface RecipeVideoProps {

@@ -7,19 +7,14 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import {
-  IconChefHat,
-  IconPhoto,
-  IconPlus,
-  IconSparkles,
-  IconToolsKitchen2,
-  IconTrash,
-} from '@tabler/icons-react';
+import { IconPlus, IconTrash } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { memo } from 'react';
 import { getProgressColor, sectionCompletion } from '../../utils';
 import SectionNavItem from '../SectionNavItem';
+import { SECTION_ITEMS } from './consts';
 import type { ComposerSidebarProps } from './types';
+import { getSectionHint } from './utils';
 
 const ComposerSidebar = memo(
   ({
@@ -33,29 +28,6 @@ const ComposerSidebar = memo(
     resetLabel,
   }: Readonly<ComposerSidebarProps>) => {
     const t = useTranslations('recipeCreate.sidebar');
-
-    const sectionItems = [
-      {
-        key: 'basics' as const,
-        label: 'Basics',
-        icon: <IconSparkles size={18} />,
-      },
-      {
-        key: 'media' as const,
-        label: 'Media',
-        icon: <IconPhoto size={18} />,
-      },
-      {
-        key: 'ingredients' as const,
-        label: 'Ingredients',
-        icon: <IconToolsKitchen2 size={18} />,
-      },
-      {
-        key: 'steps' as const,
-        label: 'Steps',
-        icon: <IconChefHat size={18} />,
-      },
-    ];
 
     return (
       <Box
@@ -74,31 +46,19 @@ const ComposerSidebar = memo(
           <Text size="xs" tt="uppercase" fw={700} c="dimmed" mb={4}>
             {t('sectionsTitle')}
           </Text>
-          {sectionItems.map((s) => {
-            const sc = sectionCompletion(s.key, values);
-            const hint = (() => {
-              if (s.key === 'ingredients')
-                return t('itemsCount', { count: values.ingredients.length });
-              if (s.key === 'steps')
-                return t('stepsCount', {
-                  count: values.preparationSteps.length,
-                });
-              if (s.key === 'media')
-                return values.imgSrc ? t('mediaCoverSet') : t('mediaOptional');
-              return `${sc.done}/${sc.total} filled`;
-            })();
+          {SECTION_ITEMS.map(({ key, labelKey, Icon }) => {
+            const sectionState = sectionCompletion(key, values);
 
             return (
               <SectionNavItem
-                key={s.key}
-                label={s.label}
-                data-testid={`recipe-composer-sidebar-item-${s.key}`}
-                hint={hint}
-                icon={s.icon}
-                active={activeSection === s.key}
-                completionDone={sc.done}
-                completionTotal={sc.total}
-                onClick={() => onSectionChange(s.key)}
+                key={key}
+                label={t(`sections.${labelKey}`)}
+                hint={getSectionHint(key, sectionState, values, t)}
+                icon={<Icon size={18} />}
+                active={activeSection === key}
+                completionDone={sectionState.done}
+                completionTotal={sectionState.total}
+                onClick={() => onSectionChange(key)}
               />
             );
           })}

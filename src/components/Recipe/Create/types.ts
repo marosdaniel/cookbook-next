@@ -8,20 +8,24 @@ import type {
 } from '@/types/recipe';
 
 export type MetadataOption = RecipeMetadataOption;
+export type FormListItemId = RecipeIngredientId;
 
-interface FormListItem {
-  localId: RecipeIngredientId;
+export interface FormListItem {
+  localId: FormListItemId;
 }
 
-export interface FormIngredient
-  extends Omit<RecipeIngredient, 'quantity'>,
-    FormListItem {
-  quantity: number | '';
-}
+export type FormIngredient = Omit<RecipeIngredient, 'localId' | 'quantity'> &
+  FormListItem & {
+    quantity: number | '';
+  };
 
-export interface FormPreparationStep
-  extends RecipePreparationStep,
-    FormListItem {}
+export type FormPreparationStep = Omit<
+  RecipePreparationStep,
+  'localId' | 'order'
+> &
+  FormListItem & {
+    order: number;
+  };
 
 export interface RecipeCompletion {
   done: number;
@@ -37,17 +41,15 @@ export interface RecipeFormValues {
   cookingTime: number | '';
   difficultyLevel: MetadataOption | null;
   category: MetadataOption | null;
-  labels: string[]; // array of keys
+  labels: string[];
   youtubeLink: string;
   ingredients: FormIngredient[];
   preparationSteps: FormPreparationStep[];
 
-  // New time fields
   prepTimeMinutes: number | '';
   cookTimeMinutes: number | '';
   restTimeMinutes: number | '';
 
-  // New metadata fields
   servingUnit: MetadataOption | null;
   cuisine: MetadataOption | null;
   dietaryFlags: string[];
@@ -55,11 +57,9 @@ export interface RecipeFormValues {
   equipment: string[];
   costLevel: MetadataOption | null;
 
-  // Text fields
   tips: string;
   substitutions: string;
 
-  // SEO fields
   slug: string;
   seoTitle: string;
   seoDescription: string;
@@ -92,16 +92,9 @@ export interface RecipeComposerProps {
   onReset: () => void;
   addIngredient: () => void;
   addStep: () => void;
-  /** Header title (e.g. "Create Recipe" | "Edit Recipe") */
   headerTitle: string;
-  /** Submit button label (e.g. "Publish" | "Save Changes") */
   submitLabel: string;
-  /** Reset button label (e.g. "Clear draft" | "Reset changes") */
   resetLabel: string;
-  /**
-   * Optional ref that parent components can use to imperatively
-   * navigate to a specific section (e.g. on validation failure).
-   */
   goToSectionRef?: RefObject<((section: ComposerSection) => void) | null>;
 }
 

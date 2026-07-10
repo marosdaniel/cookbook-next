@@ -15,8 +15,10 @@ import {
   IconEye,
   IconWand,
 } from '@tabler/icons-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
 import { memo } from 'react';
+import { MOTION_TRANSITION } from '../../../../../lib/motion/transitions';
 import { getProgressColor } from '../../utils';
 import type { ComposerHeaderProps } from './types';
 
@@ -78,9 +80,19 @@ const ComposerHeader = memo(
                   },
                 ]}
                 label={
-                  <Text size="xs" ta="center" fw={700}>
-                    {completion.percent}
-                  </Text>
+                  <AnimatePresence initial={false} mode="popLayout">
+                    <motion.div
+                      key={completion.percent}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={MOTION_TRANSITION.fast}
+                    >
+                      <Text size="xs" ta="center" fw={700}>
+                        {completion.percent}
+                      </Text>
+                    </motion.div>
+                  </AnimatePresence>
                 }
               />
               <Stack gap={0}>
@@ -130,17 +142,29 @@ const ComposerHeader = memo(
               withArrow
               multiline
             >
-              <Button
-                color="dark"
-                onClick={onPublish}
-                loading={publishLoading}
-                leftSection={<IconWand size={16} />}
-                radius="xl"
-                disabled={isPublishDisabled}
-                data-testid="recipe-composer-publish"
+              <motion.div
+                whileHover={
+                  isPublishDisabled || publishLoading ? undefined : { y: -1 }
+                }
+                whileTap={
+                  isPublishDisabled || publishLoading
+                    ? undefined
+                    : { scale: 0.98 }
+                }
+                transition={MOTION_TRANSITION.interactive}
               >
-                {submitLabel}
-              </Button>
+                <Button
+                  color="dark"
+                  onClick={onPublish}
+                  loading={publishLoading}
+                  leftSection={<IconWand size={16} />}
+                  radius="xl"
+                  disabled={isPublishDisabled}
+                  data-testid="recipe-composer-publish"
+                >
+                  {submitLabel}
+                </Button>
+              </motion.div>
             </Tooltip>
           </Group>
         </Group>
