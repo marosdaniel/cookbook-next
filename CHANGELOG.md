@@ -1,3 +1,12 @@
+# [2.45.0](https://github.com/marosdaniel/cookbook-next/compare/v2.44.0...v2.45.0) (2026-07-10)
+
+
+### Features
+
+* enhance FavoriteButton with framer-motion for improved animations and user interaction; add success animations and refactor state management ([2c89626](https://github.com/marosdaniel/cookbook-next/commit/2c896268a07889669aea869a5572f143e88e052d))
+* enhance UnderConstruction component with framer-motion for improved animations; update translations for recipe browsing ([a854e3d](https://github.com/marosdaniel/cookbook-next/commit/a854e3d723b126fcd4f343e82b0662fc58ef3eab))
+* integrate framer-motion for animated transitions in Logo and AuthButton components; enhance user interaction with improved hover and tap effects ([2b33760](https://github.com/marosdaniel/cookbook-next/commit/2b33760eefb0c32d48e139dead55c8cf38d221a9))
+
 # [2.44.0](https://github.com/marosdaniel/cookbook-next/compare/v2.43.0...v2.44.0) (2026-07-10)
 
 
