@@ -1,3 +1,10 @@
+# [2.48.0](https://github.com/marosdaniel/cookbook-next/compare/v2.47.0...v2.48.0) (2026-07-10)
+
+
+### Features
+
+* refactor recipe types and enhance Composer components with animations and improved state management ([3982454](https://github.com/marosdaniel/cookbook-next/commit/3982454cc6e3e83dd1ae606a9921421a90d56588))
+
 # [2.47.0](https://github.com/marosdaniel/cookbook-next/compare/v2.46.0...v2.47.0) (2026-07-10)
 
 
