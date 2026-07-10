@@ -1,3 +1,10 @@
+# [2.43.0](https://github.com/marosdaniel/cookbook-next/compare/v2.42.0...v2.43.0) (2026-07-10)
+
+
+### Features
+
+* enhance recipe components with framer-motion for improved animations and transitions ([3a206e3](https://github.com/marosdaniel/cookbook-next/commit/3a206e3201bcdbe6e028576dcfd9b694b89c1ab3))
+
 # [2.42.0](https://github.com/marosdaniel/cookbook-next/compare/v2.41.0...v2.42.0) (2026-07-10)
 
 
