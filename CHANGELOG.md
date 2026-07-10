@@ -1,3 +1,15 @@
+# [2.46.0](https://github.com/marosdaniel/cookbook-next/compare/v2.45.0...v2.46.0) (2026-07-10)
+
+
+### Bug Fixes
+
+* update fallback locale in ClientProviders to use 'en-gb' for improved internationalization ([947882e](https://github.com/marosdaniel/cookbook-next/commit/947882eb4fa1e0a12a6954ccc4b5939349598ae1))
+
+
+### Features
+
+* enhance HomePage and RecipeCarousel with framer-motion for improved animations; add loading and empty states handling ([daf4366](https://github.com/marosdaniel/cookbook-next/commit/daf4366f222cf8157a1bab6290587aaaa3b21a0c))
+
 # [2.45.0](https://github.com/marosdaniel/cookbook-next/compare/v2.44.0...v2.45.0) (2026-07-10)
 
 
