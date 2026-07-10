@@ -1,3 +1,10 @@
+# [2.44.0](https://github.com/marosdaniel/cookbook-next/compare/v2.43.0...v2.44.0) (2026-07-10)
+
+
+### Features
+
+* integrate framer-motion for animated transitions in HeaderSearch, Navbar, and ThemeSwitcher components; enhance user experience with improved loading and error states ([092e2cc](https://github.com/marosdaniel/cookbook-next/commit/092e2cc8f021c223f9dc59f014d0ffb6aaaa9c5e))
+
 # [2.43.0](https://github.com/marosdaniel/cookbook-next/compare/v2.42.0...v2.43.0) (2026-07-10)
 
 
