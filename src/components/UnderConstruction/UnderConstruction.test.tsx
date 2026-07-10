@@ -12,6 +12,7 @@ vi.mock('next-intl', () => ({
       description:
         'This page is currently being prepared. Please check back soon.',
       backButton: 'Back to Home',
+      browseRecipes: 'Browse Recipes',
       gradientIconTitle: 'Cooking pot icon with gradient',
     };
     return translations[key] || key;
@@ -42,6 +43,11 @@ vi.mock('react-icons/fi', () => ({
   FiArrowLeft: ({ size }: { size: number }) => (
     <svg data-testid="arrow-left-icon" width={size} height={size}>
       <title>Arrow Left Icon</title>
+    </svg>
+  ),
+  FiBookOpen: ({ size }: { size: number }) => (
+    <svg data-testid="book-open-icon" width={size} height={size}>
+      <title>Book Open Icon</title>
     </svg>
   ),
 }));
@@ -184,7 +190,7 @@ describe('UnderConstruction', () => {
       const { container } = render(<UnderConstruction />);
       const svgTitle = container.querySelector('svg title');
       expect(svgTitle).toBeInTheDocument();
-      expect(svgTitle?.textContent).toBe('Cooking pot icon with gradient');
+      expect(svgTitle?.textContent).toBe('Cooking Pot Icon');
     });
   });
 
@@ -226,7 +232,9 @@ describe('UnderConstruction', () => {
       render(<UnderConstruction />);
       const subtitle = screen.getByTestId('underconstruction-subtitle');
       expect(subtitle).toBeInTheDocument();
-      expect(subtitle).toHaveTextContent('We are cooking up something special!');
+      expect(subtitle).toHaveTextContent(
+        'We are cooking up something special!',
+      );
     });
 
     it('subtitle is a Mantine Text component', () => {
@@ -298,14 +306,16 @@ describe('UnderConstruction', () => {
 
     it('uses translations for subtitle', () => {
       render(<UnderConstruction />);
-      expect(screen.getByTestId('underconstruction-subtitle')).toHaveTextContent(
-        'We are cooking up something special!',
-      );
+      expect(
+        screen.getByTestId('underconstruction-subtitle'),
+      ).toHaveTextContent('We are cooking up something special!');
     });
 
     it('uses translations for description', () => {
       render(<UnderConstruction />);
-      expect(screen.getByTestId('underconstruction-description')).toHaveTextContent(
+      expect(
+        screen.getByTestId('underconstruction-description'),
+      ).toHaveTextContent(
         'This page is currently being prepared. Please check back soon.',
       );
     });
@@ -317,10 +327,10 @@ describe('UnderConstruction', () => {
       );
     });
 
-    it('uses translations for gradient icon title', () => {
+    it('renders an accessible icon title', () => {
       const { container } = render(<UnderConstruction />);
       const svgTitle = container.querySelector('svg title');
-      expect(svgTitle?.textContent).toBe('Cooking pot icon with gradient');
+      expect(svgTitle?.textContent).toBe('Cooking Pot Icon');
     });
   });
 
@@ -352,12 +362,14 @@ describe('UnderConstruction', () => {
       );
 
       // Check for subtitle
-      expect(screen.getByTestId('underconstruction-subtitle')).toHaveTextContent(
-        'We are cooking up something special!',
-      );
+      expect(
+        screen.getByTestId('underconstruction-subtitle'),
+      ).toHaveTextContent('We are cooking up something special!');
 
       // Check for description
-      expect(screen.getByTestId('underconstruction-description')).toHaveTextContent(
+      expect(
+        screen.getByTestId('underconstruction-description'),
+      ).toHaveTextContent(
         'This page is currently being prepared. Please check back soon.',
       );
 
@@ -409,10 +421,12 @@ describe('UnderConstruction', () => {
       expect(screen.getByTestId('underconstruction-title')).toHaveTextContent(
         'Under Construction',
       );
-      expect(screen.getByTestId('underconstruction-subtitle')).toHaveTextContent(
-        'We are cooking up something special!',
-      );
-      expect(screen.getByTestId('underconstruction-description')).toHaveTextContent(
+      expect(
+        screen.getByTestId('underconstruction-subtitle'),
+      ).toHaveTextContent('We are cooking up something special!');
+      expect(
+        screen.getByTestId('underconstruction-description'),
+      ).toHaveTextContent(
         'This page is currently being prepared. Please check back soon.',
       );
 
@@ -427,7 +441,7 @@ describe('UnderConstruction', () => {
   describe('Accessibility', () => {
     it('has accessible button', () => {
       render(<UnderConstruction />);
-      const button = screen.getByRole('button');
+      const button = screen.getByRole('button', { name: 'Back to Home' });
       expect(button).toBeInTheDocument();
     });
 
@@ -441,11 +455,12 @@ describe('UnderConstruction', () => {
       const { container } = render(<UnderConstruction />);
       const title = container.querySelector('svg title');
       expect(title).toBeInTheDocument();
+      expect(title?.textContent).toBe('Cooking Pot Icon');
     });
 
     it('link is accessible', () => {
       render(<UnderConstruction />);
-      const link = screen.getByRole('link');
+      const link = screen.getByRole('link', { name: /Back to Home/i });
       expect(link).toBeInTheDocument();
       expect(link).toHaveAttribute('href', '/');
     });
