@@ -1,6 +1,7 @@
 'use client';
 
 import { ApolloProvider as ApolloProviderBase } from '@apollo/client/react';
+import { MotionConfig } from 'motion/react';
 import { SessionProvider } from 'next-auth/react';
 import { NextIntlClientProvider } from 'next-intl';
 import type { FC } from 'react';
@@ -46,7 +47,12 @@ export const ClientProviders: FC<ClientProvidersProps> = (props) => {
     <SessionProvider>
       <ApolloProviderBase client={apolloClient}>
         <ReduxProvider store={store}>
-          <ClientProvidersInner {...props} />
+          <MotionConfig
+            reducedMotion="user"
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+          >
+            <ClientProvidersInner {...props} />
+          </MotionConfig>
         </ReduxProvider>
       </ApolloProviderBase>
     </SessionProvider>
