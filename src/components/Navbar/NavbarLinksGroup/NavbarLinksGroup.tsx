@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Collapse, Group, rem, Text, UnstyledButton } from '@mantine/core';
+import { motion } from 'motion/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -17,60 +18,67 @@ const NavbarLinksGroup = ({
 }: NavbarLinksGroupProps) => {
   const pathname = usePathname();
   const hasLinks = Array.isArray(links);
-  const isChildActive = hasLinks && links.some((l) => pathname === l.link);
+  const isChildActive =
+    hasLinks && links.some((item) => pathname === item.link);
+
   const [expanded, setExpanded] = useState(
     initiallyOpened || isChildActive || false,
   );
-  const ChevronIcon = FiChevronRight;
+
   const normalizedLabel =
     typeof label === 'string' || typeof label === 'number'
       ? String(label)
       : 'group';
 
-  const items = (hasLinks ? links : []).map((link) => (
-    <Text
-      component={Link}
-      className={classes.link}
-      href={link.link}
-      key={link.label}
-      data-active={pathname === link.link || undefined}
-      data-testid={`navbar-link-${link.label}`}
-    >
-      {link.label}
-    </Text>
-  ));
-
   const content = (
     <Group justify="space-between" gap={0} wrap="nowrap">
       <Box style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
         {Icon && <Icon style={{ width: rem(20), height: rem(20) }} />}
+
         <Box ml={Icon ? 'md' : 0} style={{ flex: 1 }}>
           {label}
         </Box>
       </Box>
+
       {hasLinks && (
-        <ChevronIcon
+        <motion.span
           className={classes.chevron}
+          animate={{ rotate: expanded ? 90 : 0 }}
+          transition={{ duration: 0.16, ease: 'easeOut' }}
           style={{
+            display: 'inline-flex',
             width: rem(16),
             height: rem(16),
-            transform: expanded ? 'rotate(90deg)' : 'none',
           }}
-        />
+          aria-hidden="true"
+        >
+          <FiChevronRight style={{ width: rem(16), height: rem(16) }} />
+        </motion.span>
       )}
     </Group>
   );
 
   if (!hasLinks && link) {
+    const isActive = pathname === link;
+
     return (
       <UnstyledButton
         component={Link}
         href={link}
         className={classes.control}
-        data-active={pathname === link || undefined}
+        data-active={isActive || undefined}
         data-testid={`navbar-control-${link}`}
       >
-        {content}
+        <span className={classes.controlContent}>
+          {isActive && (
+            <motion.span
+              layoutId="navbar-active-indicator"
+              className={classes.activeIndicator}
+              aria-hidden="true"
+            />
+          )}
+          <span className={classes.controlLabel}>{content}</span>
+        </span>
       </UnstyledButton>
     );
   }
@@ -78,14 +86,43 @@ const NavbarLinksGroup = ({
   return (
     <>
       <UnstyledButton
-        onClick={() => setExpanded((o) => !o)}
+        onClick={() => setExpanded((open) => !open)}
         className={classes.control}
         data-active-child={isChildActive || undefined}
         data-testid={`navbar-group-${normalizedLabel}`}
+        aria-expanded={hasLinks ? expanded : undefined}
       >
         {content}
       </UnstyledButton>
-      {hasLinks ? <Collapse expanded={expanded}>{items}</Collapse> : null}
+
+      {hasLinks ? (
+        <Collapse expanded={expanded} transitionDuration={180}>
+          {links.map((item) => {
+            const isActive = pathname === item.link;
+
+            return (
+              <Text
+                component={Link}
+                className={classes.link}
+                href={item.link}
+                key={item.label}
+                data-active={isActive || undefined}
+                data-testid={`navbar-link-${item.label}`}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="navbar-active-indicator"
+                    className={classes.activeIndicator}
+                    aria-hidden="true"
+                  />
+                )}
+
+                <span className={classes.linkLabel}>{item.label}</span>
+              </Text>
+            );
+          })}
+        </Collapse>
+      ) : null}
     </>
   );
 };

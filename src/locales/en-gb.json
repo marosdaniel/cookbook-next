@@ -641,7 +641,8 @@
   "headerSearch": {
     "placeholder": "Search...",
     "searching": "Searching...",
-    "noResults": "No results"
+    "noResults": "No results",
+    "searchError": "Search failed. Please try again."
   },
   "footer": {
     "copyright": "© {year} Cookbook. All rights reserved.",

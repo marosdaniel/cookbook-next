@@ -65,7 +65,8 @@
   "headerSearch": {
     "placeholder": "Suchen...",
     "searching": "Suchen...",
-    "noResults": "Keine Ergebnisse"
+    "noResults": "Keine Ergebnisse",
+    "searchError": "Die Suche ist fehlgeschlagen. Bitte versuche es erneut."
   },
   "footer": {
     "copyright": "© {year} Cookbook. Alle Rechte vorbehalten.",

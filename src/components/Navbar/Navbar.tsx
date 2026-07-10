@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Button, Loader, ScrollArea, Stack } from '@mantine/core';
+import { AnimatePresence, motion } from 'motion/react';
 import type { Route } from 'next';
 import { usePathname } from 'next/navigation';
 import type { Session } from 'next-auth';
@@ -32,6 +33,7 @@ const Navbar: FC = () => {
 
   const handleLogout = async () => {
     const shouldRedirect = isProtectedRoute(pathname);
+
     startTransition(() => {
       signOut({
         callbackUrl: shouldRedirect ? AUTH_ROUTES.LOGIN : pathname,
@@ -95,6 +97,12 @@ const Navbar: FC = () => {
     />
   ));
 
+  const footerState = isSessionLoading
+    ? 'loading'
+    : session
+      ? 'authenticated'
+      : 'anonymous';
+
   const renderFooterContent = () => {
     if (isSessionLoading) {
       return (
@@ -147,8 +155,22 @@ const Navbar: FC = () => {
         <div className={classes.linksInner}>{links}</div>
       </ScrollArea>
 
-      <div className={classes.footer} data-testid="navbar-footer">
-        {renderFooterContent()}
+      <div
+        className={classes.footer}
+        data-testid="navbar-footer"
+        style={{ minHeight: 68 }}
+      >
+        <AnimatePresence initial={false} mode="wait">
+          <motion.div
+            key={footerState}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
+          >
+            {renderFooterContent()}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

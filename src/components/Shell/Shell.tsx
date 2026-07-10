@@ -2,6 +2,7 @@
 
 import { AppShell, Burger, Group, Skeleton } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { AnimatePresence, motion } from 'motion/react';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import type { FC, PropsWithChildren } from 'react';
@@ -15,18 +16,18 @@ import Navbar from '../Navbar';
 import ThemeSwitcher from '../ThemeSwitcher';
 
 const NAVBAR_WIDTH = 300;
+const HEADER_AUTH_SLOT_WIDTH = 88;
 
 const Shell: FC<PropsWithChildren> = ({ children }) => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const pathname = usePathname() ?? '';
   const { data: session, status } = useSession();
-  const isSessionLoading = status === 'loading';
 
+  const isSessionLoading = status === 'loading';
   const isAuthPage = isAuthRoute(pathname);
   const isImmersive = pathname.startsWith(PROTECTED_ROUTES.RECIPES_CREATE);
   const showShellChrome = !isImmersive;
 
-  // Keep auth and immersive page chrome mutually exclusive to avoid conflicting layout rules.
   const shouldShowAuthButton = !isSessionLoading && !session && !isAuthPage;
 
   return (
@@ -46,7 +47,12 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
     >
       {showShellChrome && (
         <AppShell.Header data-testid="shell-header">
-          <Group h="100%" px="md" justify="space-between" data-testid="shell-header-content">
+          <Group
+            h="100%"
+            px="md"
+            justify="space-between"
+            data-testid="shell-header-content"
+          >
             <Group>
               <Logo
                 variant="icon"
@@ -68,21 +74,50 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
             </Group>
 
             <Group gap="xs">
-              {shouldShowAuthButton ? (
-                <AuthButton variant="compact" />
-              ) : (
-                isSessionLoading && (
-                  <Skeleton height={36} width={88} radius="xl" />
-                )
-              )}
+              <div
+                style={{
+                  width: HEADER_AUTH_SLOT_WIDTH,
+                  minHeight: 36,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                <AnimatePresence initial={false} mode="wait">
+                  {isSessionLoading ? (
+                    <motion.div
+                      key="session-loading"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.15, ease: 'easeOut' }}
+                    >
+                      <Skeleton height={36} width={88} radius="xl" />
+                    </motion.div>
+                  ) : shouldShowAuthButton ? (
+                    <motion.div
+                      key="auth-button"
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.18, ease: 'easeOut' }}
+                    >
+                      <AuthButton variant="compact" />
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
+              </div>
+
               <ThemeSwitcher />
               <LanguageSelector />
+
               {!isAuthPage && (
                 <Burger
                   opened={mobileOpened}
                   onClick={toggleMobile}
                   size="sm"
                   display={{ base: 'block', sm: 'none' }}
+                  aria-label="Toggle navigation"
                 />
               )}
             </Group>
@@ -96,7 +131,10 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
         </AppShell.Navbar>
       )}
 
-      <AppShell.Main pb={isImmersive ? 0 : { base: 100, md: 60 }} data-testid="shell-main">
+      <AppShell.Main
+        pb={isImmersive ? 0 : { base: 100, md: 60 }}
+        data-testid="shell-main"
+      >
         {children}
       </AppShell.Main>
 

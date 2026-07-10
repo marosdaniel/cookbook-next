@@ -641,7 +641,8 @@
   "headerSearch": {
     "placeholder": "Keresés...",
     "searching": "Keresés folyamatban...",
-    "noResults": "Nincs találat"
+    "noResults": "Nincs találat",
+    "searchError": "A keresés sikertelen. Kérlek, próbáld újra."
   },
   "footer": {
     "copyright": "© {year} Cookbook. Minden jog fenntartva.",

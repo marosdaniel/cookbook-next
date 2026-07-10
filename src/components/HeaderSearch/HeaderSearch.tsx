@@ -11,6 +11,7 @@ import {
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconSearch } from '@tabler/icons-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
@@ -21,6 +22,11 @@ import { PUBLIC_ROUTES } from '@/types/routes';
 const MIN_SEARCH_LENGTH = 4;
 const SEARCH_LIMIT = 5;
 const DEBOUNCE_MS = 800;
+
+const searchTransition = {
+  duration: 0.15,
+  ease: 'easeOut',
+} as const;
 
 export const HeaderSearch = () => {
   const translate = useTranslations('headerSearch');
@@ -48,9 +54,20 @@ export const HeaderSearch = () => {
   const hasNoResults =
     shouldSearch && !loading && !error && recipes.length === 0;
 
+  const dropdownState = loading
+    ? 'loading'
+    : error
+      ? 'error'
+      : hasNoResults
+        ? 'empty'
+        : recipes.length > 0
+          ? `results-${trimmedSearchQuery}`
+          : 'idle';
+
   const handleChange = (value: string) => {
     setSearchQuery(value);
     combobox.resetSelectedOption();
+
     if (value.trim().length >= MIN_SEARCH_LENGTH) {
       combobox.openDropdown();
     } else {
@@ -70,7 +87,7 @@ export const HeaderSearch = () => {
       withinPortal
       transitionProps={{
         transition: 'fade',
-        duration: 200,
+        duration: 150,
         timingFunction: 'ease',
       }}
       onOptionSubmit={handleSubmit}
@@ -84,7 +101,22 @@ export const HeaderSearch = () => {
           onBlur={() => combobox.closeDropdown()}
           data-testid="header-search-input"
           rightSection={
-            loading ? <Loader size={18} /> : <IconSearch size={18} />
+            <AnimatePresence initial={false} mode="wait">
+              <motion.span
+                key={loading ? 'loading' : 'idle'}
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.85 }}
+                transition={searchTransition}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {loading ? <Loader size={18} /> : <IconSearch size={18} />}
+              </motion.span>
+            </AnimatePresence>
           }
           radius="xl"
           size="sm"
@@ -93,41 +125,97 @@ export const HeaderSearch = () => {
         />
       </Combobox.Target>
 
-      <Combobox.Dropdown display={{ base: 'none', sm: 'block' }} data-testid="header-search-dropdown">
+      <Combobox.Dropdown
+        display={{ base: 'none', sm: 'block' }}
+        data-testid="header-search-dropdown"
+      >
         <Combobox.Options>
-          {loading && (
-            <Combobox.Empty>
-              <Text size="sm" c="dimmed">
-                {translate('searching')}
-              </Text>
-            </Combobox.Empty>
-          )}
+          <AnimatePresence initial={false} mode="wait">
+            {dropdownState === 'loading' && (
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={searchTransition}
+              >
+                <Combobox.Empty>
+                  <Text size="sm" c="dimmed">
+                    {translate('searching')}
+                  </Text>
+                </Combobox.Empty>
+              </motion.div>
+            )}
 
-          {error && (
-            <Combobox.Empty>
-              <Text size="sm" c="red">
-                {translate('searchError')}
-              </Text>
-            </Combobox.Empty>
-          )}
+            {dropdownState === 'error' && (
+              <motion.div
+                key="error"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={searchTransition}
+              >
+                <Combobox.Empty>
+                  <Text size="sm" c="red">
+                    {translate('searchError')}
+                  </Text>
+                </Combobox.Empty>
+              </motion.div>
+            )}
 
-          {!loading &&
-            !error &&
-            recipes.map((recipe) => (
-              <Combobox.Option value={recipe.slug || recipe.id} key={recipe.id} data-testid="header-search-option">
-                <Group>
-                  <Text size="sm">{recipe.title}</Text>
-                </Group>
-              </Combobox.Option>
-            ))}
+            {dropdownState === 'empty' && (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={searchTransition}
+              >
+                <Combobox.Empty>
+                  <Text size="sm" c="dimmed">
+                    {translate('noResults')}
+                  </Text>
+                </Combobox.Empty>
+              </motion.div>
+            )}
 
-          {hasNoResults && (
-            <Combobox.Empty>
-              <Text size="sm" c="dimmed">
-                {translate('noResults')}
-              </Text>
-            </Combobox.Empty>
-          )}
+            {dropdownState.startsWith('results-') && (
+              <motion.div
+                key={dropdownState}
+                initial="hidden"
+                animate="visible"
+                exit={{ opacity: 0 }}
+                variants={{
+                  hidden: {},
+                  visible: {
+                    transition: {
+                      staggerChildren: 0.035,
+                      delayChildren: 0.02,
+                    },
+                  },
+                }}
+              >
+                {recipes.map((recipe) => (
+                  <motion.div
+                    key={recipe.id}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={searchTransition}
+                  >
+                    <Combobox.Option
+                      value={recipe.slug || recipe.id}
+                      data-testid="header-search-option"
+                    >
+                      <Group>
+                        <Text size="sm">{recipe.title}</Text>
+                      </Group>
+                    </Combobox.Option>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Combobox.Options>
       </Combobox.Dropdown>
     </Combobox>
