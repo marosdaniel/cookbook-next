@@ -27,7 +27,7 @@ const ClientProvidersInner: FC<ClientProvidersProps> = ({
     }
   }, [locale, dispatch]);
 
-  const currentMessages = messages[locale] || messages.en;
+  const currentMessages = messages[locale] ?? messages['en-gb'];
 
   return (
     <NextIntlClientProvider
