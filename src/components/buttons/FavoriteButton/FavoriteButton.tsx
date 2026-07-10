@@ -4,16 +4,21 @@ import { useMutation } from '@apollo/client/react';
 import { ActionIcon, Tooltip } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
-import { motion } from 'motion/react';
+import { motion, useAnimationControls } from 'motion/react';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   ADD_TO_FAVORITE_RECIPES,
   REMOVE_FROM_FAVORITE_RECIPES,
 } from '@/lib/graphql/mutations';
 import { sizeMap } from '../consts';
 import type { FavoriteButtonProps } from './types';
+
+const FAVORITE_TRANSITION = {
+  duration: 0.24,
+  ease: 'easeOut',
+} as const;
 
 const FavoriteButton = ({
   recipeId,
@@ -23,8 +28,10 @@ const FavoriteButton = ({
   const { data: session } = useSession();
   const translate = useTranslations('response');
   const tFav = useTranslations('favorites');
+
   const [optimisticFavorite, setOptimisticFavorite] = useState(isFavorite);
-  const [animationKey, setAnimationKey] = useState(0);
+  const iconControls = useAnimationControls();
+  const burstControls = useAnimationControls();
 
   const [addToFavorite, { loading: addLoading }] = useMutation(
     ADD_TO_FAVORITE_RECIPES,
@@ -36,21 +43,59 @@ const FavoriteButton = ({
   const loading = addLoading || removeLoading;
   const userId = (session?.user as { id?: string })?.id;
 
-  const handleToggle = useCallback(
-    async (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
+  useEffect(() => {
+    setOptimisticFavorite(isFavorite);
+  }, [isFavorite]);
 
-      if (!userId || loading) return;
+  const runSuccessAnimation = useCallback(
+    async (wasFavorite: boolean) => {
+      if (wasFavorite) {
+        await iconControls.start({
+          opacity: [0.55, 1],
+          scale: [0.94, 1],
+          transition: FAVORITE_TRANSITION,
+        });
+
+        return;
+      }
+
+      await Promise.all([
+        iconControls.start({
+          scale: [0.8, 1.22, 1],
+          transition: FAVORITE_TRANSITION,
+        }),
+        burstControls.start({
+          opacity: [0, 0.65, 0],
+          scale: [0.65, 1.5],
+          transition: {
+            duration: 0.36,
+            ease: 'easeOut',
+          },
+        }),
+      ]);
+    },
+    [burstControls, iconControls],
+  );
+
+  const handleToggle = useCallback(
+    async (event: React.MouseEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (!userId || loading) {
+        return;
+      }
 
       const previousState = optimisticFavorite;
       setOptimisticFavorite(!previousState);
 
       try {
         const mutation = previousState ? removeFromFavorite : addToFavorite;
+
         const result = await mutation({
           variables: { userId, recipeId },
           refetchQueries: ['getFavoriteRecipes', 'getRecipeById'],
+          awaitRefetchQueries: true,
         });
 
         const response = previousState
@@ -77,21 +122,24 @@ const FavoriteButton = ({
                 | undefined
             )?.addToFavoriteRecipes;
 
-        if (response && !response.success) {
+        if (!response?.success) {
           setOptimisticFavorite(previousState);
+
           notifications.show({
             title: translate('error'),
             message: translate(
-              response.messageKey?.replace('response.', '') ?? 'unknownError',
+              response?.messageKey?.replace('response.', '') ?? 'unknownError',
             ),
             color: 'red',
           });
-        } else {
-          // Trigger animation only on success
-          setAnimationKey((prev) => prev + 1);
+
+          return;
         }
+
+        await runSuccessAnimation(previousState);
       } catch {
         setOptimisticFavorite(previousState);
+
         notifications.show({
           title: translate('error'),
           message: translate('somethingWentWrong'),
@@ -100,17 +148,20 @@ const FavoriteButton = ({
       }
     },
     [
-      userId,
-      recipeId,
-      optimisticFavorite,
-      loading,
       addToFavorite,
+      loading,
+      optimisticFavorite,
+      recipeId,
       removeFromFavorite,
+      runSuccessAnimation,
       translate,
+      userId,
     ],
   );
 
-  if (!userId) return null;
+  if (!userId) {
+    return null;
+  }
 
   const iconSize = sizeMap[size];
   const HeartIcon = optimisticFavorite ? IconHeartFilled : IconHeart;
@@ -126,35 +177,52 @@ const FavoriteButton = ({
         onClick={handleToggle}
         loading={loading}
         aria-label={optimisticFavorite ? tFav('remove') : tFav('add')}
+        aria-pressed={optimisticFavorite}
         size={size}
         data-testid="favorite-button"
       >
-        <motion.div
-          key={animationKey}
-          initial={false}
-          animate={
-            animationKey > 0
-              ? optimisticFavorite
-                ? { scale: [0.85, 1.18, 1] }
-                : { opacity: [0.5, 1], scale: [0.95, 1] }
-              : {}
-          }
-          transition={{ duration: 0.25 }}
+        <span
           style={{
-            display: 'flex',
+            position: 'relative',
+            display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
+            width: iconSize,
+            height: iconSize,
           }}
         >
-          <HeartIcon
-            size={iconSize}
+          <motion.span
+            aria-hidden="true"
+            animate={burstControls}
+            initial={{ opacity: 0, scale: 0.65 }}
             style={{
-              color: optimisticFavorite
-                ? 'var(--mantine-color-red-6)'
-                : undefined,
+              position: 'absolute',
+              inset: -4,
+              border: '1.5px solid var(--mantine-color-red-5)',
+              borderRadius: '50%',
+              pointerEvents: 'none',
             }}
           />
-        </motion.div>
+
+          <motion.span
+            animate={iconControls}
+            initial={false}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <HeartIcon
+              size={iconSize}
+              style={{
+                color: optimisticFavorite
+                  ? 'var(--mantine-color-red-6)'
+                  : undefined,
+              }}
+            />
+          </motion.span>
+        </span>
       </ActionIcon>
     </Tooltip>
   );
