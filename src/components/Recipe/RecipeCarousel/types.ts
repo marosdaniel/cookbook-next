@@ -7,3 +7,5 @@ export interface RecipeCarouselProps {
   emptyMessage?: string;
   skeletonCount?: number;
 }
+
+export type CarouselState = 'loading' | 'empty' | 'content';

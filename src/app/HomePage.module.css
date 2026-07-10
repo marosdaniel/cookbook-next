@@ -8,3 +8,21 @@
   justify-content: space-between;
   margin-bottom: 1rem;
 }
+
+.titleIcon {
+  display: inline-flex;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.titleIcon svg {
+  display: block;
+}
+
+.section:first-child .titleIcon {
+  color: var(--mantine-color-pink-6);
+}
+
+.section:last-child .titleIcon {
+  color: var(--mantine-color-grape-6);
+}

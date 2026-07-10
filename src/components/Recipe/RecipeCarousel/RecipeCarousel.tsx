@@ -2,17 +2,13 @@
 
 import { Carousel } from '@mantine/carousel';
 import { Box, Skeleton, Text } from '@mantine/core';
+import { AnimatePresence, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
 import { RecipeCard } from '../RecipeCard';
+import { CAROUSEL_PROPS, contentVariants, SKELETON_IDS } from './consts';
 import classes from './RecipeCarousel.module.css';
 import type { RecipeCarouselProps } from './types';
-
-const CAROUSEL_PROPS = {
-  slideSize: { base: '90%', sm: '45%', md: '30%', lg: '23%' },
-  slideGap: 'md' as const,
-  withControls: true,
-  emblaOptions: { containScroll: 'trimSnaps' as const },
-};
+import { getCarouselState } from './utils';
 
 const RecipeCarousel = ({
   recipes,
@@ -23,39 +19,39 @@ const RecipeCarousel = ({
 }: RecipeCarouselProps) => {
   const t = useTranslations('recipe');
   const empty = emptyMessage ?? t('empty');
-  if (loading) {
-    const skeletonItems = Array.from({ length: skeletonCount }, (_, i) => i);
-    return (
-      <Carousel {...CAROUSEL_PROPS} data-testid="recipe-carousel">
-        {skeletonItems.map((item) => (
-          <Carousel.Slide
-            key={`carousel-skeleton-${item}`}
-            className={classes.carouselSlide}
-            data-testid="recipe-carousel-skeleton"
-          >
-            <Skeleton height={320} radius="md" />
-          </Carousel.Slide>
-        ))}
-      </Carousel>
-    );
-  }
-
-  if (recipes.length === 0) {
-    return (
-      <Box className={classes.emptyCarousel} data-testid="recipe-carousel-empty">
-        <Text c="dimmed" size="lg">
-          {empty}
-        </Text>
-      </Box>
-    );
-  }
-
+  const state = getCarouselState(loading, recipes);
   const shouldLoop = recipes.length > 4;
+  const skeletonIds = SKELETON_IDS.slice(0, skeletonCount);
 
-  return (
+  const renderLoadingState = () => (
+    <Carousel {...CAROUSEL_PROPS} data-testid="recipe-carousel">
+      {skeletonIds.map((skeletonId) => (
+        <Carousel.Slide
+          key={skeletonId}
+          className={classes.carouselSlide}
+          data-testid="recipe-carousel-skeleton"
+        >
+          <Skeleton height={320} radius="md" />
+        </Carousel.Slide>
+      ))}
+    </Carousel>
+  );
+
+  const renderEmptyState = () => (
+    <Box className={classes.emptyCarousel} data-testid="recipe-carousel-empty">
+      <Text c="dimmed" size="lg">
+        {empty}
+      </Text>
+    </Box>
+  );
+
+  const renderContentState = () => (
     <Carousel
       {...CAROUSEL_PROPS}
-      emblaOptions={{ ...CAROUSEL_PROPS.emblaOptions, loop: shouldLoop }}
+      emblaOptions={{
+        ...CAROUSEL_PROPS.emblaOptions,
+        loop: shouldLoop,
+      }}
       data-testid="recipe-carousel"
     >
       {recipes.map((recipe) => (
@@ -68,6 +64,33 @@ const RecipeCarousel = ({
         </Carousel.Slide>
       ))}
     </Carousel>
+  );
+
+  const renderCarouselState = () => {
+    switch (state) {
+      case 'loading':
+        return renderLoadingState();
+
+      case 'empty':
+        return renderEmptyState();
+
+      case 'content':
+        return renderContentState();
+    }
+  };
+
+  return (
+    <AnimatePresence initial={false} mode="wait">
+      <motion.div
+        key={state}
+        variants={contentVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+      >
+        {renderCarouselState()}
+      </motion.div>
+    </AnimatePresence>
   );
 };
 
