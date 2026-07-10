@@ -1,3 +1,16 @@
+# [2.51.0](https://github.com/marosdaniel/cookbook-next/compare/v2.50.0...v2.51.0) (2026-07-10)
+
+
+### Bug Fixes
+
+* Enhance type safety for form field paths in Ingredients and Steps sections ([50a5b37](https://github.com/marosdaniel/cookbook-next/commit/50a5b374dd24a9df5caa9c945ec5afb4c629eaef))
+* fix tests for recipe form hooks and enhance localization strings ([512c7f8](https://github.com/marosdaniel/cookbook-next/commit/512c7f8d2aa9be676ce21f1c5c58eeb8c1402b86))
+
+
+### Features
+
+* Refactor recipe form handling and improve localization strings ([4c349af](https://github.com/marosdaniel/cookbook-next/commit/4c349af45f5bd3a29cb59ac4ee1f17993fa5c308))
+
 # [2.50.0](https://github.com/marosdaniel/cookbook-next/compare/v2.49.0...v2.50.0) (2026-07-10)
 
 
