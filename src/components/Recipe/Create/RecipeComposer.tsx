@@ -13,35 +13,18 @@ import { IconArrowLeft } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { MOTION_TRANSITION } from '../../../lib/motion/transitions';
 import ComposerHeader from './components/ComposerHeader';
 import ComposerSidebar from './components/ComposerSidebar';
+import { sectionVariants } from './consts';
 import { RecipeFormProvider } from './FormContext';
 import { useRecipeMetadata } from './hooks/useRecipeMetadata';
-import { Preview } from './Preview';
+import Preview from './Preview';
 import BasicsSection from './sections/BasicsSection';
 import IngredientsSection from './sections/IngredientsSection';
 import MediaSection from './sections/MediaSection';
 import StepsSection from './sections/StepsSection';
 import type { ComposerSection, RecipeComposerProps } from './types';
 import { getPublishButtonState } from './utils';
-
-const sectionVariants = {
-  initial: {
-    opacity: 0,
-    y: 12,
-  },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: MOTION_TRANSITION.standard,
-  },
-  exit: {
-    opacity: 0,
-    y: -8,
-    transition: MOTION_TRANSITION.fast,
-  },
-} as const;
 
 export const RecipeComposer = ({
   form,

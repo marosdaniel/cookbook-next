@@ -28,12 +28,11 @@ import {
 import { AnimatePresence, LayoutGroup, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
 import { memo, useMemo } from 'react';
-import { MOTION_TRANSITION } from '../../../lib/motion/transitions';
-import type { PreviewProps } from './types';
+import { MOTION_TRANSITION } from '../../../../lib/motion/transitions';
+import { NO_VALUE_FALLBACK } from '../consts';
+import type { PreviewProps } from '../types';
 
-const NO_VALUE_FALLBACK = '—';
-
-export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
+const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
   const t = useTranslations('recipePreview');
   const categoryLabel = values.category?.label;
   const difficultyLabel = values.difficultyLevel?.label;
@@ -502,3 +501,5 @@ export const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
     </LayoutGroup>
   );
 });
+
+export default Preview;
