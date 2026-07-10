@@ -1,7 +1,8 @@
 import { useQuery } from '@apollo/client/react';
 import { useSession } from 'next-auth/react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { GET_RECIPE_BY_ID } from '@/lib/graphql/queries';
+import type { RecipeIngredientId } from '@/types/recipe';
 import { extractYoutubeId, sortByOrder } from '../utils';
 
 const SERVING_MIN = 1;
@@ -9,57 +10,68 @@ const SERVING_MAX = 20;
 
 export const useRecipeDetail = (recipeId: string) => {
   const { data: session } = useSession();
+
   const { data, loading, error } = useQuery(GET_RECIPE_BY_ID, {
     variables: { id: recipeId },
   });
 
   const recipe = data?.getRecipeById;
 
-  /* ── Serving adjuster ── */
   const [servingMultiplier, setServingMultiplier] = useState(1);
+  const [checkedIngredients, setCheckedIngredients] = useState<
+    Set<RecipeIngredientId>
+  >(() => new Set());
+
+  useEffect(() => {
+    setServingMultiplier(1);
+    setCheckedIngredients(new Set());
+  }, []);
 
   const adjustedServings = useMemo(
     () => (recipe ? recipe.servings * servingMultiplier : 0),
-    [recipe, servingMultiplier],
+    [recipe?.servings, servingMultiplier, recipe],
   );
 
-  const incrementServings = useCallback(
-    () => setServingMultiplier((m) => Math.min(m + 1, SERVING_MAX)),
-    [],
-  );
-  const decrementServings = useCallback(
-    () => setServingMultiplier((m) => Math.max(m - 1, SERVING_MIN)),
-    [],
-  );
+  const incrementServings = useCallback(() => {
+    setServingMultiplier((currentMultiplier) =>
+      Math.min(currentMultiplier + 1, SERVING_MAX),
+    );
+  }, []);
 
-  /* ── Checked ingredients ── */
-  const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(
-    new Set(),
-  );
+  const decrementServings = useCallback(() => {
+    setServingMultiplier((currentMultiplier) =>
+      Math.max(currentMultiplier - 1, SERVING_MIN),
+    );
+  }, []);
 
-  const toggleIngredient = useCallback((localId: string) => {
-    setCheckedIngredients((prev) => {
-      const next = new Set(prev);
-      if (next.has(localId)) next.delete(localId);
-      else next.add(localId);
-      return next;
+  const toggleIngredient = useCallback((localId: RecipeIngredientId) => {
+    setCheckedIngredients((previousIngredients) => {
+      const nextIngredients = new Set(previousIngredients);
+
+      if (nextIngredients.has(localId)) {
+        nextIngredients.delete(localId);
+      } else {
+        nextIngredients.add(localId);
+      }
+
+      return nextIngredients;
     });
   }, []);
 
-  /* ── Derived data ── */
-  const youtubeId = useMemo(
-    () => (recipe?.youtubeLink ? extractYoutubeId(recipe.youtubeLink) : null),
-    [recipe?.youtubeLink],
-  );
+  const youtubeId = useMemo(() => {
+    if (!recipe?.youtubeLink) {
+      return null;
+    }
 
-  const isOwner =
-    !!recipe &&
-    (session?.user as { id?: string } | undefined)?.id === recipe.createdBy;
+    return extractYoutubeId(recipe.youtubeLink);
+  }, [recipe?.youtubeLink]);
 
   const sortedSteps = useMemo(
     () => (recipe ? sortByOrder(recipe.preparationSteps) : []),
-    [recipe],
+    [recipe?.preparationSteps, recipe],
   );
+
+  const isOwner = recipe?.createdBy === session?.user?.id;
 
   return {
     recipe,
@@ -72,7 +84,7 @@ export const useRecipeDetail = (recipeId: string) => {
     incrementServings,
     decrementServings,
     youtubeId,
-    isOwner,
+    isOwner: Boolean(isOwner),
     sortedSteps,
   };
 };

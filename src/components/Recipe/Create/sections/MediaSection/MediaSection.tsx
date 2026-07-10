@@ -1,3 +1,5 @@
+'use client';
+
 import {
   ActionIcon,
   Badge,
@@ -8,6 +10,7 @@ import {
   Paper,
   Stack,
   Text,
+  Textarea,
   TextInput,
   ThemeIcon,
   Title,
@@ -23,12 +26,23 @@ import {
   IconVideo,
   IconX,
 } from '@tabler/icons-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
+import { useCallback } from 'react';
 import { slugify } from '@/utils/slugify';
+import { MOTION_TRANSITION } from '../../../../../lib/motion/transitions';
 import { useRecipeFormContext } from '../../FormContext';
 import { useFormError } from '../../hooks/useFormError';
 import { SEO_DESCRIPTION_MAX_LENGTH, SEO_TITLE_MAX_LENGTH } from '../../utils';
 import type { MediaSectionProps } from './types';
+
+type MediaTextField =
+  | 'imgSrc'
+  | 'youtubeLink'
+  | 'slug'
+  | 'seoTitle'
+  | 'seoDescription'
+  | 'socialImage';
 
 const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
   const translate = useTranslations('recipeComposer.sections.media');
@@ -36,8 +50,36 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
   const { values, setFieldValue } = form;
   const { getFieldError, revalidateOnChange } = useFormError(form);
 
+  const updateAndValidateField = useCallback(
+    (field: MediaTextField) =>
+      (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFieldValue(field, event.currentTarget.value);
+        revalidateOnChange(field);
+      },
+    [revalidateOnChange, setFieldValue],
+  );
+
+  const clearCoverImage = useCallback(() => {
+    setFieldValue('imgSrc', '');
+    revalidateOnChange('imgSrc');
+  }, [revalidateOnChange, setFieldValue]);
+
+  const regenerateSlug = useCallback(() => {
+    setFieldValue('slug', slugify(values.title));
+    revalidateOnChange('slug');
+  }, [revalidateOnChange, setFieldValue, values.title]);
+
+  const seoTitleLength = values.seoTitle.length;
+  const seoDescriptionLength = values.seoDescription.length;
+
   return (
-    <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm" data-testid="recipe-media-section">
+    <Paper
+      p={{ base: 'md', sm: 'xl' }}
+      radius="lg"
+      withBorder
+      shadow="sm"
+      data-testid="recipe-media-section"
+    >
       <Stack gap="lg">
         <Group justify="space-between" align="baseline">
           <Group gap="xs">
@@ -49,8 +91,10 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
             >
               <IconPhoto size={18} />
             </ThemeIcon>
+
             <Title order={3}>{translate('title')}</Title>
           </Group>
+
           <Badge variant="light" color={values.imgSrc ? 'green' : 'gray'}>
             {values.imgSrc ? translate('set') : translate('optional')}
           </Badge>
@@ -66,20 +110,16 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
           placeholder={translate('imageUrlPlaceholder')}
           leftSection={<IconPhoto size={16} />}
           value={values.imgSrc}
-          onChange={(e) => {
-            setFieldValue('imgSrc', e.target.value);
-            revalidateOnChange('imgSrc');
-          }}
+          onChange={updateAndValidateField('imgSrc')}
           error={getFieldError('imgSrc')}
           rightSection={
             values.imgSrc ? (
               <ActionIcon
+                type="button"
                 variant="subtle"
                 color="gray"
-                onClick={() => {
-                  setFieldValue('imgSrc', '');
-                  revalidateOnChange('imgSrc');
-                }}
+                onClick={clearCoverImage}
+                aria-label={translate('clearCoverImage')}
               >
                 <IconX size={14} />
               </ActionIcon>
@@ -87,17 +127,30 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
           }
         />
 
-        {values.imgSrc && (
-          <Paper radius="md" style={{ overflow: 'hidden' }} withBorder>
-            <Image
-              src={values.imgSrc}
-              alt={translate('coverPreview')}
-              h={220}
-              fit="cover"
-              fallbackSrc={`https://placehold.co/800x400?text=${translate('invalidImageUrl')}`}
-            />
-          </Paper>
-        )}
+        <AnimatePresence initial={false}>
+          {values.imgSrc && (
+            <motion.div
+              key="cover-image-preview"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 220 }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={MOTION_TRANSITION.standard}
+              style={{ overflow: 'hidden' }}
+            >
+              <Paper radius="md" withBorder>
+                <Image
+                  src={values.imgSrc}
+                  alt={translate('coverPreview')}
+                  h={220}
+                  fit="cover"
+                  fallbackSrc={`https://placehold.co/800x400?text=${translate(
+                    'invalidImageUrl',
+                  )}`}
+                />
+              </Paper>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <TextInput
           label={translate('youtubeVideo')}
@@ -105,19 +158,16 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
           placeholder={translate('youtubeUrlPlaceholder')}
           leftSection={<IconVideo size={16} />}
           value={values.youtubeLink}
-          onChange={(e) => {
-            setFieldValue('youtubeLink', e.target.value);
-            revalidateOnChange('youtubeLink');
-          }}
+          onChange={updateAndValidateField('youtubeLink')}
           error={getFieldError('youtubeLink')}
         />
 
-        {/* ── SEO Fields ── */}
         <Box>
           <Group gap="xs" mb="sm">
             <ThemeIcon size={24} radius="md" variant="light" color="grape">
               <IconSearch size={14} />
             </ThemeIcon>
+
             <Text fw={600} size="sm">
               {translate('seoSection')}
             </Text>
@@ -130,24 +180,22 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
               placeholder={translate('slugPlaceholder')}
               leftSection={<IconLink size={16} />}
               value={values.slug}
-              onChange={(e) => {
-                setFieldValue('slug', e.target.value);
-                revalidateOnChange('slug');
-              }}
+              onChange={updateAndValidateField('slug')}
               error={getFieldError('slug')}
               rightSection={
                 <Tooltip label={translate('regenerateSlugFromTitle')}>
-                  <ActionIcon
-                    variant="subtle"
-                    color="gray"
-                    disabled={!values.title.trim()}
-                    onClick={() => {
-                      setFieldValue('slug', slugify(values.title));
-                      revalidateOnChange('slug');
-                    }}
-                  >
-                    <IconRefresh size={14} />
-                  </ActionIcon>
+                  <span>
+                    <ActionIcon
+                      type="button"
+                      variant="subtle"
+                      color="gray"
+                      disabled={!values.title.trim()}
+                      onClick={regenerateSlug}
+                      aria-label={translate('regenerateSlugFromTitle')}
+                    >
+                      <IconRefresh size={14} />
+                    </ActionIcon>
+                  </span>
                 </Tooltip>
               }
             />
@@ -158,49 +206,46 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
                 data-testid="recipe-media-seo-title"
                 placeholder={translate('seoTitlePlaceholder')}
                 value={values.seoTitle}
-                onChange={(e) => {
-                  setFieldValue('seoTitle', e.target.value);
-                  revalidateOnChange('seoTitle');
-                }}
+                onChange={updateAndValidateField('seoTitle')}
                 error={getFieldError('seoTitle')}
               />
+
               <Text
                 size="xs"
                 c={
-                  (values.seoTitle?.length ?? 0) > SEO_TITLE_MAX_LENGTH * 0.9
+                  seoTitleLength > SEO_TITLE_MAX_LENGTH * 0.9
                     ? 'orange'
                     : 'dimmed'
                 }
                 ta="right"
               >
-                {values.seoTitle?.length ?? 0}/{SEO_TITLE_MAX_LENGTH}
+                {seoTitleLength}/{SEO_TITLE_MAX_LENGTH}
               </Text>
             </Box>
 
             <Box>
-              <TextInput
+              <Textarea
                 label={translate('seoDescription')}
                 data-testid="recipe-media-seo-description"
                 placeholder={translate('seoDescriptionPlaceholder')}
+                autosize
+                minRows={2}
+                maxRows={4}
                 value={values.seoDescription}
-                onChange={(e) => {
-                  setFieldValue('seoDescription', e.target.value);
-                  revalidateOnChange('seoDescription');
-                }}
+                onChange={updateAndValidateField('seoDescription')}
                 error={getFieldError('seoDescription')}
               />
+
               <Text
                 size="xs"
                 c={
-                  (values.seoDescription?.length ?? 0) >
-                  SEO_DESCRIPTION_MAX_LENGTH * 0.9
+                  seoDescriptionLength > SEO_DESCRIPTION_MAX_LENGTH * 0.9
                     ? 'orange'
                     : 'dimmed'
                 }
                 ta="right"
               >
-                {values.seoDescription?.length ?? 0}/
-                {SEO_DESCRIPTION_MAX_LENGTH}
+                {seoDescriptionLength}/{SEO_DESCRIPTION_MAX_LENGTH}
               </Text>
             </Box>
 
@@ -210,10 +255,7 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
               placeholder={translate('socialImagePlaceholder')}
               leftSection={<IconPhoto size={16} />}
               value={values.socialImage}
-              onChange={(e) => {
-                setFieldValue('socialImage', e.target.value);
-                revalidateOnChange('socialImage');
-              }}
+              onChange={updateAndValidateField('socialImage')}
               error={getFieldError('socialImage')}
             />
           </Stack>
@@ -221,6 +263,7 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
 
         <Group justify="space-between" mt="xs">
           <Button
+            type="button"
             variant="subtle"
             color="gray"
             onClick={onBack}
@@ -228,7 +271,9 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
           >
             {translate('back')}
           </Button>
+
           <Button
+            type="button"
             variant="light"
             onClick={onNext}
             rightSection={<IconToolsKitchen2 size={16} />}

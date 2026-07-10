@@ -2,7 +2,7 @@
 
 import { useQuery } from '@apollo/client/react';
 import { Center, LoadingOverlay, Stack, Text, Title } from '@mantine/core';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -18,53 +18,56 @@ import { GET_RECIPE_BY_ID } from '@/lib/graphql/queries';
 import type { RecipeEditClientProps } from './types';
 
 const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
+  const router = useRouter();
   const { data: session, status: authStatus } = useSession();
   const translate = useTranslations('recipeEdit');
 
-  /* Auth guard */
   useEffect(() => {
     if (authStatus === 'unauthenticated') {
-      redirect('/api/auth/signin');
+      router.replace('/api/auth/signin');
     }
-  }, [authStatus]);
+  }, [authStatus, router]);
 
-  /* Fetch recipe data */
   const {
     data: recipeData,
     loading: recipeLoading,
     error: recipeError,
   } = useQuery(GET_RECIPE_BY_ID, {
     variables: { id: recipeId },
-    skip: !session,
+    skip: authStatus !== 'authenticated',
   });
 
   const { labels } = useRecipeMetadata();
 
-  /**
-   * Ref that RecipeComposer populates with its internal goToSection callback.
-   * This lets form hooks imperatively navigate (e.g. on validation failure).
-   */
-  const goToSectionRef = useRef<((s: ComposerSection) => void) | null>(null);
-  const goToSection = useCallback(
-    (section: ComposerSection) => goToSectionRef.current?.(section),
-    [],
+  const goToSectionRef = useRef<((section: ComposerSection) => void) | null>(
+    null,
   );
 
-  /* Transform server data to form values */
-  const initialValues = useMemo(() => {
-    if (!recipeData?.getRecipeById) return null;
-    return recipeToFormValues(recipeData.getRecipeById);
-  }, [recipeData]);
+  const goToSection = useCallback((section: ComposerSection) => {
+    goToSectionRef.current?.(section);
+  }, []);
 
-  /* Form hook – only create after we have initial values */
+  const recipe = recipeData?.getRecipeById;
+
+  const initialValues = useMemo(() => {
+    if (!recipe) {
+      return EMPTY_FORM_VALUES;
+    }
+
+    return recipeToFormValues(recipe);
+  }, [recipe]);
+
   const editForm = useRecipeEditForm({
     recipeId,
-    initialValues: initialValues ?? EMPTY_FORM_VALUES,
+    initialValues,
     onSectionChange: goToSection,
     labels,
   });
 
-  /* Loading states */
+  const handleSave = useCallback(() => {
+    editForm.form.onSubmit(editForm.handlePublish)();
+  }, [editForm.form, editForm.handlePublish]);
+
   if (authStatus === 'loading' || recipeLoading) {
     return (
       <LoadingOverlay
@@ -75,9 +78,10 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
     );
   }
 
-  if (!session) return null;
+  if (authStatus === 'unauthenticated' || !session) {
+    return null;
+  }
 
-  /* Error state */
   if (recipeError) {
     return (
       <Center h="100vh">
@@ -89,9 +93,18 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
     );
   }
 
-  /* Authorization check – only the author can edit */
-  const recipe = recipeData?.getRecipeById;
-  if (recipe && session.user?.id && recipe.createdBy !== session.user.id) {
+  if (!recipe) {
+    return (
+      <Center h="100vh">
+        <Stack align="center" gap="md">
+          <Title order={3}>{translate('notFoundTitle')}</Title>
+          <Text c="dimmed">{translate('notFoundMessage')}</Text>
+        </Stack>
+      </Center>
+    );
+  }
+
+  if (recipe.createdBy !== session.user?.id) {
     return (
       <Center h="100vh">
         <Stack align="center" gap="md">
@@ -101,10 +114,6 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
       </Center>
     );
   }
-
-  if (!initialValues) return null;
-
-  const handleSave = () => editForm.form.onSubmit(editForm.handlePublish)();
 
   return (
     <RecipeComposer

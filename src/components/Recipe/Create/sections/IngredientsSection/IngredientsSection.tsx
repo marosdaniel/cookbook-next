@@ -1,3 +1,5 @@
+'use client';
+
 import {
   ActionIcon,
   Badge,
@@ -19,7 +21,10 @@ import {
   IconToolsKitchen2,
   IconTrash,
 } from '@tabler/icons-react';
+import { AnimatePresence, LayoutGroup, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
+import { useCallback } from 'react';
+import { MOTION_TRANSITION } from '../../../../../lib/motion/transitions';
 import { useRecipeFormContext } from '../../FormContext';
 import { useFormError } from '../../hooks/useFormError';
 import type { IngredientsSectionProps } from './types';
@@ -35,13 +40,26 @@ const IngredientsSection = ({
   const { values, setFieldValue } = form;
   const { getFieldError, revalidateOnChange } = useFormError(form);
 
-  const removeIngredient = (idx: number) => {
-    const next = values.ingredients.filter((_, i) => i !== idx);
-    setFieldValue('ingredients', next);
-  };
+  const removeIngredient = useCallback(
+    (localId: string) => {
+      setFieldValue(
+        'ingredients',
+        values.ingredients.filter(
+          (ingredient) => ingredient.localId !== localId,
+        ),
+      );
+    },
+    [setFieldValue, values.ingredients],
+  );
 
   return (
-    <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm" data-testid="recipe-ingredients-section">
+    <Paper
+      p={{ base: 'md', sm: 'xl' }}
+      radius="lg"
+      withBorder
+      shadow="sm"
+      data-testid="recipe-ingredients-section"
+    >
       <Stack gap="lg">
         <Group justify="space-between" align="baseline">
           <Group gap="xs">
@@ -53,17 +71,20 @@ const IngredientsSection = ({
             >
               <IconToolsKitchen2 size={18} />
             </ThemeIcon>
+
             <Title order={3}>{translate('title')}</Title>
           </Group>
+
           <Badge
             variant="light"
-            color={values.ingredients.length ? 'green' : 'red'}
+            color={values.ingredients.length > 0 ? 'green' : 'red'}
           >
             {translate('itemsCount', { count: values.ingredients.length })}
           </Badge>
         </Group>
 
         <Button
+          type="button"
           variant="light"
           leftSection={<IconPlus size={16} />}
           onClick={onAdd}
@@ -72,147 +93,199 @@ const IngredientsSection = ({
           {translate('addIngredient')}
         </Button>
 
-        <Stack gap="xs">
-          {values.ingredients.map((ing, idx) => (
-            <Paper
-              key={ing.localId}
-              withBorder
-              radius="md"
-              p="sm"
-              style={{
-                borderLeft: ing.name.trim()
-                  ? '3px solid var(--mantine-color-teal-5)'
-                  : '3px solid var(--mantine-color-gray-3)',
-                transition: 'border-color 0.2s ease',
-                opacity: ing.isOptional ? 0.75 : 1,
-              }}
-            >
-              <Stack gap="xs">
-                <Group gap="xs" align="flex-start" wrap="nowrap">
-                  <TextInput
-                    placeholder={translate('itemName')}
-                    data-testid="recipe-ingredient-name"
-                    value={ing.name}
-                    onChange={(e) => {
-                      const path = `ingredients[${idx}].name`;
-                      setFieldValue(path, e.target.value);
-                      revalidateOnChange(path);
+        <LayoutGroup id="recipe-composer-ingredients">
+          <Stack gap="xs">
+            <AnimatePresence initial={false} mode="popLayout">
+              {values.ingredients.map((ingredient, index) => {
+                const nameFieldPath = `ingredients[${index}].name`;
+                const quantityFieldPath = `ingredients[${index}].quantity`;
+                const unitFieldPath = `ingredients[${index}].unit`;
+                const optionalFieldPath = `ingredients[${index}].isOptional`;
+                const noteFieldPath = `ingredients[${index}].note`;
+
+                return (
+                  <motion.div
+                    key={ingredient.localId}
+                    layout="position"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{
+                      opacity: ingredient.isOptional ? 0.75 : 1,
+                      y: 0,
                     }}
-                    error={getFieldError(`ingredients[${idx}].name`)}
-                    style={{ flex: 2 }}
-                    size="sm"
-                  />
-                  <TextInput
-                    placeholder={translate('qty')}
-                    data-testid="recipe-ingredient-quantity"
-                    value={ing.quantity}
-                    onChange={(e) => {
-                      const path = `ingredients[${idx}].quantity`;
-                      setFieldValue(path, e.target.value);
-                      revalidateOnChange(path);
+                    exit={{
+                      opacity: 0,
+                      x: -16,
+                      transition: MOTION_TRANSITION.fast,
                     }}
-                    error={getFieldError(`ingredients[${idx}].quantity`)}
-                    style={{ width: 70 }}
-                    size="sm"
-                  />
-                  <Select
-                    placeholder={translate('unit')}
-                    data-testid="recipe-ingredient-unit"
-                    data={unitOptions}
-                    value={ing.unit || null}
-                    onChange={(val) => {
-                      const path = `ingredients[${idx}].unit`;
-                      setFieldValue(path, val ?? '');
-                      revalidateOnChange(path);
-                    }}
-                    error={getFieldError(`ingredients[${idx}].unit`)}
-                    style={{ width: 120 }}
-                    size="sm"
-                    searchable
-                    allowDeselect={false}
-                  />
-                  <ActionIcon
-                    color="red"
-                    variant="subtle"
-                    onClick={() => removeIngredient(idx)}
-                    mt={4}
-                    data-testid="recipe-ingredient-remove"
+                    transition={MOTION_TRANSITION.standard}
                   >
-                    <IconTrash size={16} />
-                  </ActionIcon>
-                </Group>
-                <Group gap="xs" align="center">
-                  <Switch
-                    label={translate('optional')}
-                    data-testid="recipe-ingredient-optional"
-                    size="xs"
-                    checked={ing.isOptional ?? false}
-                    onChange={(e) => {
-                      setFieldValue(
-                        `ingredients[${idx}].isOptional`,
-                        e.currentTarget.checked,
-                      );
-                    }}
-                  />
-                  <TextInput
-                    placeholder={translate('notePlaceholder')}
-                    data-testid="recipe-ingredient-note"
-                    value={ing.note ?? ''}
-                    onChange={(e) => {
-                      setFieldValue(`ingredients[${idx}].note`, e.target.value);
-                    }}
-                    style={{ flex: 1 }}
-                    size="xs"
-                    variant="unstyled"
-                  />
-                </Group>
-              </Stack>
-            </Paper>
-          ))}
+                    <Paper
+                      withBorder
+                      radius="md"
+                      p="sm"
+                      style={{
+                        borderLeft: ingredient.name.trim()
+                          ? '3px solid var(--mantine-color-teal-5)'
+                          : '3px solid var(--mantine-color-gray-3)',
+                        transition: 'border-color 0.2s ease',
+                      }}
+                    >
+                      <Stack gap="xs">
+                        <Group gap="xs" align="flex-start" wrap="nowrap">
+                          <TextInput
+                            placeholder={translate('itemName')}
+                            data-testid="recipe-ingredient-name"
+                            value={ingredient.name}
+                            onChange={(event) => {
+                              setFieldValue(
+                                nameFieldPath,
+                                event.currentTarget.value,
+                              );
+                              revalidateOnChange(nameFieldPath);
+                            }}
+                            error={getFieldError(nameFieldPath)}
+                            style={{ flex: 2 }}
+                            size="sm"
+                          />
 
-          {values.ingredients.length === 0 && (
-            <Paper
-              withBorder
-              radius="md"
-              p="xl"
-              style={{ borderStyle: 'dashed' }}
-            >
-              <Stack align="center" gap="sm">
-                <ThemeIcon size={48} radius="xl" variant="light" color="gray">
-                  <IconToolsKitchen2 size={24} />
-                </ThemeIcon>
-                <Text c="dimmed" ta="center" size="sm">
-                  {translate('noIngredients')}
-                </Text>
-                <Button
-                  variant="light"
-                  size="xs"
-                  onClick={onAdd}
-                  leftSection={<IconPlus size={14} />}
-                >
-                  {translate('addFirst')}
-                </Button>
-              </Stack>
-            </Paper>
-          )}
+                          <TextInput
+                            type="number"
+                            min={0}
+                            inputMode="decimal"
+                            placeholder={translate('qty')}
+                            data-testid="recipe-ingredient-quantity"
+                            value={ingredient.quantity}
+                            onChange={(event) => {
+                              setFieldValue(
+                                quantityFieldPath,
+                                event.currentTarget.value === ''
+                                  ? ''
+                                  : Number(event.currentTarget.value),
+                              );
+                              revalidateOnChange(quantityFieldPath);
+                            }}
+                            error={getFieldError(quantityFieldPath)}
+                            style={{ width: 70 }}
+                            size="sm"
+                          />
 
-          {values.ingredients.length > 0 && (
-            <Button
-              variant="subtle"
-              fullWidth
-              style={{
-                borderTop: '1px dashed var(--mantine-color-gray-3)',
-              }}
-              onClick={onAdd}
-              mt={4}
-            >
-              <IconPlus size={16} />
-            </Button>
-          )}
-        </Stack>
+                          <Select
+                            placeholder={translate('unit')}
+                            data-testid="recipe-ingredient-unit"
+                            data={unitOptions}
+                            value={ingredient.unit || null}
+                            onChange={(value) => {
+                              setFieldValue(unitFieldPath, value ?? '');
+                              revalidateOnChange(unitFieldPath);
+                            }}
+                            error={getFieldError(unitFieldPath)}
+                            style={{ width: 120 }}
+                            size="sm"
+                            searchable
+                            allowDeselect={false}
+                          />
+
+                          <ActionIcon
+                            type="button"
+                            color="red"
+                            variant="subtle"
+                            onClick={() => removeIngredient(ingredient.localId)}
+                            mt={4}
+                            aria-label={translate('removeIngredient', {
+                              index: index + 1,
+                            })}
+                            data-testid="recipe-ingredient-remove"
+                          >
+                            <IconTrash size={16} />
+                          </ActionIcon>
+                        </Group>
+
+                        <Group gap="xs" align="center">
+                          <Switch
+                            label={translate('optional')}
+                            data-testid="recipe-ingredient-optional"
+                            size="xs"
+                            checked={ingredient.isOptional ?? false}
+                            onChange={(event) => {
+                              setFieldValue(
+                                optionalFieldPath,
+                                event.currentTarget.checked,
+                              );
+                            }}
+                          />
+
+                          <TextInput
+                            placeholder={translate('notePlaceholder')}
+                            data-testid="recipe-ingredient-note"
+                            value={ingredient.note ?? ''}
+                            onChange={(event) => {
+                              setFieldValue(
+                                noteFieldPath,
+                                event.currentTarget.value,
+                              );
+                            }}
+                            style={{ flex: 1 }}
+                            size="xs"
+                            variant="unstyled"
+                          />
+                        </Group>
+                      </Stack>
+                    </Paper>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+
+            {values.ingredients.length === 0 && (
+              <Paper
+                withBorder
+                radius="md"
+                p="xl"
+                style={{ borderStyle: 'dashed' }}
+              >
+                <Stack align="center" gap="sm">
+                  <ThemeIcon size={48} radius="xl" variant="light" color="gray">
+                    <IconToolsKitchen2 size={24} />
+                  </ThemeIcon>
+
+                  <Text c="dimmed" ta="center" size="sm">
+                    {translate('noIngredients')}
+                  </Text>
+
+                  <Button
+                    type="button"
+                    variant="light"
+                    size="xs"
+                    onClick={onAdd}
+                    leftSection={<IconPlus size={14} />}
+                  >
+                    {translate('addFirst')}
+                  </Button>
+                </Stack>
+              </Paper>
+            )}
+
+            {values.ingredients.length > 0 && (
+              <Button
+                type="button"
+                variant="subtle"
+                fullWidth
+                mt={4}
+                style={{
+                  borderTop: '1px dashed var(--mantine-color-gray-3)',
+                }}
+                onClick={onAdd}
+                aria-label={translate('addIngredient')}
+              >
+                <IconPlus size={16} />
+              </Button>
+            )}
+          </Stack>
+        </LayoutGroup>
 
         <Group justify="space-between" mt="xs">
           <Button
+            type="button"
             variant="subtle"
             color="gray"
             onClick={onBack}
@@ -220,7 +293,9 @@ const IngredientsSection = ({
           >
             {translate('back')}
           </Button>
+
           <Button
+            type="button"
             variant="light"
             onClick={onNext}
             rightSection={<IconChefHat size={16} />}

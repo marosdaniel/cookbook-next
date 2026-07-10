@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Badge,
   Box,
@@ -23,14 +25,30 @@ import {
   IconUsers,
   IconWorld,
 } from '@tabler/icons-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { MOTION_TRANSITION } from '../../../../../lib/motion/transitions';
 import { useRecipeFormContext } from '../../FormContext';
 import { useFormError } from '../../hooks/useFormError';
 import { DESCRIPTION_MAX_LENGTH, sectionCompletion } from '../../utils';
 import type { BasicsSectionProps } from './types';
 
 const DEBOUNCE_MS = 300;
+
+const toNonNegativeNumberOrEmpty = (value: string): number | '' => {
+  if (value === '') {
+    return '';
+  }
+
+  const parsedValue = Number(value);
+
+  if (!Number.isFinite(parsedValue) || parsedValue < 0) {
+    return '';
+  }
+
+  return parsedValue;
+};
 
 const BasicsSection = ({
   categories,
@@ -49,90 +67,152 @@ const BasicsSection = ({
   const { values, setFieldValue } = form;
   const { getFieldError, revalidateOnChange } = useFormError(form);
 
-  /* ── Local state for high-frequency text inputs ── */
   const [localTitle, setLocalTitle] = useState(values.title);
   const [localDescription, setLocalDescription] = useState(values.description);
 
-  // Debounce timers
   const titleTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const descTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const descriptionTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // Sync FROM form → local when form values change from outside (e.g. draft clear)
-  const prevTitleRef = useRef(values.title);
-  const prevDescRef = useRef(values.description);
+  const latestTitleRef = useRef(values.title);
+  const latestDescriptionRef = useRef(values.description);
+
+  const previousTitleRef = useRef(values.title);
+  const previousDescriptionRef = useRef(values.description);
+
   useEffect(() => {
-    // Only sync if the value changed from outside (not from our debounce)
-    if (values.title !== prevTitleRef.current && values.title !== localTitle) {
+    const wasUpdatedExternally =
+      values.title !== previousTitleRef.current &&
+      values.title !== latestTitleRef.current;
+
+    if (wasUpdatedExternally) {
+      latestTitleRef.current = values.title;
       setLocalTitle(values.title);
     }
-    prevTitleRef.current = values.title;
-  }, [values.title, localTitle]);
+
+    previousTitleRef.current = values.title;
+  }, [values.title]);
 
   useEffect(() => {
-    if (
-      values.description !== prevDescRef.current &&
-      values.description !== localDescription
-    ) {
+    const wasUpdatedExternally =
+      values.description !== previousDescriptionRef.current &&
+      values.description !== latestDescriptionRef.current;
+
+    if (wasUpdatedExternally) {
+      latestDescriptionRef.current = values.description;
       setLocalDescription(values.description);
     }
-    prevDescRef.current = values.description;
-  }, [values.description, localDescription]);
 
-  // Cleanup timers
+    previousDescriptionRef.current = values.description;
+  }, [values.description]);
+
   useEffect(() => {
     return () => {
       clearTimeout(titleTimerRef.current);
-      clearTimeout(descTimerRef.current);
+      clearTimeout(descriptionTimerRef.current);
     };
   }, []);
 
   const handleTitleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const val = e.target.value;
-      setLocalTitle(val);
-      clearTimeout(titleTimerRef.current);
-      // If there's already an error, sync immediately so the error clears at once
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const nextTitle = event.currentTarget.value;
       const delay = getFieldError('title') ? 0 : DEBOUNCE_MS;
+
+      latestTitleRef.current = nextTitle;
+      setLocalTitle(nextTitle);
+
+      clearTimeout(titleTimerRef.current);
+
       titleTimerRef.current = setTimeout(() => {
-        setFieldValue('title', val);
+        setFieldValue('title', nextTitle);
         revalidateOnChange('title');
       }, delay);
     },
-    [setFieldValue, getFieldError, revalidateOnChange],
+    [getFieldError, revalidateOnChange, setFieldValue],
   );
 
   const handleDescriptionChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const val = e.target.value;
-      if (val.length <= DESCRIPTION_MAX_LENGTH) {
-        setLocalDescription(val);
-        clearTimeout(descTimerRef.current);
-        // If there's already an error, sync immediately so the error clears at once
-        const delay = getFieldError('description') ? 0 : DEBOUNCE_MS;
-        descTimerRef.current = setTimeout(() => {
-          setFieldValue('description', val);
-          revalidateOnChange('description');
-        }, delay);
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const nextDescription = event.currentTarget.value;
+
+      if (nextDescription.length > DESCRIPTION_MAX_LENGTH) {
+        return;
       }
+
+      const delay = getFieldError('description') ? 0 : DEBOUNCE_MS;
+
+      latestDescriptionRef.current = nextDescription;
+      setLocalDescription(nextDescription);
+
+      clearTimeout(descriptionTimerRef.current);
+
+      descriptionTimerRef.current = setTimeout(() => {
+        setFieldValue('description', nextDescription);
+        revalidateOnChange('description');
+      }, delay);
     },
-    [setFieldValue, getFieldError, revalidateOnChange],
+    [getFieldError, revalidateOnChange, setFieldValue],
   );
 
-  const descLength = localDescription?.length ?? 0;
+  const flushPendingTextFields = useCallback(() => {
+    clearTimeout(titleTimerRef.current);
+    clearTimeout(descriptionTimerRef.current);
+
+    setFieldValue('title', latestTitleRef.current);
+    setFieldValue('description', latestDescriptionRef.current);
+
+    revalidateOnChange('title');
+    revalidateOnChange('description');
+  }, [revalidateOnChange, setFieldValue]);
+
+  const handleNext = useCallback(() => {
+    flushPendingTextFields();
+    onNext();
+  }, [flushPendingTextFields, onNext]);
+
+  const handleNumberFieldChange = useCallback(
+    (
+      field:
+        | 'prepTimeMinutes'
+        | 'cookTimeMinutes'
+        | 'restTimeMinutes'
+        | 'cookingTime'
+        | 'servings',
+      shouldRevalidate = false,
+    ) =>
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFieldValue(
+          field,
+          toNonNegativeNumberOrEmpty(event.currentTarget.value),
+        );
+
+        if (shouldRevalidate) {
+          revalidateOnChange(field);
+        }
+      },
+    [revalidateOnChange, setFieldValue],
+  );
+
+  const descriptionLength = localDescription.length;
   const completion = sectionCompletion('basics', values);
   const isComplete = completion.done === completion.total;
 
-  // Compute total time from time fields
-  const prep =
+  const prepTime =
     typeof values.prepTimeMinutes === 'number' ? values.prepTimeMinutes : 0;
-  const cook =
+  const cookTime =
     typeof values.cookTimeMinutes === 'number' ? values.cookTimeMinutes : 0;
-  const rest =
+  const restTime =
     typeof values.restTimeMinutes === 'number' ? values.restTimeMinutes : 0;
-  const totalTime = prep + cook + rest;
+
+  const totalTime = prepTime + cookTime + restTime;
 
   return (
-    <Paper p={{ base: 'md', sm: 'xl' }} radius="lg" withBorder shadow="sm" data-testid="recipe-basics-section">
+    <Paper
+      p={{ base: 'md', sm: 'xl' }}
+      radius="lg"
+      withBorder
+      shadow="sm"
+      data-testid="recipe-basics-section"
+    >
       <Stack gap="lg">
         <Group justify="space-between" align="baseline">
           <Group gap="xs">
@@ -144,10 +224,23 @@ const BasicsSection = ({
             >
               <IconSparkles size={18} />
             </ThemeIcon>
+
             <Title order={3}>{translate('title')}</Title>
           </Group>
+
           <Badge variant="light" color={isComplete ? 'green' : 'gray'}>
-            {completion.done}/{completion.total}
+            <AnimatePresence initial={false} mode="popLayout">
+              <motion.span
+                key={`${completion.done}-${completion.total}`}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={MOTION_TRANSITION.fast}
+                style={{ display: 'inline-block' }}
+              >
+                {completion.done}/{completion.total}
+              </motion.span>
+            </AnimatePresence>
           </Badge>
         </Group>
 
@@ -158,6 +251,7 @@ const BasicsSection = ({
           size="xl"
           value={localTitle}
           onChange={handleTitleChange}
+          error={getFieldError('title')}
           styles={{
             input: {
               fontSize: '1.8rem',
@@ -166,7 +260,6 @@ const BasicsSection = ({
               padding: 0,
             },
           }}
-          error={getFieldError('title')}
         />
 
         <Box>
@@ -181,16 +274,20 @@ const BasicsSection = ({
             onChange={handleDescriptionChange}
             error={getFieldError('description')}
           />
+
           <Text
             size="xs"
-            c={descLength > DESCRIPTION_MAX_LENGTH * 0.9 ? 'orange' : 'dimmed'}
+            c={
+              descriptionLength > DESCRIPTION_MAX_LENGTH * 0.9
+                ? 'orange'
+                : 'dimmed'
+            }
             ta="right"
           >
-            {descLength}/{DESCRIPTION_MAX_LENGTH}
+            {descriptionLength}/{DESCRIPTION_MAX_LENGTH}
           </Text>
         </Box>
 
-        {/* ── Time Breakdown ── */}
         <Stack gap={4}>
           <Text fw={600} size="sm" component="div">
             <Group gap={6}>
@@ -198,44 +295,48 @@ const BasicsSection = ({
               {translate('timeBreakdown')}
             </Group>
           </Text>
+
           <Group grow align="flex-start">
             <TextInput
+              type="number"
+              min={0}
+              inputMode="numeric"
               placeholder={translate('prepTimePlaceholder')}
               data-testid="recipe-basics-prep-time"
               label={translate('prepTime')}
               value={values.prepTimeMinutes}
-              onChange={(e) => {
-                const val = e.target.value ? Number(e.target.value) : '';
-                setFieldValue('prepTimeMinutes', val);
-              }}
+              onChange={handleNumberFieldChange('prepTimeMinutes')}
               error={getFieldError('prepTimeMinutes')}
               size="sm"
             />
+
             <TextInput
+              type="number"
+              min={0}
+              inputMode="numeric"
               placeholder={translate('cookTimePlaceholder')}
               data-testid="recipe-basics-cook-time"
               label={translate('cookTime')}
               value={values.cookTimeMinutes}
-              onChange={(e) => {
-                const val = e.target.value ? Number(e.target.value) : '';
-                setFieldValue('cookTimeMinutes', val);
-              }}
+              onChange={handleNumberFieldChange('cookTimeMinutes')}
               error={getFieldError('cookTimeMinutes')}
               size="sm"
             />
+
             <TextInput
+              type="number"
+              min={0}
+              inputMode="numeric"
               placeholder={translate('restTimePlaceholder')}
               data-testid="recipe-basics-rest-time"
               label={translate('restTime')}
               value={values.restTimeMinutes}
-              onChange={(e) => {
-                const val = e.target.value ? Number(e.target.value) : '';
-                setFieldValue('restTimeMinutes', val);
-              }}
+              onChange={handleNumberFieldChange('restTimeMinutes')}
               error={getFieldError('restTimeMinutes')}
               size="sm"
             />
           </Group>
+
           {totalTime > 0 && (
             <Text size="xs" c="dimmed">
               {translate('totalTime')}: {totalTime} min
@@ -243,7 +344,6 @@ const BasicsSection = ({
           )}
         </Stack>
 
-        {/* ── Cookingtime (backward compat) + Servings ── */}
         <Group grow align="flex-start">
           <Stack gap={4}>
             <Text fw={600} size="sm" component="div">
@@ -252,18 +352,19 @@ const BasicsSection = ({
                 {translate('cookingTime')}
               </Group>
             </Text>
+
             <TextInput
+              type="number"
+              min={0}
+              inputMode="numeric"
               placeholder={translate('cookingTimePlaceholder')}
               data-testid="recipe-basics-cooking-time"
               value={values.cookingTime}
-              onChange={(e) => {
-                const val = e.target.value ? Number(e.target.value) : '';
-                setFieldValue('cookingTime', val);
-                revalidateOnChange('cookingTime');
-              }}
+              onChange={handleNumberFieldChange('cookingTime', true)}
               error={getFieldError('cookingTime')}
             />
           </Stack>
+
           <Stack gap={4}>
             <Text fw={600} size="sm" component="div">
               <Group gap={6}>
@@ -271,27 +372,29 @@ const BasicsSection = ({
                 {translate('servings')}
               </Group>
             </Text>
+
             <Group grow align="flex-start">
               <TextInput
+                type="number"
+                min={1}
+                inputMode="numeric"
                 placeholder={translate('servingsPlaceholder')}
                 data-testid="recipe-basics-servings"
                 value={values.servings}
-                onChange={(e) => {
-                  const val = e.target.value ? Number(e.target.value) : '';
-                  setFieldValue('servings', val);
-                  revalidateOnChange('servings');
-                }}
+                onChange={handleNumberFieldChange('servings', true)}
                 error={getFieldError('servings')}
               />
+
               <Select
                 placeholder={translate('servingUnitPlaceholder')}
                 data-testid="recipe-basics-serving-unit"
                 data={servingUnits}
                 value={values.servingUnit?.value ?? null}
                 onChange={(value) => {
-                  const next =
-                    servingUnits.find((s) => s.value === value) ?? null;
-                  setFieldValue('servingUnit', next);
+                  const selectedUnit =
+                    servingUnits.find((unit) => unit.value === value) ?? null;
+
+                  setFieldValue('servingUnit', selectedUnit);
                 }}
                 searchable
                 clearable
@@ -309,12 +412,15 @@ const BasicsSection = ({
             data={categories}
             value={values.category?.value ?? null}
             onChange={(value) => {
-              const next = categories.find((c) => c.value === value) ?? null;
-              setFieldValue('category', next);
+              const selectedCategory =
+                categories.find((category) => category.value === value) ?? null;
+
+              setFieldValue('category', selectedCategory);
               revalidateOnChange('category');
             }}
             error={getFieldError('category')}
           />
+
           <Select
             label={translate('difficulty')}
             data-testid="recipe-basics-difficulty"
@@ -323,15 +429,16 @@ const BasicsSection = ({
             data={levels}
             value={values.difficultyLevel?.value ?? null}
             onChange={(value) => {
-              const next = levels.find((l) => l.value === value) ?? null;
-              setFieldValue('difficultyLevel', next);
+              const selectedLevel =
+                levels.find((level) => level.value === value) ?? null;
+
+              setFieldValue('difficultyLevel', selectedLevel);
               revalidateOnChange('difficultyLevel');
             }}
             error={getFieldError('difficultyLevel')}
           />
         </Group>
 
-        {/* ── Cuisine + Cost Level ── */}
         <Group grow align="flex-start">
           <Select
             label={translate('cuisine')}
@@ -342,11 +449,14 @@ const BasicsSection = ({
             data={cuisines}
             value={values.cuisine?.value ?? null}
             onChange={(value) => {
-              const next = cuisines.find((c) => c.value === value) ?? null;
-              setFieldValue('cuisine', next);
+              const selectedCuisine =
+                cuisines.find((cuisine) => cuisine.value === value) ?? null;
+
+              setFieldValue('cuisine', selectedCuisine);
             }}
             leftSection={<IconWorld size={14} />}
           />
+
           <Select
             label={translate('costLevel')}
             data-testid="recipe-basics-cost-level"
@@ -356,8 +466,11 @@ const BasicsSection = ({
             data={costLevels}
             value={values.costLevel?.value ?? null}
             onChange={(value) => {
-              const next = costLevels.find((c) => c.value === value) ?? null;
-              setFieldValue('costLevel', next);
+              const selectedCostLevel =
+                costLevels.find((costLevel) => costLevel.value === value) ??
+                null;
+
+              setFieldValue('costLevel', selectedCostLevel);
             }}
             leftSection={<IconCoin size={14} />}
           />
@@ -371,12 +484,11 @@ const BasicsSection = ({
           clearable
           data={labels}
           value={values.labels}
-          onChange={(value) => setFieldValue('labels', value)}
+          onChange={(nextLabels) => setFieldValue('labels', nextLabels)}
           leftSection={<IconHash size={14} />}
           maxValues={5}
         />
 
-        {/* ── Dietary Flags + Allergens ── */}
         <Group grow align="flex-start">
           <MultiSelect
             label={translate('dietaryFlags')}
@@ -386,8 +498,9 @@ const BasicsSection = ({
             clearable
             data={dietaryFlags}
             value={values.dietaryFlags}
-            onChange={(value) => setFieldValue('dietaryFlags', value)}
+            onChange={(nextFlags) => setFieldValue('dietaryFlags', nextFlags)}
           />
+
           <MultiSelect
             label={translate('allergens')}
             data-testid="recipe-basics-allergens"
@@ -396,11 +509,12 @@ const BasicsSection = ({
             clearable
             data={allergens}
             value={values.allergens}
-            onChange={(value) => setFieldValue('allergens', value)}
+            onChange={(nextAllergens) =>
+              setFieldValue('allergens', nextAllergens)
+            }
           />
         </Group>
 
-        {/* ── Equipment ── */}
         <MultiSelect
           label={translate('equipment')}
           data-testid="recipe-basics-equipment"
@@ -409,11 +523,12 @@ const BasicsSection = ({
           clearable
           data={equipment}
           value={values.equipment}
-          onChange={(value) => setFieldValue('equipment', value)}
+          onChange={(nextEquipment) =>
+            setFieldValue('equipment', nextEquipment)
+          }
           leftSection={<IconToolsKitchen size={14} />}
         />
 
-        {/* ── Tips & Substitutions ── */}
         <Group grow align="flex-start">
           <Textarea
             label={translate('tips')}
@@ -422,8 +537,11 @@ const BasicsSection = ({
             autosize
             minRows={2}
             value={values.tips}
-            onChange={(e) => setFieldValue('tips', e.target.value)}
+            onChange={(event) =>
+              setFieldValue('tips', event.currentTarget.value)
+            }
           />
+
           <Textarea
             label={translate('substitutions')}
             data-testid="recipe-basics-substitutions"
@@ -431,14 +549,17 @@ const BasicsSection = ({
             autosize
             minRows={2}
             value={values.substitutions}
-            onChange={(e) => setFieldValue('substitutions', e.target.value)}
+            onChange={(event) =>
+              setFieldValue('substitutions', event.currentTarget.value)
+            }
           />
         </Group>
 
         <Group justify="flex-end" mt="xs">
           <Button
+            type="button"
             variant="light"
-            onClick={onNext}
+            onClick={handleNext}
             rightSection={<IconPhoto size={16} />}
             data-testid="recipe-basics-next"
           >
