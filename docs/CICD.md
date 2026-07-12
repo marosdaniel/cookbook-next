@@ -113,7 +113,7 @@ quality-checks + e2e
 | Step | Command | What it does |
 |------|---------|--------------|
 | Checkout code | `actions/checkout@v7` | Clones the repository at the triggering commit |
-| Setup pnpm | `pnpm/action-setup@v6` | Installs pnpm as the package manager (version pinned via the `packageManager` field in `package.json`, currently `11.11.0`) |
+| Setup pnpm | `pnpm/action-setup@v6` | Installs pnpm as the package manager (version pinned via the `packageManager` field in `package.json`, currently `11.12.0`) |
 | Setup Node.js | `actions/setup-node@v6` | Installs Node.js 24 and restores the pnpm dependency cache |
 | Install dependencies | `pnpm install --frozen-lockfile` | Installs all project dependencies from the lockfile |
 | Run Biome Lint | `pnpm lint:fix` | Runs Biome static analysis and auto-fixes formatting issues |
