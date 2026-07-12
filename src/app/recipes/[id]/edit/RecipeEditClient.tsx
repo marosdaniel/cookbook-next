@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useRecipeEditForm } from '@/components/Recipe/Create/hooks/useRecipeEditForm';
 import { useRecipeMetadata } from '@/components/Recipe/Create/hooks/useRecipeMetadata';
-import { RecipeComposer } from '@/components/Recipe/Create/RecipeComposer';
+import RecipeComposer from '@/components/Recipe/Create/RecipeComposer';
 import type { ComposerSection } from '@/components/Recipe/Create/types';
 import {
   EMPTY_FORM_VALUES,

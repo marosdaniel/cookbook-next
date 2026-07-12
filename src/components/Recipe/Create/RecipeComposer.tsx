@@ -26,7 +26,7 @@ import StepsSection from './sections/StepsSection';
 import type { ComposerSection, RecipeComposerProps } from './types';
 import { getPublishButtonState } from './utils';
 
-export const RecipeComposer = ({
+const RecipeComposer = ({
   form,
   handlePublish,
   submitLoading,
@@ -294,3 +294,5 @@ export const RecipeComposer = ({
     </RecipeFormProvider>
   );
 };
+
+export default RecipeComposer;

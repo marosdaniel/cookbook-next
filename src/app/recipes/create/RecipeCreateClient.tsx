@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useRef } from 'react';
 import { useRecipeForm } from '@/components/Recipe/Create/hooks/useRecipeForm';
 import { useRecipeMetadata } from '@/components/Recipe/Create/hooks/useRecipeMetadata';
-import { RecipeComposer } from '@/components/Recipe/Create/RecipeComposer';
+import RecipeComposer from '@/components/Recipe/Create/RecipeComposer';
 import type { ComposerSection } from '@/components/Recipe/Create/types';
 
 const RecipeCreateClient = () => {
