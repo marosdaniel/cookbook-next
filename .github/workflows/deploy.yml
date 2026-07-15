@@ -29,10 +29,12 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
+permissions:
+  contents: read
+
 jobs:
   quality-checks:
     runs-on: ubuntu-latest
-    # Skip job if commit message contains [skip ci] or [ci skip]
     if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[ci skip]')"
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -179,14 +181,14 @@ jobs:
             FUNCTIONS=0
             BRANCHES=0
           fi
-          
+
           echo "| Lines | ${LINES}% |" >> $GITHUB_STEP_SUMMARY
           echo "| Statements | ${STATEMENTS}% |" >> $GITHUB_STEP_SUMMARY
           echo "| Functions | ${FUNCTIONS}% |" >> $GITHUB_STEP_SUMMARY
           echo "| Branches | ${BRANCHES}% |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "[View Full Coverage Report](https://marosdaniel.github.io/cookbook-next/coverage/)" >> $GITHUB_STEP_SUMMARY
-          
+
           echo "lines=$LINES" >> $GITHUB_OUTPUT
 
       - name: Upload coverage artifact
@@ -362,14 +364,14 @@ jobs:
     needs: deploy-production
     runs-on: ubuntu-latest
     permissions:
-      contents: write  
-      issues: write 
-      pull-requests: write 
+      contents: write
+      issues: write
+      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
         with:
-          fetch-depth: 0 
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
