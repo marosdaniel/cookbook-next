@@ -30,6 +30,7 @@
     "lint": "biome lint .",
     "lint:fix": "biome check --write .",
     "deps:update": "pnpm dlx npm-check-updates -u",
+    "deps:update:without-ts": "pnpm dlx npm-check-updates -u --reject typescript",
     "analyze": "pnpm prisma generate && next build --experimental-analyze",
     "audit:fix": "pnpm audit --fix=update || pnpm audit --fix=override"
   },
@@ -72,11 +73,11 @@
     "react-icons": "^5.7.0",
     "react-redux": "^9.3.0",
     "sanitize-html": "^2.17.6",
-    "ws": "^8.21.0",
+    "ws": "^8.21.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.3",
+    "@biomejs/biome": "2.5.4",
     "@playwright/test": "^1.61.1",
     "@prisma/config": "^7.8.0",
     "@semantic-release/changelog": "^6.0.3",
