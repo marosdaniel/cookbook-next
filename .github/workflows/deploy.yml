@@ -293,6 +293,8 @@ jobs:
     needs: [quality-checks, e2e]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
