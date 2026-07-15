@@ -72,7 +72,7 @@
     "react-icons": "^5.7.0",
     "react-redux": "^9.3.0",
     "sanitize-html": "^2.17.6",
-    "ws": "^8.21.0",
+    "ws": "^8.21.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
