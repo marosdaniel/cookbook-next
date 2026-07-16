@@ -13,7 +13,7 @@
   "engines": {
     "node": "24.x"
   },
-  "packageManager": "pnpm@11.13.0",
+  "packageManager": "pnpm@11.13.1",
   "scripts": {
     "dev": "next dev --turbopack",
     "start": "next start",
@@ -101,7 +101,7 @@
     "prisma": "7.8.0",
     "semantic-release": "^25.0.7",
     "typescript": "6.0.3",
-    "vite": "^8.1.4",
+    "vite": "^8.1.5",
     "vitest": "^4.1.10"
   }
 }
