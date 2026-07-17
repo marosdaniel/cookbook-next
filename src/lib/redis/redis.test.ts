@@ -36,6 +36,15 @@ describe('redis client fallback', () => {
     expect(redisGetMock).toHaveBeenCalledTimes(1);
   });
 
+  it('does not initialize Redis when the URL is invalid', async () => {
+    process.env.UPSTASH_REDIS_REST_URL = '[SENSITIVE]';
+
+    const { redis, rawRedisClient } = await import('./redis');
+
+    expect(redis).toBeNull();
+    expect(rawRedisClient).toBeNull();
+  });
+
   it('throws when a Redis operation times out', async () => {
     vi.useFakeTimers();
     const { withTimeout } = await import('./redis');

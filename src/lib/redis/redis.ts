@@ -16,6 +16,24 @@ const REDIS_FAILURE_TTL_MS = 5_000;
 const REDIS_OPERATION_TIMEOUT_MS = 1_000;
 let redisFailureUntil = 0;
 
+const isValidRedisUrl = (value: string | undefined) => {
+  if (!value) {
+    return false;
+  }
+
+  try {
+    const parsedUrl = new URL(value);
+    return parsedUrl.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
+
+const isValidRedisConfig = (
+  url: string | undefined,
+  token: string | undefined,
+) => Boolean(url && token && isValidRedisUrl(url));
+
 interface RedisWithCircuitBreaker {
   get: (key: string) => Promise<unknown>;
   setex: (key: string, ttl: number, value: unknown) => Promise<unknown>;
@@ -69,19 +87,20 @@ const wrapWithCircuitBreaker = async <T>(
   }
 };
 
-// Only initialize if the environment variables are present to avoid startup crashes if they are not yet configured
-const redis: Redis | null =
-  redisUrl && redisToken
-    ? new Redis({
-        url: redisUrl,
-        token: redisToken,
-      })
-    : null;
+// Only initialize if the environment variables are present and valid to avoid startup crashes if they are not yet configured
+const redis: Redis | null = isValidRedisConfig(redisUrl, redisToken)
+  ? new Redis({
+      url: redisUrl,
+      token: redisToken,
+    })
+  : null;
 
 export const rawRedisClient: Redis | null = redis;
 
 if (!redis) {
-  console.warn('Upstash Redis URL or Token is missing. Caching will not work.');
+  console.warn(
+    'Upstash Redis URL or Token is missing or invalid. Caching will not work.',
+  );
 }
 
 const redisWithCircuitBreaker: RedisWithCircuitBreaker | null = redis
