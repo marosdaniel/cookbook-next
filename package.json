@@ -51,7 +51,7 @@
     "@prisma/adapter-neon": "^7.8.0",
     "@prisma/client": "7.8.0",
     "@reduxjs/toolkit": "^2.12.0",
-    "@tabler/icons-react": "^3.44.0",
+    "@tabler/icons-react": "^3.45.0",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
     "@vercel/speed-insights": "^2.0.0",
