@@ -97,7 +97,7 @@
     "@vitest/coverage-v8": "4.1.10",
     "baseline-browser-mapping": "^2.10.43",
     "dotenv": "^17.4.2",
-    "happy-dom": "^20.10.6",
+    "happy-dom": "^20.11.0",
     "prisma": "7.8.0",
     "semantic-release": "^25.0.8",
     "typescript": "6.0.3",
