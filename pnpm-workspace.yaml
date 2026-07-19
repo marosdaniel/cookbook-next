@@ -107,6 +107,7 @@ minimumReleaseAgeExclude:
   - '@tabler/icons-react@3.45.0'
   - '@tabler/icons@3.45.0'
   - happy-dom@20.11.0
+  - argon2@0.45.0
 
 overrides:
   '@hono/node-server@<1.19.13': ^1.19.13
