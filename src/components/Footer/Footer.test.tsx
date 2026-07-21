@@ -176,8 +176,8 @@ describe('Footer', () => {
           (el) =>
             el.textContent ===
             `© ${currentYear} Cookbook. All rights reserved.`,
-        ).length,
-      ).toBe(2);
+        ),
+      ).toHaveLength(2);
     });
   });
 
@@ -187,7 +187,7 @@ describe('Footer', () => {
       const privacyLinks = container.querySelectorAll(
         'a[href="/privacy-policy"]',
       );
-      expect(privacyLinks.length).toBe(2); // Mobile and desktop
+      expect(privacyLinks).toHaveLength(2); // Mobile and desktop
     });
 
     it('has correct href for Privacy Policy', () => {
@@ -209,7 +209,7 @@ describe('Footer', () => {
       const cookieLinks = container.querySelectorAll(
         'a[href="/cookie-policy"]',
       );
-      expect(cookieLinks.length).toBe(2); // Mobile and desktop
+      expect(cookieLinks).toHaveLength(2); // Mobile and desktop
     });
 
     it('has correct href for Cookie Policy', () => {
@@ -247,7 +247,7 @@ describe('Footer', () => {
       render(<Footer />);
       // Check for Group component by finding logos
       const logos = screen.getAllByTestId('logo');
-      expect(logos.length).toBe(2);
+      expect(logos).toHaveLength(2);
     });
 
     it('desktop footer has correct structure', () => {
@@ -262,8 +262,8 @@ describe('Footer', () => {
       render(<Footer />);
       const privacyLinks = screen.getAllByText('Privacy Policy');
       const cookieLinks = screen.getAllByText('Cookie Policy');
-      expect(privacyLinks.length).toBe(2);
-      expect(cookieLinks.length).toBe(2);
+      expect(privacyLinks).toHaveLength(2);
+      expect(cookieLinks).toHaveLength(2);
     });
 
     it('all links are clickable', () => {
@@ -296,8 +296,8 @@ describe('Footer', () => {
       // Check for actual link elements
       const privacyLinks = screen.getAllByText('Privacy Policy');
       const cookieLinks = screen.getAllByText('Cookie Policy');
-      expect(privacyLinks.length).toBe(2);
-      expect(cookieLinks.length).toBe(2);
+      expect(privacyLinks).toHaveLength(2);
+      expect(cookieLinks).toHaveLength(2);
     });
 
     it('policy links have correct text content', () => {
@@ -343,7 +343,7 @@ describe('Footer', () => {
       const currentYear = new Date().getFullYear();
       render(<Footer />);
       const copyrightText = screen.getAllByText(new RegExp(`© ${currentYear}`));
-      expect(copyrightText.length).toBe(2);
+      expect(copyrightText).toHaveLength(2);
     });
   });
 
@@ -353,14 +353,14 @@ describe('Footer', () => {
 
       // Check logos
       const logos = screen.getAllByTestId('logo');
-      expect(logos.length).toBe(2);
+      expect(logos).toHaveLength(2);
 
       // Check copyright
       const currentYear = new Date().getFullYear();
       const copyright = screen.getAllByText(
         `© ${currentYear} Cookbook. All rights reserved.`,
       );
-      expect(copyright.length).toBe(2);
+      expect(copyright).toHaveLength(2);
 
       // Check policy links
       expect(screen.getAllByText('Privacy Policy')).toHaveLength(2);
@@ -388,7 +388,7 @@ describe('Footer', () => {
     it('logo links have proper text content', () => {
       render(<Footer />);
       const logoLinks = screen.getAllByText('Logo');
-      expect(logoLinks.length).toBe(2);
+      expect(logoLinks).toHaveLength(2);
     });
   });
 });

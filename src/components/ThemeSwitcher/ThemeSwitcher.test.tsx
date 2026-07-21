@@ -145,32 +145,29 @@ describe('ThemeSwitcher', () => {
   });
 
   describe('Accessibility', () => {
-    it('has correct aria-label', () => {
-      mockIsDarkMode.mockReturnValue(false);
+    it.each([
+      {
+        isDarkMode: false,
+        expectedTitle: 'Dark mode',
+        scenario: 'light mode',
+      },
+      {
+        isDarkMode: true,
+        expectedTitle: 'Light mode',
+        scenario: 'dark mode',
+      },
+    ])(
+      'has the correct accessibility attributes in $scenario',
+      ({ isDarkMode, expectedTitle }) => {
+        mockIsDarkMode.mockReturnValue(isDarkMode);
 
-      render(<ThemeSwitcher />);
+        render(<ThemeSwitcher />);
 
-      const button = screen.getByTestId('theme-toggle');
-      expect(button).toHaveAttribute('aria-label', 'Toggle theme');
-    });
-
-    it('has correct title attribute in light mode', () => {
-      mockIsDarkMode.mockReturnValue(false);
-
-      render(<ThemeSwitcher />);
-
-      const button = screen.getByTestId('theme-toggle');
-      expect(button).toHaveAttribute('title', 'Dark mode');
-    });
-
-    it('has correct title attribute in dark mode', () => {
-      mockIsDarkMode.mockReturnValue(true);
-
-      render(<ThemeSwitcher />);
-
-      const button = screen.getByTestId('theme-toggle');
-      expect(button).toHaveAttribute('title', 'Light mode');
-    });
+        const button = screen.getByTestId('theme-toggle');
+        expect(button).toHaveAttribute('aria-label', 'Toggle theme');
+        expect(button).toHaveAttribute('title', expectedTitle);
+      },
+    );
   });
 
   describe('Color Scheme Sync', () => {
