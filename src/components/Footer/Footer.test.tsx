@@ -79,55 +79,42 @@ describe('Footer', () => {
       const { container } = render(<Footer />);
       const stacks = container.querySelectorAll('.mantine-Stack-root');
       const groups = container.querySelectorAll('.mantine-Group-root');
-      expect(stacks.length).toBeGreaterThan(0);
-      expect(groups.length).toBeGreaterThan(0);
+      expect(stacks).not.toHaveLength(0);
+      expect(groups).not.toHaveLength(0);
     });
   });
 
   describe('Logo rendering', () => {
-    it('renders logo in mobile footer', () => {
+    it.each([
+      {
+        name: 'mobile footer',
+        expectedCount: 1,
+        assertions: (logo: HTMLElement) => {
+          expect(logo).toHaveAttribute('href', '/');
+        },
+      },
+      {
+        name: 'desktop footer',
+        expectedCount: 2,
+        assertions: (logo: HTMLElement) => {
+          expect(logo).toHaveAttribute('href', '/');
+        },
+      },
+      {
+        name: 'variant metadata',
+        expectedCount: 2,
+        assertions: (logo: HTMLElement) => {
+          expect(logo).toHaveAttribute('data-variant', 'icon');
+          expect(logo).toHaveAttribute('data-width', '36');
+          expect(logo).toHaveAttribute('data-height', '36');
+          expect(logo).toHaveAttribute('data-with-text', 'true');
+        },
+      },
+    ])('renders logos correctly for $name', ({ expectedCount, assertions }) => {
       render(<Footer />);
       const logos = screen.getAllByTestId('logo');
-      expect(logos.length).toBeGreaterThanOrEqual(1);
-    });
-
-    it('renders logo in desktop footer', () => {
-      render(<Footer />);
-      const logos = screen.getAllByTestId('logo');
-      expect(logos.length).toBe(2); // One for mobile, one for desktop
-    });
-
-    it('renders logo with correct variant', () => {
-      render(<Footer />);
-      const logos = screen.getAllByTestId('logo');
-      logos.forEach((logo) => {
-        expect(logo).toHaveAttribute('data-variant', 'icon');
-      });
-    });
-
-    it('renders logo with correct dimensions', () => {
-      render(<Footer />);
-      const logos = screen.getAllByTestId('logo');
-      logos.forEach((logo) => {
-        expect(logo).toHaveAttribute('data-width', '36');
-        expect(logo).toHaveAttribute('data-height', '36');
-      });
-    });
-
-    it('renders logo with text', () => {
-      render(<Footer />);
-      const logos = screen.getAllByTestId('logo');
-      logos.forEach((logo) => {
-        expect(logo).toHaveAttribute('data-with-text', 'true');
-      });
-    });
-
-    it('renders logo with correct href', () => {
-      render(<Footer />);
-      const logos = screen.getAllByTestId('logo');
-      logos.forEach((logo) => {
-        expect(logo).toHaveAttribute('href', '/');
-      });
+      expect(logos).toHaveLength(expectedCount);
+      logos.forEach((logo) => assertions(logo));
     });
   });
 
@@ -135,7 +122,7 @@ describe('Footer', () => {
     it('renders copyright symbol', () => {
       render(<Footer />);
       const copyrightTexts = screen.getAllByTestId('footer-copyright');
-      expect(copyrightTexts.length).toBeGreaterThan(0);
+      expect(copyrightTexts).not.toHaveLength(0);
     });
 
     it('renders current year in copyright', () => {
@@ -232,7 +219,7 @@ describe('Footer', () => {
       const copyrightTexts = screen.getAllByText(
         /© .* Cookbook. All rights reserved./,
       );
-      expect(copyrightTexts.length).toBeGreaterThan(0);
+      expect(copyrightTexts).not.toHaveLength(0);
     });
 
     it('mobile footer has correct structure', () => {
@@ -269,7 +256,7 @@ describe('Footer', () => {
     it('all links are clickable', () => {
       render(<Footer />);
       const allLinks = screen.getAllByRole('link');
-      expect(allLinks.length).toBeGreaterThan(0);
+      expect(allLinks).not.toHaveLength(0);
       allLinks.forEach((link) => {
         expect(link).toHaveAttribute('href');
       });
@@ -280,13 +267,13 @@ describe('Footer', () => {
     it('has mobile layout elements', () => {
       const { container } = render(<Footer />);
       const stacks = container.querySelectorAll('.mantine-Stack-root');
-      expect(stacks.length).toBeGreaterThan(0);
+      expect(stacks).not.toHaveLength(0);
     });
 
     it('has desktop layout elements', () => {
       const { container } = render(<Footer />);
       const groups = container.querySelectorAll('.mantine-Group-root');
-      expect(groups.length).toBeGreaterThan(0);
+      expect(groups).not.toHaveLength(0);
     });
   });
 
@@ -311,7 +298,7 @@ describe('Footer', () => {
     it('copyright text uses Mantine Text component', () => {
       const { container } = render(<Footer />);
       const textElements = container.querySelectorAll('.mantine-Text-root');
-      expect(textElements.length).toBeGreaterThan(0);
+      expect(textElements).not.toHaveLength(0);
     });
   });
 
@@ -336,7 +323,7 @@ describe('Footer', () => {
       const currentYear = new Date().getFullYear();
       render(<Footer />);
       const yearTexts = screen.getAllByText(new RegExp(currentYear.toString()));
-      expect(yearTexts.length).toBeGreaterThan(0);
+      expect(yearTexts).not.toHaveLength(0);
     });
 
     it('year in copyright matches current year', () => {

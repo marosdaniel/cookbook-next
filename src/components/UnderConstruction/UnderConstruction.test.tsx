@@ -154,36 +154,29 @@ describe('UnderConstruction', () => {
       expect(linearGradient).toHaveAttribute('y2', '0%');
     });
 
-    it('gradient has stop colors defined', () => {
+    it.each([
+      {
+        label: 'first',
+        selector: 'linearGradient#pot-gradient stop:first-child',
+        expectedStopColor: 'var(--mantine-color-pink-6)',
+        expectedOffset: '0%',
+      },
+      {
+        label: 'second',
+        selector: 'linearGradient#pot-gradient stop:last-child',
+        expectedStopColor: 'var(--mantine-color-violet-6)',
+        expectedOffset: '100%',
+      },
+    ])('gradient $label stop is rendered correctly', ({ selector, expectedStopColor, expectedOffset }) => {
       const { container } = render(<UnderConstruction />);
       const stops = container.querySelectorAll(
         'linearGradient#pot-gradient stop',
       );
-      expect(stops.length).toBe(2);
-    });
+      expect(stops).toHaveLength(2);
 
-    it('gradient first stop is pink', () => {
-      const { container } = render(<UnderConstruction />);
-      const firstStop = container.querySelector(
-        'linearGradient#pot-gradient stop:first-child',
-      );
-      expect(firstStop).toHaveAttribute(
-        'stop-color',
-        'var(--mantine-color-pink-6)',
-      );
-      expect(firstStop).toHaveAttribute('offset', '0%');
-    });
-
-    it('gradient second stop is violet', () => {
-      const { container } = render(<UnderConstruction />);
-      const secondStop = container.querySelector(
-        'linearGradient#pot-gradient stop:last-child',
-      );
-      expect(secondStop).toHaveAttribute(
-        'stop-color',
-        'var(--mantine-color-violet-6)',
-      );
-      expect(secondStop).toHaveAttribute('offset', '100%');
+      const stop = container.querySelector(selector);
+      expect(stop).toHaveAttribute('stop-color', expectedStopColor);
+      expect(stop).toHaveAttribute('offset', expectedOffset);
     });
 
     it('SVG has title for accessibility', () => {
