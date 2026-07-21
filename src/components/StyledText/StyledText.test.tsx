@@ -7,17 +7,23 @@ describe('StyledText', () => {
   describe('Text component type', () => {
     it('renders as Text component by default', () => {
       render(<StyledText>Test content</StyledText>);
-      expect(screen.getByTestId('styled-text')).toHaveTextContent('Test content');
+      expect(screen.getByTestId('styled-text')).toHaveTextContent(
+        'Test content',
+      );
     });
 
     it('renders as Text component when componentType is explicitly "text"', () => {
       render(<StyledText componentType="text">Test content</StyledText>);
-      expect(screen.getByTestId('styled-text')).toHaveTextContent('Test content');
+      expect(screen.getByTestId('styled-text')).toHaveTextContent(
+        'Test content',
+      );
     });
 
     it('renders text content correctly', () => {
       render(<StyledText>Hello World</StyledText>);
-      expect(screen.getByTestId('styled-text')).toHaveTextContent('Hello World');
+      expect(screen.getByTestId('styled-text')).toHaveTextContent(
+        'Hello World',
+      );
     });
 
     it('applies Text component props correctly', () => {
@@ -189,7 +195,9 @@ describe('StyledText', () => {
   describe('Children rendering', () => {
     it('renders string children', () => {
       render(<StyledText>String content</StyledText>);
-      expect(screen.getByTestId('styled-text')).toHaveTextContent('String content');
+      expect(screen.getByTestId('styled-text')).toHaveTextContent(
+        'String content',
+      );
     });
 
     it('renders number children', () => {
@@ -222,7 +230,9 @@ describe('StyledText', () => {
 
     it('renders with all default props', () => {
       render(<StyledText>Default props</StyledText>);
-      expect(screen.getByTestId('styled-text')).toHaveTextContent('Default props');
+      expect(screen.getByTestId('styled-text')).toHaveTextContent(
+        'Default props',
+      );
     });
   });
 });

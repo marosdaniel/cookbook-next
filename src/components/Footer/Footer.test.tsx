@@ -114,7 +114,9 @@ describe('Footer', () => {
       render(<Footer />);
       const logos = screen.getAllByTestId('logo');
       expect(logos).toHaveLength(expectedCount);
-      logos.forEach((logo) => assertions(logo));
+      logos.forEach((logo) => {
+        assertions(logo);
+      });
     });
   });
 

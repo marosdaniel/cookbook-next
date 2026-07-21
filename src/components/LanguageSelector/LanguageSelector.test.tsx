@@ -75,9 +75,15 @@ describe('LanguageSelector', () => {
       expect(screen.getByTestId('language-item-en-gb')).toBeInTheDocument();
       expect(screen.getByTestId('language-item-hu')).toBeInTheDocument();
       expect(screen.getByTestId('language-item-de')).toBeInTheDocument();
-      expect(screen.getByTestId('language-item-en-gb')).toHaveTextContent('English');
-      expect(screen.getByTestId('language-item-hu')).toHaveTextContent('Magyar');
-      expect(screen.getByTestId('language-item-de')).toHaveTextContent('Deutsch');
+      expect(screen.getByTestId('language-item-en-gb')).toHaveTextContent(
+        'English',
+      );
+      expect(screen.getByTestId('language-item-hu')).toHaveTextContent(
+        'Magyar',
+      );
+      expect(screen.getByTestId('language-item-de')).toHaveTextContent(
+        'Deutsch',
+      );
     });
   });
 

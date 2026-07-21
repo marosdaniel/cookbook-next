@@ -49,7 +49,10 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
       padding={0}
       data-testid="recipe-card"
     >
-      <Card.Section className={classes.imageSection} data-testid="recipe-card-image">
+      <Card.Section
+        className={classes.imageSection}
+        data-testid="recipe-card-image"
+      >
         {imgSrc ? (
           <Image src={imgSrc} height={180} alt={title} fit="cover" />
         ) : (
@@ -58,7 +61,10 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
           </Box>
         )}
         {withFavorite && (
-          <Box className={classes.favoriteButton} data-testid="recipe-card-favorite">
+          <Box
+            className={classes.favoriteButton}
+            data-testid="recipe-card-favorite"
+          >
             <FavoriteButton recipeId={id} isFavorite={isFavorite} size="sm" />
           </Box>
         )}
@@ -79,12 +85,24 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
           </Badge>
         </Group>
 
-        <Text fw={600} size="md" mt={4} className={classes.title} data-testid="recipe-card-title">
+        <Text
+          fw={600}
+          size="md"
+          mt={4}
+          className={classes.title}
+          data-testid="recipe-card-title"
+        >
           {title}
         </Text>
 
         {description && (
-          <Text size="xs" c="dimmed" mt={4} className={classes.description} data-testid="recipe-card-description">
+          <Text
+            size="xs"
+            c="dimmed"
+            mt={4}
+            className={classes.description}
+            data-testid="recipe-card-description"
+          >
             {description}
           </Text>
         )}

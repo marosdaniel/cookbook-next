@@ -18,11 +18,21 @@ export const StyledText = <C extends 'title' | 'text' = 'text'>({
 
   if (componentType === 'title') {
     return (
-      <Title className={combinedClassName} data-testid={testId} {...(props as TitleProps)} />
+      <Title
+        className={combinedClassName}
+        data-testid={testId}
+        {...(props as TitleProps)}
+      />
     );
   }
 
-  return <Text className={combinedClassName} data-testid={testId} {...(props as TextProps)} />;
+  return (
+    <Text
+      className={combinedClassName}
+      data-testid={testId}
+      {...(props as TextProps)}
+    />
+  );
 };
 
 export default StyledText;

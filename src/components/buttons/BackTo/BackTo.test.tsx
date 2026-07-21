@@ -17,6 +17,8 @@ describe('BackTo', () => {
     expect(links).toHaveLength(2);
     expect(links[0]).toHaveAttribute('href', PUBLIC_ROUTES.RECIPES);
     expect(links[1]).toHaveAttribute('href', PUBLIC_ROUTES.RECIPES);
-    expect(screen.getByTestId('back-to-text')).toHaveTextContent('Back to recipes');
+    expect(screen.getByTestId('back-to-text')).toHaveTextContent(
+      'Back to recipes',
+    );
   });
 });

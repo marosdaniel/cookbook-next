@@ -17,7 +17,9 @@
 }
 
 .userCard {
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease;
 }
 
 .userCard:hover {
@@ -26,7 +28,9 @@
 }
 
 .unfollowButton {
-  transition: background-color 150ms ease, transform 150ms ease;
+  transition:
+    background-color 150ms ease,
+    transform 150ms ease;
 }
 
 .unfollowButton:hover {

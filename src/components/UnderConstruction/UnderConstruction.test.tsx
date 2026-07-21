@@ -167,17 +167,20 @@ describe('UnderConstruction', () => {
         expectedStopColor: 'var(--mantine-color-violet-6)',
         expectedOffset: '100%',
       },
-    ])('gradient $label stop is rendered correctly', ({ selector, expectedStopColor, expectedOffset }) => {
-      const { container } = render(<UnderConstruction />);
-      const stops = container.querySelectorAll(
-        'linearGradient#pot-gradient stop',
-      );
-      expect(stops).toHaveLength(2);
+    ])(
+      'gradient $label stop is rendered correctly',
+      ({ selector, expectedStopColor, expectedOffset }) => {
+        const { container } = render(<UnderConstruction />);
+        const stops = container.querySelectorAll(
+          'linearGradient#pot-gradient stop',
+        );
+        expect(stops).toHaveLength(2);
 
-      const stop = container.querySelector(selector);
-      expect(stop).toHaveAttribute('stop-color', expectedStopColor);
-      expect(stop).toHaveAttribute('offset', expectedOffset);
-    });
+        const stop = container.querySelector(selector);
+        expect(stop).toHaveAttribute('stop-color', expectedStopColor);
+        expect(stop).toHaveAttribute('offset', expectedOffset);
+      },
+    );
 
     it('SVG has title for accessibility', () => {
       const { container } = render(<UnderConstruction />);

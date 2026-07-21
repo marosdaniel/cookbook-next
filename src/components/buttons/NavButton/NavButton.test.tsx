@@ -71,7 +71,9 @@ describe('NavButton', () => {
   describe('Size prop', () => {
     it('uses default size "lg" when size prop is not provided', () => {
       render(<NavButton label="Default Size" href="/" />);
-      expect(screen.getByTestId('nav-button')).toHaveTextContent('Default Size');
+      expect(screen.getByTestId('nav-button')).toHaveTextContent(
+        'Default Size',
+      );
     });
 
     it('applies small size correctly', () => {
@@ -156,7 +158,9 @@ describe('NavButton', () => {
           fullWidth={true}
         />,
       );
-      expect(screen.getByTestId('nav-button')).toHaveTextContent('Complete Button');
+      expect(screen.getByTestId('nav-button')).toHaveTextContent(
+        'Complete Button',
+      );
       expect(screen.getByTestId('combined-icon')).toBeInTheDocument();
       const link = screen.getByRole('link');
       expect(link).toHaveAttribute('href', '/');
@@ -193,7 +197,9 @@ describe('NavButton', () => {
 
     it('maintains button text for screen readers', () => {
       render(<NavButton label="Screen Reader Text" href="/" />);
-      expect(screen.getByTestId('nav-button')).toHaveTextContent('Screen Reader Text');
+      expect(screen.getByTestId('nav-button')).toHaveTextContent(
+        'Screen Reader Text',
+      );
     });
   });
 
@@ -211,12 +217,16 @@ describe('NavButton', () => {
 
     it('renders with label containing special characters', () => {
       render(<NavButton label="Save & Continue" href="/" />);
-      expect(screen.getByTestId('nav-button')).toHaveTextContent('Save & Continue');
+      expect(screen.getByTestId('nav-button')).toHaveTextContent(
+        'Save & Continue',
+      );
     });
 
     it('renders with label containing numbers', () => {
       render(<NavButton label="Page 1 of 10" href="/" />);
-      expect(screen.getByTestId('nav-button')).toHaveTextContent('Page 1 of 10');
+      expect(screen.getByTestId('nav-button')).toHaveTextContent(
+        'Page 1 of 10',
+      );
     });
 
     it('renders with label containing unicode characters', () => {

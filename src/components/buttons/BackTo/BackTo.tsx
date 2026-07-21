@@ -16,7 +16,13 @@ const BackTo = ({ href, text }: Readonly<BackToProps>) => {
       >
         <IconArrowLeft size={20} />
       </ActionIcon>
-      <Text component={Link} href={href} c="dimmed" size="sm" data-testid="back-to-text">
+      <Text
+        component={Link}
+        href={href}
+        c="dimmed"
+        size="sm"
+        data-testid="back-to-text"
+      >
         {text}
       </Text>
     </Group>

@@ -20,7 +20,10 @@ html,
 body,
 button,
 a {
-  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease;
 }
 
 body {
@@ -35,7 +38,7 @@ body {
   body,
   button,
   a {
-    transition: none !important;
+    transition: none;
   }
 }
 
