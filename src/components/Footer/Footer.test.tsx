@@ -88,7 +88,7 @@ describe('Footer', () => {
     it.each([
       {
         name: 'mobile footer',
-        expectedCount: 1,
+        expectedCount: 2,
         assertions: (logo: HTMLElement) => {
           expect(logo).toHaveAttribute('href', '/');
         },
@@ -114,9 +114,9 @@ describe('Footer', () => {
       render(<Footer />);
       const logos = screen.getAllByTestId('logo');
       expect(logos).toHaveLength(expectedCount);
-      logos.forEach((logo) => {
+      for (const logo of logos) {
         assertions(logo);
-      });
+      }
     });
   });
 
