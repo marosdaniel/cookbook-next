@@ -30,6 +30,38 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
 
   const shouldShowAuthButton = !isSessionLoading && !session && !isAuthPage;
 
+  const renderAuthSlotContent = () => {
+    if (isSessionLoading) {
+      return (
+        <motion.div
+          key="session-loading"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15, ease: 'easeOut' }}
+        >
+          <Skeleton height={36} width={88} radius="xl" />
+        </motion.div>
+      );
+    }
+
+    if (shouldShowAuthButton) {
+      return (
+        <motion.div
+          key="auth-button"
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18, ease: 'easeOut' }}
+        >
+          <AuthButton variant="compact" />
+        </motion.div>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <AppShell
       padding={isImmersive ? 0 : 'md'}
@@ -84,27 +116,7 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
                 }}
               >
                 <AnimatePresence initial={false} mode="wait">
-                  {isSessionLoading ? (
-                    <motion.div
-                      key="session-loading"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.15, ease: 'easeOut' }}
-                    >
-                      <Skeleton height={36} width={88} radius="xl" />
-                    </motion.div>
-                  ) : shouldShowAuthButton ? (
-                    <motion.div
-                      key="auth-button"
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.18, ease: 'easeOut' }}
-                    >
-                      <AuthButton variant="compact" />
-                    </motion.div>
-                  ) : null}
+                  {renderAuthSlotContent()}
                 </AnimatePresence>
               </div>
 

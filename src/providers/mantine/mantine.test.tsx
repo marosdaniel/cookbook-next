@@ -27,6 +27,7 @@ describe('MantineProviderWrapper', () => {
     // Notifications portal usually renders at the end of body or in a specific container.
     // In Mantine 7+, it's often a portal.
     // We just check that the wrapper renders successfully.
+    expect(screen.getByText('Content')).toBeInTheDocument();
   });
 
   it('renders NextTopLoader successfully', () => {

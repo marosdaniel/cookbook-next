@@ -54,15 +54,17 @@ export const HeaderSearch = () => {
   const hasNoResults =
     shouldSearch && !loading && !error && recipes.length === 0;
 
-  const dropdownState = loading
-    ? 'loading'
-    : error
-      ? 'error'
-      : hasNoResults
-        ? 'empty'
-        : recipes.length > 0
-          ? `results-${trimmedSearchQuery}`
-          : 'idle';
+  let dropdownState = 'idle';
+
+  if (loading) {
+    dropdownState = 'loading';
+  } else if (error) {
+    dropdownState = 'error';
+  } else if (hasNoResults) {
+    dropdownState = 'empty';
+  } else if (recipes.length > 0) {
+    dropdownState = `results-${trimmedSearchQuery}`;
+  }
 
   const handleChange = (value: string) => {
     setSearchQuery(value);

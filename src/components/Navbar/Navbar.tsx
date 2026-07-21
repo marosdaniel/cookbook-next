@@ -97,11 +97,13 @@ const Navbar: FC = () => {
     />
   ));
 
-  const footerState = isSessionLoading
-    ? 'loading'
-    : session
-      ? 'authenticated'
-      : 'anonymous';
+  let footerState = 'anonymous';
+
+  if (isSessionLoading) {
+    footerState = 'loading';
+  } else if (session) {
+    footerState = 'authenticated';
+  }
 
   const renderFooterContent = () => {
     if (isSessionLoading) {
