@@ -71,12 +71,6 @@ jobs:
       - name: Run Integration Tests
         run: pnpm test:integration
 
-      - name: SonarQube Cloud Scan
-        uses: SonarSource/sonarqube-scan-action@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   e2e:
     needs: quality-checks
     runs-on: ubuntu-latest
@@ -209,6 +203,38 @@ jobs:
         uses: codecov/codecov-action@v7
         with:
           fail_ci_if_error: false
+
+  sonarqube:
+    name: SonarQube Cloud Scan
+    needs: test-coverage
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: coverage-report
+          path: coverage
+
+      - name: Verify coverage report
+        run: |
+          if [ ! -f coverage/lcov.info ]; then
+            echo "ERROR: coverage/lcov.info was not found."
+            find coverage -maxdepth 3 -type f || true
+            exit 1
+          fi
+
+      - name: SonarQube Cloud Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   deploy-coverage-report:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
