@@ -1,3 +1,10 @@
+# [2.53.0](https://github.com/marosdaniel/cookbook-next/compare/v2.52.0...v2.53.0) (2026-07-22)
+
+
+### Features
+
+* add data-testid attributes for improved testing in FavoriteRecipesClient, FollowingClient, and MyRecipesClient components; add corresponding test files ([8174124](https://github.com/marosdaniel/cookbook-next/commit/81741247dfd5e1a9fc504332e4f0a5c46f20bfcf))
+
 # [2.52.0](https://github.com/marosdaniel/cookbook-next/compare/v2.51.2...v2.52.0) (2026-07-22)
 
 
