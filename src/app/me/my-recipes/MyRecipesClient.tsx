@@ -90,7 +90,7 @@ const MyRecipesClient = () => {
 
   if (isSessionLoading || loading) {
     return (
-      <Stack gap="lg" p="md">
+      <Stack gap="lg" p="md" data-testid="my-recipes-loading">
         <Skeleton height={48} width="60%" radius="md" />
         <Skeleton height={20} width="40%" radius="sm" />
         <SimpleGrid cols={{ base: 1, sm: 3 }}>
@@ -112,7 +112,7 @@ const MyRecipesClient = () => {
   }
 
   return (
-    <Stack gap="xl" p="md">
+    <Stack gap="xl" p="md" data-testid="my-recipes-page">
       <Box>
         <Group justify="space-between" align="flex-start" wrap="wrap">
           <div>
@@ -134,6 +134,7 @@ const MyRecipesClient = () => {
               variant="gradient"
               gradient={{ from: 'pink', to: 'violet', deg: 45 }}
               size="sm"
+              data-testid="my-recipes-create-button"
             >
               {t('createNewRecipe')}
             </Button>
@@ -142,7 +143,7 @@ const MyRecipesClient = () => {
       </Box>
 
       {totalRecipes > 0 && (
-        <SimpleGrid cols={{ base: 1, sm: 3 }}>
+        <SimpleGrid cols={{ base: 1, sm: 3 }} data-testid="my-recipes-stats">
           <StatCard
             icon={<IconToolsKitchen2 size={20} />}
             label={t('totalRecipes')}
@@ -162,7 +163,7 @@ const MyRecipesClient = () => {
       )}
 
       {totalRecipes === 0 && !loading ? (
-        <Center py={60}>
+        <Center py={60} data-testid="my-recipes-empty">
           <Stack align="center" gap="md">
             <ThemeIcon
               size={80}
@@ -183,6 +184,7 @@ const MyRecipesClient = () => {
               gradient={{ from: 'pink', to: 'violet', deg: 45 }}
               size="lg"
               mt="sm"
+              data-testid="my-recipes-create-button"
             >
               {t('createFirstRecipe')}
             </Button>

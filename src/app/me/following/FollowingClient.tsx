@@ -73,7 +73,7 @@ const FollowingClient = () => {
 
   if (isSessionLoading || loading) {
     return (
-      <Stack gap="lg" p="md">
+      <Stack gap="lg" p="md" data-testid="following-loading">
         <Skeleton height={48} width="60%" radius="md" />
         <Skeleton height={20} width="40%" radius="sm" />
         <SimpleGrid cols={{ base: 1, sm: 2 }}>
@@ -94,7 +94,7 @@ const FollowingClient = () => {
   }
 
   return (
-    <Stack gap="xl" p="md">
+    <Stack gap="xl" p="md" data-testid="following-page">
       <Box>
         <Group gap="sm" align="center" mb={4}>
           <IconUserHeart size={32} className={classes.headerIcon} aria-hidden />
@@ -108,7 +108,7 @@ const FollowingClient = () => {
       </Box>
 
       {totalFollowing > 0 && (
-        <SimpleGrid cols={{ base: 1, sm: 2 }}>
+        <SimpleGrid cols={{ base: 1, sm: 2 }} data-testid="following-stats">
           <StatCard
             icon={<IconUsersGroup size={20} />}
             label={translate('followingCount')}
@@ -123,7 +123,7 @@ const FollowingClient = () => {
       )}
 
       {totalFollowing === 0 ? (
-        <Center py={60}>
+        <Center py={60} data-testid="following-empty">
           <Stack align="center" gap="md">
             <ThemeIcon
               size={80}
@@ -157,6 +157,7 @@ const FollowingClient = () => {
               radius="md"
               shadow="sm"
               className={classes.userCard}
+              data-testid={`following-user-card-${user.id}`}
             >
               <Stack gap="md">
                 <Group justify="space-between" wrap="wrap">
@@ -197,6 +198,7 @@ const FollowingClient = () => {
                         leftSection={<IconUserMinus size={16} />}
                         className={classes.unfollowButton}
                         onClick={() => handleUnfollow(user.id)}
+                        data-testid="following-unfollow-button"
                       >
                         {translate('unfollow')}
                       </Button>
@@ -205,7 +207,7 @@ const FollowingClient = () => {
                 </Group>
 
                 {user.latestRecipes.length > 0 && (
-                  <Box>
+                  <Box data-testid={`following-latest-recipes-${user.id}`}>
                     <Text size="sm" fw={500} mb="xs" c="dimmed">
                       {translate('latestRecipes')}
                     </Text>
