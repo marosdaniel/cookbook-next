@@ -2,6 +2,12 @@ import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import type { ComponentProps, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  Group,
+  Rating,
+  Stack,
+  Text,
+} from '../../../../__mocks__/@mantine/core.tsx';
 import RecipeRating from './RecipeRating';
 
 const { mockUseTranslations, mockShow, mockUseMutation } = vi.hoisted(() => ({
@@ -25,43 +31,10 @@ vi.mock('@mantine/notifications', () => ({
 }));
 
 vi.mock('@mantine/core', () => ({
-  Group: ({
-    children,
-    ...props
-  }: {
-    children?: ReactNode;
-    [key: string]: unknown;
-  }) => <div {...props}>{children}</div>,
-  Rating: ({
-    onChange,
-    readOnly,
-    ...props
-  }: {
-    onChange?: (value: number) => void;
-    readOnly?: boolean;
-    [key: string]: unknown;
-  }) => (
-    <input
-      {...props}
-      type="range"
-      disabled={readOnly}
-      onChange={(event) => onChange?.(Number(event.target.value))}
-    />
-  ),
-  Stack: ({
-    children,
-    ...props
-  }: {
-    children?: ReactNode;
-    [key: string]: unknown;
-  }) => <div {...props}>{children}</div>,
-  Text: ({
-    children,
-    ...props
-  }: {
-    children?: ReactNode;
-    [key: string]: unknown;
-  }) => <span {...props}>{children}</span>,
+  Group: Group,
+  Rating: Rating,
+  Stack: Stack,
+  Text: Text,
 }));
 
 vi.mock('motion/react', () => ({

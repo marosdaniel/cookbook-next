@@ -28,6 +28,10 @@ export const Button = ({ children, ...props }: ButtonProps) => (
   <button {...props}>{children}</button>
 );
 
+export const Center = ({ children, ...props }: DivProps) => (
+  <div {...props}>{children}</div>
+);
+
 export const Divider = ({ children, ...props }: DivProps) => (
   <div {...props}>{children}</div>
 );
@@ -58,6 +62,23 @@ export const RingProgress = ({
   ...props
 }: DivProps & { label?: ReactNode }) => (
   <div {...props}>{label ?? children}</div>
+);
+
+export const Rating = ({
+  onChange,
+  readOnly,
+  ...props
+}: {
+  onChange?: (value: number) => void;
+  readOnly?: boolean;
+  [key: string]: unknown;
+}) => (
+  <input
+    {...props}
+    type="range"
+    disabled={readOnly}
+    onChange={(event) => onChange?.(Number(event.target.value))}
+  />
 );
 
 export const MultiSelect = ({ value, onChange, ...props }: InputProps) => (
@@ -129,6 +150,14 @@ export const Paper = ({ children, ...props }: DivProps) => (
 );
 
 export const ScrollArea = ({ children, ...props }: DivProps) => (
+  <div {...props}>{children}</div>
+);
+
+export const SimpleGrid = ({ children, ...props }: DivProps) => (
+  <div {...props}>{children}</div>
+);
+
+export const Skeleton = ({ children, ...props }: DivProps) => (
   <div {...props}>{children}</div>
 );
 

@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom';
-import type { ComponentProps } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@/utils/test-utils';
 import { LOGO_SRC_DARK, LOGO_SRC_LIGHT } from './consts';
 import { Logo, LogoIcon } from './Logo';
+import type { ImageProps } from './types';
 
 // Mock useComputedColorScheme
 const mockComputedColorScheme = vi.fn();
@@ -16,13 +16,6 @@ vi.mock('@mantine/core', async () => {
 });
 
 // Define proper types for Image mock props
-interface ImageProps extends ComponentProps<'img'> {
-  src: string;
-  alt: string;
-  width?: number;
-  height?: number;
-  priority?: boolean;
-}
 
 // Mock next/image
 vi.mock('next/image', () => ({

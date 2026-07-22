@@ -1,24 +1,23 @@
 import { render, screen } from '@testing-library/react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  Center,
+  SimpleGrid,
+  Skeleton,
+  Stack,
+  Text,
+} from '../../../../__mocks__/@mantine/core';
 import RecipeGrid from './RecipeGrid';
 
 const mockRecipeCard = vi.fn();
 
 vi.mock('@mantine/core', () => ({
-  Center: ({ children, ...props }: ComponentPropsWithoutRef<'div'>) => (
-    <div {...props}>{children}</div>
-  ),
-  SimpleGrid: ({ children, ...props }: ComponentPropsWithoutRef<'div'>) => (
-    <div {...props}>{children}</div>
-  ),
-  Skeleton: (props: ComponentPropsWithoutRef<'div'>) => <div {...props} />,
-  Stack: ({ children, ...props }: ComponentPropsWithoutRef<'div'>) => (
-    <div {...props}>{children}</div>
-  ),
-  Text: ({ children, ...props }: ComponentPropsWithoutRef<'p'>) => (
-    <p {...props}>{children}</p>
-  ),
+  Center: Center,
+  SimpleGrid: SimpleGrid,
+  Skeleton: Skeleton,
+  Stack: Stack,
+  Text: Text,
 }));
 
 vi.mock('motion/react', () => ({

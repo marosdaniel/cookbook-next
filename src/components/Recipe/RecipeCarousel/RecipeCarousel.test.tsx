@@ -2,6 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import type { ComponentProps, ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
+import { Box, Skeleton, Text } from '../../../../__mocks__/@mantine/core.tsx';
 import RecipeCarousel from './RecipeCarousel';
 import type { RecipeCarouselProps } from './types';
 
@@ -25,21 +26,9 @@ vi.mock('@mantine/carousel', () => {
 });
 
 vi.mock('@mantine/core', () => ({
-  Box: ({
-    children,
-    ...props
-  }: {
-    children?: ReactNode;
-    [key: string]: unknown;
-  }) => <div {...props}>{children}</div>,
-  Skeleton: ({ ...props }: { [key: string]: unknown }) => <div {...props} />,
-  Text: ({
-    children,
-    ...props
-  }: {
-    children?: ReactNode;
-    [key: string]: unknown;
-  }) => <span {...props}>{children}</span>,
+  Box: Box,
+  Skeleton: Skeleton,
+  Text: Text,
 }));
 
 vi.mock('motion/react', () => ({
