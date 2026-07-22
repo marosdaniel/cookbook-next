@@ -27,13 +27,12 @@ interface ImageProps extends ComponentProps<'img'> {
 // Mock next/image
 vi.mock('next/image', () => ({
   default: ({ src, alt, width, height, priority, ...props }: ImageProps) => (
-    <div
+    <img
       src={src}
       alt={alt}
       width={width}
       height={height}
       data-testid="logo-image"
-      role="img"
       aria-label={alt}
       {...props}
     />
