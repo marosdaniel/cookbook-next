@@ -38,7 +38,7 @@ const HomePage = () => {
   const latestRecipes: RecipeCardData[] = data?.getRecipes?.recipes ?? [];
 
   return (
-    <Stack gap="xl" p="md">
+    <Stack gap="xl" p="md" data-testid="home-page-root">
       <Box
         component={motion.section}
         className={classes.section}
@@ -46,6 +46,7 @@ const HomePage = () => {
         animate="visible"
         custom={0}
         variants={sectionVariants}
+        data-testid="latest-recipes-section"
       >
         <Box className={classes.sectionHeader}>
           <Title order={1} size="h3">
@@ -75,6 +76,7 @@ const HomePage = () => {
         animate="visible"
         custom={1}
         variants={sectionVariants}
+        data-testid="recently-viewed-section"
       >
         <Box className={classes.sectionHeader}>
           <Title order={3}>
@@ -94,7 +96,7 @@ const HomePage = () => {
           withFavorite={false}
         />
 
-        <Center mt="xs">
+        <Center mt="xs" data-testid="recently-viewed-hint">
           <Text size="xs" c="dimmed" fs="italic">
             {translateHome('recentlyViewedHint')}
           </Text>
