@@ -28,8 +28,36 @@ export const Button = ({ children, ...props }: ButtonProps) => (
   <button {...props}>{children}</button>
 );
 
+export const Divider = ({ children, ...props }: DivProps) => (
+  <div {...props}>{children}</div>
+);
+
+export const Drawer = ({ children, ...props }: DivProps) => (
+  <div {...props}>{children}</div>
+);
+
 export const Group = ({ children, ...props }: DivProps) => (
   <div {...props}>{children}</div>
+);
+
+export const LoadingOverlay = ({
+  visible,
+  children,
+  ...props
+}: DivProps & { visible?: boolean }) => (
+  <div {...props}>{visible ? 'loading' : children}</div>
+);
+
+export const Progress = ({ children, ...props }: DivProps) => (
+  <div {...props}>{children}</div>
+);
+
+export const RingProgress = ({
+  children,
+  label,
+  ...props
+}: DivProps & { label?: ReactNode }) => (
+  <div {...props}>{label ?? children}</div>
 );
 
 export const MultiSelect = ({ value, onChange, ...props }: InputProps) => (
@@ -97,6 +125,10 @@ export const Image = ({ alt, ...props }: ImageMockProps) => {
 };
 
 export const Paper = ({ children, ...props }: DivProps) => (
+  <div {...props}>{children}</div>
+);
+
+export const ScrollArea = ({ children, ...props }: DivProps) => (
   <div {...props}>{children}</div>
 );
 

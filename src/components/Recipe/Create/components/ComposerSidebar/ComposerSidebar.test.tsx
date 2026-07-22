@@ -1,30 +1,24 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import {
+  Box,
+  Button,
+  Divider,
+  Group,
+  Progress,
+  Stack,
+  Text,
+} from '../../../../../../__mocks__/@mantine/core';
 import ComposerSidebar from './ComposerSidebar';
 
 vi.mock('@mantine/core', () => ({
-  Box: ({ children, ...props }: React.ComponentPropsWithoutRef<'div'>) => (
-    <div {...props}>{children}</div>
-  ),
-  Button: ({
-    children,
-    ...props
-  }: React.ComponentPropsWithoutRef<'button'>) => (
-    <button {...props}>{children}</button>
-  ),
-  Divider: (props: React.ComponentPropsWithoutRef<'div'>) => <div {...props} />,
-  Group: ({ children, ...props }: React.ComponentPropsWithoutRef<'div'>) => (
-    <div {...props}>{children}</div>
-  ),
-  Progress: (props: React.ComponentPropsWithoutRef<'div'>) => (
-    <div {...props} />
-  ),
-  Stack: ({ children, ...props }: React.ComponentPropsWithoutRef<'div'>) => (
-    <div {...props}>{children}</div>
-  ),
-  Text: ({ children, ...props }: React.ComponentPropsWithoutRef<'p'>) => (
-    <p {...props}>{children}</p>
-  ),
+  Box: Box,
+  Button: Button,
+  Divider: Divider,
+  Group: Group,
+  Progress: Progress,
+  Stack: Stack,
+  Text: Text,
 }));
 
 vi.mock('next-intl', () => ({

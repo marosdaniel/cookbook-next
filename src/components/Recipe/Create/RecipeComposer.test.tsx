@@ -1,26 +1,26 @@
 import { render, screen } from '@testing-library/react';
-import type { ComponentPropsWithoutRef, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  ActionIcon,
+  Box,
+  Drawer,
+  Group,
+  LoadingOverlay,
+  ScrollArea,
+} from '../../../../__mocks__/@mantine/core';
 import RecipeComposer from './RecipeComposer';
 
 const mockUseRecipeMetadata = vi.fn();
 const mockUseRouter = vi.fn();
 
 vi.mock('@mantine/core', () => ({
-  ActionIcon: ({ children, ...props }: ComponentPropsWithoutRef<'button'>) => (
-    <button {...props}>{children}</button>
-  ),
-  Box: ({ children, ...props }: ComponentPropsWithoutRef<'div'>) => (
-    <div {...props}>{children}</div>
-  ),
-  Drawer: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
-  Group: ({ children, ...props }: ComponentPropsWithoutRef<'div'>) => (
-    <div {...props}>{children}</div>
-  ),
-  LoadingOverlay: ({ visible }: { visible?: boolean }) => (
-    <div>{visible ? 'loading' : null}</div>
-  ),
-  ScrollArea: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
+  ActionIcon: ActionIcon,
+  Box: Box,
+  Drawer: Drawer,
+  Group: Group,
+  LoadingOverlay: LoadingOverlay,
+  ScrollArea: ScrollArea,
 }));
 
 vi.mock('@mantine/hooks', () => ({

@@ -1,42 +1,28 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Paper,
+  RingProgress,
+  Stack,
+  Text,
+  Title,
+  Tooltip,
+} from '../../../../../../__mocks__/@mantine/core';
 import ComposerHeader from './ComposerHeader';
 
 vi.mock('@mantine/core', () => ({
-  ActionIcon: ({
-    children,
-    ...props
-  }: React.ComponentPropsWithoutRef<'button'>) => (
-    <button {...props}>{children}</button>
-  ),
-  Button: ({
-    children,
-    ...props
-  }: React.ComponentPropsWithoutRef<'button'>) => (
-    <button {...props}>{children}</button>
-  ),
-  Group: ({ children, ...props }: React.ComponentPropsWithoutRef<'div'>) => (
-    <div {...props}>{children}</div>
-  ),
-  Paper: ({ children, ...props }: React.ComponentPropsWithoutRef<'div'>) => (
-    <div {...props}>{children}</div>
-  ),
-  RingProgress: ({
-    label,
-    ...props
-  }: React.ComponentPropsWithoutRef<'div'> & { label?: React.ReactNode }) => (
-    <div {...props}>{label}</div>
-  ),
-  Stack: ({ children, ...props }: React.ComponentPropsWithoutRef<'div'>) => (
-    <div {...props}>{children}</div>
-  ),
-  Text: ({ children, ...props }: React.ComponentPropsWithoutRef<'p'>) => (
-    <p {...props}>{children}</p>
-  ),
-  Title: ({ children, ...props }: React.ComponentPropsWithoutRef<'h4'>) => (
-    <h4 {...props}>{children}</h4>
-  ),
-  Tooltip: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+  ActionIcon: ActionIcon,
+  Button: Button,
+  Group: Group,
+  Paper: Paper,
+  RingProgress: RingProgress,
+  Stack: Stack,
+  Text: Text,
+  Title: Title,
+  Tooltip: Tooltip,
 }));
 
 vi.mock('motion/react', () => ({

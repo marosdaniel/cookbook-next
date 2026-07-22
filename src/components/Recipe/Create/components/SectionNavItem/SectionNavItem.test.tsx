@@ -1,27 +1,22 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import {
+  Badge,
+  Box,
+  Group,
+  Paper,
+  Text,
+  ThemeIcon,
+} from '../../../../../../__mocks__/@mantine/core';
 import SectionNavItem from './SectionNavItem';
 
 vi.mock('@mantine/core', () => ({
-  Badge: ({ children, ...props }: React.ComponentPropsWithoutRef<'span'>) => (
-    <span {...props}>{children}</span>
-  ),
-  Box: ({ children, ...props }: React.ComponentPropsWithoutRef<'div'>) => (
-    <div {...props}>{children}</div>
-  ),
-  Group: ({ children, ...props }: React.ComponentPropsWithoutRef<'div'>) => (
-    <div {...props}>{children}</div>
-  ),
-  Paper: ({ children, ...props }: React.ComponentPropsWithoutRef<'button'>) => (
-    <button {...props}>{children}</button>
-  ),
-  Text: ({ children, ...props }: React.ComponentPropsWithoutRef<'p'>) => (
-    <p {...props}>{children}</p>
-  ),
-  ThemeIcon: ({
-    children,
-    ...props
-  }: React.ComponentPropsWithoutRef<'div'>) => <div {...props}>{children}</div>,
+  Badge: Badge,
+  Box: Box,
+  Group: Group,
+  Paper: Paper,
+  Text: Text,
+  ThemeIcon: ThemeIcon,
 }));
 
 vi.mock('motion/react', () => ({
