@@ -1,3 +1,10 @@
+## [2.51.1](https://github.com/marosdaniel/cookbook-next/compare/v2.51.0...v2.51.1) (2026-07-22)
+
+
+### Bug Fixes
+
+* **deps:** patch vulnerable fast-uri and sharp transitive dependencies ([489eb9c](https://github.com/marosdaniel/cookbook-next/commit/489eb9c6244533f48dcff065f132c55b97642e45))
+
 # [2.51.0](https://github.com/marosdaniel/cookbook-next/compare/v2.50.0...v2.51.0) (2026-07-10)
 
 
