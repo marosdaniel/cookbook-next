@@ -87,6 +87,7 @@ const RecipeCarousel = ({
         initial="initial"
         animate="animate"
         exit="exit"
+        data-testid="recipe-carousel-content"
       >
         {renderCarouselState()}
       </motion.div>

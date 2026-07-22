@@ -1,4 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import type {
+  ChangeEventHandler,
+  ComponentPropsWithoutRef,
+  ReactNode,
+} from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type {
   ButtonProps,
@@ -24,7 +29,7 @@ vi.mock('@mantine/core', () => ({
   Image: ({
     alt,
     ...props
-  }: React.ComponentPropsWithoutRef<'img'> & {
+  }: ComponentPropsWithoutRef<'img'> & {
     alt?: string;
     [key: string]: unknown;
   }) => <img alt={alt as string | undefined} {...props} />,
@@ -36,7 +41,7 @@ vi.mock('@mantine/core', () => ({
   Textarea: ({ value, onChange, ...props }: TextareaProps) => (
     <textarea
       value={value}
-      onChange={onChange as React.ChangeEventHandler<HTMLTextAreaElement>}
+      onChange={onChange as ChangeEventHandler<HTMLTextAreaElement>}
       {...props}
     />
   ),
@@ -47,13 +52,13 @@ vi.mock('@mantine/core', () => ({
     leftSection,
     ...props
   }: InputProps & {
-    rightSection?: React.ReactNode;
-    leftSection?: React.ReactNode;
+    rightSection?: ReactNode;
+    leftSection?: ReactNode;
   }) => (
     <div>
       <input
         value={value}
-        onChange={onChange as React.ChangeEventHandler<HTMLInputElement>}
+        onChange={onChange as ChangeEventHandler<HTMLInputElement>}
         {...props}
       />
       {leftSection}

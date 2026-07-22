@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import type { ComponentPropsWithoutRef } from 'react';
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import RecipeGrid from './RecipeGrid';
 
@@ -22,11 +22,9 @@ vi.mock('@mantine/core', () => ({
 }));
 
 vi.mock('motion/react', () => ({
-  AnimatePresence: ({ children }: { children?: React.ReactNode }) => (
-    <>{children}</>
-  ),
+  AnimatePresence: ({ children }: { children?: ReactNode }) => <>{children}</>,
   motion: {
-    div: ({ children, ...props }: React.ComponentPropsWithoutRef<'div'>) => (
+    div: ({ children, ...props }: ComponentPropsWithoutRef<'div'>) => (
       <div {...props}>{children}</div>
     ),
   },
