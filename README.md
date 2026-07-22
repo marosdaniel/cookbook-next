@@ -363,178 +363,111 @@ enum UserRole {
 
 | Script | Description |
 |--------|-------------|
-| `pnpm dev` | Start development server with Turbopack |
-| `pnpm build` | Build for production |
-| `pnpm start` | Start production server |
-| `pnpm typecheck` | Run TypeScript type checking |
-| `pnpm test:unit` | Run unit tests |
-| `pnpm test:coverage` | Run tests with coverage |
-| `pnpm lint` | Lint code with Biome |
+| `pnpm dev` | Start the Next.js development server with Turbopack |
+| `pnpm build` | Generate Prisma client and build the production app |
+| `pnpm start` | Start the production server |
+| `pnpm typecheck` | Run Prisma generation and TypeScript type checking |
+| `pnpm test:unit` | Run unit and integration tests with Vitest |
+| `pnpm test:coverage` | Run tests and generate coverage reports |
+| `pnpm test:e2e` | Run Playwright end-to-end tests |
+| `pnpm test:e2e:ui` | Launch the Playwright UI runner |
+| `pnpm lint` | Lint the codebase with Biome |
+| `pnpm lint:fix` | Auto-fix Biome issues |
 | `pnpm format` | Format code with Biome |
+| `pnpm format:fix` | Auto-format code with Biome |
+| `pnpm deps:update` | Refresh dependency versions with npm-check-updates |
 
 ---
 
 ## 🚢 Deployment
 
-This project is configured for deployment on **Vercel**.
+This project is deployed on **Vercel** and uses a GitHub Actions workflow for CI/CD.
 
 ### Automatic Deployments
-- **Production:** Pushes to `main` branch
-- **Preview:** Pull requests
+- **Production:** pushes to the `main` branch
+- **Preview:** pull requests targeting `main`
 
 ### Manual Deployment
 ```bash
 vercel --prod
 ```
 
-### Environment Variables
-Set these in your Vercel project settings:
+### Environment Variables for Deployment
+Set these in your Vercel project settings and GitHub Actions secrets:
 - `DATABASE_URL`
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL`
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
+- `SONAR_TOKEN`
 
 ### CI/CD Pipeline
 
-The project uses GitHub Actions for continuous integration and deployment:
+The workflow in [.github/workflows/deploy.yml](.github/workflows/deploy.yml) runs the following stages:
 
-**Automatic Deployments:**
-- Tests and quality checks run on every push
-- Production deployment on `main` branch
-- Coverage reports published to GitHub Pages
-
-#### 🚦 CI Workflow Triggers
-
-The CI pipeline intelligently decides when to run based on your changes:
-
-**✅ CI Will Run For:**
-- Code changes in `src/`
-- Configuration changes (`package.json`, `tsconfig.json`, etc.)
-- GitHub Actions workflow changes
-- Prisma schema changes
-- Any TypeScript, JavaScript, or CSS files
-
-**⏭️ CI Will Skip For:**
-- Documentation updates (`*.md` files)
-- VS Code settings changes (`.vscode/**`)
-- License file updates
-- `.gitignore` changes
-- `.env.example` updates
-
-#### 🏷️ Commit Message Conventions
-
-Use these keywords in your commit messages to control CI behavior:
-
-**Skip CI completely:**
-```bash
-git commit -m "docs: update README [skip ci]"
-git commit -m "docs: fix typo [ci skip]"
-```
-
-**Recommended commit message format:**
-```bash
-<type>(<scope>): <subject> [<ci-directive>]
-```
-
-**Types:**
-- `feat:` - New feature
-- `fix:` - Bug fix
-- `docs:` - Documentation only
-- `style:` - Code style changes (formatting, semicolons, etc.)
-- `refactor:` - Code refactoring
-- `test:` - Adding or updating tests
-- `chore:` - Maintenance tasks
-- `perf:` - Performance improvements
-- `ci:` - CI/CD changes
-
-**Examples:**
-```bash
-# Documentation change - CI skipped automatically
-git commit -m "docs: add API documentation"
-
-# Documentation change - CI skipped manually
-git commit -m "docs: update contributing guide [skip ci]"
-
-# Feature with scope
-git commit -m "feat(auth): add password reset functionality"
-git commit -m "feat(recipe): implement recipe sharing feature"
-
-# Bug fix with scope
-git commit -m "fix(login): resolve authentication token expiration"
-git commit -m "fix(navbar): correct mobile menu alignment"
-
-# Refactor with scope and skip CI
-git commit -m "refactor(components): update button styles [skip ci]"
-
-# Feature with mixed changes - skip CI manually if needed
-git commit -m "feat: add user profile page [skip ci]"
-
-# Bug fix - CI runs normally
-git commit -m "fix: resolve login authentication issue"
-
-# Multiple files with explicit skip
-git commit -m "chore: update readme and license [ci skip]"
-```
-
-#### 🔄 CI Jobs Overview
-
-When CI runs, it executes these jobs in order:
-
-1. **Quality Checks** (parallel)
+1. **Quality checks**
    - Biome linting
    - TypeScript type checking
    - Unit tests
    - Integration tests
 
-2. **Test Coverage** (after quality checks)
-   - Generate coverage report
-   - Upload to GitHub Pages
+2. **E2E tests**
+   - Playwright browser install and test execution
 
-3. **Deploy Production** (main branch only)
-   - Build and deploy to Vercel
+3. **Coverage and reports**
+   - Vitest coverage generation
+   - GitHub Pages publication for coverage and Playwright reports
 
-4. **Semantic Release** (after deployment)
-   - Generate changelog
-   - Create GitHub release
-   - Update version
+4. **SonarQube analysis**
+   - Code quality and coverage upload to SonarCloud
 
-#### 💡 Best Practices
+5. **Deployment**
+   - Vercel production deploy from `main`
+   - semantic-release versioning and changelog generation
 
-**When to skip CI:**
-- ✅ Pure documentation changes
-- ✅ README/CHANGELOG updates
-- ✅ Comment updates
-- ✅ Typo fixes in docs
-- ✅ .gitignore or .env.example updates
+#### 🏷️ Commit Message Conventions
 
-**When NOT to skip CI:**
-- ❌ Any code changes
-- ❌ Dependency updates
-- ❌ Configuration changes
-- ❌ Test modifications
-- ❌ When you're unsure
+Use clear conventional commits for consistency:
 
-**Pro tips:**
-- Use automatic skip (path-based) when possible
-- Use manual `[skip ci]` only for mixed changes
-- Keep documentation commits separate from code commits
-- CI skip works on both commits and pull requests
+```bash
+git commit -m "feat(auth): add password reset flow"
+git commit -m "fix(navbar): correct mobile menu alignment"
+git commit -m "docs: update README"
+```
+
+Useful prefixes:
+- `feat:` - new feature
+- `fix:` - bug fix
+- `docs:` - documentation only
+- `style:` - formatting / style changes
+- `refactor:` - refactoring
+- `test:` - test updates
+- `chore:` - maintenance
+- `perf:` - performance improvement
+- `ci:` - CI/CD changes
+
+If you need to skip CI for a docs-only change, you can use:
+```bash
+git commit -m "docs: update README [skip ci]"
+```
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
+Contributions are welcome. A typical workflow:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Make your changes and add or update tests where relevant
+4. Run the relevant checks (`pnpm lint`, `pnpm typecheck`, `pnpm test:unit`)
+5. Commit your changes and open a pull request
 
 ### Code Style
 - Use **Biome** for linting and formatting
 - Follow **TypeScript** best practices
-- Write **tests** for new features
+- Write **tests** for new features and bug fixes
 - Keep commits **atomic** and **semantic**
 
 ---
