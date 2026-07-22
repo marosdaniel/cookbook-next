@@ -126,6 +126,7 @@ const SignUpForm: FC = () => {
             component={Link}
             href={AUTH_ROUTES.LOGIN}
             aria-label="Login"
+            data-testid="login-link"
           >
             {translate('auth.login')}
           </Button>
@@ -211,18 +212,20 @@ const SignUpForm: FC = () => {
           {...form.getInputProps('privacyAccepted', { type: 'checkbox' })}
         />
 
-        <Button
-          id="submit-button"
-          data-testid="sign-up-submit-button"
-          fullWidth
-          mt="xl"
-          type="submit"
-          disabled={isSubmitDisabled}
-          loading={loading || isLoggingIn}
-          loaderProps={{ type: 'dots' }}
-        >
-          {translate('auth.createAnAccountButton')}
-        </Button>
+        <div data-testid="submit-button">
+          <Button
+            id="submit-button"
+            data-testid="sign-up-submit-button"
+            fullWidth
+            mt="xl"
+            type="submit"
+            disabled={isSubmitDisabled}
+            loading={loading || isLoggingIn}
+            loaderProps={{ type: 'dots' }}
+          >
+            {translate('auth.createAnAccountButton')}
+          </Button>
+        </div>
       </Paper>
     </Container>
   );
