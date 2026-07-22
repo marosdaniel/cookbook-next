@@ -1,3 +1,10 @@
+# [2.52.0](https://github.com/marosdaniel/cookbook-next/compare/v2.51.2...v2.52.0) (2026-07-22)
+
+
+### Features
+
+* add data-testid attributes for improved testing in SignUpForm component ([a8c8f23](https://github.com/marosdaniel/cookbook-next/commit/a8c8f23bb528a60de9794014c22cefe48f824759))
+
 ## [2.51.2](https://github.com/marosdaniel/cookbook-next/compare/v2.51.1...v2.51.2) (2026-07-22)
 
 
