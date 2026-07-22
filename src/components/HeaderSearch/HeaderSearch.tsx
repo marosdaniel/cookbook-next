@@ -140,6 +140,7 @@ export const HeaderSearch = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={searchTransition}
+                data-testid="header-search-loading"
               >
                 <Combobox.Empty>
                   <Text size="sm" c="dimmed">
@@ -156,6 +157,7 @@ export const HeaderSearch = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={searchTransition}
+                data-testid="header-search-error"
               >
                 <Combobox.Empty>
                   <Text size="sm" c="red">
@@ -172,6 +174,7 @@ export const HeaderSearch = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={searchTransition}
+                data-testid="header-search-empty"
               >
                 <Combobox.Empty>
                   <Text size="sm" c="dimmed">
@@ -187,6 +190,7 @@ export const HeaderSearch = () => {
                 initial="hidden"
                 animate="visible"
                 exit={{ opacity: 0 }}
+                data-testid="header-search-results"
                 variants={{
                   hidden: {},
                   visible: {
