@@ -34,15 +34,7 @@ import { MOTION_TRANSITION } from '../../../../../lib/motion/transitions';
 import { useRecipeFormContext } from '../../FormContext';
 import { useFormError } from '../../hooks/useFormError';
 import { SEO_DESCRIPTION_MAX_LENGTH, SEO_TITLE_MAX_LENGTH } from '../../utils';
-import type { MediaSectionProps } from './types';
-
-type MediaTextField =
-  | 'imgSrc'
-  | 'youtubeLink'
-  | 'slug'
-  | 'seoTitle'
-  | 'seoDescription'
-  | 'socialImage';
+import type { MediaSectionProps, MediaTextField } from './types';
 
 const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
   const translate = useTranslations('recipeComposer.sections.media');
@@ -120,6 +112,7 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
                 color="gray"
                 onClick={clearCoverImage}
                 aria-label={translate('clearCoverImage')}
+                data-testid="recipe-media-clear-cover-image"
               >
                 <IconX size={14} />
               </ActionIcon>
@@ -192,6 +185,7 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
                       disabled={!values.title.trim()}
                       onClick={regenerateSlug}
                       aria-label={translate('regenerateSlugFromTitle')}
+                      data-testid="recipe-media-regenerate-slug"
                     >
                       <IconRefresh size={14} />
                     </ActionIcon>

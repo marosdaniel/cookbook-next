@@ -1,5 +1,4 @@
 'use client';
-
 import {
   ActionIcon,
   Badge,
@@ -32,9 +31,7 @@ import {
   useFormError,
 } from '../../hooks/useFormError';
 import { getPublishButtonState } from '../../utils';
-import type { StepsSectionProps } from './types';
-
-type StepDirection = 'up' | 'down';
+import type { StepDirection, StepsSectionProps } from './types';
 
 const StepsSection = ({
   onAdd,

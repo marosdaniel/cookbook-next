@@ -39,22 +39,9 @@ import { useRecipeFormContext } from '../../FormContext';
 import { useFormError } from '../../hooks/useFormError';
 import { DESCRIPTION_MAX_LENGTH, sectionCompletion } from '../../utils';
 import type { BasicsSectionProps } from './types';
+import { toNonNegativeNumberOrEmpty } from './utils';
 
 const DEBOUNCE_MS = 300;
-
-const toNonNegativeNumberOrEmpty = (value: string): number | '' => {
-  if (value === '') {
-    return '';
-  }
-
-  const parsedValue = Number(value);
-
-  if (!Number.isFinite(parsedValue) || parsedValue < 0) {
-    return '';
-  }
-
-  return parsedValue;
-};
 
 const BasicsSection = ({
   categories,

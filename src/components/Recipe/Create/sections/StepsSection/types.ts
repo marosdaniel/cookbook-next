@@ -5,3 +5,5 @@ export interface StepsSectionProps {
   isSubmitting: boolean;
   submitLabel?: string;
 }
+
+export type StepDirection = 'up' | 'down';
