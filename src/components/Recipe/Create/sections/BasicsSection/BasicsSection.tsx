@@ -27,7 +27,13 @@ import {
 } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  type ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { MOTION_TRANSITION } from '../../../../../lib/motion/transitions';
 import { useRecipeFormContext } from '../../FormContext';
 import { useFormError } from '../../hooks/useFormError';
@@ -113,7 +119,7 @@ const BasicsSection = ({
   }, []);
 
   const handleTitleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       const nextTitle = event.currentTarget.value;
       const delay = getFieldError('title') ? 0 : DEBOUNCE_MS;
 
@@ -131,7 +137,7 @@ const BasicsSection = ({
   );
 
   const handleDescriptionChange = useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    (event: ChangeEvent<HTMLTextAreaElement>) => {
       const nextDescription = event.currentTarget.value;
 
       if (nextDescription.length > DESCRIPTION_MAX_LENGTH) {
@@ -179,7 +185,7 @@ const BasicsSection = ({
         | 'servings',
       shouldRevalidate = false,
     ) =>
-      (event: React.ChangeEvent<HTMLInputElement>) => {
+      (event: ChangeEvent<HTMLInputElement>) => {
         setFieldValue(
           field,
           toNonNegativeNumberOrEmpty(event.currentTarget.value),

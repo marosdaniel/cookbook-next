@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import type { ComponentProps, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@/utils/test-utils';
 import Navbar from './Navbar';
@@ -60,11 +61,9 @@ vi.mock('./NavbarLinksGroup/NavbarLinksGroup', () => ({
 }));
 
 vi.mock('motion/react', () => ({
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
-  ),
+  AnimatePresence: ({ children }: { children: ReactNode }) => <>{children}</>,
   motion: {
-    div: ({ children, ...props }: React.ComponentProps<'div'>) => (
+    div: ({ children, ...props }: ComponentProps<'div'>) => (
       <div {...props}>{children}</div>
     ),
   },

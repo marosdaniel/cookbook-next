@@ -22,14 +22,14 @@ vi.mock('@/lib/locale/locale', () => ({
 }));
 
 vi.mock('@/providers/server', () => ({
-  ServerProviders: ({ children }: { children: React.ReactNode }) => (
+  ServerProviders: ({ children }: { children: ReactNode }) => (
     <div data-testid="server-providers">{children}</div>
   ),
 }));
 
 vi.mock('next/dynamic', () => ({
   default: () => {
-    const Component = ({ children }: { children: React.ReactNode }) => (
+    const Component = ({ children }: { children: ReactNode }) => (
       <div data-testid="client-providers">{children}</div>
     );
     return Component;
@@ -37,7 +37,7 @@ vi.mock('next/dynamic', () => ({
 }));
 
 vi.mock('@/components/Shell', () => ({
-  default: ({ children }: { children: React.ReactNode }) => (
+  default: ({ children }: { children: ReactNode }) => (
     <div data-testid="shell">{children}</div>
   ),
 }));
@@ -46,6 +46,7 @@ vi.mock('@vercel/speed-insights/next', () => ({
   SpeedInsights: () => <div data-testid="speed-insights" />,
 }));
 
+import type { ReactNode } from 'react';
 import RootLayout, { generateMetadata } from './layout';
 
 describe('RootLayout', () => {

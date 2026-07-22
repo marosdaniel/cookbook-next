@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { RecipePreviewValues } from '../types';
 
 export type RecipeStatsProps = {
@@ -7,7 +8,7 @@ export type RecipeStatsProps = {
 export type StatCardProps = {
   label: string;
   value: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
 };
 
 export type TimePartProps = {

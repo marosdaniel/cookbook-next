@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import RecipeDetailPage from './page';
 
@@ -34,7 +35,7 @@ vi.mock('react', async () => {
   const actual = await vi.importActual<typeof import('react')>('react');
   return {
     ...actual,
-    Suspense: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    Suspense: ({ children }: { children: ReactNode }) => <>{children}</>,
   };
 });
 

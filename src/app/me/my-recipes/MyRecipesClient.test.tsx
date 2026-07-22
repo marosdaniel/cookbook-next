@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import type { AnchorHTMLAttributes } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@/utils/test-utils';
 import MyRecipesClient from './MyRecipesClient';
@@ -25,9 +26,7 @@ vi.mock('next/link', () => ({
   default: ({
     children,
     ...props
-  }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-    <a {...props}>{children}</a>
-  ),
+  }: AnchorHTMLAttributes<HTMLAnchorElement>) => <a {...props}>{children}</a>,
 }));
 
 vi.mock('@/components/Recipe/RecipeCard', () => ({

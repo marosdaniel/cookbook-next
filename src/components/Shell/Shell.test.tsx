@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import type { ComponentProps, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@/utils/test-utils';
 import Shell from './Shell';
@@ -45,11 +46,9 @@ vi.mock('../ThemeSwitcher', () => ({
 }));
 
 vi.mock('motion/react', () => ({
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
-  ),
+  AnimatePresence: ({ children }: { children: ReactNode }) => <>{children}</>,
   motion: {
-    div: ({ children, ...props }: React.ComponentProps<'div'>) => (
+    div: ({ children, ...props }: ComponentProps<'div'>) => (
       <div {...props}>{children}</div>
     ),
   },

@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 import type { Route } from 'next';
+import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@/utils/test-utils';
 import { PROTECTED_ROUTES, PUBLIC_ROUTES } from '../../../types/routes';
@@ -7,13 +8,9 @@ import NavButton from './NavButton';
 
 // Mock Next.js Link component
 vi.mock('next/link', () => ({
-  default: ({
-    children,
-    href,
-  }: {
-    children: React.ReactNode;
-    href: string;
-  }) => <a href={href}>{children}</a>,
+  default: ({ children, href }: { children: ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  ),
 }));
 
 describe('NavButton', () => {

@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 import { act } from '@testing-library/react';
+import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@/utils/test-utils';
 import { SetNewPasswordForm } from './SetNewPasswordForm';
@@ -70,13 +71,9 @@ vi.mock('../../../../utils/notifications', () => ({
 }));
 
 vi.mock('next/link', () => ({
-  default: ({
-    children,
-    href,
-  }: {
-    children: React.ReactNode;
-    href: string;
-  }) => <a href={href}>{children}</a>,
+  default: ({ children, href }: { children: ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  ),
 }));
 
 describe('SetNewPasswordForm', () => {

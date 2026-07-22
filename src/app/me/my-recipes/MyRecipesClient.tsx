@@ -1,5 +1,4 @@
 'use client';
-
 import { useQuery } from '@apollo/client/react';
 import {
   Box,
@@ -23,6 +22,7 @@ import {
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import type { ReactNode } from 'react';
 import { RecipeGrid } from '@/components/Recipe/RecipeCard';
 import StyledText from '@/components/StyledText';
 import { GET_RECIPES_BY_USER_ID } from '@/lib/graphql/queries';
@@ -32,7 +32,7 @@ import classes from './MyRecipesClient.module.css';
 const SKELETON_ITEMS = [1, 2, 3, 4, 5, 6, 7, 8];
 
 interface StatCardProps {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   value: string | number;
 }

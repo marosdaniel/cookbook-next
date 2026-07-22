@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import type { CSSProperties, ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@/utils/test-utils';
 import NotFound from './not-found';
@@ -8,23 +9,13 @@ vi.mock('next-intl', () => ({
 }));
 
 vi.mock('next/link', () => ({
-  default: ({
-    children,
-    href,
-  }: {
-    children: React.ReactNode;
-    href: string;
-  }) => <a href={href}>{children}</a>,
+  default: ({ children, href }: { children: ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  ),
 }));
 
 vi.mock('react-icons/gi', () => ({
-  GiChefToque: ({
-    size,
-    style,
-  }: {
-    size: number;
-    style: React.CSSProperties;
-  }) => (
+  GiChefToque: ({ size, style }: { size: number; style: CSSProperties }) => (
     <svg data-testid="icon-chef-hat" width={size} height={size} style={style} />
   ),
 }));

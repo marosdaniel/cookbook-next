@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import type { ChangeEvent } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@/utils/test-utils';
 import Password from './Password';
@@ -40,7 +41,7 @@ vi.mock('@mantine/form', () => ({
     return {
       getInputProps: (field: keyof PasswordFormValues) => ({
         defaultValue: values[field],
-        onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
           values[field] = event.target.value;
         },
       }),

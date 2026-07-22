@@ -18,7 +18,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import type { FC } from 'react';
+import type { FC, MouseEvent } from 'react';
 import { useState } from 'react';
 import { zodResolver } from '@/lib/validation/zodResolver';
 import { loginValidationSchema } from '../../../lib/validation';
@@ -41,7 +41,7 @@ export const LoginForm: FC = () => {
   });
 
   const handleNavigateToResetPassword = (
-    event: React.MouseEvent<HTMLAnchorElement>,
+    event: MouseEvent<HTMLAnchorElement>,
   ) => {
     event.preventDefault();
     router.push(AUTH_ROUTES.RESET_PASSWORD);

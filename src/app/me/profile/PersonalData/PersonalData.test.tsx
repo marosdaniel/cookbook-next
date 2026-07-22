@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import type { ChangeEvent } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@/utils/test-utils';
 import type { ProfileUser } from '../types';
@@ -31,7 +32,7 @@ vi.mock('@mantine/form', () => ({
     return {
       getInputProps: (field: string) => ({
         value: values[field as keyof typeof values],
-        onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
           values[field as keyof typeof values] = event.target.value;
         },
       }),

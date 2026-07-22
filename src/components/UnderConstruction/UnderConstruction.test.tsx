@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import type { CSSProperties, ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@/utils/test-utils';
 import UnderConstruction from './UnderConstruction';
@@ -21,18 +22,14 @@ vi.mock('next-intl', () => ({
 
 // Mock Next.js Link component
 vi.mock('next/link', () => ({
-  default: ({
-    children,
-    href,
-  }: {
-    children: React.ReactNode;
-    href: string;
-  }) => <a href={href}>{children}</a>,
+  default: ({ children, href }: { children: ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  ),
 }));
 
 // Mock react-icons
 vi.mock('react-icons/gi', () => ({
-  GiCookingPot: ({ style }: { style: React.CSSProperties }) => (
+  GiCookingPot: ({ style }: { style: CSSProperties }) => (
     <svg data-testid="cooking-pot-icon" style={style}>
       <title>Cooking Pot Icon</title>
     </svg>
@@ -62,7 +59,7 @@ vi.mock('../buttons/NavButton', () => ({
   }: {
     label: string;
     href: string;
-    icon: React.ReactNode;
+    icon: ReactNode;
     dataTestId?: string;
   }) => (
     <a href={href} data-testid={dataTestId ?? 'nav-button'}>
@@ -85,7 +82,7 @@ vi.mock('../StyledText', () => ({
     gradient?: boolean;
     className?: string;
     order?: number;
-    children: React.ReactNode;
+    children: ReactNode;
   }) => {
     const Component = componentType === 'title' ? 'h1' : 'div';
     return (

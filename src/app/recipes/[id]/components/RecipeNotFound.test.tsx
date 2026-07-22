@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@/utils/test-utils';
 import { RecipeNotFound } from './RecipeNotFound';
@@ -16,13 +17,9 @@ vi.mock('next-intl', () => ({
 }));
 
 vi.mock('next/link', () => ({
-  default: ({
-    children,
-    href,
-  }: {
-    children: React.ReactNode;
-    href: string;
-  }) => <a href={href}>{children}</a>,
+  default: ({ children, href }: { children: ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  ),
 }));
 
 describe('RecipeNotFound', () => {

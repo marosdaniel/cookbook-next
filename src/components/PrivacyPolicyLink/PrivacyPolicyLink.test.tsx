@@ -1,5 +1,5 @@
-import type React from 'react';
 import '@testing-library/jest-dom';
+import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@/utils/test-utils';
 import { PUBLIC_ROUTES } from '../../types/routes';
@@ -24,7 +24,7 @@ vi.mock('next/link', () => {
       href,
       ...props
     }: {
-      children: React.ReactNode;
+      children: ReactNode;
       href: string;
     }) => (
       <a href={href} {...props}>

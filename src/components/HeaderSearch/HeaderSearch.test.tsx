@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import type { ComponentProps, ReactNode } from 'react';
+import type { ChangeEvent, ComponentProps, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PUBLIC_ROUTES } from '@/types/routes';
 import { fireEvent, render, screen } from '@/utils/test-utils';
@@ -38,14 +38,12 @@ vi.mock('@tabler/icons-react', () => ({
 }));
 
 vi.mock('motion/react', () => ({
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => (
-    <>{children}</>
-  ),
+  AnimatePresence: ({ children }: { children: ReactNode }) => <>{children}</>,
   motion: {
-    span: ({ children, ...props }: React.ComponentProps<'span'>) => (
+    span: ({ children, ...props }: ComponentProps<'span'>) => (
       <span {...props}>{children}</span>
     ),
-    div: ({ children, ...props }: React.ComponentProps<'div'>) => (
+    div: ({ children, ...props }: ComponentProps<'div'>) => (
       <div {...props}>{children}</div>
     ),
   },
@@ -128,7 +126,7 @@ vi.mock('@mantine/core', async () => {
         <input
           value={value}
           onChange={(event) =>
-            onChange?.(event as React.ChangeEvent<HTMLInputElement>)
+            onChange?.(event as ChangeEvent<HTMLInputElement>)
           }
           onFocus={onFocus}
           onBlur={onBlur}

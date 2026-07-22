@@ -7,6 +7,7 @@ import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import { motion, useAnimationControls } from 'motion/react';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
+import type { MouseEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ADD_TO_FAVORITE_RECIPES,
@@ -78,7 +79,7 @@ const FavoriteButton = ({
   );
 
   const handleToggle = useCallback(
-    async (event: React.MouseEvent) => {
+    async (event: MouseEvent) => {
       event.preventDefault();
       event.stopPropagation();
 

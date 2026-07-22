@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { RecipeCardData } from '../../../components/Recipe/RecipeCard';
 
 export interface FollowedUser {
@@ -18,7 +19,7 @@ export interface FollowingData {
 }
 
 export interface StatCardProps {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   value: string | number;
 }

@@ -2,6 +2,7 @@ import '@testing-library/jest-dom';
 import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@/utils/test-utils';
 import { AUTH_ROUTES } from '../../../types/routes';
@@ -68,13 +69,9 @@ vi.mock('@mantine/notifications', () => ({
 
 // Mock next/link
 vi.mock('next/link', () => ({
-  default: ({
-    children,
-    href,
-  }: {
-    children: React.ReactNode;
-    href: string;
-  }) => <a href={href}>{children}</a>,
+  default: ({ children, href }: { children: ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  ),
 }));
 
 // Mock Apollo Client

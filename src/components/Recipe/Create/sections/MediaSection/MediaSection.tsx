@@ -28,7 +28,7 @@ import {
 } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
-import { useCallback } from 'react';
+import { type ChangeEvent, useCallback } from 'react';
 import { slugify } from '@/utils/slugify';
 import { MOTION_TRANSITION } from '../../../../../lib/motion/transitions';
 import { useRecipeFormContext } from '../../FormContext';
@@ -52,7 +52,7 @@ const MediaSection = ({ onBack, onNext }: Readonly<MediaSectionProps>) => {
 
   const updateAndValidateField = useCallback(
     (field: MediaTextField) =>
-      (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFieldValue(field, event.currentTarget.value);
         revalidateOnChange(field);
       },
