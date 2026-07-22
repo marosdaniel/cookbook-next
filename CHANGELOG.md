@@ -1,3 +1,10 @@
+# [2.54.0](https://github.com/marosdaniel/cookbook-next/compare/v2.53.0...v2.54.0) (2026-07-22)
+
+
+### Features
+
+* add data-testid attributes for improved testing in AccountInfo, Password, PersonalData, and ProfileClient components; add corresponding test files ([230cff2](https://github.com/marosdaniel/cookbook-next/commit/230cff221479173e92da95a7df63b35df54bda12))
+
 # [2.53.0](https://github.com/marosdaniel/cookbook-next/compare/v2.52.0...v2.53.0) (2026-07-22)
 
 
