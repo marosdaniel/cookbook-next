@@ -32,6 +32,36 @@ export const Group = ({ children, ...props }: DivProps) => (
   <div {...props}>{children}</div>
 );
 
+export const MultiSelect = ({ value, onChange, ...props }: InputProps) => (
+  <input
+    value={String(value ?? '')}
+    onChange={(event) => {
+      const nextValue = event.target.value;
+      (onChange as ((value: string[]) => void) | undefined)?.([nextValue]);
+    }}
+    onInput={(event) => {
+      const nextValue = (event.target as HTMLInputElement).value;
+      (onChange as ((value: string[]) => void) | undefined)?.([nextValue]);
+    }}
+    {...props}
+  />
+);
+
+export const Select = ({ value, onChange, ...props }: InputProps) => (
+  <input
+    value={String(value ?? '')}
+    onChange={(event) =>
+      (onChange as ((value: string) => void) | undefined)?.(event.target.value)
+    }
+    onInput={(event) =>
+      (onChange as ((value: string) => void) | undefined)?.(
+        (event.target as HTMLInputElement).value,
+      )
+    }
+    {...props}
+  />
+);
+
 type ImageMockProps = ComponentPropsWithoutRef<'img'> & {
   alt?: string;
   [key: string]: unknown;
@@ -72,6 +102,15 @@ export const Paper = ({ children, ...props }: DivProps) => (
 
 export const Stack = ({ children, ...props }: DivProps) => (
   <div {...props}>{children}</div>
+);
+
+export const Switch = ({ checked, onChange, ...props }: InputProps) => (
+  <input
+    type="checkbox"
+    checked={Boolean(checked)}
+    onChange={onChange as ChangeEventHandler<HTMLInputElement>}
+    {...props}
+  />
 );
 
 export const Text = ({ children, ...props }: ParagraphProps) => (

@@ -1,82 +1,36 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type {
-  ButtonProps,
-  DivProps,
-  InputProps,
-  ParagraphProps,
-  TextareaProps,
-} from '../../../../../types/test';
+import {
+  Badge,
+  Box,
+  Button,
+  Group,
+  MultiSelect,
+  Paper,
+  Select,
+  Stack,
+  Text,
+  Textarea,
+  TextInput,
+  ThemeIcon,
+  Title,
+} from '../../../../../../__mocks__/@mantine/core';
 import BasicsSection from './BasicsSection';
 
 vi.mock('@mantine/core', () => ({
-  Badge: ({ children, ...props }: ParagraphProps) => (
-    <span {...props}>{children}</span>
-  ),
-  Box: ({ children, ...props }: DivProps) => <div {...props}>{children}</div>,
-  Button: ({ children, ...props }: ButtonProps) => (
-    <button {...props}>{children}</button>
-  ),
-  Group: ({ children, ...props }: DivProps) => <div {...props}>{children}</div>,
-  MultiSelect: ({ value, onChange, ...props }: InputProps) => (
-    <input
-      value={String(value ?? '')}
-      onChange={(event) => {
-        const nextValue = event.target.value;
-        (onChange as ((value: string[]) => void) | undefined)?.([nextValue]);
-      }}
-      onInput={(event) => {
-        const nextValue = (event.target as HTMLInputElement).value;
-        (onChange as ((value: string[]) => void) | undefined)?.([nextValue]);
-      }}
-      {...props}
-    />
-  ),
-  Paper: ({ children, ...props }: DivProps) => <div {...props}>{children}</div>,
-  Select: ({ value, onChange, ...props }: InputProps) => (
-    <input
-      value={String(value ?? '')}
-      onChange={(event) =>
-        (onChange as ((value: string) => void) | undefined)?.(
-          event.target.value,
-        )
-      }
-      onInput={(event) =>
-        (onChange as ((value: string) => void) | undefined)?.(
-          (event.target as HTMLInputElement).value,
-        )
-      }
-      {...props}
-    />
-  ),
-  Stack: ({ children, ...props }: DivProps) => <div {...props}>{children}</div>,
-  Text: ({ children, ...props }: ParagraphProps) => (
-    <p {...props}>{children}</p>
-  ),
-  Textarea: ({ value, onChange, ...props }: TextareaProps) => (
-    <textarea
-      value={String(value ?? '')}
-      onChange={onChange as React.ChangeEventHandler<HTMLTextAreaElement>}
-      {...props}
-    />
-  ),
-  TextInput: ({ value, onChange, ...props }: InputProps) => (
-    <input
-      value={String(value ?? '')}
-      onChange={onChange as React.ChangeEventHandler<HTMLInputElement>}
-      {...props}
-    />
-  ),
-  ThemeIcon: ({ children, ...props }: DivProps) => (
-    <div {...props}>{children}</div>
-  ),
-  Title: ({
-    children,
-    ...props
-  }: React.ComponentPropsWithoutRef<'h3'> & {
-    children?: React.ReactNode;
-    [key: string]: unknown;
-  }) => <h3 {...props}>{children}</h3>,
+  Badge: Badge,
+  Box: Box,
+  Button: Button,
+  Group: Group,
+  MultiSelect: MultiSelect,
+  Paper: Paper,
+  Select: Select,
+  Stack: Stack,
+  Text: Text,
+  Textarea: Textarea,
+  TextInput: TextInput,
+  ThemeIcon: ThemeIcon,
+  Title: Title,
 }));
 
 vi.mock('motion/react', () => ({

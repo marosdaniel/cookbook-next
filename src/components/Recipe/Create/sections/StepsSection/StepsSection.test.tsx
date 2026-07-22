@@ -1,47 +1,32 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type {
-  ButtonProps,
-  DivProps,
-  ParagraphProps,
-  TextareaProps,
-} from '../../../../../types/test';
+import {
+  ActionIcon,
+  Badge,
+  Button,
+  Group,
+  Paper,
+  Stack,
+  Text,
+  Textarea,
+  ThemeIcon,
+  Title,
+  Tooltip,
+} from '../../../../../../__mocks__/@mantine/core';
 import StepsSection from './StepsSection';
 
 vi.mock('@mantine/core', () => ({
-  ActionIcon: ({ children, ...props }: ButtonProps) => (
-    <button {...props}>{children}</button>
-  ),
-  Badge: ({ children, ...props }: ParagraphProps) => (
-    <span {...props}>{children}</span>
-  ),
-  Button: ({ children, ...props }: ButtonProps) => (
-    <button {...props}>{children}</button>
-  ),
-  Group: ({ children, ...props }: DivProps) => <div {...props}>{children}</div>,
-  Paper: ({ children, ...props }: DivProps) => <div {...props}>{children}</div>,
-  Stack: ({ children, ...props }: DivProps) => <div {...props}>{children}</div>,
-  Text: ({ children, ...props }: ParagraphProps) => (
-    <p {...props}>{children}</p>
-  ),
-  Textarea: ({ value, onChange, ...props }: TextareaProps) => (
-    <textarea
-      value={String(value ?? '')}
-      onChange={onChange as React.ChangeEventHandler<HTMLTextAreaElement>}
-      {...props}
-    />
-  ),
-  ThemeIcon: ({ children, ...props }: DivProps) => (
-    <div {...props}>{children}</div>
-  ),
-  Title: ({
-    children,
-    ...props
-  }: React.ComponentPropsWithoutRef<'h3'> & {
-    children?: React.ReactNode;
-    [key: string]: unknown;
-  }) => <h3 {...props}>{children}</h3>,
-  Tooltip: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+  ActionIcon: ActionIcon,
+  Badge: Badge,
+  Button: Button,
+  Group: Group,
+  Paper: Paper,
+  Stack: Stack,
+  Text: Text,
+  Textarea: Textarea,
+  ThemeIcon: ThemeIcon,
+  Title: Title,
+  Tooltip: Tooltip,
 }));
 
 vi.mock('motion/react', () => ({

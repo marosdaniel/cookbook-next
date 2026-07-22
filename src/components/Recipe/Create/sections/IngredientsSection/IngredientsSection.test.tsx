@@ -1,63 +1,34 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type {
-  ButtonProps,
-  DivProps,
-  InputProps,
-  ParagraphProps,
-} from '../../../../../types/test';
+import {
+  ActionIcon,
+  Badge,
+  Button,
+  Group,
+  Paper,
+  Select,
+  Stack,
+  Switch,
+  Text,
+  TextInput,
+  ThemeIcon,
+  Title,
+} from '../../../../../../__mocks__/@mantine/core';
 import IngredientsSection from './IngredientsSection';
 
 vi.mock('@mantine/core', () => ({
-  ActionIcon: ({ children, ...props }: ButtonProps) => (
-    <button {...props}>{children}</button>
-  ),
-  Badge: ({ children, ...props }: ParagraphProps) => (
-    <span {...props}>{children}</span>
-  ),
-  Button: ({ children, ...props }: ButtonProps) => (
-    <button {...props}>{children}</button>
-  ),
-  Group: ({ children, ...props }: DivProps) => <div {...props}>{children}</div>,
-  Paper: ({ children, ...props }: DivProps) => <div {...props}>{children}</div>,
-  Select: ({ value, onChange, ...props }: InputProps) => (
-    <input
-      value={String(value ?? '')}
-      onChange={(event) =>
-        onChange?.(event as unknown as React.ChangeEvent<HTMLInputElement>)
-      }
-      {...props}
-    />
-  ),
-  Stack: ({ children, ...props }: DivProps) => <div {...props}>{children}</div>,
-  Switch: ({ checked, onChange, ...props }: InputProps) => (
-    <input
-      type="checkbox"
-      checked={Boolean(checked)}
-      onChange={onChange as React.ChangeEventHandler<HTMLInputElement>}
-      {...props}
-    />
-  ),
-  Text: ({ children, ...props }: ParagraphProps) => (
-    <p {...props}>{children}</p>
-  ),
-  TextInput: ({ value, onChange, ...props }: InputProps) => (
-    <input
-      value={String(value ?? '')}
-      onChange={onChange as React.ChangeEventHandler<HTMLInputElement>}
-      {...props}
-    />
-  ),
-  ThemeIcon: ({ children, ...props }: DivProps) => (
-    <div {...props}>{children}</div>
-  ),
-  Title: ({
-    children,
-    ...props
-  }: React.ComponentPropsWithoutRef<'h3'> & {
-    children?: React.ReactNode;
-    [key: string]: unknown;
-  }) => <h3 {...props}>{children}</h3>,
+  ActionIcon: ActionIcon,
+  Badge: Badge,
+  Button: Button,
+  Group: Group,
+  Paper: Paper,
+  Select: Select,
+  Stack: Stack,
+  Switch: Switch,
+  Text: Text,
+  TextInput: TextInput,
+  ThemeIcon: ThemeIcon,
+  Title: Title,
 }));
 
 const { mockUseRecipeFormContext, mockUseFormError } = vi.hoisted(() => ({
