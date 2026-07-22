@@ -12,7 +12,7 @@ export type DivProps = React.ComponentPropsWithoutRef<'div'> & {
 
 export type InputProps = React.ComponentPropsWithoutRef<'input'> & {
   children?: ReactNode;
-  value?: string | number | readonly string[] | undefined;
+  value?: string | number | readonly string[];
   onChange?: ChangeEventHandler<HTMLInputElement>;
   [key: string]: unknown;
 };
@@ -24,7 +24,7 @@ export type ParagraphProps = React.ComponentPropsWithoutRef<'p'> & {
 
 export type TextareaProps = React.ComponentPropsWithoutRef<'textarea'> & {
   children?: ReactNode;
-  value?: string | number | readonly string[] | undefined;
+  value?: string | number | readonly string[];
   onChange?: ChangeEventHandler<HTMLTextAreaElement>;
   [key: string]: unknown;
 };
