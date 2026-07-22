@@ -93,6 +93,7 @@ const Password = () => {
       shadow="sm"
       radius="lg"
       p={{ base: 'md', md: 'xl' }}
+      data-testid={isEditMode ? 'password-edit' : 'password-view'}
     >
       <Group mb="lg" justify="space-between" align="center">
         <Group gap="xs">
@@ -106,6 +107,7 @@ const Password = () => {
               color="pink"
               onClick={() => setIsEditMode(true)}
               aria-label={translate('general.edit')}
+              data-testid="password-edit-button"
             >
               <IconPencil size={18} />
             </ActionIcon>

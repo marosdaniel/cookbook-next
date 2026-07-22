@@ -49,7 +49,12 @@ const AccountInfo = ({ user, loading }: AccountInfoProps) => {
   };
 
   return (
-    <Paper shadow="sm" radius="lg" p={{ base: 'md', md: 'xl' }}>
+    <Paper
+      shadow="sm"
+      radius="lg"
+      p={{ base: 'md', md: 'xl' }}
+      data-testid={isLoading ? 'account-info-loading' : 'account-info-content'}
+    >
       <Group mb="lg" gap="xs">
         <IconInfoCircle size={20} stroke={1.5} />
         <Title order={4}>{translate('user.accountInfoTitle')}</Title>

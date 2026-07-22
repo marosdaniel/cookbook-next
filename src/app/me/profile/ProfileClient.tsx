@@ -44,7 +44,7 @@ const ProfileClient = () => {
 
   if (isSessionLoading) {
     return (
-      <Stack gap="lg">
+      <Stack gap="lg" data-testid="profile-loading">
         <Paper shadow="sm" radius="lg" p={{ base: 'md', md: 'xl' }}>
           <Group gap="lg" wrap="nowrap">
             <Skeleton circle h={72} w={72} />
@@ -62,11 +62,16 @@ const ProfileClient = () => {
   }
 
   return (
-    <Stack gap="lg">
+    <Stack gap="lg" data-testid="profile-page">
       <Paper shadow="sm" radius="lg" p={{ base: 'md', md: 'xl' }}>
         <Group gap="lg" wrap="nowrap">
           {isInitialLoading ? (
-            <Skeleton circle h={72} w={72} />
+            <Skeleton
+              circle
+              h={72}
+              w={72}
+              data-testid="profile-initial-loading"
+            />
           ) : (
             <Avatar
               size={72}

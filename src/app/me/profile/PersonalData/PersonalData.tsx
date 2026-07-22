@@ -106,10 +106,16 @@ const PersonalData = ({ user, loading, refetch }: PersonalDataProps) => {
       radius="lg"
       p={{ base: 'md', md: 'xl' }}
       pos="relative"
+      data-testid="personal-data-form"
     >
       <LoadingOverlay visible={updateLoading} />
 
-      <Group mb="lg" justify="space-between" align="center">
+      <Group
+        mb="lg"
+        justify="space-between"
+        align="center"
+        data-testid="personal-data-view"
+      >
         <Group gap="xs">
           <IconUser size={20} stroke={1.5} />
           <Title order={4}>{translate('user.personalDataTitle')}</Title>
@@ -121,6 +127,7 @@ const PersonalData = ({ user, loading, refetch }: PersonalDataProps) => {
               color="pink"
               onClick={() => setIsEditMode(true)}
               aria-label={translate('general.edit')}
+              data-testid="personal-data-edit-button"
             >
               <IconPencil size={18} />
             </ActionIcon>
