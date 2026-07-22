@@ -4,12 +4,28 @@
 
 **A modern recipe sharing platform built with Next.js, Apollo Server, and Neon (Serverless Postgres)**
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.2.10-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.2.7-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.2.11-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2.8-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 [🚀 Live Demo](https://cookbook-next.vercel.app) • [📊 Coverage Report](https://marosdaniel.github.io/cookbook-next/) • [📝 Changelog](./CHANGELOG.md)
+
+### SonarQube Quality
+
+| Metric | Badge |
+| --- | --- |
+| Quality Gate | [![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
+| Bugs | [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=bugs)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
+| Code Smells | [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
+| Coverage | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=coverage)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
+| Duplicated Lines | [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
+| Lines of Code | [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
+| Reliability | [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
+| Security | [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
+| Technical Debt | [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
+| Maintainability | [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
+| Vulnerabilities | [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
 
 </div>
 
@@ -17,52 +33,51 @@
 
 ## ✨ Features
 
-- 🔐 **Secure Authentication** - NextAuth v5 (JWT strategy), Argon2id password hashing with legacy bcrypt fallback
-- 🌍 **Internationalization** - Multi-language support (English, Hungarian, German) via next-intl
-- 🎨 **Modern UI** - Mantine UI components with dark/light theme
-- 📱 **Responsive Design** - Mobile-first approach
-- 🔍 **GraphQL API** - Apollo Server with a domain-driven schema, DataLoader batching & graphql-armor hardening
-- 🗄️ **Database** - Serverless Postgres (Neon) with Prisma ORM, connection pooling
-- 🧑‍🍳 **Recipe management** - Multi-step recipe composer with draft persistence, slug-based SEO routing, favorites, ratings & user-follow graph
-- ⚡ **Caching & rate limiting** - Upstash Redis caching (with circuit-breaker fallback) and sliding-window rate limiting on sensitive operations
-- 🛡️ **Security hardening** - Zod input validation, HTML sanitization, strict CSP/HSTS/security headers
-- 🔎 **SEO** - Dynamic per-recipe metadata (Open Graph, Twitter cards, canonical URLs, localized fallbacks)
-- ✅ **Type Safety** - Full TypeScript coverage
-- 🧪 **Testing** - Unit & integration tests with Vitest, E2E tests with Playwright
-- 🚀 **Performance** - Next.js App Router with Turbopack
-- 📊 **State Management** - Redux Toolkit
-- 🎯 **Code Quality** - Biome for linting & formatting
-- 🔄 **CI/CD** - GitHub Actions pipeline (lint/typecheck/tests → E2E & coverage → Vercel deploy → semantic-release)
+- 🔐 **Secure authentication** - NextAuth v5 credential flow with JWT sessions, Argon2id hashing, and legacy bcrypt fallback
+- 🌍 **Internationalization** - English, Hungarian, and German locales via next-intl
+- 🎨 **Modern UI** - Mantine-based interface with dark/light theme support and motion-enhanced page transitions
+- 📱 **Responsive design** - Mobile-first layouts for browsing, auth, and recipe creation flows
+- 🔍 **GraphQL API** - Apollo Server 5 with a modular schema, DataLoader batching, and graphql-armor hardening
+- 🗄️ **Database** - Neon serverless Postgres with Prisma 7, connection pooling, and migrations
+- 🧑‍🍳 **Recipe management** - Multi-step recipe composer with local draft saving, slug-based SEO routes, favorites, ratings, and follow relationships
+- ⚡ **Caching & rate limiting** - Upstash Redis caching with fallback behavior and sliding-window rate limiting on sensitive operations
+- 🛡️ **Security hardening** - Zod validation, HTML sanitization, and strict security headers
+- 🔎 **SEO** - Dynamic recipe metadata with Open Graph, Twitter cards, canonical URLs, and localized fallbacks
+- ✅ **Type safety** - Full TypeScript coverage across app, API, and validation layers
+- 🧪 **Testing** - Unit/integration tests with Vitest and end-to-end coverage with Playwright
+- 📊 **State management** - Redux Toolkit for metadata and global app state
+- 🎯 **Developer experience** - Biome, Turbopack, pnpm, and GitHub Actions automation
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework:** Next.js 16 (App Router, Turbopack)
-- **Language:** TypeScript 6.0
-- **UI Library:** Mantine 9 (core, form, hooks, notifications, modals, spotlight, carousel)
-- **State Management:** Redux Toolkit
+- **Framework:** Next.js 16.2.11 (App Router, Turbopack)
+- **Language:** TypeScript 6.0.3
+- **UI Library:** Mantine 9.4.2 (core, form, hooks, notifications, modals, spotlight, carousel)
+- **Animation:** Motion 12.42.2 for page and card transitions
+- **State Management:** Redux Toolkit 2.12.0
 - **Forms:** Mantine Form + `mantine-form-zod-resolver` (Zod validation)
-- **Data fetching:** Apollo Client (custom error-handling link with localized notifications)
+- **Data fetching:** Apollo Client 4.2.7 (custom error-handling link with localized notifications)
 - **Icons:** Tabler Icons / React Icons
-- **i18n:** next-intl (English, Hungarian, German)
+- **i18n:** next-intl 4.13.3 (English, Hungarian, German)
 
 ### Backend
-- **API:** Apollo Server 5 + GraphQL (`@as-integrations/next`), modular schema (user/recipe/metadata), `graphql-armor` hardening, DataLoader batching
+- **API:** Apollo Server 5.5.1 + GraphQL (`@as-integrations/next`), modular schema (user/recipe/metadata), `graphql-armor` hardening, DataLoader batching
 - **Database:** Serverless Postgres via Neon (`@neondatabase/serverless` + `@prisma/adapter-neon`, connection pooling)
-- **ORM:** Prisma 7
-- **Authentication:** NextAuth v5 (beta), JWT session strategy
+- **ORM:** Prisma 7.9.0
+- **Authentication:** NextAuth 5.0.0-beta.32 with JWT session strategy
 - **Password hashing:** Argon2id (primary) with legacy bcryptjs fallback
-- **Caching:** Upstash Redis (circuit-breaker fallback, TTL-based query caching)
-- **Rate limiting:** Upstash Ratelimit (sliding window) on auth & mutation-heavy operations
-- **Validation & sanitization:** Zod schemas + isomorphic-dompurify
+- **Caching:** Upstash Redis 1.38.0 (TTL-based query caching with fallback behavior)
+- **Rate limiting:** Upstash Ratelimit 2.0.8 (sliding window) on auth & mutation-heavy operations
+- **Validation & sanitization:** Zod 4.4.3 + isomorphic-dompurify
 
 ### DevOps & Tools
 - **Build Tool:** Turbopack
-- **Testing:** Vitest + Testing Library + Happy DOM (unit/integration), Playwright (E2E)
-- **Code Quality:** Biome
-- **Package Manager:** pnpm
+- **Testing:** Vitest 4.1.10 + Testing Library + Happy DOM (unit/integration), Playwright 1.61.1 (E2E)
+- **Code Quality:** Biome 2.5.5
+- **Package Manager:** pnpm 11.15.1
 - **Deployment:** Vercel
 - **CI/CD:** GitHub Actions + Semantic Release
 
@@ -73,7 +88,7 @@
 ### Prerequisites
 
 - **Node.js** 24.x
-- **pnpm** 11.x
+- **pnpm** 11.15.1
 - **Postgres / Neon** (Postgres-compatible, e.g. Neon serverless)
 
 ### Installation
