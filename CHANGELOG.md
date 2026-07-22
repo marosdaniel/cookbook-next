@@ -1,3 +1,17 @@
+# [2.55.0](https://github.com/marosdaniel/cookbook-next/compare/v2.54.0...v2.55.0) (2026-07-22)
+
+
+### Bug Fixes
+
+* add Text mock to @mantine/core in RecipeCarousel tests ([2e563ce](https://github.com/marosdaniel/cookbook-next/commit/2e563cebb58858e3214dbe9051135b2adb9a81fd))
+* remove unnecessary 'undefined' type from value prop in InputProps and TextareaProps ([c118c5d](https://github.com/marosdaniel/cookbook-next/commit/c118c5d48c221653a883b1dbb437b77a3ba1461c))
+* update import paths for @mantine/core mocks in RecipeRating and RecipeCarousel tests ([8150c39](https://github.com/marosdaniel/cookbook-next/commit/8150c39a5a38aa2ac9540ef5bf1ea7fa1b3325a6))
+
+
+### Features
+
+* add new mock components for @mantine/core; include Center, Rating, SimpleGrid, and Skeleton ([6be54c9](https://github.com/marosdaniel/cookbook-next/commit/6be54c922f138000441a544886c6f5575b20933f))
+
 # [2.54.0](https://github.com/marosdaniel/cookbook-next/compare/v2.53.0...v2.54.0) (2026-07-22)
 
 
