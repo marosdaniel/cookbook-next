@@ -112,7 +112,7 @@ cp .env.example .env.local
 
 ### Environment Variables
 
-Create a `.env.local` file with the following (example for Neon/Postgres):
+Create a `.env.local` file with the variables this app actually uses:
 
 ```env
 # Database (Postgres / Neon)
@@ -121,6 +121,19 @@ DATABASE_URL=postgresql://username:password@db-host:5432/cookbook
 # NextAuth
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your-secret-key-here
+
+# Optional email delivery (used by password reset / welcome emails)
+EMAIL_HOST=smtp.example.com
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=your-email-user
+EMAIL_PASSWORD=your-email-password
+EMAIL_FROM=hello@example.com
+EMAIL_FROM_NAME=Cookbook
+
+# Optional Redis / Upstash caching
+UPSTASH_REDIS_REST_URL=https://your-upstash-url.upstash.io
+UPSTASH_REDIS_REST_TOKEN=your-upstash-token
 
 # Node Environment
 NODE_ENV=development
@@ -159,35 +172,41 @@ pnpm start
 ```
 cookbook-next/
 ├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── (auth)/            # Auth routes (login, signup, reset)
-│   │   ├── api/               # API routes
-│   │   │   ├── auth/          # NextAuth endpoints
-│   │   │   └── graphql/       # GraphQL endpoint
-│   │   ├── layout.tsx         # Root layout
+│   ├── app/                    # Next.js App Router pages and route groups
+│   │   ├── (auth)/            # Authentication pages (login, signup, reset password)
+│   │   ├── api/               # API routes, including GraphQL
+│   │   │   └── graphql/       # Apollo Server endpoint
+│   │   ├── me/                # User account pages (profile, recipes, favorites, following)
+│   │   ├── recipes/           # Recipe listing and detail pages
+│   │   ├── layout.tsx         # Root layout and global metadata
 │   │   └── page.tsx           # Home page
-│   ├── components/            # React components
-│   │   ├── AuthButton/
-│   │   ├── LanguageSelector/
-│   │   ├── Logo/
-│   │   ├── Navbar/
-│   │   ├── Shell/
-│   │   └── ThemeSwitcher/
-│   ├── lib/                   # Utility libraries
-│   │   ├── apollo/            # Apollo Client setup
-│   │   ├── graphql/           # GraphQL schema & resolvers
-│   │   ├── locale/            # i18n utilities
-│   │   ├── store/             # Redux store
-│   │   └── prisma.ts          # Prisma client (Neon/Postgres)
-│   ├── providers/             # React context providers
-│   ├── types/                 # TypeScript type definitions
-│   ├── locales/               # Translation files
-│   └── auth.ts                # NextAuth v5 configuration
+│   ├── components/            # Reusable UI components
+│   │   ├── buttons/           # Favorite, follow, auth action buttons
+│   │   ├── Footer/            # Footer UI
+│   │   ├── HeaderSearch/      # Search UI
+│   │   ├── Navbar/            # Main navigation
+│   │   ├── Recipe/            # Recipe cards, forms, rating, carousel
+│   │   └── Shell/             # App shell layout
+│   ├── lib/                   # Core application logic
+│   │   ├── apollo/            # Apollo client setup
+│   │   ├── auth/              # NextAuth config and password helpers
+│   │   ├── email/             # Nodemailer and email templates
+│   │   ├── graphql/           # GraphQL schema, resolvers, queries, mutations
+│   │   ├── prisma/            # Prisma client and related helpers
+│   │   ├── redis/             # Upstash Redis client and circuit breaker
+│   │   ├── services/          # Recipe/User service layer
+│   │   ├── store/             # Redux Toolkit slices and hooks
+│   │   └── validation/        # Zod validation helpers
+│   ├── locales/               # Translation JSON files
+│   ├── providers/             # Mantine, Apollo, and session providers
+│   └── types/                 # Shared TypeScript types
 ├── prisma/
-│   └── schema.prisma          # Database schema
-├── public/                    # Static assets
+│   └── schema.prisma          # Database schema and models
+├── public/                    # Static assets and manifest files
+├── e2e/                       # Playwright end-to-end tests
+├── docs/                      # Project documentation
 ├── .github/                   # GitHub Actions workflows
-└── coverage/                  # Test coverage reports
+└── coverage/                  # Test coverage artifacts
 ```
 
 ---
@@ -249,16 +268,17 @@ POST /api/graphql
 ### Key Operations
 
 **User queries/mutations:**
-- `me`, `user(id)`, `users` - Get current/single/all users
-- `registerUser`, `updateUser`, `deleteUser` - Account lifecycle
+- `getUserById`, `getFavoriteRecipes`, `getFollowing` - profile-related data access
+- `createUser`, `updateUser`, `changePassword`, `resetPassword`, `setNewPassword` - account lifecycle and password flows
+- `addToFavoriteRecipes`, `removeFromFavoriteRecipes`, `followUser`, `unfollowUser` - social interactions
 
 **Recipe queries/mutations:**
-- `recipes` (filterable by title, category, difficulty, labels, max cooking time), `recipe(idOrSlug)`
-- `createRecipe`, `editRecipe`, `deleteRecipe`
-- `rateRecipe`, `deleteRating`, `addToFavoriteRecipes`, `removeFromFavoriteRecipes`
+- `getRecipes` and `getRecipeById` - recipe listing and detail retrieval
+- `createRecipe`, `editRecipe`, `deleteRecipe` - recipe lifecycle
+- `rateRecipe`, `deleteRating` - recipe rating flows
 
 **Metadata queries:**
-- Static reference data (categories, labels, units, difficulty levels, cuisines, dietary flags, allergens, equipment)
+- `getAllMetadata`, `getMetadataByType`, `getMetadataByKey` - static reference data for categories, labels, units, difficulty, cuisines, dietary flags, allergens, and equipment
 
 ### Authentication & Protection
 
