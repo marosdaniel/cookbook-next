@@ -7,7 +7,7 @@ import {
   Rating,
   Stack,
   Text,
-} from '../../../../__mocks__/@mantine/core.tsx';
+} from '../../../../__mocks__/@mantine/core';
 import RecipeRating from './RecipeRating';
 
 const { mockUseTranslations, mockShow, mockUseMutation } = vi.hoisted(() => ({

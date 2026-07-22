@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import type { ComponentProps, ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { Box, Skeleton, Text } from '../../../../__mocks__/@mantine/core.tsx';
+import { Box, Skeleton } from '../../../../__mocks__/@mantine/core';
 import RecipeCarousel from './RecipeCarousel';
 import type { RecipeCarouselProps } from './types';
 
