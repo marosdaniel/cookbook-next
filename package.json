@@ -7,7 +7,7 @@
   "type": "module",
   "private": true,
   "overrides": {
-    "fast-uri": "^3.1.4",
+    "fast-uri": "^4.1.1",
     "sharp": "^0.35.3",
     "next>sharp": "^0.35.3"
   },
@@ -102,7 +102,7 @@
     "@vitest/coverage-v8": "4.1.10",
     "baseline-browser-mapping": "^2.11.0",
     "dotenv": "^17.4.2",
-    "fast-uri": "^3.1.4",
+    "fast-uri": "^4.1.1",
     "happy-dom": "^20.11.0",
     "prisma": "7.9.0",
     "semantic-release": "^25.0.8",

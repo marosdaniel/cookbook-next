@@ -195,8 +195,8 @@ importers:
         specifier: ^17.4.2
         version: 17.4.2
       fast-uri:
-        specifier: ^3.1.4
-        version: 3.1.4
+        specifier: ^4.1.1
+        version: 4.1.1
       happy-dom:
         specifier: ^20.11.0
         version: 20.11.0
@@ -2484,6 +2484,9 @@ packages:
 
   fast-uri@3.1.4:
     resolution: {integrity: sha512-8JnbkQ4juDyvYs4mgFGQqg4yCYtFDtUtmp2QIQq11ZZe5CFQ5wcqm1rqDgAh/QdMySuBnPzMUiJUNZG5N/AiQw==}
+
+  fast-uri@4.1.1:
+    resolution: {integrity: sha512-YPOs1zD5TG2+EZt+r88LwF6mclA7TPkpwMP7ZN3TO2HiHS8TXvq7QA/17iJsV9dubcLo/f8eEYqMBruyQV21hQ==}
 
   fdir@6.5.0:
     resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
@@ -6423,6 +6426,8 @@ snapshots:
       fast-decode-uri-component: 1.0.1
 
   fast-uri@3.1.4: {}
+
+  fast-uri@4.1.1: {}
 
   fdir@6.5.0(picomatch@4.0.5):
     optionalDependencies:
