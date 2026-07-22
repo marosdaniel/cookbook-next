@@ -86,6 +86,7 @@ const ComposerSidebar = memo(
                 onAddIngredient();
               }}
               fullWidth
+              data-testid="recipe-composer-sidebar-quick-add-ingredient"
             >
               {translate('quickAddIngredient')}
             </Button>
@@ -98,6 +99,7 @@ const ComposerSidebar = memo(
                 onAddStep();
               }}
               fullWidth
+              data-testid="recipe-composer-sidebar-quick-add-step"
             >
               {translate('quickAddStep')}
             </Button>
@@ -112,6 +114,7 @@ const ComposerSidebar = memo(
             leftSection={<IconTrash size={14} />}
             onClick={onReset}
             fullWidth
+            data-testid="recipe-composer-sidebar-reset"
           >
             {resetLabel || translate('resetButton')}
           </Button>

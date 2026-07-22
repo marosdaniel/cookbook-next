@@ -1,28 +1,30 @@
+import type { ChangeEventHandler, ReactNode } from 'react';
+
 export type ButtonProps = React.ComponentPropsWithoutRef<'button'> & {
-  children?: React.ReactNode;
+  children?: ReactNode;
   [key: string]: unknown;
 };
 
 export type DivProps = React.ComponentPropsWithoutRef<'div'> & {
-  children?: React.ReactNode;
+  children?: ReactNode;
   [key: string]: unknown;
 };
 
 export type InputProps = React.ComponentPropsWithoutRef<'input'> & {
-  children?: React.ReactNode;
+  children?: ReactNode;
   value?: string | number | readonly string[] | undefined;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
   [key: string]: unknown;
 };
 
 export type ParagraphProps = React.ComponentPropsWithoutRef<'p'> & {
-  children?: React.ReactNode;
+  children?: ReactNode;
   [key: string]: unknown;
 };
 
 export type TextareaProps = React.ComponentPropsWithoutRef<'textarea'> & {
-  children?: React.ReactNode;
+  children?: ReactNode;
   value?: string | number | readonly string[] | undefined;
-  onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
+  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
   [key: string]: unknown;
 };
