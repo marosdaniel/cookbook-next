@@ -4,15 +4,17 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   test: {
     environment: 'happy-dom',
     setupFiles: ['./vitest.setup.mts'],
     globals: true,
     include: ['src/**/*.test.{ts,tsx}'],
     exclude: ['node_modules/**', 'e2e/**', 'playwright.config.ts'],
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
     coverage: {
       reporter: ['text', 'html', 'json-summary', 'lcov'],
       include: ['src/**/*.{ts,tsx}'],

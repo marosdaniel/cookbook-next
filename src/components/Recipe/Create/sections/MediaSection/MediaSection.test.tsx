@@ -1,81 +1,38 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import type {
-  ChangeEventHandler,
-  ComponentPropsWithoutRef,
-  ReactNode,
-} from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type {
-  ButtonProps,
-  DivProps,
-  InputProps,
-  ParagraphProps,
-  TextareaProps,
-} from '../../../../../types/test';
+import {
+  ActionIcon,
+  Badge,
+  Box,
+  Button,
+  Group,
+  Image,
+  Paper,
+  Stack,
+  Text,
+  Textarea,
+  TextInput,
+  ThemeIcon,
+  Title,
+  Tooltip,
+} from '../../../../../../__mocks__/@mantine/core';
 import MediaSection from './MediaSection';
 
 vi.mock('@mantine/core', () => ({
-  ActionIcon: ({ children, ...props }: ButtonProps) => (
-    <button {...props}>{children}</button>
-  ),
-  Badge: ({ children, ...props }: ParagraphProps) => (
-    <span {...props}>{children}</span>
-  ),
-  Box: ({ children, ...props }: DivProps) => <div {...props}>{children}</div>,
-  Button: ({ children, ...props }: ButtonProps) => (
-    <button {...props}>{children}</button>
-  ),
-  Group: ({ children, ...props }: DivProps) => <div {...props}>{children}</div>,
-  Image: ({
-    alt,
-    ...props
-  }: ComponentPropsWithoutRef<'img'> & {
-    alt?: string;
-    [key: string]: unknown;
-  }) => <img alt={alt as string | undefined} {...props} />,
-  Paper: ({ children, ...props }: DivProps) => <div {...props}>{children}</div>,
-  Stack: ({ children, ...props }: DivProps) => <div {...props}>{children}</div>,
-  Text: ({ children, ...props }: ParagraphProps) => (
-    <p {...props}>{children}</p>
-  ),
-  Textarea: ({ value, onChange, ...props }: TextareaProps) => (
-    <textarea
-      value={value}
-      onChange={onChange as ChangeEventHandler<HTMLTextAreaElement>}
-      {...props}
-    />
-  ),
-  TextInput: ({
-    value,
-    onChange,
-    rightSection,
-    leftSection,
-    ...props
-  }: InputProps & {
-    rightSection?: ReactNode;
-    leftSection?: ReactNode;
-  }) => (
-    <div>
-      <input
-        value={value}
-        onChange={onChange as ChangeEventHandler<HTMLInputElement>}
-        {...props}
-      />
-      {leftSection}
-      {rightSection}
-    </div>
-  ),
-  ThemeIcon: ({ children, ...props }: DivProps) => (
-    <div {...props}>{children}</div>
-  ),
-  Title: ({
-    children,
-    ...props
-  }: React.ComponentPropsWithoutRef<'h3'> & {
-    children?: React.ReactNode;
-    [key: string]: unknown;
-  }) => <h3 {...props}>{children}</h3>,
-  Tooltip: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+  ActionIcon: ActionIcon,
+  Badge: Badge,
+  Box: Box,
+  Button: Button,
+  Group: Group,
+  Image: Image,
+  Paper: Paper,
+  Stack: Stack,
+  Text: Text,
+  Textarea: Textarea,
+  TextInput: TextInput,
+  ThemeIcon: ThemeIcon,
+  Title: Title,
+  Tooltip: Tooltip,
 }));
 
 const { mockUseRecipeFormContext, mockUseFormError } = vi.hoisted(() => ({
@@ -163,7 +120,9 @@ describe('MediaSection', () => {
 
     render(<MediaSection onBack={vi.fn()} onNext={vi.fn()} />);
 
-    expect(screen.getByAltText('coverPreview')).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', { name: 'coverPreview' }),
+    ).toBeInTheDocument();
   });
 
   it('clears the cover image and revalidates the field', () => {
