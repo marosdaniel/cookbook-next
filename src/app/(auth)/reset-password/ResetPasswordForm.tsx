@@ -74,8 +74,13 @@ export const ResetPasswordForm: FC = () => {
   const isSubmitDisabled = isFormSubmitDisabled(form, loading);
 
   return (
-    <Container size={460} my={30} id="reset-password-page">
-      <Title ta="center" mb="xs">
+    <Container
+      size={460}
+      my={30}
+      id="reset-password-page"
+      data-testid="reset-password-page"
+    >
+      <Title ta="center" mb="xs" data-testid="reset-password-title">
         {translate('auth.forgotPasswordTitle')}
       </Title>
       <Text c="dimmed" fz="sm" ta="center" mb="xl">
@@ -86,6 +91,7 @@ export const ResetPasswordForm: FC = () => {
         component="form"
         onSubmit={form.onSubmit(handleResetPassword)}
         withBorder
+        data-testid="reset-password-form"
         shadow="md"
         p={30}
         radius="md"
@@ -96,6 +102,7 @@ export const ResetPasswordForm: FC = () => {
               variant="light"
               color="green"
               title={translate('response.emailSent')}
+              data-testid="reset-password-success-alert"
               icon={<CiCircleInfo size={30} />}
             >
               <Text size="sm">
@@ -110,6 +117,7 @@ export const ResetPasswordForm: FC = () => {
               variant="light"
               onClick={() => setIsResetPasswordEmailSent(false)}
               fullWidth
+              data-testid="reset-password-send-another-button"
             >
               {translate('auth.sendAnotherEmail')}
             </Button>
@@ -122,6 +130,7 @@ export const ResetPasswordForm: FC = () => {
               placeholder={translate('auth.emailPlaceholder')}
               required
               key={form.key('email')}
+              data-testid="reset-password-email-input"
               {...form.getInputProps('email')}
             />
 
@@ -131,6 +140,7 @@ export const ResetPasswordForm: FC = () => {
               loaderProps={{ type: 'dots' }}
               fullWidth
               disabled={isSubmitDisabled}
+              data-testid="reset-password-submit-button"
             >
               {translate('auth.sendResetLink')}
             </Button>
@@ -144,6 +154,7 @@ export const ResetPasswordForm: FC = () => {
             href={AUTH_ROUTES.LOGIN}
             variant="subtle"
             leftSection={<IoArrowBackOutline />}
+            data-testid="reset-password-back-link"
           >
             {translate('auth.backToLogin')}
           </Button>

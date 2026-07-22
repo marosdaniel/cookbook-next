@@ -31,9 +31,9 @@ export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
   };
 
   return (
-    <Box>
+    <Box data-testid="recipe-steps">
       <Group justify="space-between" mb="lg">
-        <Title order={2} size="h3">
+        <Title order={2} size="h3" data-testid="recipe-steps-title">
           {translate('preparationSteps')}
         </Title>
       </Group>
@@ -56,6 +56,7 @@ export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
                 className={classes.stepCard}
                 onClick={() => handleStepClick(step.localId)}
                 aria-pressed={isActive}
+                data-testid={`recipe-step-${step.localId}`}
                 style={{
                   position: 'relative',
                   width: '100%',

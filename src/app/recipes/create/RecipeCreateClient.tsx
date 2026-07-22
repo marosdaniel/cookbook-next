@@ -50,7 +50,7 @@ const RecipeCreateClient = () => {
 
   if (status === 'loading') {
     return (
-      <Center h="100vh">
+      <Center h="100vh" data-testid="recipe-create-loading">
         <Loader size="lg" type="dots" />
       </Center>
     );

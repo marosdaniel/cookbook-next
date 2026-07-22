@@ -95,7 +95,7 @@ const RecipesPage: FC = () => {
   );
 
   return (
-    <Container size="xl" py="xl">
+    <Container size="xl" py="xl" data-testid="recipe-page-root">
       <Stack gap="xl">
         <Box>
           <Group gap="xs" mb="xs">
@@ -123,7 +123,11 @@ const RecipesPage: FC = () => {
           exitDuration={150}
         >
           {(styles) => (
-            <Box component="section" style={styles}>
+            <Box
+              component="section"
+              style={styles}
+              data-testid="recipe-search-results-section"
+            >
               <Group justify="space-between" mb="md">
                 <Group gap="xs">
                   <IconSearch size={20} color="var(--mantine-color-pink-6)" />

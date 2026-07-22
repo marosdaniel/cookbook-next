@@ -34,13 +34,24 @@ export const RecipeIngredients = ({
   const translateIngredients = useTranslations('recipeIngredients');
 
   return (
-    <Paper p="lg" radius="md" withBorder className={classes.ingredientsCard}>
+    <Paper
+      p="lg"
+      radius="md"
+      withBorder
+      className={classes.ingredientsCard}
+      data-testid="recipe-ingredients"
+    >
       <Group justify="space-between" mb="md">
-        <Title order={2} size="h3" c="pink">
+        <Title
+          order={2}
+          size="h3"
+          c="pink"
+          data-testid="recipe-ingredients-title"
+        >
           {translate('ingredients')}
         </Title>
 
-        <Text size="xs" c="dimmed">
+        <Text size="xs" c="dimmed" data-testid="recipe-ingredients-count">
           {translate('checkedOff', {
             count: checkedIngredients.size,
             total: ingredients.length,
@@ -67,6 +78,7 @@ export const RecipeIngredients = ({
             onClick={onDecrementServings}
             disabled={servingMultiplier <= SERVING_MIN}
             aria-label={translateIngredients('decreaseServings')}
+            data-testid="recipe-ingredients-decrease"
           >
             <IconMinus size={14} />
           </ActionIcon>
@@ -101,6 +113,7 @@ export const RecipeIngredients = ({
             onClick={onIncrementServings}
             disabled={servingMultiplier >= SERVING_MAX}
             aria-label={translateIngredients('increaseServings')}
+            data-testid="recipe-ingredients-increase"
           >
             <IconPlus size={14} />
           </ActionIcon>
@@ -171,6 +184,7 @@ export const RecipeIngredients = ({
                     flex: 1,
                   },
                 }}
+                data-testid={`recipe-ingredient-checkbox-${ingredient.localId}`}
               />
             </motion.div>
           );

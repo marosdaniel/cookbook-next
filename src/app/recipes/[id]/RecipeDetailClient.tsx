@@ -46,7 +46,7 @@ const RecipeDetailClient = ({
 
   if (loading) {
     return (
-      <Center h="60vh">
+      <Center h="60vh" data-testid="recipe-detail-loading">
         <Loader size="lg" type="dots" />
       </Center>
     );
@@ -59,7 +59,7 @@ const RecipeDetailClient = ({
   const recipeJsonLd = buildRecipeJsonLd(recipe);
 
   return (
-    <Container size="xl" py="xl">
+    <Container size="xl" py="xl" data-testid="recipe-detail-root">
       <script type="application/ld+json">{JSON.stringify(recipeJsonLd)}</script>
       <motion.div
         initial={{ opacity: 0, y: 8 }}

@@ -22,14 +22,15 @@ export const RecipeVideo = ({
   });
 
   return (
-    <Box ref={containerRef}>
-      <Title order={2} size="h3" mb="md">
+    <Box ref={containerRef} data-testid="recipe-video">
+      <Title order={2} size="h3" mb="md" data-testid="recipe-video-title">
         {translate('videoTitle')}
       </Title>
 
       <Box
         className={classes.videoWrapper}
         style={{ backgroundColor: 'var(--mantine-color-gray-1)' }}
+        data-testid="recipe-video-wrapper"
       >
         {isInView && (
           <motion.iframe

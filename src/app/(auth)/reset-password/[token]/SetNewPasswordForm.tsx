@@ -88,14 +88,20 @@ export const SetNewPasswordForm: FC = () => {
 
   if (isPasswordReset) {
     return (
-      <Container size={460} my={30} id="password-reset-success">
-        <Title ta="center" mb="md">
+      <Container
+        size={460}
+        my={30}
+        id="password-reset-success"
+        data-testid="password-reset-success"
+      >
+        <Title ta="center" mb="md" data-testid="password-reset-success-title">
           {translate('auth.passwordResetSuccessTitle')}
         </Title>
         <Alert
           variant="light"
           color="green"
           title={translate('auth.passwordResetSuccessTitle')}
+          data-testid="password-reset-success-alert"
           icon={<CiCircleCheck size={30} />}
         >
           <Text size="sm" mb="md">
@@ -110,8 +116,13 @@ export const SetNewPasswordForm: FC = () => {
   }
 
   return (
-    <Container size={460} my={30} id="set-new-password-page">
-      <Title ta="center" mb="xs">
+    <Container
+      size={460}
+      my={30}
+      id="set-new-password-page"
+      data-testid="set-new-password-page"
+    >
+      <Title ta="center" mb="xs" data-testid="set-new-password-title">
         {translate('auth.setNewPasswordTitle')}
       </Title>
       <Text c="dimmed" fz="sm" ta="center" mb="xl">
@@ -122,6 +133,7 @@ export const SetNewPasswordForm: FC = () => {
         component="form"
         onSubmit={form.onSubmit(handleSetNewPassword)}
         withBorder
+        data-testid="set-new-password-form"
         shadow="md"
         p={30}
         radius="md"
@@ -134,6 +146,7 @@ export const SetNewPasswordForm: FC = () => {
           description={translate('response.passwordRequirements')}
           mb="md"
           key={form.key('newPassword')}
+          data-testid="set-new-password-input"
           {...form.getInputProps('newPassword')}
         />
 
@@ -144,6 +157,7 @@ export const SetNewPasswordForm: FC = () => {
           required
           mb="lg"
           key={form.key('confirmPassword')}
+          data-testid="set-new-password-confirm-input"
           {...form.getInputProps('confirmPassword')}
         />
 
@@ -153,6 +167,7 @@ export const SetNewPasswordForm: FC = () => {
           loaderProps={{ type: 'dots' }}
           fullWidth
           disabled={isSubmitDisabled}
+          data-testid="set-new-password-submit-button"
         >
           {translate('auth.setNewPasswordButton')}
         </Button>
@@ -164,6 +179,7 @@ export const SetNewPasswordForm: FC = () => {
             href={AUTH_ROUTES.LOGIN}
             variant="subtle"
             leftSection={<IoArrowBackOutline />}
+            data-testid="set-new-password-back-link"
           >
             {translate('auth.backToLogin')}
           </Button>

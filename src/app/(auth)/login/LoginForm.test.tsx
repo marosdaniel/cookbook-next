@@ -73,9 +73,9 @@ const mockedSignIn = vi.mocked(signIn);
 const mockedUseRouter = vi.mocked(useRouter);
 
 // Helper function to get form inputs
-const getFormInputs = (container: HTMLElement) => ({
-  emailInput: container.querySelector<HTMLInputElement>('#email'),
-  passwordInput: container.querySelector<HTMLInputElement>('#password'),
+const getFormInputs = () => ({
+  emailInput: screen.getByTestId('login-email-input') as HTMLInputElement,
+  passwordInput: screen.getByTestId('login-password-input') as HTMLInputElement,
 });
 
 // Helper function to fill login form
@@ -141,11 +141,14 @@ describe('LoginForm', () => {
 
   describe('Rendering', () => {
     it('renders the login form with all elements', () => {
-      const { container } = render(<LoginForm />);
+      render(<LoginForm />);
 
+      expect(screen.getByTestId('login-page')).toBeInTheDocument();
+      expect(screen.getByTestId('login-title')).toBeInTheDocument();
+      expect(screen.getByTestId('login-form')).toBeInTheDocument();
       expect(screen.getByText('Welcome back!')).toBeInTheDocument();
-      expect(container.querySelector('#email')).toBeInTheDocument();
-      expect(container.querySelector('#password')).toBeInTheDocument();
+      expect(screen.getByTestId('login-email-input')).toBeInTheDocument();
+      expect(screen.getByTestId('login-password-input')).toBeInTheDocument();
       expect(screen.getByTestId('remember-me')).toBeInTheDocument();
       expect(screen.getByTestId('login-button')).toBeInTheDocument();
     });
@@ -193,15 +196,12 @@ describe('LoginForm', () => {
     });
 
     it('enables submit button when form is valid', async () => {
-      const { container } = render(<LoginForm />);
+      render(<LoginForm />);
 
-      const emailInput = container.querySelector('#email');
-      const passwordInput = container.querySelector('#password');
+      const emailInput = screen.getByTestId('login-email-input');
+      const passwordInput = screen.getByTestId('login-password-input');
       const submitButton = screen.getByTestId('login-button');
 
-      if (!emailInput || !passwordInput) {
-        throw new Error('Form inputs not found');
-      }
       fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
       fireEvent.change(passwordInput, { target: { value: 'Password1' } });
 
@@ -215,12 +215,9 @@ describe('LoginForm', () => {
     it('calls signIn with correct credentials on submit', async () => {
       mockSignInSuccess();
 
-      const { container } = render(<LoginForm />);
+      render(<LoginForm />);
 
-      const { emailInput, passwordInput } = getFormInputs(container);
-      if (!emailInput || !passwordInput) {
-        throw new Error('Form inputs not found');
-      }
+      const { emailInput, passwordInput } = getFormInputs();
       const submitButton = await fillLoginForm(emailInput, passwordInput);
 
       fireEvent.click(submitButton);
@@ -238,12 +235,9 @@ describe('LoginForm', () => {
     it('includes rememberMe when checkbox is checked', async () => {
       mockSignInSuccess();
 
-      const { container } = render(<LoginForm />);
+      render(<LoginForm />);
 
-      const { emailInput, passwordInput } = getFormInputs(container);
-      if (!emailInput || !passwordInput) {
-        throw new Error('Form inputs not found');
-      }
+      const { emailInput, passwordInput } = getFormInputs();
       const rememberMeCheckbox = screen.getByTestId('remember-me');
       const submitButton = await fillLoginForm(emailInput, passwordInput);
 
@@ -263,12 +257,9 @@ describe('LoginForm', () => {
     it('shows success notification and redirects on successful login', async () => {
       mockSignInSuccess();
 
-      const { container } = render(<LoginForm />);
+      render(<LoginForm />);
 
-      const { emailInput, passwordInput } = getFormInputs(container);
-      if (!emailInput || !passwordInput) {
-        throw new Error('Form inputs not found');
-      }
+      const { emailInput, passwordInput } = getFormInputs();
       const submitButton = await fillLoginForm(emailInput, passwordInput);
 
       fireEvent.click(submitButton);
@@ -286,15 +277,39 @@ describe('LoginForm', () => {
       });
     });
 
+    it('shows invalid credentials notification when signIn returns an error result', async () => {
+      mockedSignIn.mockResolvedValue({
+        ok: false,
+        error: 'CredentialsSignin',
+        status: 401,
+        url: null,
+      } as SignInResponse);
+
+      render(<LoginForm />);
+
+      const { emailInput, passwordInput } = getFormInputs();
+      const submitButton = await fillLoginForm(emailInput, passwordInput);
+
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(notifications.show).toHaveBeenCalledWith({
+          title: 'Error',
+          message: 'Invalid credentials',
+          color: 'red',
+          position: 'top-right',
+        });
+      });
+
+      expect(mockPush).not.toHaveBeenCalled();
+    });
+
     it('shows error notification on exception', async () => {
       mockSignInError(new Error('Network error'));
 
-      const { container } = render(<LoginForm />);
+      render(<LoginForm />);
 
-      const { emailInput, passwordInput } = getFormInputs(container);
-      if (!emailInput || !passwordInput) {
-        throw new Error('Form inputs not found');
-      }
+      const { emailInput, passwordInput } = getFormInputs();
       const submitButton = await fillLoginForm(emailInput, passwordInput);
 
       fireEvent.click(submitButton);
@@ -328,12 +343,9 @@ describe('LoginForm', () => {
     it('disables submit button and shows loading state during submission', async () => {
       mockSignInDelayed(100);
 
-      const { container } = render(<LoginForm />);
+      render(<LoginForm />);
 
-      const { emailInput, passwordInput } = getFormInputs(container);
-      if (!emailInput || !passwordInput) {
-        throw new Error('Form inputs not found');
-      }
+      const { emailInput, passwordInput } = getFormInputs();
       const submitButton = await fillLoginForm(emailInput, passwordInput);
 
       fireEvent.click(submitButton);

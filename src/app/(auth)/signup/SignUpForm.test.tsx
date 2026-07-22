@@ -106,42 +106,44 @@ describe('SignUpForm', () => {
 
   describe('Rendering', () => {
     it('renders the signup form with all elements', () => {
-      const { container } = render(<SignUpForm />);
+      render(<SignUpForm />);
 
       expect(screen.getByText('Create Account')).toBeInTheDocument();
-      expect(container.querySelector('#first-name')).toBeInTheDocument();
-      expect(container.querySelector('#last-name')).toBeInTheDocument();
-      expect(container.querySelector('#user-name')).toBeInTheDocument();
-      expect(container.querySelector('#email')).toBeInTheDocument();
-      expect(container.querySelector('#password')).toBeInTheDocument();
-      expect(container.querySelector('#confirm-password')).toBeInTheDocument();
-      expect(screen.getByTestId('submit-button')).toBeInTheDocument();
+      expect(screen.getByTestId('sign-up-page')).toBeInTheDocument();
+      expect(screen.getByTestId('sign-up-title')).toBeInTheDocument();
+      expect(screen.getByTestId('sign-up-form')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('sign-up-first-name-input'),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('sign-up-last-name-input')).toBeInTheDocument();
+      expect(screen.getByTestId('sign-up-user-name-input')).toBeInTheDocument();
+      expect(screen.getByTestId('sign-up-email-input')).toBeInTheDocument();
+      expect(screen.getByTestId('sign-up-password-input')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('sign-up-confirm-password-input'),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('sign-up-submit-button')).toBeInTheDocument();
     });
 
     it('renders login link', () => {
       render(<SignUpForm />);
 
-      const { container } = render(<SignUpForm />);
+      const loginLink = screen
+        .getByTestId('sign-up-login-link')
+        .querySelector('a');
 
-      const loginLink = container.querySelector(
-        `a[href="${AUTH_ROUTES.LOGIN}"]`,
-      );
-      expect(loginLink).toBeInTheDocument();
+      expect(loginLink).toHaveAttribute('href', AUTH_ROUTES.LOGIN);
     });
 
     it('renders privacy policy checkbox', () => {
       render(<SignUpForm />);
 
       expect(
+        screen.getByTestId('sign-up-privacy-checkbox'),
+      ).toBeInTheDocument();
+      expect(
         screen.getByText('I accept the privacy policy'),
       ).toBeInTheDocument();
-    });
-
-    it('has correct container id', () => {
-      const { container } = render(<SignUpForm />);
-
-      const signUpPage = container.querySelector('#sign-up-page');
-      expect(signUpPage).toBeInTheDocument();
     });
   });
 
@@ -149,22 +151,23 @@ describe('SignUpForm', () => {
     it('submit button is disabled when form is empty', () => {
       render(<SignUpForm />);
 
-      const submitButton = screen.getByTestId('submit-button');
+      const submitButton = screen.getByTestId('sign-up-submit-button');
       expect(submitButton).toBeDisabled();
     });
 
     it('enables submit button when all fields are valid', async () => {
       render(<SignUpForm />);
 
-      const firstNameInput = screen.getByPlaceholderText('First Name');
-      const lastNameInput = screen.getByPlaceholderText('Last Name');
-      const userNameInput = screen.getByPlaceholderText('Username');
-      const emailInput = screen.getByPlaceholderText('your@email.com');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const confirmPasswordInput =
-        screen.getByPlaceholderText('Confirm Password');
-      const privacyCheckbox = screen.getByTestId('privacy-accepted');
-      const submitButton = screen.getByTestId('submit-button');
+      const firstNameInput = screen.getByTestId('sign-up-first-name-input');
+      const lastNameInput = screen.getByTestId('sign-up-last-name-input');
+      const userNameInput = screen.getByTestId('sign-up-user-name-input');
+      const emailInput = screen.getByTestId('sign-up-email-input');
+      const passwordInput = screen.getByTestId('sign-up-password-input');
+      const confirmPasswordInput = screen.getByTestId(
+        'sign-up-confirm-password-input',
+      );
+      const privacyCheckbox = screen.getByTestId('sign-up-privacy-checkbox');
+      const submitButton = screen.getByTestId('sign-up-submit-button');
 
       fireEvent.change(firstNameInput, { target: { value: 'John' } });
       fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
@@ -184,14 +187,15 @@ describe('SignUpForm', () => {
 
   describe('Form Submission', () => {
     const fillForm = () => {
-      const firstNameInput = screen.getByPlaceholderText('First Name');
-      const lastNameInput = screen.getByPlaceholderText('Last Name');
-      const userNameInput = screen.getByPlaceholderText('Username');
-      const emailInput = screen.getByPlaceholderText('your@email.com');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const confirmPasswordInput =
-        screen.getByPlaceholderText('Confirm Password');
-      const privacyCheckbox = screen.getByTestId('privacy-accepted');
+      const firstNameInput = screen.getByTestId('sign-up-first-name-input');
+      const lastNameInput = screen.getByTestId('sign-up-last-name-input');
+      const userNameInput = screen.getByTestId('sign-up-user-name-input');
+      const emailInput = screen.getByTestId('sign-up-email-input');
+      const passwordInput = screen.getByTestId('sign-up-password-input');
+      const confirmPasswordInput = screen.getByTestId(
+        'sign-up-confirm-password-input',
+      );
+      const privacyCheckbox = screen.getByTestId('sign-up-privacy-checkbox');
 
       fireEvent.change(firstNameInput, { target: { value: 'John' } });
       fireEvent.change(lastNameInput, { target: { value: 'Doe' } });
@@ -213,7 +217,7 @@ describe('SignUpForm', () => {
 
       fillForm();
 
-      const submitButton = screen.getByTestId('submit-button');
+      const submitButton = screen.getByTestId('sign-up-submit-button');
 
       await waitFor(() => {
         expect(submitButton).not.toBeDisabled();
@@ -254,7 +258,7 @@ describe('SignUpForm', () => {
 
       fillForm();
 
-      const submitButton = screen.getByTestId('submit-button');
+      const submitButton = screen.getByTestId('sign-up-submit-button');
 
       await waitFor(() => {
         expect(submitButton).not.toBeDisabled();
@@ -302,7 +306,7 @@ describe('SignUpForm', () => {
 
       fillForm();
 
-      const submitButton = screen.getByTestId('submit-button');
+      const submitButton = screen.getByTestId('sign-up-submit-button');
 
       await waitFor(() => {
         expect(submitButton).not.toBeDisabled();
@@ -321,6 +325,40 @@ describe('SignUpForm', () => {
       expect(mockPush).not.toHaveBeenCalled();
     });
 
+    it('redirects to login when signup succeeds but auto-login fails', async () => {
+      mockCreateUser.mockResolvedValue({
+        data: {
+          createUser: {
+            success: true,
+            user: { id: '1', email: 'john@example.com' },
+          },
+        },
+      });
+
+      vi.mocked(signIn).mockResolvedValue({
+        ok: false,
+        error: 'CredentialsSignin',
+        status: 401,
+        url: null,
+      } as never);
+
+      render(<SignUpForm />);
+
+      fillForm();
+
+      const submitButton = screen.getByTestId('sign-up-submit-button');
+
+      await waitFor(() => {
+        expect(submitButton).not.toBeDisabled();
+      });
+
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith(AUTH_ROUTES.LOGIN);
+      });
+    });
+
     it('shows unknown error notification on non-Error exception', async () => {
       mockCreateUser.mockRejectedValue('Something went wrong');
 
@@ -328,7 +366,7 @@ describe('SignUpForm', () => {
 
       fillForm();
 
-      const submitButton = screen.getByTestId('submit-button');
+      const submitButton = screen.getByTestId('sign-up-submit-button');
 
       await waitFor(() => {
         expect(submitButton).not.toBeDisabled();
@@ -350,14 +388,15 @@ describe('SignUpForm', () => {
     it('requires privacy policy acceptance', async () => {
       render(<SignUpForm />);
 
-      const firstNameInput = screen.getByPlaceholderText('First Name');
-      const lastNameInput = screen.getByPlaceholderText('Last Name');
-      const userNameInput = screen.getByPlaceholderText('Username');
-      const emailInput = screen.getByPlaceholderText('your@email.com');
-      const passwordInput = screen.getByPlaceholderText('Password');
-      const confirmPasswordInput =
-        screen.getByPlaceholderText('Confirm Password');
-      const submitButton = screen.getByTestId('submit-button');
+      const firstNameInput = screen.getByTestId('sign-up-first-name-input');
+      const lastNameInput = screen.getByTestId('sign-up-last-name-input');
+      const userNameInput = screen.getByTestId('sign-up-user-name-input');
+      const emailInput = screen.getByTestId('sign-up-email-input');
+      const passwordInput = screen.getByTestId('sign-up-password-input');
+      const confirmPasswordInput = screen.getByTestId(
+        'sign-up-confirm-password-input',
+      );
+      const submitButton = screen.getByTestId('sign-up-submit-button');
 
       // Fill all fields except privacy checkbox
       fireEvent.change(firstNameInput, { target: { value: 'John' } });
@@ -378,7 +417,7 @@ describe('SignUpForm', () => {
     it('toggles privacy policy checkbox', () => {
       render(<SignUpForm />);
 
-      const checkbox = screen.getByTestId('privacy-accepted');
+      const checkbox = screen.getByTestId('sign-up-privacy-checkbox');
       expect(checkbox).not.toBeChecked();
 
       fireEvent.click(checkbox);

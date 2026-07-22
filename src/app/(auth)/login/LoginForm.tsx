@@ -92,8 +92,12 @@ export const LoginForm: FC = () => {
   const isLoginDisabled = form.submitting || isSigningIn;
 
   return (
-    <Container maw={520} my={40} id="login-page">
-      <Title ta="center" c="var(--mantine-color-gray-8)">
+    <Container maw={520} my={40} id="login-page" data-testid="login-page">
+      <Title
+        ta="center"
+        c="var(--mantine-color-gray-8)"
+        data-testid="login-title"
+      >
         {translate('auth.welcomeBack')}
       </Title>
       <Group mt={5} justify="center" align="center">
@@ -118,6 +122,7 @@ export const LoginForm: FC = () => {
         mt={30}
         radius="md"
         onSubmit={form.onSubmit(handleLogin)}
+        data-testid="login-form"
       >
         <TextInput
           label={translate('user.email')}
@@ -126,6 +131,7 @@ export const LoginForm: FC = () => {
           id="email"
           type="email"
           autoComplete="email"
+          data-testid="login-email-input"
           {...form.getInputProps('email')}
         />
         <PasswordInput
@@ -135,6 +141,7 @@ export const LoginForm: FC = () => {
           id="password"
           label={translate('user.password')}
           autoComplete="current-password"
+          data-testid="login-password-input"
           {...form.getInputProps('password')}
         />
         <Group justify="space-between" mt="lg">

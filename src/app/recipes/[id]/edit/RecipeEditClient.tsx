@@ -73,11 +73,13 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
 
   if (authStatus === 'loading' || recipeLoading) {
     return (
-      <LoadingOverlay
-        visible
-        zIndex={1000}
-        overlayProps={{ blur: 2, radius: 'sm' }}
-      />
+      <div data-testid="recipe-edit-loading">
+        <LoadingOverlay
+          visible
+          zIndex={1000}
+          overlayProps={{ blur: 2, radius: 'sm' }}
+        />
+      </div>
     );
   }
 
@@ -87,7 +89,7 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
 
   if (recipeError) {
     return (
-      <Center h="100vh">
+      <Center h="100vh" data-testid="recipe-edit-error-state">
         <Stack align="center" gap="md">
           <Title order={3}>{translate('failedToLoad')}</Title>
           <Text c="dimmed">{recipeError.message}</Text>
@@ -98,7 +100,7 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
 
   if (!recipe) {
     return (
-      <Center h="100vh">
+      <Center h="100vh" data-testid="recipe-edit-not-found">
         <Stack align="center" gap="md">
           <Title order={3}>{translate('notFoundTitle')}</Title>
           <Text c="dimmed">{translate('notFoundMessage')}</Text>
@@ -109,7 +111,7 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
 
   if (recipe.createdBy !== session.user?.id) {
     return (
-      <Center h="100vh">
+      <Center h="100vh" data-testid="recipe-edit-unauthorized">
         <Stack align="center" gap="md">
           <Title order={3}>{translate('notAuthorizedTitle')}</Title>
           <Text c="dimmed">{translate('notAuthorizedMessage')}</Text>

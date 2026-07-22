@@ -15,7 +15,7 @@ export const RecipeNotFound = ({
   const translate = useTranslations('recipeDetail');
 
   return (
-    <Center h="60vh">
+    <Center h="60vh" data-testid="recipe-not-found">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -36,6 +36,7 @@ export const RecipeNotFound = ({
             c="pink"
             fw={600}
             td="underline"
+            data-testid="recipe-not-found-link"
           >
             {translate('backToRecipes')}
           </Text>

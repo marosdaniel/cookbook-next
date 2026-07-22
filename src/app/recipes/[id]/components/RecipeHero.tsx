@@ -34,15 +34,19 @@ export const RecipeHero = ({ recipe, isOwner }: Readonly<RecipeHeroProps>) => {
   const editHref = `${PUBLIC_ROUTES.RECIPES}/${recipe.id}/edit` as Route;
 
   return (
-    <Box className={classes.hero}>
+    <Box className={classes.hero} data-testid="recipe-hero">
       {recipe.imgSrc ? (
         <Image
           src={recipe.imgSrc}
           alt={recipe.title}
           className={classes.heroImage}
+          data-testid="recipe-hero-image"
         />
       ) : (
-        <Box className={classes.heroPlaceholder}>
+        <Box
+          className={classes.heroPlaceholder}
+          data-testid="recipe-hero-placeholder"
+        >
           <IconChefHat size={80} color="var(--mantine-color-pink-4)" />
         </Box>
       )}
@@ -67,6 +71,7 @@ export const RecipeHero = ({ recipe, isOwner }: Readonly<RecipeHeroProps>) => {
               whileHover={{ y: -1 }}
               whileTap={{ scale: 0.92 }}
               transition={MOTION_TRANSITION.interactive}
+              data-testid="recipe-hero-edit-action"
             >
               <ActionIcon
                 component={Link}
@@ -89,12 +94,20 @@ export const RecipeHero = ({ recipe, isOwner }: Readonly<RecipeHeroProps>) => {
         animate={{ opacity: 1, y: 0 }}
         transition={MOTION_TRANSITION.slow}
       >
-        <Title order={1} className={classes.heroTitle}>
+        <Title
+          order={1}
+          className={classes.heroTitle}
+          data-testid="recipe-hero-title"
+        >
           {recipe.title}
         </Title>
 
         {recipe.description && (
-          <Text className={classes.heroDescription} mt={6}>
+          <Text
+            className={classes.heroDescription}
+            mt={6}
+            data-testid="recipe-hero-description"
+          >
             {recipe.description}
           </Text>
         )}

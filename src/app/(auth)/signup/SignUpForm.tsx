@@ -107,23 +107,29 @@ const SignUpForm: FC = () => {
   const isSubmitDisabled = isFormSubmitDisabled(form, loading, isLoggingIn);
 
   return (
-    <Container maw={520} my={40} id="sign-up-page">
-      <Title ta="center" c="var(--mantine-color-gray-8)">
+    <Container maw={520} my={40} id="sign-up-page" data-testid="sign-up-page">
+      <Title
+        ta="center"
+        c="var(--mantine-color-gray-8)"
+        data-testid="sign-up-title"
+      >
         {translate('auth.createAccount')}
       </Title>
       <Group mt={5} justify="center" align="center">
         <Text c="dimmed" size="sm" ta="center">
           {translate('auth.alreadyHaveAnAccount')}
         </Text>
-        <Button
-          variant="transparent"
-          size="sm"
-          component={Link}
-          href={AUTH_ROUTES.LOGIN}
-          data-testid="login-link"
-        >
-          {translate('auth.login')}
-        </Button>
+        <div data-testid="sign-up-login-link">
+          <Button
+            variant="transparent"
+            size="sm"
+            component={Link}
+            href={AUTH_ROUTES.LOGIN}
+            aria-label="Login"
+          >
+            {translate('auth.login')}
+          </Button>
+        </div>
       </Group>
 
       <Paper
@@ -134,6 +140,7 @@ const SignUpForm: FC = () => {
         mt={30}
         radius="md"
         onSubmit={form.onSubmit(handleSignUp)}
+        data-testid="sign-up-form"
       >
         <TextInput
           required
@@ -141,6 +148,7 @@ const SignUpForm: FC = () => {
           placeholder={translate('user.firstName')}
           label={translate('user.firstName')}
           key={form.key('firstName')}
+          data-testid="sign-up-first-name-input"
           {...form.getInputProps('firstName')}
         />
         <TextInput
@@ -150,6 +158,7 @@ const SignUpForm: FC = () => {
           mt="md"
           label={translate('user.lastName')}
           key={form.key('lastName')}
+          data-testid="sign-up-last-name-input"
           {...form.getInputProps('lastName')}
         />
         <TextInput
@@ -159,6 +168,7 @@ const SignUpForm: FC = () => {
           mt="md"
           label={translate('user.userName')}
           key={form.key('userName')}
+          data-testid="sign-up-user-name-input"
           {...form.getInputProps('userName')}
         />
         <TextInput
@@ -168,6 +178,7 @@ const SignUpForm: FC = () => {
           mt="md"
           id="email"
           key={form.key('email')}
+          data-testid="sign-up-email-input"
           {...form.getInputProps('email')}
         />
         <PasswordInput
@@ -177,6 +188,7 @@ const SignUpForm: FC = () => {
           id="password"
           label={translate('user.password')}
           key={form.key('password')}
+          data-testid="sign-up-password-input"
           {...form.getInputProps('password')}
         />
         <PasswordInput
@@ -186,21 +198,22 @@ const SignUpForm: FC = () => {
           id="confirm-password"
           label={translate('user.confirmPassword')}
           key={form.key('confirmPassword')}
+          data-testid="sign-up-confirm-password-input"
           {...form.getInputProps('confirmPassword')}
         />
 
         <Checkbox
-          data-testid="privacy-accepted"
           size="md"
           label={<PrivacyPolicyLink />}
           mt="xl"
           key={form.key('privacyAccepted')}
+          data-testid="sign-up-privacy-checkbox"
           {...form.getInputProps('privacyAccepted', { type: 'checkbox' })}
         />
 
         <Button
           id="submit-button"
-          data-testid="submit-button"
+          data-testid="sign-up-submit-button"
           fullWidth
           mt="xl"
           type="submit"
