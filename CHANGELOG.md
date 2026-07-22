@@ -1,3 +1,10 @@
+## [2.51.2](https://github.com/marosdaniel/cookbook-next/compare/v2.51.1...v2.51.2) (2026-07-22)
+
+
+### Bug Fixes
+
+* **deps:** update fast-uri to version 4.1.1 in package.json and pnpm-lock.yaml ([ef3e240](https://github.com/marosdaniel/cookbook-next/commit/ef3e240ec9466da10cb335022b131cdbc17a00b4))
+
 ## [2.51.1](https://github.com/marosdaniel/cookbook-next/compare/v2.51.0...v2.51.1) (2026-07-22)
 
 
