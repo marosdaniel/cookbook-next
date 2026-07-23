@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import nextDynamic from 'next/dynamic';
 import { connection } from 'next/server';
 import { getLocaleMessages } from '@/lib/locale/locale';
+import { getSiteUrl } from '@/lib/seo/site';
 import { ServerProviders } from '@/providers/server';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
@@ -19,22 +20,6 @@ const ClientProviders = nextDynamic(
     ssr: true,
   },
 );
-
-const getSiteUrl = () => {
-  const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-
-  if (configuredSiteUrl) {
-    return configuredSiteUrl;
-  }
-
-  const vercelProductionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
-
-  if (vercelProductionUrl) {
-    return `https://${vercelProductionUrl}`;
-  }
-
-  return 'http://localhost:3000';
-};
 
 export const viewport: Viewport = {
   themeColor: [
