@@ -204,8 +204,11 @@ describe('getAuthMetadata', () => {
       video: {
         '@type': 'VideoObject',
         name: 'Tomato Pasta',
+        description: 'A quick pasta recipe',
         contentUrl: 'https://www.youtube.com/watch?v=abc123',
         embedUrl: 'https://www.youtube.com/embed/abc123',
+        thumbnailUrl: 'https://example.com/social-pasta.jpg',
+        uploadDate: '2026-01-10T12:00:00.000Z',
       },
     });
   });

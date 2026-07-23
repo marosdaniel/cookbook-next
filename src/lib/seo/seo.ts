@@ -145,6 +145,7 @@ export const buildRecipeJsonLd = (
   const servingUnit = recipe.servingUnit?.label?.trim();
   const recipeCategory = recipe.category?.label?.trim();
   const recipeCuisine = recipe.cuisine?.label?.trim();
+  const recipeImage = recipe.socialImage ?? recipe.imgSrc ?? undefined;
 
   const video = (() => {
     const youtubeLink = recipe.youtubeLink?.trim();
@@ -167,8 +168,13 @@ export const buildRecipeJsonLd = (
       return {
         '@type': 'VideoObject' as const,
         name: recipe.title,
+        description: recipe.description ?? undefined,
         contentUrl: youtubeLink,
         embedUrl: `https://www.youtube.com/embed/${encodeURIComponent(videoId)}`,
+        ...(recipeImage ? { thumbnailUrl: recipeImage } : {}),
+        ...(dates?.createdAt
+          ? { uploadDate: dates.createdAt.toISOString() }
+          : {}),
       };
     } catch {
       return undefined;
@@ -180,7 +186,7 @@ export const buildRecipeJsonLd = (
     '@type': 'Recipe',
     name: recipe.title,
     description: recipe.description ?? undefined,
-    image: recipe.socialImage ?? recipe.imgSrc ?? undefined,
+    image: recipeImage,
     url,
     datePublished: dates?.createdAt?.toISOString(),
     dateModified: dates?.updatedAt?.toISOString(),
