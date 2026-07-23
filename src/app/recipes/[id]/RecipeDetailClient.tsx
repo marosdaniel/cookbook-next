@@ -14,7 +14,6 @@ import { useTranslations } from 'next-intl';
 import { BackTo } from '@/components/buttons/BackTo';
 import RecipeRating from '@/components/Recipe/Rating';
 import { MOTION_TRANSITION } from '@/lib/motion/transitions';
-import { buildRecipeJsonLd } from '@/lib/seo/seo';
 import { PUBLIC_ROUTES } from '../../../types/routes';
 import { RecipeHero } from './components/RecipeHero';
 import { RecipeIngredients } from './components/RecipeIngredients';
@@ -26,6 +25,7 @@ import type { RecipeDetailClientProps } from './types';
 
 const RecipeDetailClient = ({
   recipeId,
+  initialRecipe,
 }: Readonly<RecipeDetailClientProps>) => {
   const translate = useTranslations('recipeDetail');
 
@@ -42,7 +42,7 @@ const RecipeDetailClient = ({
     youtubeId,
     isOwner,
     sortedSteps,
-  } = useRecipeDetail(recipeId);
+  } = useRecipeDetail(recipeId, initialRecipe);
 
   if (loading) {
     return (
@@ -56,11 +56,8 @@ const RecipeDetailClient = ({
     return <RecipeNotFound errorMessage={error?.message} />;
   }
 
-  const recipeJsonLd = buildRecipeJsonLd(recipe);
-
   return (
     <Container size="xl" py="xl" data-testid="recipe-detail-root">
-      <script type="application/ld+json">{JSON.stringify(recipeJsonLd)}</script>
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}

@@ -15,6 +15,7 @@ export interface RecipeDetailData {
 
 export interface RecipeDetailClientProps {
   recipeId: string;
+  initialRecipe?: Recipe;
 }
 
 export interface RecipeNotFoundProps {

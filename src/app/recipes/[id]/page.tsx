@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
-import { getMetadata } from '@/lib/seo/seo';
+import { buildRecipeJsonLd, getMetadata } from '@/lib/seo/seo';
 import { RecipeService } from '@/lib/services/RecipeService';
+import type { RecipeDetail } from '@/types/recipe';
 import { PUBLIC_ROUTES } from '@/types/routes';
 import RecipeDetailClient from './RecipeDetailClient';
 
@@ -11,18 +12,58 @@ interface RecipeDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
-interface RecipeSeoFields {
-  id: string;
-  slug: string | null;
-  title: string;
-  description: string | null;
-  seoTitle: string | null;
-  seoDescription: string | null;
-  socialImage: string | null;
-  imgSrc: string | null;
-}
-
 const SEO_DESCRIPTION_MAX_LENGTH = 160;
+
+type RecipeLookupResult = Omit<RecipeDetail, 'preparationSteps'> & {
+  createdAt?: Date;
+  updatedAt?: Date;
+  preparationSteps: Array<{
+    id?: string;
+    localId?: string;
+    description: string;
+    order: number;
+  }>;
+};
+
+const toInitialRecipe = (recipe: RecipeLookupResult): RecipeDetail => ({
+  id: recipe.id,
+  slug: recipe.slug,
+  title: recipe.title,
+  description: recipe.description,
+  seoTitle: recipe.seoTitle,
+  seoDescription: recipe.seoDescription,
+  socialImage: recipe.socialImage,
+  imgSrc: recipe.imgSrc,
+  cookingTime: recipe.cookingTime,
+  servings: recipe.servings,
+  youtubeLink: recipe.youtubeLink,
+  createdBy: recipe.createdBy,
+  category: recipe.category,
+  difficultyLevel: recipe.difficultyLevel,
+  labels: recipe.labels,
+  ingredients: recipe.ingredients,
+  preparationSteps: recipe.preparationSteps.map((step) => ({
+    localId: step.localId ?? step.id ?? `${step.order}`,
+    description: step.description,
+    order: step.order,
+  })),
+  prepTimeMinutes: recipe.prepTimeMinutes,
+  cookTimeMinutes: recipe.cookTimeMinutes,
+  restTimeMinutes: recipe.restTimeMinutes,
+  totalTimeMinutes: recipe.totalTimeMinutes,
+  servingUnit: recipe.servingUnit,
+  cuisine: recipe.cuisine,
+  dietaryFlags: recipe.dietaryFlags,
+  allergens: recipe.allergens,
+  equipment: recipe.equipment,
+  costLevel: recipe.costLevel,
+  tips: recipe.tips,
+  substitutions: recipe.substitutions,
+  averageRating: 0,
+  ratingsCount: 0,
+  userRating: null,
+  isFavorite: false,
+});
 
 export async function generateMetadata({
   params,
@@ -30,9 +71,11 @@ export async function generateMetadata({
   const locale = await getLocaleFromCookies();
   const { id } = await params;
 
-  let recipe: RecipeSeoFields;
+  let recipe: RecipeLookupResult;
   try {
-    recipe = (await RecipeService.getRecipeBySlugOrId(id)) as RecipeSeoFields;
+    recipe = (await RecipeService.getRecipeBySlugOrId(
+      id,
+    )) as RecipeLookupResult;
   } catch {
     return {
       title: 'Recipe not found',
@@ -89,15 +132,31 @@ export default async function RecipeDetailPage({
   // links keep working because getRecipeBySlugOrId resolves both.
   const recipe = (await RecipeService.getRecipeBySlugOrId(id).catch(
     () => null,
-  )) as RecipeSeoFields | null;
+  )) as RecipeLookupResult | null;
 
   if (recipe?.slug && recipe.slug !== id) {
     redirect(`${PUBLIC_ROUTES.RECIPES}/${recipe.slug}`);
   }
 
   return (
-    <Suspense>
-      <RecipeDetailClient recipeId={id} />
-    </Suspense>
+    <>
+      {recipe && (
+        <script
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be emitted as script text.
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              buildRecipeJsonLd(toInitialRecipe(recipe)),
+            ).replaceAll('<', String.raw`\u003c`),
+          }}
+        />
+      )}
+      <Suspense>
+        <RecipeDetailClient
+          recipeId={id}
+          initialRecipe={recipe ? toInitialRecipe(recipe) : undefined}
+        />
+      </Suspense>
+    </>
   );
 }

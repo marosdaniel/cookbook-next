@@ -23,6 +23,11 @@ vi.mock('@/lib/locale/locale.server', () => ({
 
 vi.mock('@/lib/seo/seo', () => ({
   getMetadata: () => mocks.getMetadata(),
+  buildRecipeJsonLd: (recipe: { title: string }) => ({
+    '@context': 'https://schema.org',
+    '@type': 'Recipe',
+    name: recipe.title,
+  }),
 }));
 
 vi.mock('@/lib/services/RecipeService', () => ({
@@ -77,6 +82,7 @@ describe('RecipeDetailPage', () => {
     mocks.getRecipeBySlugOrId.mockResolvedValue({
       slug: 'recipe-1',
       id: 'recipe-1',
+      preparationSteps: [],
     });
 
     const result = await RecipeDetailPage({
@@ -84,5 +90,31 @@ describe('RecipeDetailPage', () => {
     } as never);
 
     expect(result).toBeTruthy();
+  });
+
+  it('renders server recipe data as initial client data and JSON-LD', async () => {
+    mocks.getRecipeBySlugOrId.mockResolvedValue({
+      id: 'recipe-1',
+      slug: 'recipe-1',
+      title: 'Pasta Primavera',
+      description: 'Fresh pasta',
+      ingredients: [],
+      preparationSteps: [{ id: 'step-1', description: 'Boil pasta', order: 1 }],
+      category: { key: 'main', label: 'Main' },
+      difficultyLevel: { key: 'easy', label: 'Easy' },
+      labels: [],
+      cookingTime: 20,
+      servings: 2,
+      createdBy: 'user-1',
+    });
+
+    const result = await RecipeDetailPage({
+      params: Promise.resolve({ id: 'recipe-1' }),
+    } as never);
+    const html = JSON.stringify(result);
+
+    expect(html).toContain('application/ld+json');
+    expect(html).toContain('Pasta Primavera');
+    expect(html).toContain('initialRecipe');
   });
 });
