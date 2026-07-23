@@ -151,6 +151,7 @@ describe('getAuthMetadata', () => {
       difficultyLevel: { key: 'easy', label: 'Easy' },
       servingUnit: { key: 'servings', label: 'servings' },
       cuisine: { key: 'italian', label: 'Italian' },
+      youtubeLink: 'https://www.youtube.com/watch?v=abc123',
       labels: [{ key: 'vegetarian', label: 'Vegetarian' }],
       ingredients: [{ localId: '1', name: 'Tomato', quantity: 2, unit: 'pcs' }],
       preparationSteps: [
@@ -200,6 +201,12 @@ describe('getAuthMetadata', () => {
         ratingValue: 4.5,
         ratingCount: 10,
       },
+      video: {
+        '@type': 'VideoObject',
+        name: 'Tomato Pasta',
+        contentUrl: 'https://www.youtube.com/watch?v=abc123',
+        embedUrl: 'https://www.youtube.com/embed/abc123',
+      },
     });
   });
 
@@ -220,5 +227,25 @@ describe('getAuthMetadata', () => {
     });
 
     expect(result.aggregateRating).toBeUndefined();
+  });
+
+  it('omits video schema for invalid or non-YouTube links', () => {
+    const result = buildRecipeJsonLd({
+      id: 'recipe-without-video',
+      title: 'Recipe without video',
+      cookingTime: 0,
+      servings: 1,
+      createdBy: 'user-1',
+      category: { key: 'other', label: 'Other' },
+      difficultyLevel: { key: 'easy', label: 'Easy' },
+      youtubeLink: 'https://example.com/video',
+      ingredients: [],
+      preparationSteps: [],
+      labels: [],
+      averageRating: 0,
+      ratingsCount: 0,
+    } as RecipeDetail);
+
+    expect(result.video).toBeUndefined();
   });
 });

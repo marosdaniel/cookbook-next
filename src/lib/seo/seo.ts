@@ -146,6 +146,35 @@ export const buildRecipeJsonLd = (
   const recipeCategory = recipe.category?.label?.trim();
   const recipeCuisine = recipe.cuisine?.label?.trim();
 
+  const video = (() => {
+    const youtubeLink = recipe.youtubeLink?.trim();
+    if (!youtubeLink) return undefined;
+
+    try {
+      const parsedUrl = new URL(youtubeLink);
+      const hostname = parsedUrl.hostname.toLowerCase();
+      const isYoutubeHost =
+        hostname === 'youtu.be' ||
+        hostname === 'youtube.com' ||
+        hostname.endsWith('.youtube.com');
+      const videoId =
+        hostname === 'youtu.be'
+          ? parsedUrl.pathname.slice(1)
+          : parsedUrl.searchParams.get('v');
+
+      if (!isYoutubeHost || !videoId) return undefined;
+
+      return {
+        '@type': 'VideoObject' as const,
+        name: recipe.title,
+        contentUrl: youtubeLink,
+        embedUrl: `https://www.youtube.com/embed/${encodeURIComponent(videoId)}`,
+      };
+    } catch {
+      return undefined;
+    }
+  })();
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Recipe',
@@ -167,5 +196,6 @@ export const buildRecipeJsonLd = (
     recipeInstructions: instructions,
     keywords: recipe.labels?.map((label) => label.label).join(', '),
     aggregateRating,
+    video,
   };
 };
