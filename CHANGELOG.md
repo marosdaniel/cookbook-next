@@ -1,3 +1,10 @@
+# [2.58.0](https://github.com/marosdaniel/cookbook-next/compare/v2.57.1...v2.58.0) (2026-07-23)
+
+
+### Features
+
+* add public site URL configuration for SEO metadata and improve site URL handling ([a228218](https://github.com/marosdaniel/cookbook-next/commit/a228218752dec2a39e6c5c6ec19bc0138349a992))
+
 ## [2.57.1](https://github.com/marosdaniel/cookbook-next/compare/v2.57.0...v2.57.1) (2026-07-23)
 
 
