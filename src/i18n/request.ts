@@ -1,11 +1,13 @@
 import { getRequestConfig } from 'next-intl/server';
+import { getLocaleMessages } from '@/lib/locale/locale';
+import { getLocaleFromCookies } from '@/lib/locale/locale.server';
 
 export default getRequestConfig(async () => {
-  // Default messages for server-side rendering
-  const messages = (await import(`../locales/en-gb.json`)).default;
+  const locale = await getLocaleFromCookies();
+  const messages = await getLocaleMessages(locale);
 
   return {
-    locale: 'en-gb',
+    locale,
     messages,
     timeZone: 'Europe/Budapest',
   };
