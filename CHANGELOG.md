@@ -1,3 +1,10 @@
+# [2.61.0](https://github.com/marosdaniel/cookbook-next/compare/v2.60.0...v2.61.0) (2026-07-23)
+
+
+### Features
+
+* add video schema support to recipe JSON-LD generation and handle invalid links ([0e032ee](https://github.com/marosdaniel/cookbook-next/commit/0e032ee39e5f7e9b5128136372414a6714cedd34))
+
 # [2.60.0](https://github.com/marosdaniel/cookbook-next/compare/v2.59.0...v2.60.0) (2026-07-23)
 
 
