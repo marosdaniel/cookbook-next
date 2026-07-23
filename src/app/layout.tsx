@@ -20,6 +20,22 @@ const ClientProviders = nextDynamic(
   },
 );
 
+const getSiteUrl = () => {
+  const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+  if (configuredSiteUrl) {
+    return configuredSiteUrl;
+  }
+
+  const vercelProductionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+
+  if (vercelProductionUrl) {
+    return `https://${vercelProductionUrl}`;
+  }
+
+  return 'http://localhost:3000';
+};
+
 export const viewport: Viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#FF00A1' },
@@ -41,7 +57,7 @@ export async function generateMetadata(): Promise<Metadata> {
       : 'Share your recipes';
 
   return {
-    metadataBase: new URL(process.env.NEXTAUTH_URL ?? 'http://localhost:3000'),
+    metadataBase: new URL(getSiteUrl()),
     title: appTitle,
     description: appDescription,
     manifest: '/site.webmanifest',

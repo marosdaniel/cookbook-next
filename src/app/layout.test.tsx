@@ -80,5 +80,16 @@ describe('RootLayout', () => {
     expect(mockGetLocaleMessages).toHaveBeenCalledWith('hu');
     expect(metadata.title).toBe('App hu');
     expect(metadata.description).toBe('Description');
+    expect(metadata.metadataBase?.toString()).toBe('http://localhost:3000/');
+  });
+
+  it('uses the configured public site URL for metadata', async () => {
+    vi.stubEnv('NEXT_PUBLIC_SITE_URL', 'https://cookbook.example.com');
+
+    const metadata = await generateMetadata();
+
+    expect(metadata.metadataBase?.toString()).toBe(
+      'https://cookbook.example.com/',
+    );
   });
 });

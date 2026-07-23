@@ -122,6 +122,9 @@ DATABASE_URL=postgresql://username:password@db-host:5432/cookbook
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your-secret-key-here
 
+# Public canonical URL for SEO metadata and Open Graph URLs
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
 # Optional email delivery (used by password reset / welcome emails)
 EMAIL_HOST=smtp.example.com
 EMAIL_PORT=587
