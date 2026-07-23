@@ -23,12 +23,8 @@ export type LocaleMessages = {
   [key: string]: string | string[] | LocaleMessages;
 };
 
-export type AllMessages = {
-  [locale: string]: LocaleMessages;
-};
-
 export type ClientProvidersProps = PropsWithChildren & {
-  messages: AllMessages;
+  messages: LocaleMessages;
   locale: string;
 };
 

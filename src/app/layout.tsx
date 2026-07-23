@@ -105,25 +105,14 @@ export default async function RootLayout(props: Readonly<PropsWithChildren>) {
   await connection();
   const locale = await getLocaleFromCookies();
 
-  // Load all language messages for SSR
-  const [enMessages, huMessages, deMessages] = await Promise.all([
-    getLocaleMessages('en-gb'),
-    getLocaleMessages('hu'),
-    getLocaleMessages('de'),
-  ]);
-
-  const allMessages = {
-    'en-gb': enMessages,
-    hu: huMessages,
-    de: deMessages,
-  };
+  const messages = await getLocaleMessages(locale);
 
   return (
     <html lang={locale}>
       <body suppressHydrationWarning>
         <SpeedInsights />
         <ServerProviders>
-          <ClientProviders messages={allMessages} locale={locale}>
+          <ClientProviders messages={messages} locale={locale}>
             <Shell>{props.children}</Shell>
           </ClientProviders>
         </ServerProviders>

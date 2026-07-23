@@ -70,6 +70,8 @@ describe('RootLayout', () => {
     expect(screen.getByTestId('client-providers')).toBeInTheDocument();
     expect(screen.getByTestId('shell')).toBeInTheDocument();
     expect(screen.getByText('content')).toBeInTheDocument();
+    expect(mockGetLocaleMessages).toHaveBeenCalledTimes(1);
+    expect(mockGetLocaleMessages).toHaveBeenCalledWith('hu');
   });
 
   it('builds metadata from locale messages', async () => {

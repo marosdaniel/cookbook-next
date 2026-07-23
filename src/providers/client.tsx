@@ -27,12 +27,10 @@ const ClientProvidersInner: FC<ClientProvidersProps> = ({
     }
   }, [locale, dispatch]);
 
-  const currentMessages = messages[locale] ?? messages['en-gb'];
-
   return (
     <NextIntlClientProvider
       locale={locale}
-      messages={currentMessages}
+      messages={messages}
       timeZone="Europe/Budapest"
     >
       <MantineProviderWrapper>
