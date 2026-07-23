@@ -140,6 +140,7 @@ describe('getAuthMetadata', () => {
       title: 'Tomato Pasta',
       description: 'A quick pasta recipe',
       imgSrc: 'https://example.com/pasta.jpg',
+      socialImage: 'https://example.com/social-pasta.jpg',
       cookingTime: 20,
       servings: 2,
       createdBy: 'user-1',
@@ -157,14 +158,18 @@ describe('getAuthMetadata', () => {
       ratingsCount: 10,
     } as RecipeDetail;
 
-    const result = buildRecipeJsonLd(recipe);
+    const result = buildRecipeJsonLd(
+      recipe,
+      'https://cookbook.example.com/recipes/tomato-pasta',
+    );
 
     expect(result).toMatchObject({
       '@context': 'https://schema.org',
       '@type': 'Recipe',
       name: 'Tomato Pasta',
       description: 'A quick pasta recipe',
-      image: 'https://example.com/pasta.jpg',
+      image: 'https://example.com/social-pasta.jpg',
+      url: 'https://cookbook.example.com/recipes/tomato-pasta',
       recipeYield: '2',
       totalTime: 'PT20M',
       prepTime: 'PT5M',

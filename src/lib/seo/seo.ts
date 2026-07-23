@@ -91,7 +91,7 @@ export const getAuthMetadata = async (
   });
 };
 
-export const buildRecipeJsonLd = (recipe: RecipeDetail) => {
+export const buildRecipeJsonLd = (recipe: RecipeDetail, url?: string) => {
   const ingredientList = recipe.ingredients
     .map((ingredient) => {
       const quantity = Number(ingredient.quantity);
@@ -129,7 +129,8 @@ export const buildRecipeJsonLd = (recipe: RecipeDetail) => {
     '@type': 'Recipe',
     name: recipe.title,
     description: recipe.description ?? undefined,
-    image: recipe.imgSrc ?? undefined,
+    image: recipe.socialImage ?? recipe.imgSrc ?? undefined,
+    url,
     recipeYield: String(recipe.servings ?? 1),
     totalTime: formatDuration(totalTimeMinutes),
     prepTime: formatDuration(prepTimeMinutes),

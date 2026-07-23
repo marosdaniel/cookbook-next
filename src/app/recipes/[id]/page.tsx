@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from 'next/navigation';
 import { cache, Suspense } from 'react';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
 import { buildRecipeJsonLd, getMetadata } from '@/lib/seo/seo';
+import { getSiteUrl } from '@/lib/seo/site';
 import { RecipeService } from '@/lib/services/RecipeService';
 import type { RecipeDetail } from '@/types/recipe';
 import { PUBLIC_ROUTES } from '@/types/routes';
@@ -165,7 +166,10 @@ export default async function RecipeDetailPage({
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be emitted as script text.
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(
-            buildRecipeJsonLd(toInitialRecipe(recipe)),
+            buildRecipeJsonLd(
+              toInitialRecipe(recipe),
+              `${getSiteUrl()}${PUBLIC_ROUTES.RECIPES}/${recipe.slug ?? recipe.id}`,
+            ),
           ).replaceAll('<', String.raw`\u003c`),
         }}
       />
