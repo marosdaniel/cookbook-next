@@ -14,25 +14,41 @@ vi.mock('next/server', () => ({
 
 describe('locale.server', () => {
   describe('getLocaleFromCookies', () => {
-    it('should return "en-gb" by default when no cookie is set', async () => {
-      const { cookies } = await import('next/headers');
-      vi.mocked(cookies).mockResolvedValue({
-        get: vi.fn().mockReturnValue(undefined),
-      } as unknown as ReadonlyRequestCookies);
+    it.each([
+      {
+        name: 'should return "en-gb" by default when no cookie is set',
+        cookieValue: undefined,
+        expected: 'en-gb',
+      },
+      {
+        name: 'should return locale from cookie when present',
+        cookieValue: 'hu',
+        expected: 'hu',
+      },
+      {
+        name: 'should normalize underscored locale values from cookies',
+        cookieValue: 'en_US',
+        expected: 'en-gb',
+      },
+      {
+        name: 'should return "en-gb" when cookie value is empty string',
+        cookieValue: '',
+        expected: 'en-gb',
+      },
+    ])(
+      'returns the expected locale for $name',
+      async ({ cookieValue, expected }) => {
+        const { cookies } = await import('next/headers');
+        vi.mocked(cookies).mockResolvedValue({
+          get: vi
+            .fn()
+            .mockReturnValue(cookieValue ? { value: cookieValue } : undefined),
+        } as unknown as ReadonlyRequestCookies);
 
-      const locale = await getLocaleFromCookies();
-      expect(locale).toBe('en-gb');
-    });
-
-    it('should return locale from cookie when present', async () => {
-      const { cookies } = await import('next/headers');
-      vi.mocked(cookies).mockResolvedValue({
-        get: vi.fn().mockReturnValue({ value: 'hu' }),
-      } as unknown as ReadonlyRequestCookies);
-
-      const locale = await getLocaleFromCookies();
-      expect(locale).toBe('hu');
-    });
+        const locale = await getLocaleFromCookies();
+        expect(locale).toBe(expected);
+      },
+    );
 
     it('should use correct cookie key', async () => {
       const { cookies } = await import('next/headers');
@@ -57,7 +73,7 @@ describe('locale.server', () => {
 
     it('should cache the result using React cache', async () => {
       const { cookies } = await import('next/headers');
-      const getMock = vi.fn().mockReturnValue({ value: 'fr' });
+      const getMock = vi.fn().mockReturnValue({ value: 'de' });
       vi.mocked(cookies).mockResolvedValue({
         get: getMock,
       } as unknown as ReadonlyRequestCookies);
@@ -66,8 +82,8 @@ describe('locale.server', () => {
       const locale1 = await getLocaleFromCookies();
       const locale2 = await getLocaleFromCookies();
 
-      expect(locale1).toBe('fr');
-      expect(locale2).toBe('fr');
+      expect(locale1).toBe('de');
+      expect(locale2).toBe('de');
       // Due to React cache, the function should be memoized
       // Note: In actual Next.js runtime, cache() ensures single execution
     });

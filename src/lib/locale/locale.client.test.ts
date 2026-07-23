@@ -72,17 +72,28 @@ describe('locale.client', () => {
       setCookie(`${LOCALE_STORAGE_KEY}=de; other=value`);
       expect(getStoredLocale()).toBe('de');
     });
+
+    it('should normalize unsupported locale values from storage', () => {
+      setCookie(`${LOCALE_STORAGE_KEY}=en_US`);
+      expect(getStoredLocale()).toBe('en-gb');
+    });
   });
 
   describe('setStoredLocale', () => {
     it('should set locale in localStorage', () => {
-      setStoredLocale('fr');
-      expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe('fr');
+      setStoredLocale('de');
+      expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe('de');
     });
 
     it('should set locale in cookie', () => {
-      setStoredLocale('fr');
-      expect(document.cookie).toContain(`${LOCALE_STORAGE_KEY}=fr`);
+      setStoredLocale('de');
+      expect(document.cookie).toContain(`${LOCALE_STORAGE_KEY}=de`);
+    });
+
+    it('should normalize locale values before storing them', () => {
+      setStoredLocale('en_US');
+      expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe('en-gb');
+      expect(document.cookie).toContain(`${LOCALE_STORAGE_KEY}=en-gb`);
     });
 
     it('should set cookie with path=/', () => {

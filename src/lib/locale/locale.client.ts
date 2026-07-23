@@ -1,8 +1,6 @@
 'use client';
 
-import { LOCALE_STORAGE_KEY } from './locale';
-
-const DEFAULT_LOCALE = 'en-gb';
+import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY, normalizeLocale } from './locale';
 
 const getCookieLocale = (): string | null => {
   try {
@@ -28,24 +26,26 @@ export const getStoredLocale = (): string => {
       globalThis.localStorage.getItem(LOCALE_STORAGE_KEY);
 
     if (localStorageLocale) {
-      return localStorageLocale;
+      return normalizeLocale(localStorageLocale);
     }
 
-    return getCookieLocale() || DEFAULT_LOCALE;
+    return normalizeLocale(getCookieLocale()) || DEFAULT_LOCALE;
   } catch {
-    return getCookieLocale() || DEFAULT_LOCALE;
+    return normalizeLocale(getCookieLocale()) || DEFAULT_LOCALE;
   }
 };
 
 export const setStoredLocale = (locale: string): void => {
   if (globalThis.window === undefined) return;
 
+  const normalizedLocale = normalizeLocale(locale);
+
   try {
-    globalThis.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+    globalThis.localStorage.setItem(LOCALE_STORAGE_KEY, normalizedLocale);
 
     const maxAge = 60 * 60 * 24 * 365;
     // biome-ignore lint/suspicious/noDocumentCookie: We need to set the cookie manually for i18n
-    document.cookie = `${LOCALE_STORAGE_KEY}=${locale}; path=/; max-age=${maxAge}; samesite=lax`;
+    document.cookie = `${LOCALE_STORAGE_KEY}=${normalizedLocale}; path=/; max-age=${maxAge}; samesite=lax`;
   } catch (error) {
     console.error('[setStoredLocale] Error setting locale:', error);
   }
