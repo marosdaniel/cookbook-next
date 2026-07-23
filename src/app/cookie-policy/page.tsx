@@ -12,6 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
     descriptionKey: 'cookiePolicyDescription',
     fallbackTitle: 'Cookie Policy',
     fallbackDescription: 'Learn about how Cookbook uses cookies.',
+    canonicalPath: '/cookie-policy',
   });
 }
 

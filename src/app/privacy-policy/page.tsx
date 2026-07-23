@@ -12,6 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
     descriptionKey: 'privacyPolicyDescription',
     fallbackTitle: 'Privacy Policy',
     fallbackDescription: 'Learn about how Cookbook protects your privacy.',
+    canonicalPath: '/privacy-policy',
   });
 }
 

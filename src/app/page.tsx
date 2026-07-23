@@ -12,6 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
     fallbackDescription: 'Discover and share recipes',
     keywordsKey: 'homeKeywords',
     fallbackKeywords: 'recipes, cooking, food, meals, cookbook',
+    canonicalPath: '/',
   });
 }
 

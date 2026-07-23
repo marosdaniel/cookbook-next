@@ -19,6 +19,7 @@ export const getMetadata = async (
     fallbackTitle: string;
     fallbackDescription: string;
     titleTemplate?: string; // Optional template like "%s | Cookbook"
+    canonicalPath?: string;
     keywordsKey?: string;
     fallbackKeywords?: string;
     robots?: {
@@ -56,10 +57,14 @@ export const getMetadata = async (
     description,
     ...(keywords === undefined ? {} : { keywords }),
     ...(opts.robots === undefined ? {} : { robots: opts.robots }),
+    ...(opts.canonicalPath === undefined
+      ? {}
+      : { alternates: { canonical: opts.canonicalPath } }),
     openGraph: {
       title: finalTitle,
       description,
       type: opts.openGraph?.type ?? 'website',
+      ...(opts.canonicalPath === undefined ? {} : { url: opts.canonicalPath }),
     },
     twitter: {
       card: 'summary',

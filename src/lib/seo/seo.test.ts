@@ -89,6 +89,7 @@ describe('getAuthMetadata', () => {
       titleTemplate: '%s | My Site',
       keywordsKey: 'keywords',
       fallbackKeywords: 'fallback',
+      canonicalPath: '/recipes/custom-title',
       robots: { index: true, follow: false },
       openGraph: { type: 'article' },
     });
@@ -98,11 +99,13 @@ describe('getAuthMetadata', () => {
       description: 'Custom Description',
       keywords: 'one, two',
       robots: { index: true, follow: false },
+      alternates: { canonical: '/recipes/custom-title' },
     });
     expect(result.openGraph).toMatchObject({
       title: 'Custom Title | My Site',
       description: 'Custom Description',
       type: 'article',
+      url: '/recipes/custom-title',
     });
   });
 

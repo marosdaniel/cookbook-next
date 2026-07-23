@@ -13,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
     fallbackDescription: 'Browse all recipes',
     keywordsKey: 'recipesKeywords',
     fallbackKeywords: 'all recipes, browse recipes, cooking, food, cookbook',
+    canonicalPath: '/recipes',
   });
 }
 
