@@ -191,6 +191,23 @@ describe('getAuthMetadata', () => {
         },
       ],
       keywords: 'Vegetarian',
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: 4.5,
+        ratingCount: 10,
+      },
     });
+  });
+
+  it('omits aggregate rating markup when a recipe has no ratings', () => {
+    const result = buildRecipeJsonLd({
+      averageRating: 0,
+      ratingsCount: 0,
+      ingredients: [],
+      preparationSteps: [],
+      labels: [],
+    } as RecipeDetail);
+
+    expect(result.aggregateRating).toBeUndefined();
   });
 });

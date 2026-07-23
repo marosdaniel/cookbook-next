@@ -133,6 +133,15 @@ export const buildRecipeJsonLd = (
     return `PT${minutes}M`;
   };
 
+  const aggregateRating =
+    recipe.ratingsCount > 0 && Number.isFinite(recipe.averageRating)
+      ? {
+          '@type': 'AggregateRating' as const,
+          ratingValue: recipe.averageRating,
+          ratingCount: recipe.ratingsCount,
+        }
+      : undefined;
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Recipe',
@@ -149,5 +158,6 @@ export const buildRecipeJsonLd = (
     recipeIngredient: ingredientList,
     recipeInstructions: instructions,
     keywords: recipe.labels?.map((label) => label.label).join(', '),
+    aggregateRating,
   };
 };
