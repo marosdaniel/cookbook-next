@@ -142,6 +142,10 @@ export const buildRecipeJsonLd = (
         }
       : undefined;
 
+  const servingUnit = recipe.servingUnit?.label?.trim();
+  const recipeCategory = recipe.category?.label?.trim();
+  const recipeCuisine = recipe.cuisine?.label?.trim();
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Recipe',
@@ -151,7 +155,11 @@ export const buildRecipeJsonLd = (
     url,
     datePublished: dates?.createdAt?.toISOString(),
     dateModified: dates?.updatedAt?.toISOString(),
-    recipeYield: String(recipe.servings ?? 1),
+    recipeYield: [String(recipe.servings ?? 1), servingUnit]
+      .filter(Boolean)
+      .join(' '),
+    recipeCategory: recipeCategory || undefined,
+    recipeCuisine: recipeCuisine || undefined,
     totalTime: formatDuration(totalTimeMinutes),
     prepTime: formatDuration(prepTimeMinutes),
     cookTime: formatDuration(cookTimeMinutes),
