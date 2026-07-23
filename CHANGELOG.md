@@ -1,3 +1,16 @@
+# [2.57.0](https://github.com/marosdaniel/cookbook-next/compare/v2.56.0...v2.57.0) (2026-07-23)
+
+
+### Bug Fixes
+
+* remove redundant line-clamp property from title and description styles ([4428869](https://github.com/marosdaniel/cookbook-next/commit/4428869a41744d0dfabc1d3ecd54ccef9ce7e60a))
+
+
+### Features
+
+* enhance recipe detail handling with initial recipe support and JSON-LD integration ([55ad3e8](https://github.com/marosdaniel/cookbook-next/commit/55ad3e8c8cc37bdc123f33d4f6ca6f2d3faba9e5))
+* new favicon ([0f58d67](https://github.com/marosdaniel/cookbook-next/commit/0f58d67fb30d38f80583881be15574629a5adb6f))
+
 # [2.56.0](https://github.com/marosdaniel/cookbook-next/compare/v2.55.0...v2.56.0) (2026-07-23)
 
 
