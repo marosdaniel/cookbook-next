@@ -7,10 +7,15 @@ const mocks = vi.hoisted(() => ({
   getRecipeBySlugOrId: vi.fn(),
   getLocaleFromCookies: vi.fn(),
   getMetadata: vi.fn(),
+  notFound: vi.fn(),
   permanentRedirect: vi.fn(),
 }));
 
 vi.mock('next/navigation', () => ({
+  notFound: () => {
+    mocks.notFound();
+    throw new Error('notFound');
+  },
   permanentRedirect: (url: string) => {
     mocks.permanentRedirect(url);
     throw new Error(`permanentRedirect:${url}`);
@@ -116,5 +121,30 @@ describe('RecipeDetailPage', () => {
     expect(html).toContain('application/ld+json');
     expect(html).toContain('Pasta Primavera');
     expect(html).toContain('initialRecipe');
+  });
+
+  it('uses the Next 404 boundary for a missing recipe', async () => {
+    mocks.getRecipeBySlugOrId.mockRejectedValue({
+      extensions: { code: 'NOT_FOUND' },
+    });
+
+    await expect(
+      RecipeDetailPage({
+        params: Promise.resolve({ id: 'missing' }),
+      } as never),
+    ).rejects.toThrow('notFound');
+
+    expect(mocks.notFound).toHaveBeenCalledOnce();
+  });
+
+  it('rethrows unexpected recipe lookup failures', async () => {
+    const databaseError = new Error('database unavailable');
+    mocks.getRecipeBySlugOrId.mockRejectedValue(databaseError);
+
+    await expect(
+      RecipeDetailPage({
+        params: Promise.resolve({ id: 'recipe-1' }),
+      } as never),
+    ).rejects.toBe(databaseError);
   });
 });

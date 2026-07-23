@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { permanentRedirect } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { cache, Suspense } from 'react';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
 import { buildRecipeJsonLd, getMetadata } from '@/lib/seo/seo';
@@ -15,6 +15,15 @@ interface RecipeDetailPageProps {
 const SEO_DESCRIPTION_MAX_LENGTH = 160;
 
 const getRecipe = cache((id: string) => RecipeService.getRecipeBySlugOrId(id));
+
+const isRecipeNotFoundError = (error: unknown): boolean =>
+  typeof error === 'object' &&
+  error !== null &&
+  'extensions' in error &&
+  typeof error.extensions === 'object' &&
+  error.extensions !== null &&
+  'code' in error.extensions &&
+  error.extensions.code === 'NOT_FOUND';
 
 type RecipeLookupResult = Omit<RecipeDetail, 'preparationSteps'> & {
   createdAt?: Date;
@@ -76,11 +85,15 @@ export async function generateMetadata({
   let recipe: RecipeLookupResult;
   try {
     recipe = (await getRecipe(id)) as RecipeLookupResult;
-  } catch {
-    return {
-      title: 'Recipe not found',
-      robots: { index: false, follow: false },
-    };
+  } catch (error) {
+    if (isRecipeNotFoundError(error)) {
+      return {
+        title: 'Recipe not found',
+        robots: { index: false, follow: false },
+      };
+    }
+
+    throw error;
   }
 
   const fallback = await getMetadata(locale, 'seo', {
@@ -130,9 +143,16 @@ export default async function RecipeDetailPage({
   // Slug-based SEO URLs: if this recipe has a slug and was reached through
   // its raw id, redirect permanently to the canonical slug URL. Old id-based
   // links keep working because getRecipeBySlugOrId resolves both.
-  const recipe = (await getRecipe(id).catch(
-    () => null,
-  )) as RecipeLookupResult | null;
+  let recipe: RecipeLookupResult;
+  try {
+    recipe = (await getRecipe(id)) as RecipeLookupResult;
+  } catch (error) {
+    if (isRecipeNotFoundError(error)) {
+      notFound();
+    }
+
+    throw error;
+  }
 
   if (recipe?.slug && recipe.slug !== id) {
     permanentRedirect(`${PUBLIC_ROUTES.RECIPES}/${recipe.slug}`);
@@ -140,21 +160,19 @@ export default async function RecipeDetailPage({
 
   return (
     <>
-      {recipe && (
-        <script
-          type="application/ld+json"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be emitted as script text.
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(
-              buildRecipeJsonLd(toInitialRecipe(recipe)),
-            ).replaceAll('<', String.raw`\u003c`),
-          }}
-        />
-      )}
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be emitted as script text.
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            buildRecipeJsonLd(toInitialRecipe(recipe)),
+          ).replaceAll('<', String.raw`\u003c`),
+        }}
+      />
       <Suspense>
         <RecipeDetailClient
           recipeId={id}
-          initialRecipe={recipe ? toInitialRecipe(recipe) : undefined}
+          initialRecipe={toInitialRecipe(recipe)}
         />
       </Suspense>
     </>
