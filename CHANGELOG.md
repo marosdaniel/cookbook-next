@@ -1,3 +1,10 @@
+# [2.62.0](https://github.com/marosdaniel/cookbook-next/compare/v2.61.0...v2.62.0) (2026-07-23)
+
+
+### Features
+
+* enhance recipe JSON-LD generation with video description, thumbnail, and upload date ([1ea092d](https://github.com/marosdaniel/cookbook-next/commit/1ea092d449359d17efb8610b938242c386875584))
+
 # [2.61.0](https://github.com/marosdaniel/cookbook-next/compare/v2.60.0...v2.61.0) (2026-07-23)
 
 
