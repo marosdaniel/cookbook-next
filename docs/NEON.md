@@ -64,7 +64,7 @@ Migrations & deploy
 Vercel / CI notes
 -----------------
 - Add `DATABASE_URL` (and ideally `DIRECT_URL`) as secrets in your Vercel project and in the GitHub repository secrets.
-- The `deploy-production` job in `.github/workflows/deploy.yml` runs `pnpm prisma migrate deploy` with `DATABASE_URL` from `secrets.DATABASE_URL` before building/deploying.
+- The `deploy-production` job in `.github/workflows/deploy.yml` runs `pnpm prisma migrate deploy` with `DIRECT_URL` from `secrets.DIRECT_URL` before building/deploying. It falls back to `DATABASE_URL` when the separate secret is not configured and retries transient Neon lock timeouts.
 - Example GitHub Actions step for applying migrations (already used in this repo):
 
 ```yaml
@@ -72,6 +72,7 @@ Vercel / CI notes
   run: pnpm prisma migrate deploy
   env:
     DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    DIRECT_URL: ${{ secrets.DIRECT_URL || secrets.DATABASE_URL }}
 ```
 
 Notes & caveats

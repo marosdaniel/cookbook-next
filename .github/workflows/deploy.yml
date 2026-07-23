@@ -374,9 +374,20 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Run Prisma Migrate Deploy
-        run: pnpm prisma migrate deploy
+        run: |
+          for attempt in 1 2 3; do
+            if pnpm prisma migrate deploy; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              echo "Migration attempt $attempt failed; retrying in 15 seconds..."
+              sleep 15
+            fi
+          done
+          exit 1
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL || secrets.DATABASE_URL }}
 
       - name: Build Project Artifacts
         run: vercel build --prod --token="$VERCEL_TOKEN"

@@ -1,7 +1,6 @@
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata, Viewport } from 'next';
 import nextDynamic from 'next/dynamic';
-import { connection } from 'next/server';
 import { getLocaleMessages } from '@/lib/locale/locale';
 import { getSiteUrl } from '@/lib/seo/site';
 import { ServerProviders } from '@/providers/server';
@@ -29,7 +28,6 @@ export const viewport: Viewport = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  await connection();
   const locale = await getLocaleFromCookies();
   const messages = await getLocaleMessages(locale);
 
@@ -87,7 +85,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout(props: Readonly<PropsWithChildren>) {
-  await connection();
   const locale = await getLocaleFromCookies();
 
   const messages = await getLocaleMessages(locale);

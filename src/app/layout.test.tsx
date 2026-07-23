@@ -2,15 +2,9 @@ import '@testing-library/jest-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@/utils/test-utils';
 
-const { mockConnection, mockGetLocaleFromCookies, mockGetLocaleMessages } =
-  vi.hoisted(() => ({
-    mockConnection: vi.fn(),
-    mockGetLocaleFromCookies: vi.fn(),
-    mockGetLocaleMessages: vi.fn(),
-  }));
-
-vi.mock('next/server', () => ({
-  connection: mockConnection,
+const { mockGetLocaleFromCookies, mockGetLocaleMessages } = vi.hoisted(() => ({
+  mockGetLocaleFromCookies: vi.fn(),
+  mockGetLocaleMessages: vi.fn(),
 }));
 
 vi.mock('@/lib/locale/locale.server', () => ({
@@ -52,7 +46,6 @@ import RootLayout, { generateMetadata } from './layout';
 describe('RootLayout', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockConnection.mockResolvedValue(undefined);
     mockGetLocaleFromCookies.mockResolvedValue('hu');
     mockGetLocaleMessages.mockImplementation(async (locale: string) => ({
       seo: {
@@ -77,7 +70,6 @@ describe('RootLayout', () => {
   it('builds metadata from locale messages', async () => {
     const metadata = await generateMetadata();
 
-    expect(mockConnection).toHaveBeenCalled();
     expect(mockGetLocaleFromCookies).toHaveBeenCalled();
     expect(mockGetLocaleMessages).toHaveBeenCalledWith('hu');
     expect(metadata.title).toBe('App hu');
