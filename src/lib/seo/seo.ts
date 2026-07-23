@@ -96,7 +96,11 @@ export const getAuthMetadata = async (
   });
 };
 
-export const buildRecipeJsonLd = (recipe: RecipeDetail, url?: string) => {
+export const buildRecipeJsonLd = (
+  recipe: RecipeDetail,
+  url?: string,
+  dates?: { createdAt?: Date; updatedAt?: Date },
+) => {
   const ingredientList = recipe.ingredients
     .map((ingredient) => {
       const quantity = Number(ingredient.quantity);
@@ -136,6 +140,8 @@ export const buildRecipeJsonLd = (recipe: RecipeDetail, url?: string) => {
     description: recipe.description ?? undefined,
     image: recipe.socialImage ?? recipe.imgSrc ?? undefined,
     url,
+    datePublished: dates?.createdAt?.toISOString(),
+    dateModified: dates?.updatedAt?.toISOString(),
     recipeYield: String(recipe.servings ?? 1),
     totalTime: formatDuration(totalTimeMinutes),
     prepTime: formatDuration(prepTimeMinutes),

@@ -169,6 +169,7 @@ export default async function RecipeDetailPage({
             buildRecipeJsonLd(
               toInitialRecipe(recipe),
               `${getSiteUrl()}${PUBLIC_ROUTES.RECIPES}/${recipe.slug ?? recipe.id}`,
+              { createdAt: recipe.createdAt, updatedAt: recipe.updatedAt },
             ),
           ).replaceAll('<', String.raw`\u003c`),
         }}

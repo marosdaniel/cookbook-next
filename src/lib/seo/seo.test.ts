@@ -164,6 +164,10 @@ describe('getAuthMetadata', () => {
     const result = buildRecipeJsonLd(
       recipe,
       'https://cookbook.example.com/recipes/tomato-pasta',
+      {
+        createdAt: new Date('2026-01-10T12:00:00.000Z'),
+        updatedAt: new Date('2026-07-23T12:00:00.000Z'),
+      },
     );
 
     expect(result).toMatchObject({
@@ -173,6 +177,8 @@ describe('getAuthMetadata', () => {
       description: 'A quick pasta recipe',
       image: 'https://example.com/social-pasta.jpg',
       url: 'https://cookbook.example.com/recipes/tomato-pasta',
+      datePublished: '2026-01-10T12:00:00.000Z',
+      dateModified: '2026-07-23T12:00:00.000Z',
       recipeYield: '2',
       totalTime: 'PT20M',
       prepTime: 'PT5M',
