@@ -1,3 +1,10 @@
+## [2.57.1](https://github.com/marosdaniel/cookbook-next/compare/v2.57.0...v2.57.1) (2026-07-23)
+
+
+### Bug Fixes
+
+* replace redirect with permanentRedirect in recipe detail handling ([f371937](https://github.com/marosdaniel/cookbook-next/commit/f371937d3721a669518162814d3d7421b9b2f9d1))
+
 # [2.57.0](https://github.com/marosdaniel/cookbook-next/compare/v2.56.0...v2.57.0) (2026-07-23)
 
 
