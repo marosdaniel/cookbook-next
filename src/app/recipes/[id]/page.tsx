@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { redirect } from 'next/navigation';
+import { permanentRedirect } from 'next/navigation';
 import { Suspense } from 'react';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
 import { buildRecipeJsonLd, getMetadata } from '@/lib/seo/seo';
@@ -135,7 +135,7 @@ export default async function RecipeDetailPage({
   )) as RecipeLookupResult | null;
 
   if (recipe?.slug && recipe.slug !== id) {
-    redirect(`${PUBLIC_ROUTES.RECIPES}/${recipe.slug}`);
+    permanentRedirect(`${PUBLIC_ROUTES.RECIPES}/${recipe.slug}`);
   }
 
   return (

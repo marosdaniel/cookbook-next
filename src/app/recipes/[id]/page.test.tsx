@@ -7,13 +7,13 @@ const mocks = vi.hoisted(() => ({
   getRecipeBySlugOrId: vi.fn(),
   getLocaleFromCookies: vi.fn(),
   getMetadata: vi.fn(),
-  redirect: vi.fn(),
+  permanentRedirect: vi.fn(),
 }));
 
 vi.mock('next/navigation', () => ({
-  redirect: (url: string) => {
-    mocks.redirect(url);
-    throw new Error(`redirect:${url}`);
+  permanentRedirect: (url: string) => {
+    mocks.permanentRedirect(url);
+    throw new Error(`permanentRedirect:${url}`);
   },
 }));
 
@@ -67,9 +67,9 @@ describe('RecipeDetailPage', () => {
       RecipeDetailPage({
         params: Promise.resolve({ id: 'recipe-1' }),
       } as never),
-    ).rejects.toThrow('redirect:/recipes/pasta');
+    ).rejects.toThrow('permanentRedirect:/recipes/pasta');
 
-    expect(mocks.redirect).toHaveBeenCalledWith('/recipes/pasta');
+    expect(mocks.permanentRedirect).toHaveBeenCalledWith('/recipes/pasta');
   });
 
   it('renders the detail client for the matched recipe id', async () => {
