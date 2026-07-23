@@ -1,3 +1,20 @@
+# [2.59.0](https://github.com/marosdaniel/cookbook-next/compare/v2.58.0...v2.59.0) (2026-07-23)
+
+
+### Features
+
+* add aggregate rating support to recipe JSON-LD generation and update tests ([563f13f](https://github.com/marosdaniel/cookbook-next/commit/563f13f97ba126b5ca2e198e55a4701cefa1fb4d))
+* add canonical path support to metadata generation for SEO optimization ([b1f58d1](https://github.com/marosdaniel/cookbook-next/commit/b1f58d10ae78a86d7918de11c8ff598e573422a8))
+* add PRISMA_SCHEMA_DISABLE_ADVISORY_LOCK environment variable for Neon migrations ([56cfbb4](https://github.com/marosdaniel/cookbook-next/commit/56cfbb49ded150af03c6da21d2a72e649967ce5d))
+* add test for omitting aggregate rating markup in recipe JSON-LD when no ratings are present ([7d5d128](https://github.com/marosdaniel/cookbook-next/commit/7d5d12810090d72b286e3b79a138a3cf80b67647))
+* enhance deployment process with retry logic for Prisma migrations and update documentation ([941a387](https://github.com/marosdaniel/cookbook-next/commit/941a387602402c57236b9598c0fb2d338d9dc406))
+* enhance recipe detail page with 404 handling and error management ([409c2ce](https://github.com/marosdaniel/cookbook-next/commit/409c2ce2f3c1b3c96318a49265db7c26bd0c6d11))
+* enhance recipe JSON-LD generation with creation and update date support ([316a2e6](https://github.com/marosdaniel/cookbook-next/commit/316a2e61278bea0173ab5d69ff09e5826f1c277e))
+* enhance recipe JSON-LD generation with optional URL and social image support ([cf429ab](https://github.com/marosdaniel/cookbook-next/commit/cf429aba02234d76ef584d80262d6f5196bff566))
+* implement locale-based message handling in request configuration and add tests ([8702fa1](https://github.com/marosdaniel/cookbook-next/commit/8702fa12a3bdf78d0f8fbe721c54962d7c5fb1e4))
+* implement site URL handling and add tests for robots and sitemap ([694111a](https://github.com/marosdaniel/cookbook-next/commit/694111aee19741f1fc07453bcc5842ce7ac9c7dd))
+* optimize recipe fetching by caching getRecipe function ([c8ad5ea](https://github.com/marosdaniel/cookbook-next/commit/c8ad5ea2fdf9acf48fc0121d36e45cd8913daecb))
+
 # [2.58.0](https://github.com/marosdaniel/cookbook-next/compare/v2.57.1...v2.58.0) (2026-07-23)
 
 
