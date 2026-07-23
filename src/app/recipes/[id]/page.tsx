@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { permanentRedirect } from 'next/navigation';
-import { Suspense } from 'react';
+import { cache, Suspense } from 'react';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
 import { buildRecipeJsonLd, getMetadata } from '@/lib/seo/seo';
 import { RecipeService } from '@/lib/services/RecipeService';
@@ -13,6 +13,8 @@ interface RecipeDetailPageProps {
 }
 
 const SEO_DESCRIPTION_MAX_LENGTH = 160;
+
+const getRecipe = cache((id: string) => RecipeService.getRecipeBySlugOrId(id));
 
 type RecipeLookupResult = Omit<RecipeDetail, 'preparationSteps'> & {
   createdAt?: Date;
@@ -73,9 +75,7 @@ export async function generateMetadata({
 
   let recipe: RecipeLookupResult;
   try {
-    recipe = (await RecipeService.getRecipeBySlugOrId(
-      id,
-    )) as RecipeLookupResult;
+    recipe = (await getRecipe(id)) as RecipeLookupResult;
   } catch {
     return {
       title: 'Recipe not found',
@@ -130,7 +130,7 @@ export default async function RecipeDetailPage({
   // Slug-based SEO URLs: if this recipe has a slug and was reached through
   // its raw id, redirect permanently to the canonical slug URL. Old id-based
   // links keep working because getRecipeBySlugOrId resolves both.
-  const recipe = (await RecipeService.getRecipeBySlugOrId(id).catch(
+  const recipe = (await getRecipe(id).catch(
     () => null,
   )) as RecipeLookupResult | null;
 
