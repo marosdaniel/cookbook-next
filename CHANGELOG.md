@@ -1,3 +1,10 @@
+# [2.56.0](https://github.com/marosdaniel/cookbook-next/compare/v2.55.0...v2.56.0) (2026-07-23)
+
+
+### Features
+
+* implement locale normalization and update locale handling in cookies and storage ([8655807](https://github.com/marosdaniel/cookbook-next/commit/8655807f3824a0188aff6fca5ad74c3c830885d5))
+
 # [2.55.0](https://github.com/marosdaniel/cookbook-next/compare/v2.54.0...v2.55.0) (2026-07-22)
 
 
