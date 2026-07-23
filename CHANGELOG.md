@@ -1,3 +1,10 @@
+# [2.60.0](https://github.com/marosdaniel/cookbook-next/compare/v2.59.0...v2.60.0) (2026-07-23)
+
+
+### Features
+
+* enhance recipe JSON-LD generation with serving unit, category, and cuisine support ([bfc2350](https://github.com/marosdaniel/cookbook-next/commit/bfc235006d438bd96cf34f049a6edf6ac558c484))
+
 # [2.59.0](https://github.com/marosdaniel/cookbook-next/compare/v2.58.0...v2.59.0) (2026-07-23)
 
 
