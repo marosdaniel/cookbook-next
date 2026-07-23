@@ -201,12 +201,19 @@ describe('getAuthMetadata', () => {
 
   it('omits aggregate rating markup when a recipe has no ratings', () => {
     const result = buildRecipeJsonLd({
+      id: 'recipe-without-ratings',
+      title: 'Recipe without ratings',
+      cookingTime: 0,
+      servings: 1,
+      createdBy: 'user-1',
+      category: { key: 'other', label: 'Other' },
+      difficultyLevel: { key: 'easy', label: 'Easy' },
       averageRating: 0,
       ratingsCount: 0,
       ingredients: [],
       preparationSteps: [],
       labels: [],
-    } as RecipeDetail);
+    });
 
     expect(result.aggregateRating).toBeUndefined();
   });
