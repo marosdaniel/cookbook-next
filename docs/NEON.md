@@ -65,6 +65,7 @@ Vercel / CI notes
 -----------------
 - Add `DATABASE_URL` (and ideally `DIRECT_URL`) as secrets in your Vercel project and in the GitHub repository secrets.
 - The `deploy-production` job in `.github/workflows/deploy.yml` runs `pnpm prisma migrate deploy` with `DIRECT_URL` from `secrets.DIRECT_URL` before building/deploying. It falls back to `DATABASE_URL` when the separate secret is not configured and retries transient Neon lock timeouts.
+- The migration step sets `PRISMA_SCHEMA_DISABLE_ADVISORY_LOCK=1` because Neon can retain or proxy advisory-lock sessions beyond Prisma's fixed 10-second wait. GitHub Actions concurrency keeps production workflow runs serialized; do not run another migration process against the same database concurrently.
 - Example GitHub Actions step for applying migrations (already used in this repo):
 
 ```yaml
@@ -73,6 +74,7 @@ Vercel / CI notes
   env:
     DATABASE_URL: ${{ secrets.DATABASE_URL }}
     DIRECT_URL: ${{ secrets.DIRECT_URL || secrets.DATABASE_URL }}
+    PRISMA_SCHEMA_DISABLE_ADVISORY_LOCK: '1'
 ```
 
 Notes & caveats
