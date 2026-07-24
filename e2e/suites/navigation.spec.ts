@@ -1,6 +1,7 @@
 import { test } from '@playwright/test';
 import {
   shouldNavigateToCookiePolicyPage,
+  shouldNavigateToLoginPageFromNavbar,
   shouldNavigateToPrivacyPolicyPage,
   shouldNavigateToRecipesPage,
   shouldRedirectLoginToHomeAfterVisit,
@@ -19,7 +20,11 @@ test.describe('Navigation suite', () => {
     await shouldNavigateToCookiePolicyPage(page);
   });
 
-  test('TC-010: can navigate back to home from login page', async ({
+  test('TC-010: can navigate to login page from navbar', async ({ page }) => {
+    await shouldNavigateToLoginPageFromNavbar(page);
+  });
+
+  test('TC-011: can navigate back to home from login page', async ({
     page,
   }) => {
     await shouldRedirectLoginToHomeAfterVisit(page);

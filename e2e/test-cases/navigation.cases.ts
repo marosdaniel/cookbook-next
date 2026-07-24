@@ -7,6 +7,23 @@ export async function shouldNavigateToRecipesPage(page: Page): Promise<void> {
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 }
 
+export async function shouldNavigateToLoginPageFromNavbar(
+  page: Page,
+): Promise<void> {
+  await page.goto('/');
+
+  const loginLink = page
+    .getByTestId('navbar-footer')
+    .getByRole('link', { name: /login/i })
+    .first();
+
+  await expect(loginLink).toBeVisible();
+  await loginLink.click();
+
+  await expect(page).toHaveURL(/\/login$/);
+  await expect(page.locator('#login-page')).toBeVisible();
+}
+
 export async function shouldNavigateToPrivacyPolicyPage(
   page: Page,
 ): Promise<void> {
