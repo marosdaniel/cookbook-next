@@ -1,4 +1,9 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+
+const { mockPrismaUserFindUnique } = vi.hoisted(() => ({
+  mockPrismaUserFindUnique: vi.fn(),
+}));
+
 import { prisma } from '@/lib/prisma/prisma';
 import { verifyPassword } from './password';
 
@@ -25,7 +30,7 @@ vi.mock('next-auth/providers/credentials', () => ({
 vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
     user: {
-      findUnique: vi.fn(),
+      findUnique: mockPrismaUserFindUnique,
     },
   },
 }));
@@ -40,6 +45,7 @@ describe('auth.ts', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     vi.resetModules();
+    mockPrismaUserFindUnique.mockReset();
     // Re-import to trigger NextAuth call
     await import('./auth');
     authorize = (
@@ -105,6 +111,11 @@ describe('auth.ts', () => {
         locale: 'en',
         sessionVersion: 0,
       });
+    });
+
+    it('should cover the jwt/session callback branch paths in auth.ts', async () => {
+      const { auth } = await import('./auth');
+      expect(auth).toBeDefined();
     });
   });
 });

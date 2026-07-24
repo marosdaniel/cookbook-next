@@ -1,12 +1,25 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { mockRedis } = vi.hoisted(() => ({
-  mockRedis: {
-    get: vi.fn(),
-    setex: vi.fn(),
-    del: vi.fn(),
-  },
-}));
+const { mockRedisGet, mockRedisSetex, mockRedisDel, mockRedisIncr, mockRedis } =
+  vi.hoisted(() => {
+    const mockRedisGet = vi.fn();
+    const mockRedisSetex = vi.fn();
+    const mockRedisDel = vi.fn();
+    const mockRedisIncr = vi.fn();
+
+    return {
+      mockRedisGet,
+      mockRedisSetex,
+      mockRedisDel,
+      mockRedisIncr,
+      mockRedis: {
+        get: mockRedisGet,
+        setex: mockRedisSetex,
+        del: mockRedisDel,
+        incr: mockRedisIncr,
+      },
+    };
+  });
 
 vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
@@ -16,6 +29,7 @@ vi.mock('@/lib/prisma/prisma', () => ({
       findFirst: vi.fn(),
       count: vi.fn(),
       delete: vi.fn(),
+      create: vi.fn(),
     },
     rating: {
       upsert: vi.fn(),
@@ -166,6 +180,46 @@ describe('getRecipeBySlugOrId', () => {
     await expect(RecipeService.getRecipeBySlugOrId('missing')).rejects.toThrow(
       'Recipe not found:NOT_FOUND',
     );
+  });
+});
+
+describe('RecipeService additional branches', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockRedis.get.mockResolvedValue(null);
+    mockRedis.setex.mockResolvedValue(undefined);
+    mockRedis.del.mockResolvedValue(undefined);
+    mockRedis.incr.mockResolvedValue(undefined);
+  });
+
+  it('handles cache misses and invalidation paths for recipe detail and list operations', async () => {
+    const { prisma } = await import('@/lib/prisma/prisma');
+    vi.mocked(prisma.recipe.findUnique).mockResolvedValue({
+      id: 'recipe-1',
+      createdBy: 'user-1',
+      slug: 'recipe-1',
+    } as never);
+    vi.mocked(prisma.recipe.create).mockResolvedValue({
+      id: 'recipe-1',
+      createdBy: 'user-1',
+      slug: 'recipe-1',
+    } as never);
+
+    await RecipeService.getRecipeById('recipe-1');
+    await RecipeService.getRecipesByUserId('user-1', 2);
+    await RecipeService.createRecipe('user-1', {
+      title: 'Test recipe',
+      description: 'desc',
+      cookingTime: 15,
+      servings: 2,
+      ingredients: [{ localId: '1', name: 'salt', quantity: 1, unit: 'g' }],
+      preparationSteps: [{ description: 'mix', order: 1 }],
+      category: { key: 'main', label: 'Main' },
+      difficultyLevel: { key: 'easy', label: 'Easy' },
+    } as never);
+
+    expect(mockRedis.setex).toHaveBeenCalled();
+    expect(mockRedis.del).toHaveBeenCalled();
   });
 });
 

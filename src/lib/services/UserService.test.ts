@@ -358,4 +358,41 @@ describe('UserService', () => {
     expect(followCreate).toHaveBeenCalled();
     expect(redis?.del).not.toBeDefined();
   });
+
+  it('covers additional branch paths for favorites, following, and admin actions', async () => {
+    const prisma = await import('@/lib/prisma/prisma');
+    mockFindUnique.mockResolvedValue({ id: 'user-1' });
+    vi.mocked(prisma.prisma.recipe.findUnique).mockResolvedValue({
+      id: 'recipe-1',
+      createdBy: 'user-1',
+    } as never);
+    mockFindFirst.mockResolvedValueOnce({ id: 'user-1' });
+
+    await expect(
+      UserService.addToFavoriteRecipes('user-1', 'USER', 'user-1', 'recipe-1'),
+    ).resolves.toMatchObject({ success: false });
+
+    await expect(
+      UserService.removeFromFavoriteRecipes(
+        'user-1',
+        'USER',
+        'user-1',
+        'recipe-1',
+      ),
+    ).resolves.toMatchObject({ success: false });
+
+    await expect(
+      UserService.followUser('user-1', 'user-1'),
+    ).resolves.toMatchObject({ success: false });
+
+    await expect(
+      UserService.unfollowUser('user-1', 'user-2'),
+    ).resolves.toMatchObject({ success: false });
+
+    await expect(
+      UserService.deleteAllUser('admin-1', 'USER', 'DELETE_ALL'),
+    ).rejects.toThrow(
+      'Unauthorized operation - admin rights required:FORBIDDEN',
+    );
+  });
 });

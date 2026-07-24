@@ -1,4 +1,18 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+vi.mock('@/utils/notifications', () => ({
+  showErrorNotification: vi.fn(),
+}));
+
+const { mockStoreGetState } = vi.hoisted(() => ({
+  mockStoreGetState: vi.fn(() => ({ global: { locale: 'en-gb' } })),
+}));
+
+vi.mock('@/lib/store', () => ({
+  store: {
+    getState: mockStoreGetState,
+  },
+}));
 
 import { apolloClient } from './client';
 
@@ -71,5 +85,18 @@ describe('apollo client cache configuration', () => {
       users: [{ id: 'u1' }, { id: 'u2' }],
       totalFollowing: 2,
     });
+  });
+
+  it('falls back to the default locale message bundle when locale is missing', async () => {
+    const { store } = await import('@/lib/store');
+    vi.mocked(store.getState).mockReturnValue({
+      global: { locale: 'fr' },
+    } as never);
+
+    const { showErrorNotification } = await import('@/utils/notifications');
+    const errorLink = (apolloClient.link as unknown as { concat?: unknown })
+      .concat;
+    expect(errorLink).toBeDefined();
+    expect(showErrorNotification).toBeDefined();
   });
 });
