@@ -3,6 +3,8 @@ import type { JWT } from 'next-auth/jwt';
 import { describe, expect, it } from 'vitest';
 import { authConfig } from './auth.config';
 
+const redirectCallback = authConfig.callbacks?.redirect;
+
 describe('authConfig', () => {
   it('should have the correct session strategy and fixed maxAge', () => {
     expect(authConfig.session).toEqual({
@@ -17,6 +19,26 @@ describe('authConfig', () => {
   });
 
   describe('callbacks', () => {
+    describe('redirect', () => {
+      it('should allow only safe relative callback URLs', async () => {
+        const result = await redirectCallback?.({
+          url: '/me/profile?tab=settings',
+          baseUrl: 'http://localhost:3000',
+        } as never);
+
+        expect(result).toBe('/me/profile?tab=settings');
+      });
+
+      it('should reject external callback URLs', async () => {
+        const result = await redirectCallback?.({
+          url: 'https://evil.example.com',
+          baseUrl: 'http://localhost:3000',
+        } as never);
+
+        expect(result).toBe('http://localhost:3000');
+      });
+    });
+
     describe('jwt', () => {
       it('should add user data to token on sign in', async () => {
         const token = { existing: 'data' } as JWT;

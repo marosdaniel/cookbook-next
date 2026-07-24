@@ -2,6 +2,34 @@ import type { NextAuthConfig } from 'next-auth';
 import { AUTH_ROUTES } from '../../types/routes';
 import { createIssuedAt, createTokenId } from './password';
 
+const isSafeRelativeCallbackUrl = (url: string | undefined): boolean => {
+  if (!url) {
+    return false;
+  }
+
+  const trimmedUrl = url.trim();
+  if (!trimmedUrl) {
+    return false;
+  }
+
+  if (trimmedUrl.startsWith('//') || trimmedUrl.startsWith('\\')) {
+    return false;
+  }
+
+  if (/^[a-zA-Z][a-zA-Z\d+.-]*:/.test(trimmedUrl)) {
+    return false;
+  }
+
+  return trimmedUrl.startsWith('/');
+};
+
+const getSafeCallbackUrl = (
+  url: string | undefined,
+  baseUrl: string,
+): string => {
+  return isSafeRelativeCallbackUrl(url) ? (url as string) : baseUrl;
+};
+
 export const authConfig = {
   providers: [],
   session: {
@@ -13,6 +41,9 @@ export const authConfig = {
     error: AUTH_ROUTES.LOGIN,
   },
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      return getSafeCallbackUrl(url, baseUrl);
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;

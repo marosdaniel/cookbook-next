@@ -55,11 +55,11 @@ export const ROUTE_POLICIES: Record<RouteFamily, RoutePolicy> = {
  * Route pattern matcher - determines which policy applies to a pathname
  */
 export const getRouteFamilyForPath = (pathname: string): RouteFamily => {
-  if (pathname.startsWith('/admin')) {
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) {
     return 'admin';
   }
 
-  if (pathname.startsWith('/me')) {
+  if (pathname === '/me' || pathname.startsWith('/me/')) {
     return 'user-profile';
   }
 
