@@ -1,5 +1,4 @@
 import type { DocumentNode } from 'graphql';
-import { print } from 'graphql';
 import {
   ADD_TO_FAVORITE_RECIPES,
   CHANGE_PASSWORD,
@@ -15,7 +14,7 @@ import {
   UNFOLLOW_USER,
   UPDATE_USER,
 } from './mutations';
-import { getPersistedQueryHash } from './protection';
+import { getPersistedQueryHashFromDocument } from './protection';
 import {
   GET_ALL_METADATA,
   GET_FAVORITE_RECIPES,
@@ -52,9 +51,11 @@ const clientDocuments: DocumentNode[] = [
 ];
 
 export const persistedQueryHashes = new Set(
-  clientDocuments.map((document) => getPersistedQueryHash(print(document))),
+  clientDocuments.map((document) =>
+    getPersistedQueryHashFromDocument(document),
+  ),
 );
 
 export const isPersistedQueryAllowed = (query: string, persistedHash: string) =>
   persistedQueryHashes.has(persistedHash) &&
-  getPersistedQueryHash(query) === persistedHash;
+  getPersistedQueryHashFromDocument(query) === persistedHash;

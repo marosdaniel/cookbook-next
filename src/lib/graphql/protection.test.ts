@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   DEFAULT_GRAPHQL_MAX_LIMIT,
-  getPersistedQueryHash,
+  getPersistedQueryHashFromDocument,
   resolveQueryLimit,
   validatePersistedQuery,
 } from './protection';
@@ -30,7 +30,7 @@ describe('resolveQueryLimit', () => {
 describe('validatePersistedQuery', () => {
   it('accepts a matching persisted query hash', () => {
     const query = 'query GetRecipes { getRecipes(limit: 10) { id } }';
-    const hash = getPersistedQueryHash(query);
+    const hash = getPersistedQueryHashFromDocument(query);
 
     expect(validatePersistedQuery(query, hash)).toBe(true);
   });
@@ -53,8 +53,8 @@ describe('validatePersistedQuery', () => {
     const queryWithTypename =
       'query GetRecipes { getRecipes(limit: 10) { id __typename } }';
 
-    expect(getPersistedQueryHash(queryWithoutTypename)).toBe(
-      getPersistedQueryHash(queryWithTypename),
+    expect(getPersistedQueryHashFromDocument(queryWithoutTypename)).toBe(
+      getPersistedQueryHashFromDocument(queryWithTypename),
     );
   });
 });

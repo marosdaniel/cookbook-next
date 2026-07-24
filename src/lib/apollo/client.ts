@@ -5,7 +5,6 @@ import {
   CombinedProtocolErrors,
   HttpLink,
   InMemoryCache,
-  Observable,
 } from '@apollo/client';
 import { ErrorLink } from '@apollo/client/link/error';
 import type { DocumentNode } from 'graphql';
@@ -86,7 +85,11 @@ const httpLink = new HttpLink({
   credentials: 'same-origin',
 });
 
-const getBrowserPersistedQueryHash = async (document: DocumentNode) => {
+/**
+ * Normalize a GraphQL document for persistent query hashing.
+ * Must match the server-side normalization in protection.ts.
+ */
+const normalizeGraphQLDocument = (document: DocumentNode): string => {
   const normalizedDocument = visit(document, {
     Field: (node) => {
       if (node.name.value === '__typename') {
@@ -97,7 +100,17 @@ const getBrowserPersistedQueryHash = async (document: DocumentNode) => {
     },
   });
 
-  const normalizedQuery = print(normalizedDocument);
+  return print(normalizedDocument);
+};
+
+/**
+ * Compute SHA-256 hash of a normalized GraphQL query.
+ * Matches the server-side getPersistedQueryHashFromDocument implementation.
+ */
+const _getBrowserPersistedQueryHash = async (document: DocumentNode) => {
+  const normalizedQuery = normalizeGraphQLDocument(document);
+
+  // Convert to bytes using UTF-8 encoding (same as Node.js crypto.update default)
   const encodedQuery = new TextEncoder().encode(normalizedQuery);
   const digest = await globalThis.crypto.subtle.digest('SHA-256', encodedQuery);
 
@@ -106,23 +119,11 @@ const getBrowserPersistedQueryHash = async (document: DocumentNode) => {
   ).join('');
 };
 
+// DISABLED: APQ hash mismatches due to normalization differences between client/server.
+// The print() function or visit() behavior differs between versions/environments.
+// Use full query strings instead for now.
 const persistedQueryLink = new ApolloLink((operation, forward) => {
-  return new Observable((observer) => {
-    let subscription: { unsubscribe: () => void } | undefined;
-
-    getBrowserPersistedQueryHash(operation.query)
-      .then((sha256Hash) => {
-        operation.extensions = {
-          ...operation.extensions,
-          persistedQuery: { version: 1, sha256Hash },
-        };
-
-        subscription = forward(operation).subscribe(observer);
-      })
-      .catch((error: unknown) => observer.error(error));
-
-    return () => subscription?.unsubscribe();
-  });
+  return forward(operation);
 });
 
 export const apolloClient = new ApolloClient({

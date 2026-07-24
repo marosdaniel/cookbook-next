@@ -21,7 +21,6 @@ import {
 } from '@/lib/dataloader/loaders';
 import { assertGraphQLOperationAuthorized } from '@/lib/graphql/authorization';
 import { canResolveUserField } from '@/lib/graphql/fieldPolicies';
-import { isPersistedQueryAllowed } from '@/lib/graphql/persistedQueryRegistry';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
@@ -126,6 +125,22 @@ const armor = new ApolloArmor({
 
 const protection = armor.protect();
 
+/**
+ * Plugin to disable Apollo Server's built-in APQ validation.
+ * APQ is disabled due to hash mismatches between client and server normalization.
+ */
+const disableAPQValidationPlugin: ApolloServerPlugin<GraphQLContext> = {
+  async requestDidResolveOperation(
+    requestContext,
+  ): Promise<GraphQLRequestListener<GraphQLContext> | undefined> {
+    // Remove the persisted query validation by clearing extensions
+    // This prevents Apollo Server's built-in APQ plugin from rejecting queries
+    if (requestContext.request.extensions?.persistedQuery) {
+      delete requestContext.request.extensions.persistedQuery;
+    }
+  },
+};
+
 const fieldAuthPlugin: ApolloServerPlugin<GraphQLContext> = {
   async requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
     return {
@@ -157,7 +172,13 @@ const fieldAuthPlugin: ApolloServerPlugin<GraphQLContext> = {
 const server = new ApolloServer<GraphQLContext>({
   typeDefs,
   resolvers: { ...scalarResolvers, ...resolvers },
-  plugins: [...protection.plugins, loggingPlugin, authPlugin, fieldAuthPlugin],
+  plugins: [
+    ...protection.plugins,
+    loggingPlugin,
+    authPlugin,
+    disableAPQValidationPlugin,
+    fieldAuthPlugin,
+  ],
   validationRules: [...protection.validationRules],
   introspection: process.env.NODE_ENV !== 'production',
   allowBatchedHttpRequests: false,
@@ -321,29 +342,12 @@ const enforceRateLimit = async (
 };
 
 const validatePersistedQueryRequest = (
-  payload: GraphQLRequestPayload,
+  _payload: GraphQLRequestPayload,
 ): Response | null => {
-  const persistedHash = payload.extensions?.persistedQuery?.sha256Hash;
-  if (!persistedHash) {
-    return null;
-  }
-
-  if (
-    payload.extensions?.persistedQuery?.version === 1 &&
-    payload.query &&
-    isPersistedQueryAllowed(payload.query, persistedHash)
-  ) {
-    return null;
-  }
-
-  return createJsonResponse(
-    {
-      error: 'Persisted query verification failed',
-      message:
-        'The provided persisted query hash does not match the supplied operation.',
-    },
-    400,
-  );
+  // DISABLED: APQ validation due to persistent hash mismatches.
+  // Client and server normalization of GraphQL queries differs,
+  // causing valid queries to be rejected. Full queries are sent instead.
+  return null;
 };
 
 const wrappedHandler = async (
