@@ -24,6 +24,7 @@ import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
 import { createPrismaTimeoutProxy } from '@/lib/prisma/prismaTimeout';
+import { getRateLimitClientKey } from '@/lib/rateLimit/clientIp';
 import {
   getRateLimiterForOperation,
   isRateLimitOperation,
@@ -251,10 +252,7 @@ const enforceRateLimit = async (
   operationName: string | undefined,
   userId: string | undefined,
 ): Promise<Response | null> => {
-  const ip =
-    request.headers.get('x-forwarded-for') ??
-    request.headers.get('x-real-ip') ??
-    '127.0.0.1';
+  const clientKey = getRateLimitClientKey(request);
   const strictOperation = isStrictRateLimitOperation(operationName);
   const limiter = isRateLimitOperation(operationName)
     ? getRateLimiterForOperation(operationName)
@@ -270,7 +268,7 @@ const enforceRateLimit = async (
 
   try {
     const rateLimitResult = await withTimeout(
-      () => limiter.limit(userId ?? ip),
+      () => limiter.limit(userId ?? clientKey),
       750,
     );
 
