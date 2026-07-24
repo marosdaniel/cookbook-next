@@ -1,3 +1,19 @@
+# [2.73.0](https://github.com/marosdaniel/cookbook-next/compare/v2.72.0...v2.73.0) (2026-07-24)
+
+
+### Bug Fixes
+
+* adjust navbar width for responsive design in Shell component ([371d31c](https://github.com/marosdaniel/cookbook-next/commit/371d31c6068270165e7a36b5649e3f68bb16ac9b))
+* update request type in GraphQL route and enhance metadata fetching logic ([6c50641](https://github.com/marosdaniel/cookbook-next/commit/6c506410a35e6aeefe73c159d14e1ed4421d727c))
+
+
+### Features
+
+* enhance Content Security Policy and improve error handling in user mutations ([203d7fe](https://github.com/marosdaniel/cookbook-next/commit/203d7fe39a14526171a51a4f39fd348d9de04764))
+* enhance GraphQL operation handling and add normalization utility ([c277b8e](https://github.com/marosdaniel/cookbook-next/commit/c277b8e96e3562101441ebb7af90dbbbe5358ef2))
+* enhance security headers and implement nonce for CSP in proxy and recipe detail page ([4c3447c](https://github.com/marosdaniel/cookbook-next/commit/4c3447cb4a1e2a5692f29a1d9baab81928cddd42))
+* update security headers to enhance CSP and remove deprecated entries ([1c920ec](https://github.com/marosdaniel/cookbook-next/commit/1c920ec59378a4fb5f43024c8e28b2edb1fa027a))
+
 # [2.72.0](https://github.com/marosdaniel/cookbook-next/compare/v2.71.0...v2.72.0) (2026-07-24)
 
 
