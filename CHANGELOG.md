@@ -1,3 +1,18 @@
+# [2.67.0](https://github.com/marosdaniel/cookbook-next/compare/v2.66.0...v2.67.0) (2026-07-24)
+
+
+### Bug Fixes
+
+* update notification colors to teal and enhance success messages in login and signup tests ([44b696d](https://github.com/marosdaniel/cookbook-next/commit/44b696d145a4db7b8374fef4d9b2104a29985cac))
+
+
+### Features
+
+* enhance change password mutation to return success status and message ([41e724c](https://github.com/marosdaniel/cookbook-next/commit/41e724c64de21188173c7f9cf86bdfb03861cba7))
+* preserve query parameters in callback URL for protected routes ([ba77bb2](https://github.com/marosdaniel/cookbook-next/commit/ba77bb2eaa384cd8d46e9e3b2c57512091d0b6f5))
+* replace notifications with custom notification utility functions for consistent error and success handling ([1a7c231](https://github.com/marosdaniel/cookbook-next/commit/1a7c231eec6b5b0fa05d4ae50c246738ca47b7da))
+* update find-my-way package to version 9.7.0 in dependencies and overrides ([f7d8eb1](https://github.com/marosdaniel/cookbook-next/commit/f7d8eb1c671b25ac51933c85a0555e2bc0f37a02))
+
 # [2.66.0](https://github.com/marosdaniel/cookbook-next/compare/v2.65.0...v2.66.0) (2026-07-24)
 
 
