@@ -1,3 +1,14 @@
+# [2.66.0](https://github.com/marosdaniel/cookbook-next/compare/v2.65.0...v2.66.0) (2026-07-24)
+
+
+### Features
+
+* Enhance GraphQL API with cursor pagination, structured logging, and full-text search ([54e378d](https://github.com/marosdaniel/cookbook-next/commit/54e378d7a360cf576532d7494e53d30f8d77f55a))
+* enhance password change error handling with detailed messages ([92b1d9a](https://github.com/marosdaniel/cookbook-next/commit/92b1d9a01d587679a5262a6a10ab301f6d36bcd6))
+* **graphql:** add generated types and queries for user and recipe management ([592b7c9](https://github.com/marosdaniel/cookbook-next/commit/592b7c9f84482831e7d90f43783c3ee6c6fd02cd))
+* improve password change notification handling with detailed error messages ([c63272c](https://github.com/marosdaniel/cookbook-next/commit/c63272cf652545c277f9ca472212460e5c9aabed))
+* update @graphql-codegen/typescript-operations to version 6.1.2 and add visitor-plugin-common to workspace overrides ([d478ba8](https://github.com/marosdaniel/cookbook-next/commit/d478ba8e334ebe2bdd02972644c1f4e498d1783e))
+
 # [2.65.0](https://github.com/marosdaniel/cookbook-next/compare/v2.64.0...v2.65.0) (2026-07-24)
 
 
