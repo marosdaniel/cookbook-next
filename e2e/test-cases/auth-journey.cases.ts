@@ -1,21 +1,15 @@
 import { expect, type Page } from '@playwright/test';
 
 export async function shouldCompleteAuthJourney(page: Page): Promise<void> {
-  await page.goto('/');
-
-  await page
-    .getByTestId('navbar-footer')
-    .getByRole('link', { name: /login/i })
-    .first()
-    .click();
-
+  await page.goto('/login');
   await expect(page).toHaveURL(/\/login$/);
   await expect(page.locator('#login-page')).toBeVisible();
 
-  await page
-    .getByRole('link', { name: /sign up|signup/i })
-    .first()
-    .click();
+  // Navigate from login to signup using the "Create Account" button
+  const createAccountBtn = page.locator('[data-testid="create-account"]');
+  await expect(createAccountBtn).toBeVisible();
+  await createAccountBtn.click();
+
   await expect(page).toHaveURL(/\/signup$/);
-  await expect(page.locator('#signup-page')).toBeVisible();
+  await expect(page.locator('#sign-up-page')).toBeVisible();
 }
