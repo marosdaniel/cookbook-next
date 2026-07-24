@@ -1,3 +1,12 @@
+# [2.72.0](https://github.com/marosdaniel/cookbook-next/compare/v2.71.0...v2.72.0) (2026-07-24)
+
+
+### Features
+
+* simplify HomePage and RecipeCarousel components by removing motion animations and unused imports ([4f3ab44](https://github.com/marosdaniel/cookbook-next/commit/4f3ab44ca9109a7f6beaaf1a943b268a15b23259))
+* update CSP tests to ensure production strictness while allowing inline scripts in development ([75d1ed4](https://github.com/marosdaniel/cookbook-next/commit/75d1ed433f3d405c662a09667b202034072ecc52))
+* update header search component for accessibility and localization, and add CSP security tests ([fc5fd3c](https://github.com/marosdaniel/cookbook-next/commit/fc5fd3ca52061bdb878061de0917e91360233e22))
+
 # [2.71.0](https://github.com/marosdaniel/cookbook-next/compare/v2.70.0...v2.71.0) (2026-07-24)
 
 
