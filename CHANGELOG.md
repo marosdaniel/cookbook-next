@@ -1,3 +1,11 @@
+# [2.70.0](https://github.com/marosdaniel/cookbook-next/compare/v2.69.0...v2.70.0) (2026-07-24)
+
+
+### Features
+
+* implement APQ validation disablement and normalize persisted query hashing ([48fb8b8](https://github.com/marosdaniel/cookbook-next/commit/48fb8b816bc4fa4b994abe39e2177bbc274cc4d9))
+* implement centralized route authorization policies and add GraphQL route integration tests ([7f1ad73](https://github.com/marosdaniel/cookbook-next/commit/7f1ad7387307c3098082d419aa8f56f2ad8d93eb))
+
 # [2.69.0](https://github.com/marosdaniel/cookbook-next/compare/v2.68.0...v2.69.0) (2026-07-24)
 
 
