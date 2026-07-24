@@ -62,7 +62,16 @@ const Password = () => {
         },
       });
 
-      if (data?.changePassword?.success) {
+      const changePasswordResult = data?.changePassword;
+      const isSuccessfulResponse =
+        typeof changePasswordResult === 'boolean'
+          ? changePasswordResult
+          : Boolean(
+              (changePasswordResult as { success?: boolean } | null | undefined)
+                ?.success,
+            );
+
+      if (isSuccessfulResponse) {
         notifications.show({
           title: translate('response.success'),
           message: translate('notifications.passwordChangedMessage'),
@@ -70,10 +79,16 @@ const Password = () => {
         });
         handleCancel();
       } else {
+        const errorMessage =
+          typeof changePasswordResult === 'object' &&
+          changePasswordResult !== null
+            ? (changePasswordResult as { message?: string } | null | undefined)
+                ?.message
+            : undefined;
+
         notifications.show({
           title: translate('response.error'),
-          message:
-            data?.changePassword?.message ?? translate('response.unknownError'),
+          message: errorMessage ?? translate('response.unknownError'),
           color: 'red',
         });
       }
