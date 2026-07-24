@@ -27,6 +27,7 @@ import { createPrismaTimeoutProxy } from '@/lib/prisma/prismaTimeout';
 import {
   getRateLimiterForOperation,
   isRateLimitOperation,
+  isStrictRateLimitOperation,
   rateLimiter,
 } from '@/lib/rateLimit/rateLimit';
 import { withTimeout } from '@/lib/redis/redis';
@@ -250,20 +251,21 @@ const enforceRateLimit = async (
   operationName: string | undefined,
   userId: string | undefined,
 ): Promise<Response | null> => {
-  if (!rateLimiter) {
-    return null;
-  }
-
   const ip =
     request.headers.get('x-forwarded-for') ??
     request.headers.get('x-real-ip') ??
     '127.0.0.1';
+  const strictOperation = isStrictRateLimitOperation(operationName);
   const limiter = isRateLimitOperation(operationName)
     ? getRateLimiterForOperation(operationName)
     : rateLimiter;
 
   if (!limiter) {
-    return createJsonResponse({ error: 'Rate limiter unavailable' }, 503);
+    return createJsonResponse(
+      { error: 'Rate limiter unavailable' },
+      503,
+      strictOperation ? { 'Retry-After': '5' } : {},
+    );
   }
 
   try {
@@ -288,9 +290,18 @@ const enforceRateLimit = async (
     });
   } catch (error) {
     console.warn(
-      'GraphQL rate limiter failed. Continuing without throttling.',
+      `GraphQL ${strictOperation ? 'strict ' : ''}rate limiter failed.`,
       error,
     );
+
+    if (strictOperation) {
+      return createJsonResponse(
+        { error: 'Rate limiter temporarily unavailable' },
+        503,
+        { 'Retry-After': '5' },
+      );
+    }
+
     return null;
   }
 };

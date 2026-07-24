@@ -68,14 +68,32 @@ describe('rate limit setup', () => {
   });
 
   it('selects the strict limiter for sensitive operations', async () => {
-    const { getRateLimiterForOperation } = await import('./rateLimit');
+    const {
+      getRateLimiterForOperation,
+      rateLimiter: configuredRateLimiter,
+      strictRateLimiter: configuredStrictRateLimiter,
+    } = await import('./rateLimit');
 
-    expect(getRateLimiterForOperation('resetPassword')).toBeDefined();
-    expect(getRateLimiterForOperation('createRecipe')).toBeDefined();
-    expect(getRateLimiterForOperation('editRecipe')).toBeDefined();
-    expect(getRateLimiterForOperation('deleteRecipe')).toBeDefined();
-    expect(getRateLimiterForOperation('rateRecipe')).toBeDefined();
-    expect(getRateLimiterForOperation('deleteRating')).toBeDefined();
-    expect(getRateLimiterForOperation('getRecipes')).toBeDefined();
+    expect(getRateLimiterForOperation('resetPassword')).toBe(
+      configuredStrictRateLimiter,
+    );
+    expect(getRateLimiterForOperation('createRecipe')).toBe(
+      configuredStrictRateLimiter,
+    );
+    expect(getRateLimiterForOperation('editRecipe')).toBe(
+      configuredStrictRateLimiter,
+    );
+    expect(getRateLimiterForOperation('deleteRecipe')).toBe(
+      configuredStrictRateLimiter,
+    );
+    expect(getRateLimiterForOperation('rateRecipe')).toBe(
+      configuredStrictRateLimiter,
+    );
+    expect(getRateLimiterForOperation('deleteRating')).toBe(
+      configuredStrictRateLimiter,
+    );
+    expect(getRateLimiterForOperation('getRecipes')).toBe(
+      configuredRateLimiter,
+    );
   });
 });

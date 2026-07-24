@@ -61,16 +61,25 @@ export const isRateLimitOperation = (
   );
 };
 
+export const isStrictRateLimitOperation = (
+  operationName: string | undefined,
+): operationName is Exclude<
+  RateLimitOperation,
+  typeof OPERATION_NAMES.GET_RECIPES
+> => {
+  return (
+    operationName === OPERATION_NAMES.RESET_PASSWORD ||
+    operationName === OPERATION_NAMES.CREATE_RECIPE ||
+    operationName === OPERATION_NAMES.EDIT_RECIPE ||
+    operationName === OPERATION_NAMES.DELETE_RECIPE ||
+    operationName === OPERATION_NAMES.RATE_RECIPE ||
+    operationName === OPERATION_NAMES.DELETE_RATING
+  );
+};
+
 export const getRateLimiterForOperation = (operation: RateLimitOperation) => {
-  if (
-    operation === OPERATION_NAMES.RESET_PASSWORD ||
-    operation === OPERATION_NAMES.CREATE_RECIPE ||
-    operation === OPERATION_NAMES.EDIT_RECIPE ||
-    operation === OPERATION_NAMES.DELETE_RECIPE ||
-    operation === OPERATION_NAMES.RATE_RECIPE ||
-    operation === OPERATION_NAMES.DELETE_RATING
-  ) {
-    return strictRateLimiter ?? rateLimiter;
+  if (isStrictRateLimitOperation(operation)) {
+    return strictRateLimiter;
   }
 
   return rateLimiter;
