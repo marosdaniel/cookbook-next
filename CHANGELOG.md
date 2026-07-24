@@ -1,3 +1,12 @@
+# [2.71.0](https://github.com/marosdaniel/cookbook-next/compare/v2.70.0...v2.71.0) (2026-07-24)
+
+
+### Features
+
+* add content type validation for GraphQL POST requests and update Navbar logout handling ([c1da42d](https://github.com/marosdaniel/cookbook-next/commit/c1da42d03c13e7077126c8ee30c272508e83fe8a))
+* enhance redirect callback to validate safe relative URLs and update route family matching logic ([2d9fdf0](https://github.com/marosdaniel/cookbook-next/commit/2d9fdf0f9cde007d37967f16779e63e457d0e6c7))
+* refactor route handling for recipe detail and search, and clean up unused type imports ([cb6b4a3](https://github.com/marosdaniel/cookbook-next/commit/cb6b4a300a5cc788be9d8274f6834d816bd847bb))
+
 # [2.70.0](https://github.com/marosdaniel/cookbook-next/compare/v2.69.0...v2.70.0) (2026-07-24)
 
 
