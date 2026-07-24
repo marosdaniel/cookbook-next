@@ -15,34 +15,32 @@ const cspValue = [
   "connect-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",
+  "form-action 'self'",
   "frame-ancestors 'none'",
 ].join('; ');
 
 const securityHeaders = [
-  { key: 'X-DNS-Prefetch-Control', value: 'on' },
+  { key: 'Content-Security-Policy', value: cspValue },
   {
     key: 'Strict-Transport-Security',
     value: 'max-age=63072000; includeSubDomains; preload',
   },
-  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'X-Frame-Options', value: 'DENY' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-  { key: 'X-XSS-Protection', value: '0' },
   {
     key: 'Permissions-Policy',
     value: 'camera=(), microphone=(), geolocation=()',
   },
+  { key: 'X-DNS-Prefetch-Control', value: 'on' },
   { key: 'X-Permitted-Cross-Domain-Policies', value: 'none' },
+  { key: 'X-XSS-Protection', value: '0' },
   { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
   { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
-  {
-    key: 'Content-Security-Policy',
-    value: cspValue,
-  },
 ];
 
 const nextConfig: NextConfig = {
-  cacheComponents: false, // change to true once cookie-based locale detection is implemented
+  cacheComponents: false,
   typedRoutes: true,
   allowedDevOrigins: ['127.0.0.1', 'localhost'],
   async headers() {
