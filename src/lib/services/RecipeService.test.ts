@@ -1,25 +1,24 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { mockRedisGet, mockRedisSetex, mockRedisDel, mockRedisIncr, mockRedis } =
-  vi.hoisted(() => {
-    const mockRedisGet = vi.fn();
-    const mockRedisSetex = vi.fn();
-    const mockRedisDel = vi.fn();
-    const mockRedisIncr = vi.fn();
+const { mockRedis } = vi.hoisted(() => {
+  const mockRedisGet = vi.fn();
+  const mockRedisSetex = vi.fn();
+  const mockRedisDel = vi.fn();
+  const mockRedisIncr = vi.fn();
 
-    return {
-      mockRedisGet,
-      mockRedisSetex,
-      mockRedisDel,
-      mockRedisIncr,
-      mockRedis: {
-        get: mockRedisGet,
-        setex: mockRedisSetex,
-        del: mockRedisDel,
-        incr: mockRedisIncr,
-      },
-    };
-  });
+  return {
+    mockRedisGet,
+    mockRedisSetex,
+    mockRedisDel,
+    mockRedisIncr,
+    mockRedis: {
+      get: mockRedisGet,
+      setex: mockRedisSetex,
+      del: mockRedisDel,
+      incr: mockRedisIncr,
+    },
+  };
+});
 
 vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
