@@ -288,7 +288,7 @@ const extractOperationName = (
 };
 
 const enforceRateLimit = async (
-  request: NextRequest,
+  request: Request,
   operationName: string | undefined,
   userId: string | undefined,
 ): Promise<Response | null> => {
@@ -353,8 +353,8 @@ const validatePersistedQueryRequest = (
 };
 
 const wrappedHandler = async (
-  request: NextRequest,
-  _context: { params: Promise<Record<string, never>> },
+  request: Request,
+  _context?: { params?: Promise<Record<string, never>> },
 ): Promise<Response> => {
   if (request.method === 'GET') {
     return createJsonResponse(
