@@ -1,3 +1,10 @@
+# [2.65.0](https://github.com/marosdaniel/cookbook-next/compare/v2.64.0...v2.65.0) (2026-07-24)
+
+
+### Features
+
+* enhance CI/CD pipeline with secret scanning and update cache policies ([095fc59](https://github.com/marosdaniel/cookbook-next/commit/095fc591000bffa379a58c19380d7d52b62d4046))
+
 # [2.64.0](https://github.com/marosdaniel/cookbook-next/compare/v2.63.0...v2.64.0) (2026-07-24)
 
 
