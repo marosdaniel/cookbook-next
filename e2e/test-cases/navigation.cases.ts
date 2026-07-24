@@ -10,7 +10,7 @@ export async function shouldNavigateToRecipesPage(page: Page): Promise<void> {
 export async function shouldNavigateToLoginPageFromNavbar(
   page: Page,
 ): Promise<void> {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
 
   const loginLink = page
     .getByTestId('navbar-footer')
@@ -18,9 +18,11 @@ export async function shouldNavigateToLoginPageFromNavbar(
     .first();
 
   await expect(loginLink).toBeVisible();
-  await loginLink.click();
+  await Promise.all([
+    page.waitForURL(/\/login($|\?)/, { timeout: 10000 }),
+    loginLink.click(),
+  ]);
 
-  await expect(page).toHaveURL(/\/login$/);
   await expect(page.locator('#login-page')).toBeVisible();
 }
 
