@@ -9,7 +9,7 @@ import {
 } from '@apollo/client';
 import { ErrorLink } from '@apollo/client/link/error';
 import type { DocumentNode } from 'graphql';
-import { print } from 'graphql';
+import { print, visit } from 'graphql';
 import { store } from '@/lib/store';
 import deMessages from '@/locales/de.json';
 import enGbMessages from '@/locales/en-gb.json';
@@ -87,7 +87,18 @@ const httpLink = new HttpLink({
 });
 
 const getBrowserPersistedQueryHash = async (document: DocumentNode) => {
-  const encodedQuery = new TextEncoder().encode(print(document));
+  const normalizedDocument = visit(document, {
+    Field: (node) => {
+      if (node.name.value === '__typename') {
+        return null;
+      }
+
+      return undefined;
+    },
+  });
+
+  const normalizedQuery = print(normalizedDocument);
+  const encodedQuery = new TextEncoder().encode(normalizedQuery);
   const digest = await globalThis.crypto.subtle.digest('SHA-256', encodedQuery);
 
   return Array.from(new Uint8Array(digest), (byte) =>
