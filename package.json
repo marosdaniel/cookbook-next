@@ -18,7 +18,7 @@
   "engines": {
     "node": "24.x"
   },
-  "packageManager": "pnpm@11.16.0",
+  "packageManager": "pnpm@11.17.0",
   "scripts": {
     "dev": "next dev --turbopack",
     "start": "next start",
@@ -40,7 +40,7 @@
     "audit:fix": "pnpm audit --fix=update || pnpm audit --fix=override"
   },
   "dependencies": {
-    "@apollo/client": "^4.2.7",
+    "@apollo/client": "^4.2.8",
     "@apollo/server": "^5.5.1",
     "@as-integrations/next": "^4.1.0",
     "@escape.tech/graphql-armor": "^3.2.0",
@@ -70,7 +70,7 @@
     "motion": "^12.42.2",
     "next": "16.2.11",
     "next-auth": "5.0.0-beta.32",
-    "next-intl": "^4.13.3",
+    "next-intl": "^4.13.4",
     "nextjs-toploader": "^3.9.17",
     "nodemailer": "^9.0.3",
     "react": "19.2.8",
@@ -86,7 +86,7 @@
     "@playwright/test": "^1.61.1",
     "@prisma/config": "^7.9.0",
     "@semantic-release/changelog": "^7.0.0",
-    "@semantic-release/git": "^11.0.0",
+    "@semantic-release/git": "^11.0.1",
     "@semantic-release/github": "^12.0.9",
     "@semantic-release/npm": "^13.1.5",
     "@testing-library/dom": "^10.4.1",

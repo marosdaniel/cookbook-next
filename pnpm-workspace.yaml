@@ -22,7 +22,7 @@ minimumReleaseAgeExclude:
   - '@vitest/spy@4.1.7 || 4.1.8 || 4.1.10'
   - '@vitest/utils@4.1.7 || 4.1.8 || 4.1.10'
   - vitest@4.1.7 || 4.1.8 || 4.1.10
-  - '@apollo/client@4.2.0 || 4.2.1 || 4.2.4 || 4.2.6 || 4.2.7'
+  - '@apollo/client@4.2.0 || 4.2.1 || 4.2.4 || 4.2.6 || 4.2.7 || 4.2.8'
   - '@rolldown/binding-android-arm64@1.0.2'
   - '@rolldown/binding-darwin-arm64@1.0.2'
   - '@rolldown/binding-darwin-x64@1.0.2'
@@ -77,10 +77,10 @@ minimumReleaseAgeExclude:
   - js-yaml@4.1.2
   - hono@4.12.25
   - undici@6.27.0 || 7.28.0
-  - icu-minify@4.13.1 || 4.13.2 || 4.13.3
-  - next-intl-swc-plugin-extractor@4.13.1 || 4.13.2 || 4.13.3
-  - next-intl@4.13.1 || 4.13.2 || 4.13.3
-  - use-intl@4.13.1 || 4.13.2 || 4.13.3
+  - icu-minify@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4
+  - next-intl-swc-plugin-extractor@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4
+  - next-intl@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4
+  - use-intl@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4
   - '@typescript/typescript-aix-ppc64@7.0.2'
   - '@typescript/typescript-darwin-arm64@7.0.2'
   - '@typescript/typescript-darwin-x64@7.0.2'
@@ -120,7 +120,7 @@ minimumReleaseAgeExclude:
   - '@testing-library/jest-dom@7.0.0'
   - prisma@7.9.0
   - '@semantic-release/changelog@7.0.0'
-  - '@semantic-release/git@11.0.0'
+  - '@semantic-release/git@11.0.0 || 11.0.1'
   - '@vitejs/plugin-react@6.0.4'
   - react-dom@19.2.8
   - react@19.2.8
