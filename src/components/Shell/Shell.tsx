@@ -15,7 +15,8 @@ import { Logo } from '../Logo';
 import Navbar from '../Navbar';
 import ThemeSwitcher from '../ThemeSwitcher';
 
-const NAVBAR_WIDTH = 300;
+const NAVBAR_WIDTH = 240;
+const NAVBAR_WIDTH_DESKTOP = 300;
 const HEADER_AUTH_SLOT_WIDTH = 88;
 
 const Shell: FC<PropsWithChildren> = ({ children }) => {
@@ -67,7 +68,7 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
       padding={isImmersive ? 0 : 'md'}
       header={{ height: 60, collapsed: isImmersive }}
       navbar={{
-        width: NAVBAR_WIDTH,
+        width: { base: NAVBAR_WIDTH, md: NAVBAR_WIDTH_DESKTOP },
         breakpoint: 'sm',
         collapsed: {
           mobile: !mobileOpened,
@@ -153,7 +154,11 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
       {showShellChrome && (
         <AppShell.Footer
           h={{ base: 100, md: 60 }}
-          ml={{ base: 0, sm: isAuthPage ? 0 : NAVBAR_WIDTH }}
+          ml={{
+            base: 0,
+            sm: isAuthPage ? 0 : NAVBAR_WIDTH,
+            md: isAuthPage ? 0 : NAVBAR_WIDTH_DESKTOP,
+          }}
           data-testid="shell-footer"
         >
           <Footer />

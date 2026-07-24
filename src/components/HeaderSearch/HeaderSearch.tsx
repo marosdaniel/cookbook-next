@@ -1,14 +1,7 @@
 'use client';
 
 import { useQuery } from '@apollo/client/react';
-import {
-  Combobox,
-  Group,
-  Loader,
-  Text,
-  TextInput,
-  useCombobox,
-} from '@mantine/core';
+import { Combobox, Loader, Text, TextInput, useCombobox } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconSearch } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -96,7 +89,6 @@ export const HeaderSearch = () => {
     >
       <Combobox.Target>
         <TextInput
-          label={translate('label')}
           aria-label={translate('label')}
           placeholder={translate('placeholder')}
           value={searchQuery}
@@ -215,9 +207,7 @@ export const HeaderSearch = () => {
                       value={recipe.slug || recipe.id}
                       data-testid="header-search-option"
                     >
-                      <Group>
-                        <Text size="sm">{recipe.title}</Text>
-                      </Group>
+                      <Text size="sm">{recipe.title}</Text>
                     </Combobox.Option>
                   </motion.div>
                 ))}
