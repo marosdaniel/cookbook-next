@@ -370,6 +370,17 @@ const wrappedHandler = async (
   const userId = session?.user?.id;
   const requestId = request.headers.get('x-request-id') || randomUUID();
 
+  const contentType = request.headers.get('content-type') ?? '';
+  if (!contentType.includes('application/json')) {
+    return createJsonResponse(
+      {
+        error: 'Unsupported media type',
+        message: 'GraphQL POST requests must use application/json.',
+      },
+      415,
+    );
+  }
+
   const contentLength = request.headers.get('content-length');
   if (
     contentLength &&

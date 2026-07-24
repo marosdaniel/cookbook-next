@@ -38,15 +38,25 @@ const getApiErrorNotificationCopy = () => {
   };
 };
 
-// Central error link: 'errorPolicy: ignore' used to swallow every GraphQL and
-// network error silently (UI saw an "empty success"). We now surface a
-// notification instead, while keeping partial data available to callers.
+// The global error link surfaces operational failures, while keeping partial
+// data available to callers via errorPolicy: 'all'. Expected business/auth
+// failures are intentionally left to the calling component for local handling.
 const errorLink = new ErrorLink(({ error, operation }) => {
   if (typeof window === 'undefined') {
     return;
   }
 
   if (CombinedGraphQLErrors.is(error)) {
+    const codes = error.errors.map((item) => item.extensions?.code);
+
+    if (
+      codes.includes('BAD_USER_INPUT') ||
+      codes.includes('UNAUTHENTICATED') ||
+      codes.includes('FORBIDDEN')
+    ) {
+      return;
+    }
+
     console.error(`[GraphQL error] ${operation.operationName}:`, error.errors);
   } else if (CombinedProtocolErrors.is(error)) {
     console.error(`[Protocol error] ${operation.operationName}:`, error.errors);

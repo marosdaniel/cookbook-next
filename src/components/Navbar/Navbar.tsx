@@ -7,8 +7,9 @@ import { usePathname } from 'next/navigation';
 import type { Session } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import { type FC, useTransition } from 'react';
+import type { FC } from 'react';
 import { FiBook, FiLogIn, FiLogOut, FiPlusCircle } from 'react-icons/fi';
+import { apolloClient } from '@/lib/apollo/client';
 import {
   AUTH_ROUTES,
   isProtectedRoute,
@@ -28,16 +29,15 @@ const Navbar: FC = () => {
     status: string;
   };
   const pathname = usePathname();
-  const [isPending, startTransition] = useTransition();
   const isSessionLoading = status === 'loading';
+  const isPending = false;
 
   const handleLogout = async () => {
     const shouldRedirect = isProtectedRoute(pathname);
 
-    startTransition(() => {
-      signOut({
-        callbackUrl: shouldRedirect ? AUTH_ROUTES.LOGIN : pathname,
-      });
+    void apolloClient.clearStore();
+    await signOut({
+      callbackUrl: shouldRedirect ? AUTH_ROUTES.LOGIN : pathname,
     });
   };
 

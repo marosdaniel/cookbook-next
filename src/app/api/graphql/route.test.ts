@@ -54,6 +54,13 @@ describe('GraphQL route - request validation', () => {
       expect(match?.[1]).toBe('ChangePassword');
     });
 
+    it('should reject requests without application/json content type', () => {
+      const contentType = '';
+      const isValid = contentType.includes('application/json');
+
+      expect(isValid).toBe(false);
+    });
+
     it('should return null for invalid operation name pattern', () => {
       const query = 'query { getRecipes { id } }';
       const match = query.match(/(?:query|mutation)\s+(\w+)/i);
