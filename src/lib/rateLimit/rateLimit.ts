@@ -1,6 +1,7 @@
 import { type Duration, Ratelimit } from '@upstash/ratelimit';
 import {
   type GraphQLOperationName,
+  normalizeGraphQLOperationName,
   OPERATION_NAMES,
 } from '@/lib/graphql/operations';
 import { rawRedisClient } from '@/lib/redis/redis';
@@ -50,14 +51,16 @@ export const strictRateLimiter = shouldUseLimiter
 export const isRateLimitOperation = (
   operationName: string | undefined,
 ): operationName is RateLimitOperation => {
+  const normalizedOperationName = normalizeGraphQLOperationName(operationName);
+
   return (
-    operationName === OPERATION_NAMES.RESET_PASSWORD ||
-    operationName === OPERATION_NAMES.CREATE_RECIPE ||
-    operationName === OPERATION_NAMES.EDIT_RECIPE ||
-    operationName === OPERATION_NAMES.DELETE_RECIPE ||
-    operationName === OPERATION_NAMES.RATE_RECIPE ||
-    operationName === OPERATION_NAMES.DELETE_RATING ||
-    operationName === OPERATION_NAMES.GET_RECIPES
+    normalizedOperationName === OPERATION_NAMES.RESET_PASSWORD ||
+    normalizedOperationName === OPERATION_NAMES.CREATE_RECIPE ||
+    normalizedOperationName === OPERATION_NAMES.EDIT_RECIPE ||
+    normalizedOperationName === OPERATION_NAMES.DELETE_RECIPE ||
+    normalizedOperationName === OPERATION_NAMES.RATE_RECIPE ||
+    normalizedOperationName === OPERATION_NAMES.DELETE_RATING ||
+    normalizedOperationName === OPERATION_NAMES.GET_RECIPES
   );
 };
 
@@ -67,13 +70,15 @@ export const isStrictRateLimitOperation = (
   RateLimitOperation,
   typeof OPERATION_NAMES.GET_RECIPES
 > => {
+  const normalizedOperationName = normalizeGraphQLOperationName(operationName);
+
   return (
-    operationName === OPERATION_NAMES.RESET_PASSWORD ||
-    operationName === OPERATION_NAMES.CREATE_RECIPE ||
-    operationName === OPERATION_NAMES.EDIT_RECIPE ||
-    operationName === OPERATION_NAMES.DELETE_RECIPE ||
-    operationName === OPERATION_NAMES.RATE_RECIPE ||
-    operationName === OPERATION_NAMES.DELETE_RATING
+    normalizedOperationName === OPERATION_NAMES.RESET_PASSWORD ||
+    normalizedOperationName === OPERATION_NAMES.CREATE_RECIPE ||
+    normalizedOperationName === OPERATION_NAMES.EDIT_RECIPE ||
+    normalizedOperationName === OPERATION_NAMES.DELETE_RECIPE ||
+    normalizedOperationName === OPERATION_NAMES.RATE_RECIPE ||
+    normalizedOperationName === OPERATION_NAMES.DELETE_RATING
   );
 };
 

@@ -8,7 +8,10 @@
  * - adminOperations: Only for ADMIN role
  */
 
-import { OPERATION_NAMES } from '@/lib/graphql/operations';
+import {
+  normalizeGraphQLOperationName,
+  OPERATION_NAMES,
+} from '@/lib/graphql/operations';
 import type { UserRole } from '../../types/user';
 
 interface OperationsConfig {
@@ -108,8 +111,14 @@ export const canUserPerformOperation = (
   operationName: string,
   userRole?: UserRole,
 ): boolean => {
+  const normalizedOperationName = normalizeGraphQLOperationName(operationName);
+
+  if (!normalizedOperationName) {
+    return false;
+  }
+
   // Public operation - anyone can execute
-  if (isPublicOperation(operationName)) {
+  if (isPublicOperation(normalizedOperationName)) {
     return true;
   }
 
@@ -126,14 +135,14 @@ export const canUserPerformOperation = (
   // Blogger operations
   if (userRole === 'BLOGGER') {
     return (
-      operationsConfig.userOperations.includes(operationName) ||
-      operationsConfig.bloggerOperations.includes(operationName)
+      operationsConfig.userOperations.includes(normalizedOperationName) ||
+      operationsConfig.bloggerOperations.includes(normalizedOperationName)
     );
   }
 
   // User operations
   if (userRole === 'USER') {
-    return operationsConfig.userOperations.includes(operationName);
+    return operationsConfig.userOperations.includes(normalizedOperationName);
   }
 
   return false;
@@ -145,19 +154,25 @@ export const canUserPerformOperation = (
 export const getRequiredRolesForOperation = (
   operationName: string,
 ): UserRole[] | 'PUBLIC' => {
-  if (isPublicOperation(operationName)) {
-    return 'PUBLIC';
-  }
+  const normalizedOperationName = normalizeGraphQLOperationName(operationName);
 
-  if (operationsConfig.adminOperations.includes(operationName)) {
+  if (!normalizedOperationName) {
     return ['ADMIN'];
   }
 
-  if (operationsConfig.bloggerOperations.includes(operationName)) {
+  if (isPublicOperation(normalizedOperationName)) {
+    return 'PUBLIC';
+  }
+
+  if (operationsConfig.adminOperations.includes(normalizedOperationName)) {
+    return ['ADMIN'];
+  }
+
+  if (operationsConfig.bloggerOperations.includes(normalizedOperationName)) {
     return ['ADMIN', 'BLOGGER'];
   }
 
-  if (operationsConfig.userOperations.includes(operationName)) {
+  if (operationsConfig.userOperations.includes(normalizedOperationName)) {
     return ['ADMIN', 'BLOGGER', 'USER'];
   }
 

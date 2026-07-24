@@ -21,6 +21,7 @@ import {
 } from '@/lib/dataloader/loaders';
 import { assertGraphQLOperationAuthorized } from '@/lib/graphql/authorization';
 import { canResolveUserField } from '@/lib/graphql/fieldPolicies';
+import { normalizeGraphQLOperationName } from '@/lib/graphql/operations';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
@@ -280,9 +281,9 @@ const extractOperationName = (
 ): string | undefined => {
   // Best-effort fallback for clients that omit operationName; this is only used
   // to select the rate limiter and is not used for authorization decisions.
-  return (
+  return normalizeGraphQLOperationName(
     payload.operationName ??
-    payload.query?.match(/(?:query|mutation)\s+(\w+)/i)?.[1]
+      payload.query?.match(/(?:query|mutation)\s+(\w+)/i)?.[1],
   );
 };
 
@@ -298,11 +299,10 @@ const enforceRateLimit = async (
     : rateLimiter;
 
   if (!limiter) {
-    return createJsonResponse(
-      { error: 'Rate limiter unavailable' },
-      503,
-      strictOperation ? { 'Retry-After': '5' } : {},
+    console.warn(
+      `Rate limiter unavailable for ${operationName ?? 'unknown'}; proceeding without throttling.`,
     );
+    return null;
   }
 
   try {

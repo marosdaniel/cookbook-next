@@ -42,11 +42,40 @@ export const KNOWN_OPERATION_NAMES = new Set<string>(
   Object.values(OPERATION_NAMES),
 );
 
+export const normalizeGraphQLOperationName = (
+  operationName: string | null | undefined,
+): string | undefined => {
+  if (typeof operationName !== 'string') {
+    return undefined;
+  }
+
+  const trimmed = operationName.trim();
+  if (!trimmed) {
+    return undefined;
+  }
+
+  const candidates = [
+    trimmed,
+    trimmed.toLowerCase(),
+    `${trimmed.charAt(0).toLowerCase()}${trimmed.slice(1)}`,
+  ];
+
+  for (const candidate of candidates) {
+    if (KNOWN_OPERATION_NAMES.has(candidate)) {
+      return candidate;
+    }
+  }
+
+  return `${trimmed.charAt(0).toLowerCase()}${trimmed.slice(1)}`;
+};
+
 export const isKnownGraphQLOperation = (
   operationName: string | undefined,
 ): operationName is GraphQLOperationName => {
+  const normalizedOperationName = normalizeGraphQLOperationName(operationName);
+
   return (
-    typeof operationName === 'string' &&
-    KNOWN_OPERATION_NAMES.has(operationName)
+    typeof normalizedOperationName === 'string' &&
+    KNOWN_OPERATION_NAMES.has(normalizedOperationName)
   );
 };

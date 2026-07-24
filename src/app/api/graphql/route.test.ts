@@ -1,4 +1,65 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+vi.mock('@apollo/server', () => ({
+  ApolloServer: class {},
+}));
+
+vi.mock('@as-integrations/next', () => ({
+  startServerAndCreateNextHandler: () => async () =>
+    new Response(JSON.stringify({ data: { getRecipes: { recipes: [] } } }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    }),
+}));
+
+vi.mock('@escape.tech/graphql-armor', () => ({
+  ApolloArmor: class {
+    protect() {
+      return { plugins: [], validationRules: [] };
+    }
+  },
+}));
+
+vi.mock('@/lib/auth/auth', () => ({ auth: vi.fn().mockResolvedValue(null) }));
+vi.mock('@/lib/graphql/authorization', () => ({
+  assertGraphQLOperationAuthorized: vi.fn(),
+}));
+vi.mock('@/lib/graphql/fieldPolicies', () => ({
+  canResolveUserField: vi.fn(() => true),
+}));
+vi.mock('@/lib/graphql/resolvers', () => ({ resolvers: {} }));
+vi.mock('@/lib/graphql/schema', () => ({
+  resolvers: {},
+  typeDefs: 'type Query { hello: String }',
+}));
+vi.mock('@/lib/dataloader/loaders', () => ({
+  createIsFavoriteLoader: vi.fn(),
+  createRatingsLoader: vi.fn(),
+  createRecipeAuthorLoader: vi.fn(),
+  createUserFavoriteRecipesLoader: vi.fn(),
+  createUserRatingLoader: vi.fn(),
+  createUserRecipesLoader: vi.fn(),
+}));
+vi.mock('@/lib/prisma/prisma', () => ({ prisma: {} }));
+vi.mock('@/lib/prisma/prismaTimeout', () => ({
+  createPrismaTimeoutProxy: (value: unknown) => value,
+}));
+vi.mock('@/lib/rateLimit/clientIp', () => ({
+  getRateLimitClientKey: vi.fn(() => '127.0.0.1'),
+}));
+vi.mock('@/lib/rateLimit/rateLimit', () => ({
+  getRateLimiterForOperation: vi.fn(() => null),
+  isRateLimitOperation: vi.fn(
+    (name: string | undefined) => name === 'getRecipes',
+  ),
+  isStrictRateLimitOperation: vi.fn(() => false),
+  rateLimiter: null,
+}));
+vi.mock('@/lib/redis/redis', () => ({
+  withTimeout: vi.fn(async (_operation: () => Promise<unknown>) => {
+    return await _operation();
+  }),
+}));
 
 /**
  * GraphQL route integration tests
@@ -17,6 +78,31 @@ import { describe, expect, it } from 'vitest';
  */
 
 describe('GraphQL route - request validation', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should not return 503 for non-strict operations when rate limiting is unavailable', async () => {
+    const { POST } = await import('./route');
+    const request = new Request('http://localhost/api/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        operationName: 'GetRecipes',
+        query: 'query GetRecipes { getRecipes(limit: 10) { id } }',
+      }),
+    });
+
+    const response = await POST(
+      request as unknown as Parameters<typeof POST>[0],
+    );
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({
+      data: { getRecipes: { recipes: [] } },
+    });
+  });
+
   describe('request body validation', () => {
     it('should accept small valid GraphQL payloads under 1MB limit', () => {
       // Verify that reasonably-sized requests are not rejected
