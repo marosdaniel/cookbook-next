@@ -130,14 +130,16 @@ const protection = armor.protect();
  * APQ is disabled due to hash mismatches between client and server normalization.
  */
 const disableAPQValidationPlugin: ApolloServerPlugin<GraphQLContext> = {
-  async requestDidResolveOperation(
-    requestContext,
-  ): Promise<GraphQLRequestListener<GraphQLContext> | undefined> {
-    // Remove the persisted query validation by clearing extensions
-    // This prevents Apollo Server's built-in APQ plugin from rejecting queries
-    if (requestContext.request.extensions?.persistedQuery) {
-      delete requestContext.request.extensions.persistedQuery;
-    }
+  async requestDidStart() {
+    return {
+      async didResolveOperation(requestContext) {
+        // Remove the persisted query validation by clearing extensions
+        // This prevents Apollo Server's built-in APQ plugin from rejecting queries
+        if (requestContext.request.extensions?.persistedQuery) {
+          delete requestContext.request.extensions.persistedQuery;
+        }
+      },
+    };
   },
 };
 
@@ -452,3 +454,4 @@ const wrappedHandler = async (
 
 // Export Next.js route handlers
 export const POST = wrappedHandler;
+export { wrappedHandler };

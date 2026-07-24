@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { UserRole } from '@/types/user';
 
 // Mock next/server
 vi.mock('next/server', () => ({
@@ -18,6 +19,9 @@ vi.mock('next-auth', () => ({
 }));
 
 describe('proxy.ts', () => {
+  const userRole: UserRole = 'USER';
+  const adminRole: UserRole = 'ADMIN';
+
   // biome-ignore lint/suspicious/noExplicitAny: proxy type is complex to mock fully
   let proxyFn: (req: any) => any;
 
@@ -76,7 +80,7 @@ describe('proxy.ts', () => {
 
   it('should not redirect authenticated users from /me routes', () => {
     const req = {
-      auth: { user: { id: '1' } },
+      auth: { user: { id: '1', role: userRole } },
       nextUrl: new URL('http://localhost:3000/me/profile'),
     };
 
@@ -84,6 +88,38 @@ describe('proxy.ts', () => {
 
     expect(NextResponse.redirect).not.toHaveBeenCalled();
     expect(result).toBeUndefined(); // proxy continues
+  });
+
+  it('should allow ADMIN users to access /admin routes', () => {
+    const req = {
+      auth: { user: { id: '1', role: adminRole } },
+      nextUrl: new URL('http://localhost:3000/admin'),
+    };
+
+    const result = proxyFn(req);
+
+    expect(NextResponse.redirect).not.toHaveBeenCalled();
+    expect(result).toBeUndefined();
+  });
+
+  it('should reject non-admin users from /admin routes', () => {
+    const nextUrl = new URL('http://localhost:3000/admin');
+    const req = {
+      auth: { user: { id: '1', role: userRole } },
+      nextUrl,
+    };
+
+    proxyFn(req);
+
+    expect(NextResponse.redirect).toHaveBeenCalled();
+    const redirectUrl = (
+      NextResponse.redirect as unknown as {
+        mock: {
+          calls: string[][];
+        };
+      }
+    ).mock.calls[0][0].toString();
+    expect(redirectUrl).toContain('/login');
   });
 
   it('should not redirect from non-protected routes even if unauthenticated', () => {

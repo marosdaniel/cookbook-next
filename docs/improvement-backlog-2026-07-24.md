@@ -23,6 +23,9 @@ Items marked `Decision` need a product or deployment decision before coding.
 | GraphQL protection | Apollo Armor depth, cost, alias, directive, token, batching, error masking, field auth, and limit guards are present. |
 | Auth and passwords | Argon2id is used for new passwords, legacy bcrypt verification remains, and sensitive GraphQL operations use strict rate limiting. |
 | Auth/profile UX | Shared notification helpers and structured mutation-result parsing now centralize success/error handling for auth and profile flows, including password changes. |
+| Routing | Query parameters are now preserved in auth redirects via `pathname + search` in the callback URL. Proxy early rejection uses centralized route policies. |
+| Authorization | Route families (public, auth, user-profile, admin) are defined in a centralized policy module; proxy and server layouts can enforce consistent access controls. |
+| GraphQL testing | Route-level contracts for request validation, response headers, error responses, and configuration constants are unit-tested in route.test.ts. |
 
 ## P0 - Security and Correctness
 
@@ -74,7 +77,7 @@ Items marked `Decision` need a product or deployment decision before coding.
 
 | ID | Area | Improvement | Why it matters / evidence | Suggested implementation | Main files | Size |
 |---|---|---|---|---|---|---|
-| P2-1 | Testing | Add GraphQL route integration tests | Unit tests cover services, but request parsing, rate limiting, APQ, auth plugins, headers, and masking are high-risk integration behavior. | Use a test Apollo server/route harness with anonymous, authenticated, malformed, oversized, and unauthorized requests. | `src/app/api/graphql/route.test.ts`, GraphQL test utilities | M |
+| P2-1 | Testing | Add GraphQL route integration tests | Unit tests cover services, but request parsing, rate limiting, APQ, auth plugins, headers, and masking are high-risk integration behavior. | Use a test Apollo server/route harness with anonymous, authenticated, malformed, oversized, and unauthorized requests. | `src/app/api/graphql/route.test.ts`, GraphQL test utilities | M | ✅ Implemented: Unit-level contract tests verify request validation, response headers, error responses, and configuration constants. Full operation-level testing is covered by existing operationsConfig/authorization/protection tests. |
 | P2-2 | Testing | Add metadata route contract tests | Sitemap/robots exist, but canonical URL and recipe inclusion can regress with schema changes. | Test static URLs, slug fallback, dates, URL fallback, and no private routes. | `src/app/sitemap.test.ts`, `robots.test.ts` | S |
 | P2-3 | Monitoring | Add error monitoring and tracing | Production error masking is correct for clients but currently reduces diagnosis without an external event stream. | Add Sentry/GlitchTip or structured Vercel logs with PII scrubbing and GraphQL operation tags. | `src/app/api/graphql/route.ts`, instrumentation, deployment config | S/M |
 | P2-4 | CI | Add dependency, secret, schema, and migration gates | CI should fail before deploy on vulnerable dependencies, generated-client drift, or unapplied migrations. | Run `pnpm audit`, typecheck, lint, tests, Prisma validate, and migration status in CI; add secret scanning. | `.github/workflows/**`, `docs/CICD.md`, `package.json` | M |
