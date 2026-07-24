@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache, Suspense } from 'react';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
@@ -159,10 +160,13 @@ export default async function RecipeDetailPage({
     permanentRedirect(PUBLIC_ROUTES.RECIPE_DETAIL(recipe.slug));
   }
 
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
+
   return (
     <>
       <script
         type="application/ld+json"
+        nonce={nonce}
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be emitted as script text.
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(
