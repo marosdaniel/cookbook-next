@@ -50,6 +50,30 @@ describe('proxy.ts', () => {
     expect(redirectUrl).toContain('callbackUrl=%2Fme%2Fprofile');
   });
 
+  it('should preserve query parameters in the callback URL for protected routes', () => {
+    const nextUrl = new URL(
+      'http://localhost:3000/me/profile?tab=settings&sort=asc',
+    );
+    const req = {
+      auth: null,
+      nextUrl,
+    };
+
+    proxyFn(req);
+
+    expect(NextResponse.redirect).toHaveBeenCalled();
+    const redirectUrl = (
+      NextResponse.redirect as unknown as {
+        mock: {
+          calls: string[];
+        };
+      }
+    ).mock.calls[0][0].toString();
+    expect(redirectUrl).toContain(
+      'callbackUrl=%2Fme%2Fprofile%3Ftab%3Dsettings%26sort%3Dasc',
+    );
+  });
+
   it('should not redirect authenticated users from /me routes', () => {
     const req = {
       auth: { user: { id: '1' } },

@@ -22,6 +22,7 @@ Items marked `Decision` need a product or deployment decision before coding.
 | Error handling | Missing recipes use `notFound()`; unexpected lookup failures are rethrown. |
 | GraphQL protection | Apollo Armor depth, cost, alias, directive, token, batching, error masking, field auth, and limit guards are present. |
 | Auth and passwords | Argon2id is used for new passwords, legacy bcrypt verification remains, and sensitive GraphQL operations use strict rate limiting. |
+| Auth/profile UX | Shared notification helpers and structured mutation-result parsing now centralize success/error handling for auth and profile flows, including password changes. |
 
 ## P0 - Security and Correctness
 

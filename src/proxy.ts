@@ -12,7 +12,8 @@ export const proxy = auth((req) => {
   // Protect /me routes
   if (pathname.startsWith('/me')) {
     if (!isLoggedIn) {
-      const callbackUrl = encodeURIComponent(pathname);
+      const callbackPath = `${pathname}${req.nextUrl.search}`;
+      const callbackUrl = encodeURIComponent(callbackPath);
       return NextResponse.redirect(
         new URL(`${AUTH_ROUTES.LOGIN}?callbackUrl=${callbackUrl}`, req.nextUrl),
       );
