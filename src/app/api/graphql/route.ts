@@ -35,6 +35,7 @@ import { withTimeout } from '@/lib/redis/redis';
 import type { GraphQLContext } from '../../../types/graphql/context';
 
 const prismaWithTimeout = createPrismaTimeoutProxy(prisma, 10000);
+const MAX_GRAPHQL_BODY_BYTES = 1_048_576;
 
 const requestStorage = new AsyncLocalStorage<{
   session: Session | null;
@@ -343,7 +344,28 @@ const wrappedHandler = async (
   const session = await auth();
   const userId = session?.user?.id;
 
+  const contentLength = request.headers.get('content-length');
+  if (
+    contentLength &&
+    Number.isFinite(Number(contentLength)) &&
+    Number(contentLength) > MAX_GRAPHQL_BODY_BYTES
+  ) {
+    return createJsonResponse(
+      { error: 'GraphQL request body is too large' },
+      413,
+    );
+  }
+
   const requestBody = await request.text();
+  if (
+    new TextEncoder().encode(requestBody).byteLength > MAX_GRAPHQL_BODY_BYTES
+  ) {
+    return createJsonResponse(
+      { error: 'GraphQL request body is too large' },
+      413,
+    );
+  }
+
   if (!requestBody.trim()) {
     return createJsonResponse(
       {

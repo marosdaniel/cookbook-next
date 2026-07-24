@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { authConfig } from './auth.config';
 
 describe('authConfig', () => {
-  it('should have the correct session strategy and maxAge', () => {
+  it('should have the correct session strategy and fixed maxAge', () => {
     expect(authConfig.session).toEqual({
       strategy: 'jwt',
       maxAge: 14 * 24 * 60 * 60,
@@ -27,7 +27,6 @@ describe('authConfig', () => {
           firstName: 'John',
           lastName: 'Doe',
           locale: 'hu',
-          rememberMe: true,
         };
 
         const result = await (
@@ -50,30 +49,9 @@ describe('authConfig', () => {
           firstName: 'John',
           lastName: 'Doe',
           locale: 'hu',
-          rememberMe: true,
-          maxAge: 14 * 24 * 60 * 60,
           jti: expect.any(String),
           iat: expect.any(Number),
         });
-      });
-
-      it('should set shorter maxAge if rememberMe is false', async () => {
-        const token = {} as JWT;
-        const user = {
-          rememberMe: false,
-        };
-
-        const result = await (
-          authConfig.callbacks as unknown as {
-            jwt: (c: unknown) => Promise<JWT>;
-          }
-        ).jwt({
-          token,
-          user: user as unknown,
-          account: null,
-        });
-
-        expect(result.maxAge).toBe(2 * 60 * 60);
       });
 
       it('should return original token if user is not provided', async () => {
@@ -104,13 +82,11 @@ describe('authConfig', () => {
           firstName: 'Test',
           lastName: 'User',
           locale: 'en-gb',
-          rememberMe: true,
-          maxAge: 12345,
         } as unknown as JWT;
 
         const result = await (
           authConfig.callbacks as unknown as {
-            session: (c: unknown) => Promise<Session & { maxAge?: number }>;
+            session: (c: unknown) => Promise<Session>;
           }
         ).session({
           session,
@@ -127,9 +103,7 @@ describe('authConfig', () => {
           firstName: 'Test',
           lastName: 'User',
           locale: 'en-gb',
-          rememberMe: true,
         });
-        expect(result.maxAge).toBe(12345);
       });
 
       it('should use default values if token values are missing', async () => {

@@ -15,15 +15,12 @@ export const authConfig = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        const sessionMaxAge = user.rememberMe ? 14 * 24 * 60 * 60 : 2 * 60 * 60;
         token.id = user.id;
         token.role = user.role;
         token.userName = user.userName;
         token.firstName = user.firstName;
         token.lastName = user.lastName;
         token.locale = user.locale;
-        token.rememberMe = user.rememberMe;
-        token.maxAge = sessionMaxAge;
         token.jti = createTokenId();
         token.iat = createIssuedAt();
       }
@@ -38,8 +35,6 @@ export const authConfig = {
         session.user.firstName = token.firstName ?? '';
         session.user.lastName = token.lastName ?? '';
         session.user.locale = token.locale ?? 'en-gb';
-        session.user.rememberMe = token.rememberMe ?? false;
-        session.maxAge = token.maxAge ?? 2 * 60 * 60; // 2 hours
       }
       return session;
     },

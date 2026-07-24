@@ -294,7 +294,10 @@ export const UserService = {
 
     await prisma.user.update({
       where: { id: userId },
-      data: { password: hashedPassword },
+      data: {
+        password: hashedPassword,
+        sessionVersion: { increment: 1 },
+      },
     });
 
     return true;
@@ -396,6 +399,7 @@ export const UserService = {
       where: { id: user.id },
       data: {
         password: hashedPassword,
+        sessionVersion: { increment: 1 },
         resetPasswordToken: null,
         resetPasswordExpires: null,
       },

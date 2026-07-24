@@ -5,15 +5,51 @@ import type { Locale } from '@/types/common';
 import { authConfig } from './auth.config';
 import { verifyPassword } from './password';
 
+const configuredJwt = authConfig.callbacks?.jwt;
+const configuredSession = authConfig.callbacks?.session;
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
+  callbacks: {
+    ...authConfig.callbacks,
+    async jwt(context) {
+      const token = configuredJwt
+        ? await configuredJwt(context)
+        : context.token;
+
+      if (token.id) {
+        const currentUser = await prisma.user.findUnique({
+          where: { id: token.id },
+          select: { sessionVersion: true },
+        });
+
+        if (
+          !currentUser ||
+          (token.authVersion !== undefined &&
+            token.authVersion !== currentUser.sessionVersion)
+        ) {
+          token.revoked = true;
+        } else {
+          token.authVersion = currentUser.sessionVersion;
+        }
+      }
+
+      return token;
+    },
+    async session(context) {
+      if (context.token.revoked) {
+        throw new Error('Session has been revoked');
+      }
+
+      return configuredSession ? configuredSession(context) : context.session;
+    },
+  },
   providers: [
     Credentials({
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
-        rememberMe: { label: 'Remember Me', type: 'checkbox' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -50,9 +86,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           userName: user.userName,
           role: user.role,
           locale: user.locale as Locale,
-          rememberMe:
-            credentials.rememberMe === 'true' ||
-            credentials.rememberMe === 'on',
+          sessionVersion: user.sessionVersion ?? 0,
         };
       },
     }),

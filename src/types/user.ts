@@ -32,7 +32,6 @@ export type User = BaseUser & {
  */
 export type SessionUser = BaseUser & {
   email?: string; // Optional in session
-  rememberMe?: boolean;
 };
 
 // --- API Types ---

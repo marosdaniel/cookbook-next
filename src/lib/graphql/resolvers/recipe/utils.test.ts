@@ -130,6 +130,7 @@ describe('recipe resolver utils', () => {
       password: '',
       locale: '',
       role: 'ADMIN' as const,
+      sessionVersion: 0,
       resetPasswordToken: null,
       resetPasswordExpires: null,
       createdAt: new Date(),

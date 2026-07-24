@@ -146,7 +146,6 @@ describe('LoginForm', () => {
       expect(screen.getByText('Welcome back!')).toBeInTheDocument();
       expect(screen.getByTestId('login-email-input')).toBeInTheDocument();
       expect(screen.getByTestId('login-password-input')).toBeInTheDocument();
-      expect(screen.getByTestId('remember-me')).toBeInTheDocument();
       expect(screen.getByTestId('login-button')).toBeInTheDocument();
     });
 
@@ -224,29 +223,6 @@ describe('LoginForm', () => {
           email: 'test@example.com',
           password: 'Password1', // NOSONAR
           redirect: false,
-          rememberMe: false,
-        });
-      });
-    });
-
-    it('includes rememberMe when checkbox is checked', async () => {
-      mockSignInSuccess();
-
-      render(<LoginForm />);
-
-      const { emailInput, passwordInput } = getFormInputs();
-      const rememberMeCheckbox = screen.getByTestId('remember-me');
-      const submitButton = await fillLoginForm(emailInput, passwordInput);
-
-      fireEvent.click(rememberMeCheckbox);
-      fireEvent.click(submitButton);
-
-      await waitFor(() => {
-        expect(signIn).toHaveBeenCalledWith('credentials', {
-          email: 'test@example.com',
-          password: 'Password1', // NOSONAR
-          redirect: false,
-          rememberMe: true,
         });
       });
     });
@@ -318,21 +294,6 @@ describe('LoginForm', () => {
           color: 'red',
         });
       });
-    });
-  });
-
-  describe('Remember Me Functionality', () => {
-    it('toggles remember me checkbox', () => {
-      render(<LoginForm />);
-
-      const checkbox = screen.getByTestId('remember-me');
-      expect(checkbox).not.toBeChecked();
-
-      fireEvent.click(checkbox);
-      expect(checkbox).toBeChecked();
-
-      fireEvent.click(checkbox);
-      expect(checkbox).not.toBeChecked();
     });
   });
 

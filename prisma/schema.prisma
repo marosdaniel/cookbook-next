@@ -26,6 +26,7 @@ model User {
   password             String
   locale               String    @default("en-gb")
   role                 UserRole  @default(USER)
+  sessionVersion      Int       @default(0)
   resetPasswordToken   String?
   resetPasswordExpires DateTime?
   createdAt            DateTime  @default(now())

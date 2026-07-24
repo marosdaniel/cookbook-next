@@ -3,7 +3,6 @@
 import {
   Anchor,
   Button,
-  Checkbox,
   Container,
   Group,
   Paper,
@@ -28,7 +27,6 @@ import type { LoginFormValues } from './types';
 export const LoginForm: FC = () => {
   const translate = useTranslations();
   const router = useRouter();
-  const [rememberMe, setRememberMe] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
 
   const form = useForm<LoginFormValues>({
@@ -54,7 +52,6 @@ export const LoginForm: FC = () => {
         email: values.email,
         password: values.password,
         redirect: false,
-        rememberMe,
       });
 
       if (result?.error) {
@@ -144,13 +141,7 @@ export const LoginForm: FC = () => {
           data-testid="login-password-input"
           {...form.getInputProps('password')}
         />
-        <Group justify="space-between" mt="lg">
-          <Checkbox
-            data-testid="remember-me"
-            label={translate('auth.rememberMe')}
-            checked={rememberMe}
-            onChange={(e) => setRememberMe(e.currentTarget.checked)}
-          />
+        <Group justify="flex-end" mt="lg">
           <Anchor
             variant="gradient"
             gradient={{ from: 'blue', to: 'cyan', deg: 90 }}

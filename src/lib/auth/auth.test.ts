@@ -93,7 +93,6 @@ describe('auth.ts', () => {
       const result = await authorize({
         email: 'test@example.com',
         password: 'password',
-        rememberMe: 'true',
       });
 
       expect(result).toEqual({
@@ -104,23 +103,8 @@ describe('auth.ts', () => {
         userName: 'johndoe',
         role: 'USER',
         locale: 'en',
-        rememberMe: true,
+        sessionVersion: 0,
       });
-    });
-
-    it('should handle rememberMe as "on"', async () => {
-      (prisma.user.findUnique as Mock).mockResolvedValue({
-        id: '1',
-        password: 'hp',
-      });
-      (verifyPassword as Mock).mockResolvedValue(true);
-
-      const result = (await authorize({
-        email: 'a@b.com',
-        password: 'p',
-        rememberMe: 'on',
-      })) as { rememberMe: boolean };
-      expect(result.rememberMe).toBe(true);
     });
   });
 });
