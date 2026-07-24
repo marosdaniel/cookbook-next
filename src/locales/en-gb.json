@@ -650,6 +650,7 @@
     "recentlyViewedHint": "* Recently viewed recipes — coming soon"
   },
   "headerSearch": {
+    "label": "Search recipes",
     "placeholder": "Search...",
     "searching": "Searching...",
     "noResults": "No results",

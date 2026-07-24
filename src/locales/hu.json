@@ -650,6 +650,7 @@
     "recentlyViewedHint": "* Nemrég megtekintett receptek — hamarosan"
   },
   "headerSearch": {
+    "label": "Receptek keresése",
     "placeholder": "Keresés...",
     "searching": "Keresés folyamatban...",
     "noResults": "Nincs találat",

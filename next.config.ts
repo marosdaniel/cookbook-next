@@ -6,7 +6,7 @@ const developmentScriptPolicy =
 
 const cspValue = [
   "default-src 'self'",
-  `script-src 'self' https://va.vercel-scripts.com 'unsafe-inline'${developmentScriptPolicy}`,
+  `script-src 'self' https://va.vercel-scripts.com${developmentScriptPolicy}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https:",
   "font-src 'self' https://fonts.gstatic.com",

@@ -96,6 +96,8 @@ export const HeaderSearch = () => {
     >
       <Combobox.Target>
         <TextInput
+          label={translate('label')}
+          aria-label={translate('label')}
           placeholder={translate('placeholder')}
           value={searchQuery}
           onChange={(event) => handleChange(event.currentTarget.value)}

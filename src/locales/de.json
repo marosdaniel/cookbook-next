@@ -63,6 +63,7 @@
     "text": "Cookbook"
   },
   "headerSearch": {
+    "label": "Rezepte suchen",
     "placeholder": "Suchen...",
     "searching": "Suchen...",
     "noResults": "Keine Ergebnisse",

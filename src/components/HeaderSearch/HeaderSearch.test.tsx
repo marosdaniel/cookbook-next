@@ -27,6 +27,7 @@ vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) =>
     ({
       placeholder: 'Search recipes',
+      label: 'Search recipes',
       searching: 'Searching...',
       searchError: 'Search error',
       noResults: 'No results',
@@ -161,7 +162,9 @@ describe('HeaderSearch', () => {
 
     render(<HeaderSearch />);
 
-    expect(screen.getByTestId('header-search-input')).toBeInTheDocument();
+    const input = screen.getByLabelText('Search recipes');
+    expect(input).toBeInTheDocument();
+    expect(input).toHaveAttribute('data-testid', 'header-search-input');
     expect(screen.getByTestId('header-search-dropdown')).toBeInTheDocument();
   });
 
