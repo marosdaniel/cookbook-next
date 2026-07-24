@@ -1,5 +1,6 @@
 import { notifications } from '@mantine/notifications';
 import { describe, expect, it, vi } from 'vitest';
+import { getMutationResultState } from './mutationResult';
 import {
   showErrorNotification,
   showSuccessNotification,
@@ -66,7 +67,30 @@ describe('notifications utils', () => {
       expect(notifications.show).toHaveBeenCalledWith({
         title,
         message,
-        color: 'green',
+        color: 'teal',
+      });
+    });
+  });
+
+  describe('getMutationResultState', () => {
+    it('should treat boolean true as success', () => {
+      expect(getMutationResultState(true)).toEqual({
+        isSuccess: true,
+        message: undefined,
+      });
+    });
+
+    it('should use object success flag when present', () => {
+      expect(getMutationResultState({ success: true, message: 'ok' })).toEqual({
+        isSuccess: true,
+        message: 'ok',
+      });
+    });
+
+    it('should treat falsey object as failure and return fallback message', () => {
+      expect(getMutationResultState({ success: false })).toEqual({
+        isSuccess: false,
+        message: undefined,
       });
     });
   });

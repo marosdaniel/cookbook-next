@@ -8,9 +8,17 @@ export const changePassword = async (
   _: unknown,
   { passwordEditInput }: ChangePasswordInput,
   { userId }: GraphQLContext,
-): Promise<boolean> => {
+): Promise<{ success: boolean; message: string }> => {
   if (!userId) {
     return throwCustomError('Unauthorized', ErrorTypes.UNAUTHORIZED);
   }
-  return await UserService.changePassword(userId, passwordEditInput);
+
+  const success = await UserService.changePassword(userId, passwordEditInput);
+
+  return {
+    success,
+    message: success
+      ? 'Password changed successfully'
+      : 'Failed to change password',
+  };
 };

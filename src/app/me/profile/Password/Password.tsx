@@ -24,6 +24,7 @@ import {
   passwordEditValidationSchema,
 } from '@/lib/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
+import { getMutationResultState } from '@/utils/mutationResult';
 import {
   showErrorNotification,
   showSuccessNotification,
@@ -69,12 +70,10 @@ const Password = () => {
         | boolean
         | { success?: boolean; message?: string }
         | undefined;
-      const isSuccessfulResponse =
-        typeof changePasswordResult === 'boolean'
-          ? changePasswordResult
-          : changePasswordResult?.success === true;
+      const { isSuccess, message } =
+        getMutationResultState(changePasswordResult);
 
-      if (isSuccessfulResponse) {
+      if (isSuccess) {
         showSuccessNotification(
           translate('response.success'),
           translate('notifications.passwordChangedMessage'),
@@ -84,7 +83,7 @@ const Password = () => {
         showErrorNotification(
           translate('response.error'),
           translate('response.unknownError'),
-          changePasswordResult,
+          message,
         );
       }
     } catch {

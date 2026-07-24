@@ -154,7 +154,7 @@ export type ChangePasswordMutationVariables = Exact<{
 }>;
 
 
-export type ChangePasswordMutation = { changePassword: boolean };
+export type ChangePasswordMutation = { changePassword: { success: boolean | null, message: string | null } };
 
 export type UpdateUserMutationVariables = Exact<{
   userUpdateInput: UserUpdateInput;
@@ -332,7 +332,10 @@ export const SetNewPasswordDocument = new TypedDocumentString(`
     `) as unknown as TypedDocumentString<SetNewPasswordMutation, SetNewPasswordMutationVariables>;
 export const ChangePasswordDocument = new TypedDocumentString(`
     mutation changePassword($passwordEditInput: PasswordEditInput!) {
-  changePassword(passwordEditInput: $passwordEditInput)
+  changePassword(passwordEditInput: $passwordEditInput) {
+    success
+    message
+  }
 }
     `) as unknown as TypedDocumentString<ChangePasswordMutation, ChangePasswordMutationVariables>;
 export const UpdateUserDocument = new TypedDocumentString(`

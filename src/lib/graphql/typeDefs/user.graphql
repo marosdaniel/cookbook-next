@@ -101,7 +101,7 @@ type Mutation {
   createUser(userRegisterInput: UserRegisterInput): UserOperationResponse!
   updateUser(userUpdateInput: UserUpdateInput!): UserUpdateResponse!
 
-  changePassword(passwordEditInput: PasswordEditInput!): Boolean!
+  changePassword(passwordEditInput: PasswordEditInput!): BaseResponse!
   resetPassword(email: String!): BaseResponse!
   setNewPassword(token: String!, newPassword: String!): BaseResponse!
 

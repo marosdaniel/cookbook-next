@@ -18,7 +18,7 @@ type Documents = {
     "\n  mutation createUser($userRegisterInput: UserRegisterInput!) {\n    createUser(userRegisterInput: $userRegisterInput) {\n      success\n      message\n      messageKey\n      user {\n        id\n        email\n        firstName\n        lastName\n        userName\n      }\n    }\n  }\n": typeof types.CreateUserDocument,
     "\n  mutation resetPassword($email: String!) {\n    resetPassword(email: $email) {\n      success\n      message\n    }\n  }\n": typeof types.ResetPasswordDocument,
     "\n  mutation setNewPassword($token: String!, $newPassword: String!) {\n    setNewPassword(token: $token, newPassword: $newPassword) {\n      success\n      message\n    }\n  }\n": typeof types.SetNewPasswordDocument,
-    "\n  mutation changePassword($passwordEditInput: PasswordEditInput!) {\n    changePassword(passwordEditInput: $passwordEditInput)\n  }\n": typeof types.ChangePasswordDocument,
+    "\n  mutation changePassword($passwordEditInput: PasswordEditInput!) {\n    changePassword(passwordEditInput: $passwordEditInput) {\n      success\n      message\n    }\n  }\n": typeof types.ChangePasswordDocument,
     "\n  mutation updateUser($userUpdateInput: UserUpdateInput!) {\n    updateUser(userUpdateInput: $userUpdateInput) {\n      success\n      message\n      user {\n        id\n        firstName\n        lastName\n      }\n    }\n  }\n": typeof types.UpdateUserDocument,
     "\n  mutation CreateRecipe($recipeCreateInput: RecipeCreateInput!) {\n    createRecipe(recipeCreateInput: $recipeCreateInput) {\n      id\n      title\n    }\n  }\n": typeof types.CreateRecipeDocument,
     "\n  mutation EditRecipe($id: ID!, $recipeEditInput: RecipeEditInput!) {\n    editRecipe(id: $id, recipeEditInput: $recipeEditInput) {\n      id\n      title\n    }\n  }\n": typeof types.EditRecipeDocument,
@@ -41,7 +41,7 @@ const documents: Documents = {
     "\n  mutation createUser($userRegisterInput: UserRegisterInput!) {\n    createUser(userRegisterInput: $userRegisterInput) {\n      success\n      message\n      messageKey\n      user {\n        id\n        email\n        firstName\n        lastName\n        userName\n      }\n    }\n  }\n": types.CreateUserDocument,
     "\n  mutation resetPassword($email: String!) {\n    resetPassword(email: $email) {\n      success\n      message\n    }\n  }\n": types.ResetPasswordDocument,
     "\n  mutation setNewPassword($token: String!, $newPassword: String!) {\n    setNewPassword(token: $token, newPassword: $newPassword) {\n      success\n      message\n    }\n  }\n": types.SetNewPasswordDocument,
-    "\n  mutation changePassword($passwordEditInput: PasswordEditInput!) {\n    changePassword(passwordEditInput: $passwordEditInput)\n  }\n": types.ChangePasswordDocument,
+    "\n  mutation changePassword($passwordEditInput: PasswordEditInput!) {\n    changePassword(passwordEditInput: $passwordEditInput) {\n      success\n      message\n    }\n  }\n": types.ChangePasswordDocument,
     "\n  mutation updateUser($userUpdateInput: UserUpdateInput!) {\n    updateUser(userUpdateInput: $userUpdateInput) {\n      success\n      message\n      user {\n        id\n        firstName\n        lastName\n      }\n    }\n  }\n": types.UpdateUserDocument,
     "\n  mutation CreateRecipe($recipeCreateInput: RecipeCreateInput!) {\n    createRecipe(recipeCreateInput: $recipeCreateInput) {\n      id\n      title\n    }\n  }\n": types.CreateRecipeDocument,
     "\n  mutation EditRecipe($id: ID!, $recipeEditInput: RecipeEditInput!) {\n    editRecipe(id: $id, recipeEditInput: $recipeEditInput) {\n      id\n      title\n    }\n  }\n": types.EditRecipeDocument,
@@ -76,7 +76,7 @@ export function graphql(source: "\n  mutation setNewPassword($token: String!, $n
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation changePassword($passwordEditInput: PasswordEditInput!) {\n    changePassword(passwordEditInput: $passwordEditInput)\n  }\n"): typeof import('./graphql').ChangePasswordDocument;
+export function graphql(source: "\n  mutation changePassword($passwordEditInput: PasswordEditInput!) {\n    changePassword(passwordEditInput: $passwordEditInput) {\n      success\n      message\n    }\n  }\n"): typeof import('./graphql').ChangePasswordDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
