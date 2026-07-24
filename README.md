@@ -158,6 +158,42 @@ pnpm test:coverage
 
 Open [http://localhost:3000](http://localhost:3000) to view the app.
 
+### GraphQL Code Generation
+
+This project uses **GraphQL Code Generator** (`@graphql-codegen/client-preset`) to automatically generate TypeScript types from the GraphQL schema. This ensures **100% type safety** between client operations and server definitions—no manual type duplication.
+
+#### Quick Start
+
+```bash
+# Generate types from schema + client documents
+pnpm codegen
+
+# Verify types are up-to-date (run before committing)
+pnpm codegen:check
+
+# Watch mode (optional, during development)
+pnpm codegen --watch
+```
+
+#### What Gets Generated
+
+- **Input types** – `RecipeCreateInput`, `IngredientInput`, `PasswordEditInput`, etc.
+- **Operation result types** – `GetRecipeByIdQuery`, `CreateRecipeMutation`, etc.
+- **Document registry** – Type-safe Apollo Client operations with no manual annotations
+
+#### Adding a Query or Mutation
+
+1. **Add to `.graphql` file** → `src/lib/graphql/typeDefs/recipe.graphql`
+2. **Create resolver** → `src/lib/graphql/resolvers/recipe/queries/`
+3. **Add operation document** → `src/lib/graphql/queries.ts` or `mutations.ts`
+4. **Run `pnpm codegen`** → Types are auto-generated
+
+#### CI Integration
+
+The deployment pipeline runs `pnpm codegen:check` to verify schema and client documents stay synchronized. Failures indicate missing code generation after schema changes.
+
+**For more details**, see [📖 GraphQL Documentation](./docs/GRAPHQL.md) – covers schema structure, security (persisted queries, field-level auth), and best practices.
+
 ### Building for Production
 
 ```bash

@@ -5,9 +5,12 @@ import {
   CombinedProtocolErrors,
   HttpLink,
   InMemoryCache,
+  Observable,
 } from '@apollo/client';
 import { ErrorLink } from '@apollo/client/link/error';
 import { notifications } from '@mantine/notifications';
+import type { DocumentNode } from 'graphql';
+import { print } from 'graphql';
 import { store } from '@/lib/store';
 import deMessages from '@/locales/de.json';
 import enGbMessages from '@/locales/en-gb.json';
@@ -87,14 +90,42 @@ const httpLink = new HttpLink({
   credentials: 'same-origin',
 });
 
+const getBrowserPersistedQueryHash = async (document: DocumentNode) => {
+  const encodedQuery = new TextEncoder().encode(print(document));
+  const digest = await globalThis.crypto.subtle.digest('SHA-256', encodedQuery);
+
+  return Array.from(new Uint8Array(digest), (byte) =>
+    byte.toString(16).padStart(2, '0'),
+  ).join('');
+};
+
+const persistedQueryLink = new ApolloLink((operation, forward) => {
+  return new Observable((observer) => {
+    let subscription: { unsubscribe: () => void } | undefined;
+
+    getBrowserPersistedQueryHash(operation.query)
+      .then((sha256Hash) => {
+        operation.extensions = {
+          ...operation.extensions,
+          persistedQuery: { version: 1, sha256Hash },
+        };
+
+        subscription = forward(operation).subscribe(observer);
+      })
+      .catch((error: unknown) => observer.error(error));
+
+    return () => subscription?.unsubscribe();
+  });
+});
+
 export const apolloClient = new ApolloClient({
-  link: ApolloLink.from([errorLink, httpLink]),
+  link: ApolloLink.from([errorLink, persistedQueryLink, httpLink]),
   cache: new InMemoryCache({
     typePolicies: {
       Query: {
         fields: {
           getFavoriteRecipes: {
-            keyArgs: ['userId', 'limit'],
+            keyArgs: ['limit'],
             merge(incoming, existing = []) {
               return [...existing, ...incoming];
             },
@@ -136,7 +167,7 @@ export const apolloClient = new ApolloClient({
             },
           },
           getFollowing: {
-            keyArgs: ['userId', 'limit'],
+            keyArgs: ['limit'],
             merge(incoming, existing = []) {
               if (!existing) {
                 return incoming;

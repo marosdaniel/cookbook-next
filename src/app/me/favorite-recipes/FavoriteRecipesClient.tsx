@@ -66,12 +66,10 @@ const FavoriteRecipesClient = () => {
   const { data: session, status } = useSession();
   const t = useTranslations('user');
 
-  const userId = session?.user?.id;
   const isSessionLoading = status === 'loading';
 
   const { data, loading } = useQuery(GET_FAVORITE_RECIPES, {
-    variables: { userId },
-    skip: !userId || isSessionLoading,
+    skip: !session?.user?.id || isSessionLoading,
     fetchPolicy: 'cache-and-network',
   });
 

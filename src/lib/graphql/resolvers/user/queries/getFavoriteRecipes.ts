@@ -3,8 +3,12 @@ import type { GraphQLContext } from '@/types/graphql/context';
 
 export const getFavoriteRecipes = async (
   _: unknown,
-  { userId, limit }: { userId: string; limit?: number },
-  _context: GraphQLContext,
+  { limit }: { limit?: number },
+  context: GraphQLContext,
 ) => {
-  return await UserService.getFavoriteRecipes(userId, limit);
+  if (!context.userId) {
+    throw new Error('Authentication required');
+  }
+
+  return await UserService.getFavoriteRecipes(context.userId, limit);
 };

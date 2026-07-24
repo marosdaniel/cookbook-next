@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { parse, print } from 'graphql';
 
 export const DEFAULT_GRAPHQL_MAX_LIMIT = 100;
 
@@ -15,7 +16,8 @@ export const resolveQueryLimit = (limit?: number) => {
 };
 
 export const getPersistedQueryHash = (query: string) => {
-  return crypto.createHash('sha256').update(query).digest('hex');
+  const normalizedQuery = print(parse(query));
+  return crypto.createHash('sha256').update(normalizedQuery).digest('hex');
 };
 
 export const validatePersistedQuery = (

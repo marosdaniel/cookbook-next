@@ -62,10 +62,7 @@ export interface SetNewPasswordMutationVariables {
 }
 
 export interface ChangePasswordMutationData {
-  changePassword: {
-    success: boolean;
-    message: string;
-  };
+  changePassword: boolean;
 }
 
 export interface ChangePasswordMutationVariables {
@@ -213,10 +210,7 @@ export const CHANGE_PASSWORD: TypedDocumentNode<
   ChangePasswordMutationVariables
 > = gql`
   mutation changePassword($passwordEditInput: PasswordEditInput!) {
-    changePassword(passwordEditInput: $passwordEditInput) {
-      success
-      message
-    }
+    changePassword(passwordEditInput: $passwordEditInput)
   }
 `;
 

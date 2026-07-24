@@ -22,15 +22,12 @@ describe('getFollowing resolver', () => {
     mockGetFollowing.mockResolvedValue([]);
 
     const context: GraphQLContext = {
+      userId: 'user-1',
       prisma: {} as GraphQLContext['prisma'],
       loaders: {} as GraphQLContext['loaders'],
     };
 
-    const result = await getFollowing(
-      {},
-      { userId: 'user-1', limit: 5 },
-      context,
-    );
+    const result = await getFollowing({}, { limit: 5 }, context);
 
     expect(mockGetFollowing).toHaveBeenCalledWith('user-1', 5);
     expect(result).toEqual([]);

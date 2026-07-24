@@ -67,6 +67,9 @@ jobs:
       - name: Run Biome Lint
         run: pnpm lint:fix
 
+      - name: Verify GraphQL generated types
+        run: pnpm codegen:check
+
       - name: Run Type Check
         run: pnpm run typecheck
 

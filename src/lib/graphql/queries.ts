@@ -33,7 +33,6 @@ interface GetFavoriteRecipesData {
 }
 
 interface GetFavoriteRecipesVariables {
-  userId?: string;
   limit?: number;
 }
 
@@ -77,7 +76,6 @@ interface GetFollowingData {
 }
 
 interface GetFollowingVariables {
-  userId?: string;
   limit?: number;
 }
 
@@ -206,8 +204,8 @@ export const GET_FAVORITE_RECIPES: TypedDocumentNode<
   GetFavoriteRecipesData,
   GetFavoriteRecipesVariables
 > = gql`
-  query getFavoriteRecipes($userId: ID!, $limit: Int) {
-    getFavoriteRecipes(userId: $userId, limit: $limit) {
+  query getFavoriteRecipes($limit: Int) {
+    getFavoriteRecipes(limit: $limit) {
       id
       title
       description
@@ -299,8 +297,8 @@ export const GET_FOLLOWING: TypedDocumentNode<
   GetFollowingData,
   GetFollowingVariables
 > = gql`
-  query getFollowing($userId: ID!, $limit: Int) {
-    getFollowing(userId: $userId, limit: $limit) {
+  query getFollowing($limit: Int) {
+    getFollowing(limit: $limit) {
       users {
         id
         firstName

@@ -22,15 +22,12 @@ describe('getFavoriteRecipes resolver', () => {
     mockGetFavoriteRecipes.mockResolvedValue([]);
 
     const context: GraphQLContext = {
+      userId: 'user-1',
       prisma: {} as GraphQLContext['prisma'],
       loaders: {} as GraphQLContext['loaders'],
     };
 
-    const result = await getFavoriteRecipes(
-      {},
-      { userId: 'user-1', limit: 2 },
-      context,
-    );
+    const result = await getFavoriteRecipes({}, { limit: 2 }, context);
 
     expect(mockGetFavoriteRecipes).toHaveBeenCalledWith('user-1', 2);
     expect(result).toEqual([]);

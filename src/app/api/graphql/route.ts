@@ -19,7 +19,8 @@ import {
   createUserRecipesLoader,
 } from '@/lib/dataloader/loaders';
 import { assertGraphQLOperationAuthorized } from '@/lib/graphql/authorization';
-import { validatePersistedQuery } from '@/lib/graphql/protection';
+import { canResolveUserField } from '@/lib/graphql/fieldPolicies';
+import { isPersistedQueryAllowed } from '@/lib/graphql/persistedQueryRegistry';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
@@ -107,22 +108,11 @@ const fieldAuthPlugin: ApolloServerPlugin<GraphQLContext> = {
       async executionDidStart() {
         return {
           willResolveField({ contextValue, info, source }) {
-            if (info.parentType.name !== 'User' || info.fieldName !== 'email') {
+            if (info.parentType.name !== 'User') {
               return;
             }
 
-            const currentUserId = contextValue.userId;
-            const targetUserId = source?.id;
-
-            if (
-              currentUserId &&
-              targetUserId &&
-              currentUserId === targetUserId
-            ) {
-              return;
-            }
-
-            if (contextValue.role === 'ADMIN') {
+            if (canResolveUserField(info.fieldName, source, contextValue)) {
               return;
             }
 
@@ -216,6 +206,7 @@ type GraphQLRequestPayload = {
   query?: string;
   extensions?: {
     persistedQuery?: {
+      version?: number;
       sha256Hash?: string;
     };
   };
@@ -317,7 +308,11 @@ const validatePersistedQueryRequest = (
     return null;
   }
 
-  if (validatePersistedQuery(payload.query ?? '', persistedHash)) {
+  if (
+    payload.extensions?.persistedQuery?.version === 1 &&
+    payload.query &&
+    isPersistedQueryAllowed(payload.query, persistedHash)
+  ) {
     return null;
   }
 

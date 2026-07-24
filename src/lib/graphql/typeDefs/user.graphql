@@ -93,8 +93,8 @@ type Query {
   getUserById(id: ID!): User!
   getUserByUserName(userName: String!): User!
   getAllUser: [User]!
-  getFavoriteRecipes(userId: ID!, limit: Int): [Recipe!]!
-  getFollowing(userId: ID!, limit: Int): FollowingData!
+  getFavoriteRecipes(limit: Int): [Recipe!]!
+  getFollowing(limit: Int): FollowingData!
 }
 
 type Mutation {

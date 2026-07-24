@@ -62,7 +62,7 @@ const Password = () => {
         },
       });
 
-      if (data?.changePassword?.success) {
+      if (data?.changePassword) {
         notifications.show({
           title: translate('response.success'),
           message: translate('notifications.passwordChangedMessage'),
@@ -72,8 +72,7 @@ const Password = () => {
       } else {
         notifications.show({
           title: translate('response.error'),
-          message:
-            data?.changePassword?.message ?? translate('response.unknownError'),
+          message: translate('response.unknownError'),
           color: 'red',
         });
       }

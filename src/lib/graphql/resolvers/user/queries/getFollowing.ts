@@ -3,8 +3,12 @@ import type { GraphQLContext } from '@/types/graphql/context';
 
 export const getFollowing = async (
   _: unknown,
-  { userId, limit }: { userId: string; limit?: number },
-  _context: GraphQLContext,
+  { limit }: { limit?: number },
+  context: GraphQLContext,
 ) => {
-  return await UserService.getFollowing(userId, limit);
+  if (!context.userId) {
+    throw new Error('Authentication required');
+  }
+
+  return await UserService.getFollowing(context.userId, limit);
 };
