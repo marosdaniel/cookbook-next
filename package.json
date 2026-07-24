@@ -8,6 +8,8 @@
   "private": true,
   "overrides": {
     "fast-uri": "^4.1.1",
+    "@prisma/dev>find-my-way": "^9.7.0",
+    "find-my-way": "^9.7.0",
     "sharp": "^0.35.3",
     "next>sharp": "^0.35.3"
   },
@@ -110,6 +112,7 @@
     "baseline-browser-mapping": "^2.11.1",
     "dotenv": "^17.4.2",
     "fast-uri": "^4.1.1",
+    "find-my-way": "9.7.0",
     "happy-dom": "^20.11.1",
     "prisma": "7.9.0",
     "semantic-release": "^25.0.8",
