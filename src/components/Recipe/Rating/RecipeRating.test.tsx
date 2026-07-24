@@ -130,7 +130,8 @@ describe('RecipeRating', () => {
       expect(mockShow).toHaveBeenCalledWith(
         expect.objectContaining({
           title: 'recipe:ratingSuccess',
-          color: 'green',
+          message: 'recipe:ratingSuccessMessage',
+          color: 'teal',
         }),
       );
     });

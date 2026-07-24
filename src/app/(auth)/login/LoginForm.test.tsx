@@ -241,7 +241,7 @@ describe('LoginForm', () => {
         expect(notifications.show).toHaveBeenCalledWith({
           title: 'Success',
           message: 'Login successful',
-          color: 'green',
+          color: 'teal',
         });
       });
 
@@ -270,7 +270,6 @@ describe('LoginForm', () => {
           title: 'Error',
           message: 'Invalid credentials',
           color: 'red',
-          position: 'top-right',
         });
       });
 

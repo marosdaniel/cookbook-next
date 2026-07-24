@@ -73,6 +73,9 @@ describe('changePassword resolver', () => {
       newPassword: 'newPass123!',
       confirmNewPassword: 'newPass123!',
     });
-    expect(result).toBe(true);
+    expect(result).toEqual({
+      success: true,
+      message: 'Password changed successfully',
+    });
   });
 });

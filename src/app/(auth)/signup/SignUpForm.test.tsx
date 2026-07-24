@@ -268,7 +268,7 @@ describe('SignUpForm', () => {
         expect(notifications.show).toHaveBeenCalledWith({
           title: 'Success',
           message: 'Account created successfully',
-          color: 'green',
+          color: 'teal',
         });
       });
 
@@ -286,7 +286,7 @@ describe('SignUpForm', () => {
         expect(notifications.show).toHaveBeenCalledWith({
           title: 'Success',
           message: 'Successfully logged in!',
-          color: 'green',
+          color: 'teal',
         });
       });
 
@@ -374,7 +374,7 @@ describe('SignUpForm', () => {
       await waitFor(() => {
         expect(notifications.show).toHaveBeenCalledWith({
           title: 'Error',
-          message: 'Unknown error',
+          message: 'Something went wrong',
           color: 'red',
         });
       });
