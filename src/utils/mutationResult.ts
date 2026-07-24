@@ -1,10 +1,12 @@
+import type { MutationResult } from '@/types/graphql/responses';
+
 export const getMutationResultState = (result: unknown) => {
   if (typeof result === 'boolean') {
     return { isSuccess: result, message: undefined };
   }
 
   if (result && typeof result === 'object') {
-    const record = result as { success?: unknown; message?: unknown };
+    const record = result as Exclude<MutationResult, boolean>;
 
     return {
       isSuccess: record.success === true,

@@ -1,9 +1,12 @@
 import { gql, type TypedDocumentNode } from '@apollo/client';
+import type {
+  MutationResponse,
+  MutationResponseWithMessageKey,
+  MutationResponseWithStatusCode,
+} from '@/types/graphql/responses';
 
 export interface UpdateUserMutationData {
-  updateUser: {
-    success: boolean;
-    message: string;
+  updateUser: MutationResponse & {
     user?: {
       id: string;
       firstName: string;
@@ -20,10 +23,7 @@ export interface UpdateUserMutationVariables {
 }
 
 export interface CreateUserMutationData {
-  createUser: {
-    success: boolean;
-    message: string;
-    messageKey?: string;
+  createUser: MutationResponseWithMessageKey & {
     user?: {
       id: string;
       email: string;
@@ -39,10 +39,7 @@ export interface CreateUserMutationVariables {
 }
 
 export interface ResetPasswordMutationData {
-  resetPassword: {
-    success: boolean;
-    message: string;
-  };
+  resetPassword: MutationResponse;
 }
 
 export interface ResetPasswordMutationVariables {
@@ -50,10 +47,7 @@ export interface ResetPasswordMutationVariables {
 }
 
 export interface SetNewPasswordMutationData {
-  setNewPassword: {
-    success: boolean;
-    message: string;
-  };
+  setNewPassword: MutationResponse;
 }
 
 export interface SetNewPasswordMutationVariables {
@@ -62,10 +56,7 @@ export interface SetNewPasswordMutationVariables {
 }
 
 export interface ChangePasswordMutationData {
-  changePassword: {
-    success: boolean;
-    message: string;
-  };
+  changePassword: MutationResponse;
 }
 
 export interface ChangePasswordMutationVariables {
@@ -117,21 +108,11 @@ export interface DeleteRatingMutationVariables {
 }
 
 export interface AddToFavoriteMutationData {
-  addToFavoriteRecipes: {
-    success: boolean;
-    message: string;
-    messageKey?: string;
-    statusCode?: number;
-  };
+  addToFavoriteRecipes: MutationResponseWithStatusCode;
 }
 
 export interface RemoveFromFavoriteMutationData {
-  removeFromFavoriteRecipes: {
-    success: boolean;
-    message: string;
-    messageKey?: string;
-    statusCode?: number;
-  };
+  removeFromFavoriteRecipes: MutationResponseWithStatusCode;
 }
 
 export interface FavoriteMutationVariables {
@@ -140,21 +121,11 @@ export interface FavoriteMutationVariables {
 }
 
 export interface FollowUserMutationData {
-  followUser: {
-    success: boolean;
-    message: string;
-    messageKey?: string;
-    statusCode?: number;
-  };
+  followUser: MutationResponseWithStatusCode;
 }
 
 export interface UnfollowUserMutationData {
-  unfollowUser: {
-    success: boolean;
-    message: string;
-    messageKey?: string;
-    statusCode?: number;
-  };
+  unfollowUser: MutationResponseWithStatusCode;
 }
 
 export interface FollowMutationVariables {

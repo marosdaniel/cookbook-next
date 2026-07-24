@@ -66,10 +66,7 @@ const Password = () => {
         },
       });
 
-      const changePasswordResult = data?.changePassword as
-        | boolean
-        | { success?: boolean; message?: string }
-        | undefined;
+      const changePasswordResult = data?.changePassword;
       const { isSuccess, message } =
         getMutationResultState(changePasswordResult);
 
