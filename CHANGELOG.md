@@ -1,3 +1,10 @@
+# [2.63.0](https://github.com/marosdaniel/cookbook-next/compare/v2.62.0...v2.63.0) (2026-07-24)
+
+
+### Features
+
+* implement GraphQL operation authorization with assertGraphQLOperationAuthorized function and corresponding tests ([75537b3](https://github.com/marosdaniel/cookbook-next/commit/75537b3239c01d2080c2a1e42327cbb9d3961579))
+
 # [2.62.0](https://github.com/marosdaniel/cookbook-next/compare/v2.61.0...v2.62.0) (2026-07-23)
 
 
