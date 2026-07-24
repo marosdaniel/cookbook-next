@@ -13,6 +13,9 @@ import type { PropsWithChildren } from 'react';
 import Shell from '@/components/Shell';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const ClientProviders = nextDynamic(
   () => import('@/providers/client').then((m) => m.ClientProviders),
   {

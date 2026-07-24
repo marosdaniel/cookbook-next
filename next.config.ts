@@ -1,9 +1,12 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
+const developmentScriptPolicy =
+  process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : '';
+
 const cspValue = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' https://va.vercel-scripts.com 'unsafe-inline'${developmentScriptPolicy}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https:",
   "font-src 'self' https://fonts.gstatic.com",

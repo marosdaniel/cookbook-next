@@ -27,6 +27,7 @@ This document explains the GitHub Actions CI/CD pipeline defined in `.github/wor
 The pipeline is named **"Deploy to Vercel Production"** and automates the full software delivery lifecycle:
 
 - **Validates** code quality (lint, types, unit tests, integration tests)
+- **Scans** commits and the working tree for accidentally committed secrets
 - **Tests** the app end-to-end in a real browser via Playwright
 - **Measures** code coverage and publishes the report
 - **Deploys** the app to Vercel production
@@ -255,6 +256,15 @@ quality-checks + e2e
 ---
 
 ## Secrets & Environment Variables
+
+Secret values are supplied through GitHub Actions/Vercel environment settings;
+they must never be committed to `.env` files. The repository includes
+`.env.example` with names only. CI runs Gitleaks before the quality checks, and
+the workflow never prints secret values.
+
+Rotate a potentially exposed value at its provider first, then update the
+GitHub/Vercel secret and redeploy. Removing a value from a later commit does
+not remove it from Git history.
 
 The pipeline relies on the following secrets configured in the repository's GitHub Settings → Secrets:
 

@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma/prisma';
 import { getSiteUrl } from '@/lib/seo/site';
 
 export const revalidate = 3600;
+export const dynamic = 'force-static';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const recipes = await prisma.recipe.findMany({

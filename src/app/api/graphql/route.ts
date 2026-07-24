@@ -208,6 +208,8 @@ const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(
 );
 
 export const maxDuration = 30;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 type GraphQLRequestPayload = {
   operationName?: string;
@@ -228,6 +230,8 @@ const createJsonResponse = (
     status,
     headers: {
       'Content-Type': 'application/json',
+      'Cache-Control': 'no-store',
+      Vary: 'Cookie, Authorization',
       ...headers,
     },
   });
@@ -411,7 +415,18 @@ const wrappedHandler = async (
     duplex: 'half',
   });
 
-  return requestStorage.run({ session }, () => handler(replayedRequest));
+  const response = await requestStorage.run({ session }, () =>
+    handler(replayedRequest),
+  );
+  const headers = new Headers(response.headers);
+  headers.set('Cache-Control', 'no-store');
+  headers.set('Vary', 'Cookie, Authorization');
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
 };
 
 // Export Next.js route handlers
