@@ -1,3 +1,10 @@
+# [2.69.0](https://github.com/marosdaniel/cookbook-next/compare/v2.68.0...v2.69.0) (2026-07-24)
+
+
+### Features
+
+* normalize GraphQL queries by removing __typename fields before encoding ([089db6e](https://github.com/marosdaniel/cookbook-next/commit/089db6e00f63be33ba8e2001ab74462f6fb718d5))
+
 # [2.68.0](https://github.com/marosdaniel/cookbook-next/compare/v2.67.0...v2.68.0) (2026-07-24)
 
 
