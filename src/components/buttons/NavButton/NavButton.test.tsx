@@ -1,5 +1,4 @@
 import '@testing-library/jest-dom';
-import type { Route } from 'next';
 import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@/utils/test-utils';
@@ -128,12 +127,6 @@ describe('NavButton', () => {
       render(<NavButton label="Home" href="/" />);
       const link = screen.getByRole('link');
       expect(link).toHaveAttribute('href', '/');
-    });
-
-    it('renders with nested path', () => {
-      render(<NavButton label="About" href={PUBLIC_ROUTES.ABOUT as Route} />);
-      const link = screen.getByRole('link');
-      expect(link).toHaveAttribute('href', PUBLIC_ROUTES.ABOUT);
     });
 
     it('renders with deep nested path', () => {

@@ -2,7 +2,6 @@
 
 import { Box, Button, Loader, ScrollArea, Stack } from '@mantine/core';
 import { AnimatePresence, motion } from 'motion/react';
-import type { Route } from 'next';
 import { usePathname } from 'next/navigation';
 import type { Session } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
@@ -50,19 +49,19 @@ const Navbar: FC = () => {
             links: [
               {
                 label: translate('profile'),
-                link: PROTECTED_ROUTES.PROFILE as unknown as Route,
+                link: PROTECTED_ROUTES.PROFILE,
               },
               {
                 label: translate('myRecipes'),
-                link: PROTECTED_ROUTES.RECIPES_MY as unknown as Route,
+                link: PROTECTED_ROUTES.RECIPES_MY,
               },
               {
                 label: translate('favorites'),
-                link: PROTECTED_ROUTES.RECIPES_FAVORITES as unknown as Route,
+                link: PROTECTED_ROUTES.RECIPES_FAVORITES,
               },
               {
                 label: translate('followings'),
-                link: PROTECTED_ROUTES.FOLLOWING as unknown as Route,
+                link: PROTECTED_ROUTES.FOLLOWING,
               },
             ],
           },
@@ -75,7 +74,7 @@ const Navbar: FC = () => {
       links: [
         {
           label: translate('allRecipes'),
-          link: PUBLIC_ROUTES.RECIPES as unknown as Route,
+          link: PUBLIC_ROUTES.RECIPES,
         },
       ],
     },
@@ -84,7 +83,7 @@ const Navbar: FC = () => {
           {
             label: translate('newRecipe'),
             icon: FiPlusCircle,
-            link: PROTECTED_ROUTES.RECIPES_CREATE as unknown as Route,
+            link: PROTECTED_ROUTES.RECIPES_CREATE,
           },
         ]
       : []),

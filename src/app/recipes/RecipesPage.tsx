@@ -18,8 +18,7 @@ import {
   IconRotateClockwise2,
   IconSearch,
 } from '@tabler/icons-react';
-import type { Route } from 'next';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { type FC, useCallback, useMemo } from 'react';
 import { toCleanedOptions } from '@/components/Recipe/Create/utils';
@@ -35,6 +34,7 @@ import RecipeSearch, {
 } from '@/components/Recipe/RecipeSearch';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
 import { useCategories, useLabels, useLevels } from '@/lib/store/metadata';
+import { recipeSearchRoute } from '../../types/routes';
 import classes from '../HomePage.module.css';
 
 const RecipesPage: FC = () => {
@@ -43,7 +43,6 @@ const RecipesPage: FC = () => {
   const translateMisc = useTranslations('misc');
 
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   // --- URL → filters (single source of truth) ---
@@ -106,15 +105,13 @@ const RecipesPage: FC = () => {
     });
   };
 
-  // --- Handlers ---
   const handleSearch = useCallback(
     (filters: RecipeSearchFilters) => {
       const params = filtersToSearchParams(filters);
-      const qs = params.toString();
-      const url = qs ? `${pathname}?${qs}` : pathname;
-      router.replace(url as Route, { scroll: false });
+
+      router.replace(recipeSearchRoute(params), { scroll: false });
     },
-    [router, pathname],
+    [router],
   );
 
   return (

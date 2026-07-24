@@ -118,7 +118,7 @@ export async function generateMetadata({
       ? fallback.description
       : undefined);
   const image = recipe.socialImage ?? recipe.imgSrc ?? undefined;
-  const canonicalPath = `${PUBLIC_ROUTES.RECIPES}/${recipe.slug ?? recipe.id}`;
+  const canonicalPath = PUBLIC_ROUTES.RECIPE_DETAIL(recipe.slug ?? recipe.id);
 
   return {
     title,
@@ -155,8 +155,8 @@ export default async function RecipeDetailPage({
     throw error;
   }
 
-  if (recipe?.slug && recipe.slug !== id) {
-    permanentRedirect(`${PUBLIC_ROUTES.RECIPES}/${recipe.slug}`);
+  if (recipe.slug && recipe.slug !== id) {
+    permanentRedirect(PUBLIC_ROUTES.RECIPE_DETAIL(recipe.slug));
   }
 
   return (
@@ -168,7 +168,9 @@ export default async function RecipeDetailPage({
           __html: JSON.stringify(
             buildRecipeJsonLd(
               toInitialRecipe(recipe),
-              `${getSiteUrl()}${PUBLIC_ROUTES.RECIPES}/${recipe.slug ?? recipe.id}`,
+              `${getSiteUrl()}${PUBLIC_ROUTES.RECIPE_DETAIL(
+                recipe.slug ?? recipe.id,
+              )}`,
               { createdAt: recipe.createdAt, updatedAt: recipe.updatedAt },
             ),
           ).replaceAll('<', String.raw`\u003c`),
