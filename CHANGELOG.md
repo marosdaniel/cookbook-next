@@ -1,3 +1,12 @@
+# [2.64.0](https://github.com/marosdaniel/cookbook-next/compare/v2.63.0...v2.64.0) (2026-07-24)
+
+
+### Features
+
+* implement session versioning for JWT and enhance authorization flow ([227fcd2](https://github.com/marosdaniel/cookbook-next/commit/227fcd2be0edabf851249c8a36d1896afcdab950))
+* implement strict rate limiting for sensitive operations and enhance tests ([bc6a018](https://github.com/marosdaniel/cookbook-next/commit/bc6a018ad68db26058d5d814adeb342ae1df09bd))
+* implement trusted proxy policy for rate limiting and add corresponding tests ([74b4b6c](https://github.com/marosdaniel/cookbook-next/commit/74b4b6c865804020ea8e6ee87982acc58d0cef17))
+
 # [2.63.0](https://github.com/marosdaniel/cookbook-next/compare/v2.62.0...v2.63.0) (2026-07-24)
 
 
