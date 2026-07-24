@@ -1,3 +1,10 @@
+## [2.73.1](https://github.com/marosdaniel/cookbook-next/compare/v2.73.0...v2.73.1) (2026-07-24)
+
+
+### Bug Fixes
+
+* update GraphQL route to return 405 for non-POST requests with appropriate error message ([7b3c046](https://github.com/marosdaniel/cookbook-next/commit/7b3c0468d395ee3b09630f387d447b220d474dee))
+
 # [2.73.0](https://github.com/marosdaniel/cookbook-next/compare/v2.72.0...v2.73.0) (2026-07-24)
 
 
