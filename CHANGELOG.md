@@ -1,3 +1,10 @@
+# [2.68.0](https://github.com/marosdaniel/cookbook-next/compare/v2.67.0...v2.68.0) (2026-07-24)
+
+
+### Features
+
+* add support for __typename in persisted query normalization ([20e02b6](https://github.com/marosdaniel/cookbook-next/commit/20e02b63293b93d6ab9c969bf7669f0d985ea1be))
+
 # [2.67.0](https://github.com/marosdaniel/cookbook-next/compare/v2.66.0...v2.67.0) (2026-07-24)
 
 
