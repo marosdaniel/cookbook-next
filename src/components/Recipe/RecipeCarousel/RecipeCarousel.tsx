@@ -2,10 +2,9 @@
 
 import { Carousel } from '@mantine/carousel';
 import { Box, Skeleton, Text } from '@mantine/core';
-import { AnimatePresence, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
 import { RecipeCard } from '../RecipeCard';
-import { CAROUSEL_PROPS, contentVariants, SKELETON_IDS } from './consts';
+import { CAROUSEL_PROPS, SKELETON_IDS } from './consts';
 import classes from './RecipeCarousel.module.css';
 import type { RecipeCarouselProps } from './types';
 import { getCarouselState } from './utils';
@@ -80,18 +79,7 @@ const RecipeCarousel = ({
   };
 
   return (
-    <AnimatePresence initial={false} mode="wait">
-      <motion.div
-        key={state}
-        variants={contentVariants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        data-testid="recipe-carousel-content"
-      >
-        {renderCarouselState()}
-      </motion.div>
-    </AnimatePresence>
+    <div data-testid="recipe-carousel-content">{renderCarouselState()}</div>
   );
 };
 
