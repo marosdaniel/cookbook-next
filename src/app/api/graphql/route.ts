@@ -18,7 +18,7 @@ import {
   createUserRatingLoader,
   createUserRecipesLoader,
 } from '@/lib/dataloader/loaders';
-import { canUserPerformOperation } from '@/lib/graphql/operationsConfig';
+import { assertGraphQLOperationAuthorized } from '@/lib/graphql/authorization';
 import { validatePersistedQuery } from '@/lib/graphql/protection';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
@@ -45,7 +45,7 @@ const loggingPlugin: ApolloServerPlugin<GraphQLContext> = {
   async requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
     return {
       async didResolveOperation(requestContext) {
-        const { operationName } = requestContext.request;
+        const { operationName } = requestContext;
         console.log(`[GraphQL] Operation: ${operationName || 'anonymous'}`);
       },
     };
@@ -59,22 +59,14 @@ const authPlugin: ApolloServerPlugin<GraphQLContext> = {
   async requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
     return {
       async didResolveOperation(requestContext) {
-        const { operationName } = requestContext.request;
+        const operationName = requestContext.operationName;
         const { role } = requestContext.contextValue;
 
-        // Check operation permissions
-        if (operationName && !canUserPerformOperation(operationName, role)) {
-          throw new GraphQLError(
-            `Unauthorized: You don't have permission to perform '${operationName}'`,
-            {
-              extensions: {
-                code: 'FORBIDDEN',
-                http: { status: 403 },
-                requiredRole: role || 'Authenticated user',
-              },
-            },
-          );
-        }
+        assertGraphQLOperationAuthorized(operationName, role);
+
+        // Authorize the operation selected by Apollo after parsing the document.
+        // The client-supplied HTTP operationName is not trusted for this check.
+        requestContext.contextValue.operationName = operationName;
       },
     };
   },
