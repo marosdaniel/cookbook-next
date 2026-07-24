@@ -1,10 +1,18 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
-const _developmentScriptPolicy =
-  process.env.NODE_ENV === 'development'
-    ? " 'unsafe-eval' 'unsafe-inline'"
-    : '';
+const isDevelopment = process.env.NODE_ENV === 'development';
+const cspValue = [
+  "default-src 'self'",
+  `script-src 'self'${isDevelopment ? " 'unsafe-inline'" : ''}`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "frame-ancestors 'none'",
+].join('; ');
 
 const securityHeaders = [
   { key: 'X-DNS-Prefetch-Control', value: 'on' },
@@ -26,6 +34,7 @@ const securityHeaders = [
   { key: 'X-Permitted-Cross-Domain-Policies', value: 'none' },
   { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
   { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
+  { key: 'Content-Security-Policy', value: cspValue },
 ];
 
 const nextConfig: NextConfig = {
@@ -43,4 +52,10 @@ const nextConfig: NextConfig = {
 };
 
 const withNextIntl = createNextIntlPlugin();
-export default withNextIntl(nextConfig);
+const exportedConfig = withNextIntl(nextConfig) as NextConfig;
+
+if (typeof exportedConfig === 'object' && exportedConfig !== null) {
+  exportedConfig.headers = nextConfig.headers;
+}
+
+export default exportedConfig;

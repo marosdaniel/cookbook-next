@@ -26,6 +26,12 @@ vi.mock('@/lib/locale/locale.server', () => ({
   getLocaleFromCookies: () => mocks.getLocaleFromCookies(),
 }));
 
+vi.mock('next/headers', () => ({
+  headers: vi.fn(async () => ({
+    get: (name: string) => (name === 'x-nonce' ? 'test-nonce' : null),
+  })),
+}));
+
 vi.mock('@/lib/seo/seo', () => ({
   getMetadata: () => mocks.getMetadata(),
   buildRecipeJsonLd: (recipe: { title: string }) => ({

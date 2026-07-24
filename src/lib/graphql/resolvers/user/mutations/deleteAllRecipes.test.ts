@@ -23,18 +23,21 @@ describe('deleteAllRecipes resolver', () => {
     vi.clearAllMocks();
   });
 
-  it('returns an unauthorized error when the caller is not authenticated', async () => {
-    mockThrowCustomError.mockReturnValue('unauthorized');
+  it('throws an unauthorized error when the caller is not authenticated', async () => {
+    mockThrowCustomError.mockImplementation(() => {
+      throw new Error('unauthorized');
+    });
 
     const context: GraphQLContext = {
       prisma: {} as GraphQLContext['prisma'],
       loaders: {} as GraphQLContext['loaders'],
     };
 
-    const result = await deleteAllRecipes({}, { confirmation: 'yes' }, context);
+    await expect(
+      deleteAllRecipes({}, { confirmation: 'yes' }, context),
+    ).rejects.toThrow('unauthorized');
 
     expect(mockThrowCustomError).toHaveBeenCalled();
-    expect(result).toBe('unauthorized');
   });
 
   it('delegates the deletion request to the user service', async () => {

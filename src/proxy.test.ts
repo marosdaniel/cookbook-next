@@ -3,11 +3,31 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { UserRole } from '@/types/user';
 
 // Mock next/server
-vi.mock('next/server', () => ({
-  NextResponse: {
-    redirect: vi.fn((url: string) => ({ type: 'redirect', url })),
-  },
-}));
+vi.mock('next/server', () => {
+  const createResponse = (type: 'redirect' | 'next', url?: URL) => {
+    const headers = new Headers();
+    return {
+      type,
+      url: url?.toString(),
+      headers,
+    };
+  };
+
+  return {
+    NextResponse: {
+      redirect: vi.fn((url: string | URL) =>
+        createResponse('redirect', new URL(String(url), 'http://localhost')),
+      ),
+      next: vi.fn((init?: { request?: { headers?: Headers } }) => {
+        const response = createResponse('next');
+        if (init?.request?.headers) {
+          response.headers = init.request.headers;
+        }
+        return response;
+      }),
+    },
+  };
+});
 
 // Mock NextAuth
 const mockNextAuth = vi.fn(() => ({
@@ -46,7 +66,7 @@ describe('proxy.ts', () => {
     const redirectUrl = (
       NextResponse.redirect as unknown as {
         mock: {
-          calls: string[][];
+          calls: Array<[string | URL]>;
         };
       }
     ).mock.calls[0][0].toString();
@@ -69,7 +89,7 @@ describe('proxy.ts', () => {
     const redirectUrl = (
       NextResponse.redirect as unknown as {
         mock: {
-          calls: string[];
+          calls: Array<[string | URL]>;
         };
       }
     ).mock.calls[0][0].toString();
@@ -87,7 +107,8 @@ describe('proxy.ts', () => {
     const result = proxyFn(req);
 
     expect(NextResponse.redirect).not.toHaveBeenCalled();
-    expect(result).toBeUndefined(); // proxy continues
+    expect(result).toBeDefined();
+    expect(result?.headers).toBeDefined();
   });
 
   it('should allow ADMIN users to access /admin routes', () => {
@@ -99,7 +120,8 @@ describe('proxy.ts', () => {
     const result = proxyFn(req);
 
     expect(NextResponse.redirect).not.toHaveBeenCalled();
-    expect(result).toBeUndefined();
+    expect(result).toBeDefined();
+    expect(result?.headers).toBeDefined();
   });
 
   it('should reject non-admin users from /admin routes', () => {
@@ -115,7 +137,7 @@ describe('proxy.ts', () => {
     const redirectUrl = (
       NextResponse.redirect as unknown as {
         mock: {
-          calls: string[][];
+          calls: Array<[string | URL]>;
         };
       }
     ).mock.calls[0][0].toString();
@@ -131,6 +153,7 @@ describe('proxy.ts', () => {
     const result = proxyFn(req);
 
     expect(NextResponse.redirect).not.toHaveBeenCalled();
-    expect(result).toBeUndefined();
+    expect(result).toBeDefined();
+    expect(result?.headers).toBeDefined();
   });
 });

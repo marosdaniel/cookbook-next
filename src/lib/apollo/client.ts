@@ -47,12 +47,16 @@ const errorLink = new ErrorLink(({ error, operation }) => {
   }
 
   if (CombinedGraphQLErrors.is(error)) {
-    const codes = error.errors.map((item) => item.extensions?.code);
+    const codes = new Set(
+      error.errors
+        .map((item) => item.extensions?.code)
+        .filter((code): code is string => typeof code === 'string'),
+    );
 
     if (
-      codes.includes('BAD_USER_INPUT') ||
-      codes.includes('UNAUTHENTICATED') ||
-      codes.includes('FORBIDDEN')
+      codes.has('BAD_USER_INPUT') ||
+      codes.has('UNAUTHENTICATED') ||
+      codes.has('FORBIDDEN')
     ) {
       return;
     }

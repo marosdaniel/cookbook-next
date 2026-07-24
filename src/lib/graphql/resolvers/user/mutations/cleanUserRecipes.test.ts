@@ -15,8 +15,10 @@ describe('cleanUserRecipes resolver', () => {
     vi.clearAllMocks();
   });
 
-  it('returns a not-found error when the requested user does not exist', async () => {
-    mockThrowCustomError.mockReturnValue('not-found');
+  it('throws a not-found error when the requested user does not exist', async () => {
+    mockThrowCustomError.mockImplementation(() => {
+      throw new Error('not-found');
+    });
 
     const prisma = {
       user: {
@@ -24,16 +26,17 @@ describe('cleanUserRecipes resolver', () => {
       },
     };
 
-    const result = await cleanUserRecipes({}, { userId: 'user-1' }, {
-      prisma,
-    } as never);
+    await expect(
+      cleanUserRecipes({}, { userId: 'user-1' }, {
+        prisma,
+      } as never),
+    ).rejects.toThrow('not-found');
 
     expect(prisma.user.findUnique).toHaveBeenCalledWith({
       where: { id: 'user-1' },
       include: { recipes: true },
     });
     expect(mockThrowCustomError).toHaveBeenCalled();
-    expect(result).toBe('not-found');
   });
 
   it('returns true when the user exists and the cleanup check passes', async () => {
