@@ -46,4 +46,15 @@ describe('validatePersistedQuery', () => {
 
     expect(validatePersistedQuery(query)).toBe(false);
   });
+
+  it('treats queries with and without __typename as the same persisted query', () => {
+    const queryWithoutTypename =
+      'query GetRecipes { getRecipes(limit: 10) { id } }';
+    const queryWithTypename =
+      'query GetRecipes { getRecipes(limit: 10) { id __typename } }';
+
+    expect(getPersistedQueryHash(queryWithoutTypename)).toBe(
+      getPersistedQueryHash(queryWithTypename),
+    );
+  });
 });
