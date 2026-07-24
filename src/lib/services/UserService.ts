@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { UserRole } from '@prisma/client';
 import { ZodError } from 'zod';
 import { hashPassword, verifyPassword } from '@/lib/auth/password';
+import { cacheKeys } from '@/lib/cache/cacheKeys';
 import {
   generateResetToken,
   sendPasswordResetEmail,
@@ -60,7 +61,7 @@ export const UserService = {
 
   async getFavoriteRecipes(userId: string, limit?: number) {
     const normalizedLimit = resolveQueryLimit(limit);
-    const cacheKey = `user:${userId}:favorites:${normalizedLimit || 'all'}`;
+    const cacheKey = cacheKeys.userFavorites(userId, normalizedLimit);
 
     if (redis) {
       try {
@@ -98,7 +99,7 @@ export const UserService = {
 
   async getFollowing(userId: string, limit?: number) {
     const normalizedLimit = resolveQueryLimit(limit);
-    const cacheKey = `user:${userId}:following:${normalizedLimit || 'all'}`;
+    const cacheKey = cacheKeys.userFollowing(userId, normalizedLimit);
 
     if (redis) {
       try {

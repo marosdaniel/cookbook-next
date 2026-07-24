@@ -22,7 +22,7 @@ describe('getRecipes resolver', () => {
 
     const result = await getRecipes({}, { limit: 5 });
 
-    expect(mockGetRecipes).toHaveBeenCalledWith(5, undefined);
+    expect(mockGetRecipes).toHaveBeenCalledWith(5, undefined, undefined);
     expect(result).toEqual({ recipes: [], totalRecipes: 0 });
   });
 });

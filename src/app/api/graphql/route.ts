@@ -1,4 +1,5 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
+import { randomUUID } from 'node:crypto';
 import type {
   ApolloServerPlugin,
   GraphQLRequestListener,
@@ -40,17 +41,40 @@ const MAX_GRAPHQL_BODY_BYTES = 1_048_576;
 
 const requestStorage = new AsyncLocalStorage<{
   session: Session | null;
+  requestId: string;
 }>();
 
 /**
  * Plugin to log GraphQL operations (development only)
  */
 const loggingPlugin: ApolloServerPlugin<GraphQLContext> = {
-  async requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
+  async requestDidStart(
+    requestContext,
+  ): Promise<GraphQLRequestListener<GraphQLContext>> {
+    const startedAt = performance.now();
+    let errorCode: string | undefined;
     return {
       async didResolveOperation(requestContext) {
         const { operationName } = requestContext;
-        console.log(`[GraphQL] Operation: ${operationName || 'anonymous'}`);
+        requestContext.contextValue.operationName = operationName;
+      },
+      async didEncounterErrors({ errors }) {
+        errorCode = errors[0]?.extensions?.code?.toString();
+      },
+      async willSendResponse({ contextValue, response }) {
+        const status = response.http?.status ?? (errorCode ? 500 : 200);
+        console.info(
+          JSON.stringify({
+            event: 'graphql.request',
+            requestId: contextValue.requestId ?? 'unknown',
+            operationName:
+              contextValue.operationName ?? requestContext.operationName,
+            durationMs: Math.round(performance.now() - startedAt),
+            status,
+            userClass: contextValue.userId ? 'authenticated' : 'anonymous',
+            ...(errorCode ? { errorCode } : {}),
+          }),
+        );
       },
     };
   },
@@ -133,12 +157,7 @@ const fieldAuthPlugin: ApolloServerPlugin<GraphQLContext> = {
 const server = new ApolloServer<GraphQLContext>({
   typeDefs,
   resolvers: { ...scalarResolvers, ...resolvers },
-  plugins: [
-    ...protection.plugins,
-    ...(process.env.NODE_ENV === 'development' ? [loggingPlugin] : []),
-    authPlugin,
-    fieldAuthPlugin,
-  ],
+  plugins: [...protection.plugins, loggingPlugin, authPlugin, fieldAuthPlugin],
   validationRules: [...protection.validationRules],
   introspection: process.env.NODE_ENV !== 'production',
   allowBatchedHttpRequests: false,
@@ -176,6 +195,7 @@ const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(
         userId,
         role: session?.user?.role,
         operationName: null,
+        requestId: requestStorage.getStore()?.requestId ?? 'unknown',
         prisma: prismaWithTimeout,
         // DataLoaders are instantiated fresh per request so their internal
         // cache is scoped to a single request and never leaks between users.
@@ -342,6 +362,7 @@ const wrappedHandler = async (
 
   const session = await auth();
   const userId = session?.user?.id;
+  const requestId = request.headers.get('x-request-id') || randomUUID();
 
   const contentLength = request.headers.get('content-length');
   if (
@@ -410,12 +431,13 @@ const wrappedHandler = async (
     duplex: 'half',
   });
 
-  const response = await requestStorage.run({ session }, () =>
+  const response = await requestStorage.run({ session, requestId }, () =>
     handler(replayedRequest),
   );
   const headers = new Headers(response.headers);
   headers.set('Cache-Control', 'no-store');
   headers.set('Vary', 'Cookie, Authorization');
+  headers.set('X-Request-Id', requestId);
 
   return new Response(response.body, {
     status: response.status,

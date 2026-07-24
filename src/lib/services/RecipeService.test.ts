@@ -58,6 +58,7 @@ describe('RecipeService cache resilience', () => {
     await expect(RecipeService.getRecipes()).resolves.toEqual({
       recipes: [],
       totalRecipes: 0,
+      pageInfo: { hasNextPage: false, endCursor: null },
     });
   });
 

@@ -38,6 +38,7 @@ interface RedisWithCircuitBreaker {
   get: (key: string) => Promise<unknown>;
   setex: (key: string, ttl: number, value: unknown) => Promise<unknown>;
   del: (key: string) => Promise<unknown>;
+  incr: (key: string) => Promise<unknown>;
 }
 
 const isRedisDisabled = () => Date.now() < redisFailureUntil;
@@ -109,6 +110,7 @@ const redisWithCircuitBreaker: RedisWithCircuitBreaker | null = redis
       setex: (key: string, ttl: number, value: unknown) =>
         wrapWithCircuitBreaker(() => redis.setex(key, ttl, value)),
       del: (key: string) => wrapWithCircuitBreaker(() => redis.del(key)),
+      incr: (key: string) => wrapWithCircuitBreaker(() => redis.incr(key)),
     }
   : null;
 

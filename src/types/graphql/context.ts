@@ -13,6 +13,7 @@ import type { UserRole } from '../user';
  * GraphQL context interface - available to all resolvers
  */
 export interface GraphQLContext {
+  requestId?: string;
   userId?: string;
   role?: UserRole;
   operationName?: string | null;

@@ -40,11 +40,13 @@ interface GetRecipesData {
   getRecipes: {
     recipes: RecipeCardData[];
     totalRecipes: number;
+    pageInfo: { hasNextPage: boolean; endCursor: string | null };
   };
 }
 
 interface GetRecipesVariables {
   limit?: number;
+  after?: string | null;
   filter?: Record<string, unknown>;
 }
 
@@ -233,8 +235,8 @@ export const GET_LATEST_RECIPES: TypedDocumentNode<
   GetRecipesData,
   GetRecipesVariables
 > = gql`
-  query getRecipes($limit: Int, $filter: RecipeFilterInput) {
-    getRecipes(limit: $limit, filter: $filter) {
+  query getRecipes($limit: Int, $after: String, $filter: RecipeFilterInput) {
+    getRecipes(limit: $limit, after: $after, filter: $filter) {
       recipes {
         id
         title
@@ -257,6 +259,10 @@ export const GET_LATEST_RECIPES: TypedDocumentNode<
         slug
       }
       totalRecipes
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 `;

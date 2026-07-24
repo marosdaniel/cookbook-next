@@ -540,6 +540,7 @@
     "pageDescription": "Explore our community's culinary creations and find your next favourite meal.",
     "searchResults": "Search Results",
     "noResults": "No recipes found matching your filters.",
+    "loadMore": "Load more",
     "totalResults": "{count} recipes found",
     "recentlyAdded": "Recently Added Recipes",
     "noRecipes": "No recipes found. Try creating the first one!"

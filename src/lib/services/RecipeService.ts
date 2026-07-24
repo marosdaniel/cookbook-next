@@ -1,4 +1,5 @@
 import type { Prisma } from '@prisma/client';
+import { cacheKeys } from '@/lib/cache/cacheKeys';
 import { resolveQueryLimit } from '@/lib/graphql/protection';
 import type {
   RatingInput,
@@ -17,6 +18,7 @@ import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
 
 export interface RecipeFilterInput {
+  search?: string;
   title?: string;
   categoryKey?: string;
   difficultyLevelKey?: string;
@@ -28,9 +30,6 @@ function buildWhereClause(filter?: RecipeFilterInput): Prisma.RecipeWhereInput {
   const where: Prisma.RecipeWhereInput = {};
   if (!filter) return where;
 
-  if (filter.title) {
-    where.title = { contains: filter.title, mode: 'insensitive' };
-  }
   if (filter.categoryKey) {
     where.category = { path: ['key'], equals: filter.categoryKey };
   }
@@ -51,6 +50,34 @@ function buildWhereClause(filter?: RecipeFilterInput): Prisma.RecipeWhereInput {
 
   return where;
 }
+
+type RecipeCursor = { createdAt: string; id: string };
+
+const encodeCursor = (cursor: { createdAt: Date; id: string }) =>
+  Buffer.from(
+    JSON.stringify({
+      createdAt: cursor.createdAt.toISOString(),
+      id: cursor.id,
+    }),
+  ).toString('base64url');
+
+const decodeCursor = (cursor: string | undefined): RecipeCursor | null => {
+  if (!cursor) return null;
+  try {
+    const decoded = JSON.parse(
+      Buffer.from(cursor, 'base64url').toString(),
+    ) as RecipeCursor;
+    if (
+      typeof decoded.createdAt !== 'string' ||
+      typeof decoded.id !== 'string'
+    ) {
+      return null;
+    }
+    return decoded;
+  } catch {
+    return null;
+  }
+};
 
 async function getCachedData(key: string) {
   if (!redis) return null;
@@ -86,6 +113,20 @@ async function invalidateCache(keys: string[]) {
     await Promise.all(keys.map((key) => currentRedis.del(key)));
   } catch (error) {
     console.warn('Redis cache invalidation error:', error);
+  }
+}
+
+async function getRecipeListVersion() {
+  const cachedVersion = await getCachedData(cacheKeys.recipeListVersion);
+  return typeof cachedVersion === 'number' ? cachedVersion : 1;
+}
+
+async function invalidateRecipeLists() {
+  if (!redis?.incr) return;
+  try {
+    await redis.incr(cacheKeys.recipeListVersion);
+  } catch (error) {
+    console.warn('Redis recipe list version invalidation error:', error);
   }
 }
 
@@ -128,26 +169,94 @@ async function assertSlugAvailable(
 
 export const RecipeService = {
   // Queries
-  async getRecipes(limit?: number, filter?: RecipeFilterInput) {
+  async getRecipes(limit?: number, filter?: RecipeFilterInput, after?: string) {
     const normalizedLimit = resolveQueryLimit(limit);
-    const cacheKey = `recipes:${normalizedLimit || 'all'}:${JSON.stringify(filter || {})}`;
+    const version = await getRecipeListVersion();
+    const cacheKey = cacheKeys.recipeList(
+      version,
+      normalizedLimit,
+      filter,
+      after,
+    );
 
     const cached = await getCachedData(cacheKey);
     if (cached) return cached;
 
+    const cursor = decodeCursor(after);
     const where = buildWhereClause(filter);
+    if (cursor) {
+      where.OR = [
+        { createdAt: { lt: new Date(cursor.createdAt) } },
+        { createdAt: new Date(cursor.createdAt), id: { lt: cursor.id } },
+      ];
+    }
+
+    const searchTerm = (filter?.search ?? filter?.title)?.trim();
+    let searchIds: string[] | undefined;
+    if (searchTerm) {
+      const matches = await prisma.$queryRaw<Array<{ id: string }>>`
+        SELECT r.id
+        FROM recipes r
+        LEFT JOIN ingredients i ON i."recipeId" = r.id
+        WHERE r.title % ${searchTerm}
+           OR COALESCE(r.description, '') % ${searchTerm}
+           OR COALESCE(r.tips, '') % ${searchTerm}
+           OR COALESCE(r.substitutions, '') % ${searchTerm}
+           OR COALESCE(i.name, '') % ${searchTerm}
+        GROUP BY r.id
+        ORDER BY MAX(GREATEST(
+          similarity(r.title, ${searchTerm}),
+          similarity(COALESCE(r.description, ''), ${searchTerm}),
+          similarity(COALESCE(i.name, ''), ${searchTerm})
+        )) DESC
+      `;
+      searchIds = matches.map(({ id }) => id);
+      if (searchIds.length === 0) {
+        return {
+          recipes: [],
+          totalRecipes: 0,
+          pageInfo: { hasNextPage: false, endCursor: null },
+        };
+      }
+      where.id = { in: searchIds };
+    }
 
     const [recipes, totalRecipes] = await Promise.all([
       prisma.recipe.findMany({
         where,
         include: { ingredients: true, preparationSteps: true },
-        orderBy: { createdAt: 'desc' },
-        ...(normalizedLimit ? { take: normalizedLimit } : {}),
+        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+        ...(normalizedLimit && !searchIds ? { take: normalizedLimit + 1 } : {}),
       }),
-      prisma.recipe.count({ where }),
+      prisma.recipe.count({
+        where: {
+          ...buildWhereClause(filter),
+          ...(searchIds ? { id: { in: searchIds } } : {}),
+        },
+      }),
     ]);
 
-    const result = { recipes, totalRecipes };
+    const orderedRecipes = searchIds
+      ? [...recipes].sort(
+          (left, right) =>
+            searchIds.indexOf(left.id) - searchIds.indexOf(right.id),
+        )
+      : recipes;
+    const hasNextPage = Boolean(
+      normalizedLimit && orderedRecipes.length > normalizedLimit,
+    );
+    const pageRecipes = hasNextPage
+      ? orderedRecipes.slice(0, normalizedLimit)
+      : orderedRecipes;
+    const lastRecipe = pageRecipes.at(-1);
+    const result = {
+      recipes: pageRecipes,
+      totalRecipes,
+      pageInfo: {
+        hasNextPage,
+        endCursor: lastRecipe ? encodeCursor(lastRecipe) : null,
+      },
+    };
 
     await setCachedData(cacheKey, result, LIST_CACHE_TTL_SECONDS);
 
@@ -155,7 +264,7 @@ export const RecipeService = {
   },
 
   async getRecipeById(id: string) {
-    const cacheKey = `recipe:${id}`;
+    const cacheKey = cacheKeys.recipeDetail(id);
 
     const cached = await getCachedData(cacheKey);
     if (cached) return cached;
@@ -178,7 +287,7 @@ export const RecipeService = {
   // recipe detail route so old id-based links keep working while new links
   // can be slug-based.
   async getRecipeBySlugOrId(idOrSlug: string) {
-    const cacheKey = `recipe:lookup:${idOrSlug}`;
+    const cacheKey = cacheKeys.recipeLookup(idOrSlug);
 
     const cached = await getCachedData(cacheKey);
     if (cached) return cached;
@@ -199,7 +308,7 @@ export const RecipeService = {
 
   async getRecipesByUserId(userId: string, limit?: number) {
     const normalizedLimit = resolveQueryLimit(limit);
-    const cacheKey = `recipes:user:${userId}:${normalizedLimit || 'all'}`;
+    const cacheKey = cacheKeys.userRecipes(userId, normalizedLimit);
 
     const cached = await getCachedData(cacheKey);
     if (cached) return cached;
@@ -258,11 +367,8 @@ export const RecipeService = {
     // Invalidate user's recipe list and the general recipes list
     // Since list keys depend on filters, we can't easily delete all variations without scanning,
     // but we can at least target the main ones we know.
-    await invalidateCache([
-      `recipes:user:${userId}:all`,
-      // For general list, we might want to delete the 'all' key
-      `recipes:all:{}`,
-    ]);
+    await invalidateCache([cacheKeys.userRecipes(userId, undefined)]);
+    await invalidateRecipeLists();
 
     return newRecipe;
   },
@@ -317,13 +423,15 @@ export const RecipeService = {
     });
 
     await invalidateCache([
-      `recipe:${recipeId}`,
-      `recipe:lookup:${recipeId}`,
-      ...(existingRecipe.slug ? [`recipe:lookup:${existingRecipe.slug}`] : []),
-      ...(data.slug ? [`recipe:lookup:${data.slug}`] : []),
-      `recipes:user:${userId}:all`,
-      `recipes:all:{}`,
+      cacheKeys.recipeDetail(recipeId),
+      cacheKeys.recipeLookup(recipeId),
+      ...(existingRecipe.slug
+        ? [cacheKeys.recipeLookup(existingRecipe.slug)]
+        : []),
+      ...(data.slug ? [cacheKeys.recipeLookup(data.slug)] : []),
+      cacheKeys.userRecipes(userId, undefined),
     ]);
+    await invalidateRecipeLists();
 
     return updatedRecipe;
   },
@@ -347,11 +455,13 @@ export const RecipeService = {
     });
 
     await invalidateCache([
-      `recipe:${recipeId}`,
-      `recipe:lookup:${recipeId}`,
-      ...(existingRecipe.slug ? [`recipe:lookup:${existingRecipe.slug}`] : []),
-      `recipes:all:{}`,
+      cacheKeys.recipeDetail(recipeId),
+      cacheKeys.recipeLookup(recipeId),
+      ...(existingRecipe.slug
+        ? [cacheKeys.recipeLookup(existingRecipe.slug)]
+        : []),
     ]);
+    await invalidateRecipeLists();
 
     return !!deletedRecipe;
   },

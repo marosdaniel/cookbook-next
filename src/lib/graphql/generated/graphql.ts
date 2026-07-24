@@ -102,6 +102,7 @@ export type RecipeFilterInput = {
   equipmentKeys?: Array<string> | null | undefined;
   labelKeys?: Array<string> | null | undefined;
   maxCookingTime?: number | null | undefined;
+  search?: string | null | undefined;
   title?: string | null | undefined;
 };
 
@@ -256,11 +257,12 @@ export type GetFavoriteRecipesQuery = { getFavoriteRecipes: Array<{ id: string, 
 
 export type GetRecipesQueryVariables = Exact<{
   limit?: number | null | undefined;
+  after?: string | null | undefined;
   filter?: RecipeFilterInput | null | undefined;
 }>;
 
 
-export type GetRecipesQuery = { getRecipes: { totalRecipes: number, recipes: Array<{ id: string, title: string, description: string | null, imgSrc: string | null, cookingTime: number, servings: number, createdBy: string, averageRating: number, ratingsCount: number, isFavorite: boolean | null, slug: string | null, category: { key: string, label: string }, difficultyLevel: { key: string, label: string } } | null> } };
+export type GetRecipesQuery = { getRecipes: { totalRecipes: number, recipes: Array<{ id: string, title: string, description: string | null, imgSrc: string | null, cookingTime: number, servings: number, createdBy: string, averageRating: number, ratingsCount: number, isFavorite: boolean | null, slug: string | null, category: { key: string, label: string }, difficultyLevel: { key: string, label: string } } | null>, pageInfo: { hasNextPage: boolean, endCursor: string | null } } };
 
 export type GetRecipesByUserIdQueryVariables = Exact<{
   userId: string | number;
@@ -554,8 +556,8 @@ export const GetFavoriteRecipesDocument = new TypedDocumentString(`
 }
     `) as unknown as TypedDocumentString<GetFavoriteRecipesQuery, GetFavoriteRecipesQueryVariables>;
 export const GetRecipesDocument = new TypedDocumentString(`
-    query getRecipes($limit: Int, $filter: RecipeFilterInput) {
-  getRecipes(limit: $limit, filter: $filter) {
+    query getRecipes($limit: Int, $after: String, $filter: RecipeFilterInput) {
+  getRecipes(limit: $limit, after: $after, filter: $filter) {
     recipes {
       id
       title
@@ -578,6 +580,10 @@ export const GetRecipesDocument = new TypedDocumentString(`
       slug
     }
     totalRecipes
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
   }
 }
     `) as unknown as TypedDocumentString<GetRecipesQuery, GetRecipesQueryVariables>;

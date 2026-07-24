@@ -3,6 +3,7 @@
 import { useQuery } from '@apollo/client/react';
 import {
   Box,
+  Button,
   Center,
   Container,
   Group,
@@ -72,9 +73,9 @@ const RecipesPage: FC = () => {
   );
 
   // --- GraphQL query driven by URL filters ---
-  const { data, loading } = useQuery(GET_LATEST_RECIPES, {
+  const { data, loading, fetchMore } = useQuery(GET_LATEST_RECIPES, {
     variables: {
-      ...(searching ? {} : { limit: 10 }),
+      limit: 10,
       filter: buildQueryFilter(filtersFromUrl),
     },
   });
@@ -82,6 +83,28 @@ const RecipesPage: FC = () => {
   const recipes: RecipeCardData[] = data?.getRecipes?.recipes ?? [];
 
   const totalRecipes: number = data?.getRecipes?.totalRecipes ?? 0;
+  const hasNextPage = data?.getRecipes?.pageInfo?.hasNextPage ?? false;
+
+  const handleLoadMore = async () => {
+    const endCursor = data?.getRecipes?.pageInfo?.endCursor;
+    if (!endCursor) return;
+
+    await fetchMore({
+      variables: { after: endCursor },
+      updateQuery: (previous, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return previous;
+        return {
+          getRecipes: {
+            ...fetchMoreResult.getRecipes,
+            recipes: [
+              ...previous.getRecipes.recipes,
+              ...fetchMoreResult.getRecipes.recipes,
+            ],
+          },
+        };
+      },
+    });
+  };
 
   // --- Handlers ---
   const handleSearch = useCallback(
@@ -149,6 +172,13 @@ const RecipesPage: FC = () => {
                 emptyMessage={translateRecipeSearch('noResults')}
                 withFavorite
               />
+              {hasNextPage && (
+                <Center mt="lg">
+                  <Button onClick={handleLoadMore} loading={loading}>
+                    {translateRecipeSearch('loadMore')}
+                  </Button>
+                </Center>
+              )}
             </Box>
           )}
         </Transition>

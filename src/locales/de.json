@@ -458,6 +458,7 @@
     "pageDescription": "Entdecke die kulinarischen Kreationen unserer Community und finde dein nächstes Lieblingsessen.",
     "searchResults": "Suchergebnisse",
     "noResults": "Keine Rezepte gefunden, die deinen Filtern entsprechen.",
+    "loadMore": "Mehr laden",
     "totalResults": "{count} Rezepte gefunden",
     "recentlyAdded": "Kürzlich hinzugefügte Rezepte",
     "noRecipes": "Keine Rezepte gefunden. Erstelle das erste!"
