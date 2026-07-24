@@ -2,7 +2,9 @@ import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const developmentScriptPolicy =
-  process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : '';
+  process.env.NODE_ENV === 'development'
+    ? " 'unsafe-eval' 'unsafe-inline'"
+    : '';
 
 const cspValue = [
   "default-src 'self'",

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import nextConfig from './next.config';
 
 describe('security headers', () => {
-  it('does not allow unsafe-inline in the script-src CSP directive', async () => {
+  it('keeps production CSP strict while allowing dev-time inline scripts', async () => {
     const headers = (await nextConfig.headers?.()) ?? [];
     const cspHeader = headers
       .find((entry) => entry.source === '/(.*)')
@@ -12,8 +12,11 @@ describe('security headers', () => {
     expect(cspHeader?.value).toContain(
       "script-src 'self' https://va.vercel-scripts.com",
     );
-    expect(cspHeader?.value).not.toContain(
-      "script-src 'self' https://va.vercel-scripts.com 'unsafe-inline'",
-    );
+
+    if (process.env.NODE_ENV === 'development') {
+      expect(cspHeader?.value).toContain("'unsafe-inline'");
+    } else {
+      expect(cspHeader?.value).not.toContain("'unsafe-inline'");
+    }
   });
 });
