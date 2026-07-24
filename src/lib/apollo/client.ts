@@ -8,7 +8,6 @@ import {
   Observable,
 } from '@apollo/client';
 import { ErrorLink } from '@apollo/client/link/error';
-import { notifications } from '@mantine/notifications';
 import type { DocumentNode } from 'graphql';
 import { print } from 'graphql';
 import { store } from '@/lib/store';
@@ -16,6 +15,7 @@ import deMessages from '@/locales/de.json';
 import enGbMessages from '@/locales/en-gb.json';
 import huMessages from '@/locales/hu.json';
 import type { Locale } from '@/types/common';
+import { showErrorNotification } from '@/utils/notifications';
 
 type ErrorPolicy = 'all' | 'ignore' | 'none';
 
@@ -57,11 +57,7 @@ const errorLink = new ErrorLink(({ error, operation }) => {
 
   const { title, message } = getApiErrorNotificationCopy();
 
-  notifications.show({
-    title,
-    message,
-    color: 'red',
-  });
+  showErrorNotification(title, message);
 });
 
 declare module '@apollo/client' {

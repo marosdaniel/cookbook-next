@@ -12,7 +12,6 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
@@ -20,6 +19,10 @@ import { useTranslations } from 'next-intl';
 import type { FC, MouseEvent } from 'react';
 import { useState } from 'react';
 import { zodResolver } from '@/lib/validation/zodResolver';
+import {
+  showErrorNotification,
+  showSuccessNotification,
+} from '@/utils/notifications';
 import { loginValidationSchema } from '../../../lib/validation';
 import { AUTH_ROUTES } from '../../../types/routes';
 import type { LoginFormValues } from './types';
@@ -55,31 +58,27 @@ export const LoginForm: FC = () => {
       });
 
       if (result?.error) {
-        notifications.show({
-          title: translate('response.error'),
-          message: translate('auth.invalidCredentials'),
-          color: 'red',
-          position: 'top-right',
-        });
+        showErrorNotification(
+          translate('response.error'),
+          translate('auth.invalidCredentials'),
+        );
         setIsSigningIn(false);
         return;
       }
 
       if (result?.ok) {
-        notifications.show({
-          title: translate('response.success'),
-          message: translate('auth.loginSuccess'),
-          color: 'green',
-        });
+        showSuccessNotification(
+          translate('response.success'),
+          translate('auth.loginSuccess'),
+        );
         // Navigation will unmount component, keep loading state
         router.push('/');
       }
     } catch {
-      notifications.show({
-        title: translate('response.error'),
-        message: translate('auth.loginError'),
-        color: 'red',
-      });
+      showErrorNotification(
+        translate('response.error'),
+        translate('auth.loginError'),
+      );
       setIsSigningIn(false);
     }
   };

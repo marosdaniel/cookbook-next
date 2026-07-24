@@ -2,7 +2,6 @@
 
 import { useMutation } from '@apollo/client/react';
 import { ActionIcon, Tooltip } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import { motion, useAnimationControls } from 'motion/react';
 import { useSession } from 'next-auth/react';
@@ -13,6 +12,7 @@ import {
   ADD_TO_FAVORITE_RECIPES,
   REMOVE_FROM_FAVORITE_RECIPES,
 } from '@/lib/graphql/mutations';
+import { showErrorNotification } from '@/utils/notifications';
 import { sizeMap } from '../consts';
 import type { FavoriteButtonProps } from './types';
 
@@ -126,13 +126,12 @@ const FavoriteButton = ({
         if (!response?.success) {
           setOptimisticFavorite(previousState);
 
-          notifications.show({
-            title: translate('error'),
-            message: translate(
+          showErrorNotification(
+            translate('error'),
+            translate(
               response?.messageKey?.replace('response.', '') ?? 'unknownError',
             ),
-            color: 'red',
-          });
+          );
 
           return;
         }
@@ -141,11 +140,10 @@ const FavoriteButton = ({
       } catch {
         setOptimisticFavorite(previousState);
 
-        notifications.show({
-          title: translate('error'),
-          message: translate('somethingWentWrong'),
-          color: 'red',
-        });
+        showErrorNotification(
+          translate('error'),
+          translate('somethingWentWrong'),
+        );
       }
     },
     [

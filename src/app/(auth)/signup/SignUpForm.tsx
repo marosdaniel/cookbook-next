@@ -13,7 +13,6 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
@@ -23,6 +22,10 @@ import { useState } from 'react';
 import { CREATE_USER } from '@/lib/graphql/mutations';
 import { isFormSubmitDisabled, signUpValidationSchema } from '@/lib/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
+import {
+  showErrorNotification,
+  showSuccessNotification,
+} from '@/utils/notifications';
 import PrivacyPolicyLink from '../../../components/PrivacyPolicyLink';
 import { AUTH_ROUTES } from '../../../types/routes';
 
@@ -62,11 +65,10 @@ const SignUpForm: FC = () => {
       });
 
       if (data?.createUser?.success) {
-        notifications.show({
-          title: translate('response.success'),
-          message: translate('auth.accountCreatedSuccess'),
-          color: 'green',
-        });
+        showSuccessNotification(
+          translate('response.success'),
+          translate('auth.accountCreatedSuccess'),
+        );
 
         // Automatically log in the user
         setIsLoggingIn(true);
@@ -77,11 +79,10 @@ const SignUpForm: FC = () => {
         });
 
         if (result?.ok) {
-          notifications.show({
-            title: translate('response.success'),
-            message: translate('auth.loginSuccess'),
-            color: 'green',
-          });
+          showSuccessNotification(
+            translate('response.success'),
+            translate('auth.loginSuccess'),
+          );
           // Keep loading state active until navigation completes
           router.push('/');
         } else {
@@ -92,15 +93,11 @@ const SignUpForm: FC = () => {
       }
     } catch (error) {
       setIsLoggingIn(false);
-      const message =
-        error instanceof Error
-          ? error.message
-          : translate('response.unknownError');
-      notifications.show({
-        title: translate('response.error'),
-        message: message,
-        color: 'red',
-      });
+      showErrorNotification(
+        translate('response.error'),
+        translate('response.unknownError'),
+        error,
+      );
     }
   };
 

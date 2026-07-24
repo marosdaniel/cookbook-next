@@ -2,11 +2,14 @@
 
 import { useMutation } from '@apollo/client/react';
 import { Group, Rating, Stack, Text } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 import { motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { RATE_RECIPE } from '@/lib/graphql/mutations';
+import {
+  showErrorNotification,
+  showSuccessNotification,
+} from '@/utils/notifications';
 import type { RecipeRatingProps } from './types';
 
 const RecipeRating = ({
@@ -35,18 +38,16 @@ const RecipeRating = ({
         refetchQueries: ['getRecipeById'],
       });
       setAnimationKey((prev) => prev + 1);
-      notifications.show({
-        title: translate('ratingSuccess'),
-        message: translate('ratingSuccessMessage'),
-        color: 'green',
-      });
+      showSuccessNotification(
+        translate('ratingSuccess'),
+        translate('ratingSuccessMessage'),
+      );
     } catch (error) {
       console.error('Rating failed:', error);
-      notifications.show({
-        title: translate('ratingError'),
-        message: translate('ratingErrorMessage'),
-        color: 'red',
-      });
+      showErrorNotification(
+        translate('ratingError'),
+        translate('ratingErrorMessage'),
+      );
     }
   };
 

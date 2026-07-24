@@ -14,7 +14,6 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
 import { IconPencil, IconUser } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
@@ -22,6 +21,10 @@ import type { z } from 'zod';
 import { UPDATE_USER } from '@/lib/graphql/mutations';
 import { isFormSubmitDisabled, nameValidationSchema } from '@/lib/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
+import {
+  showErrorNotification,
+  showSuccessNotification,
+} from '@/utils/notifications';
 import InfoField from './InfoField';
 import type { PersonalDataProps } from './types';
 
@@ -69,25 +72,22 @@ const PersonalData = ({ user, loading, refetch }: PersonalDataProps) => {
       if (data?.updateUser?.success) {
         await refetch();
         setIsEditMode(false);
-        notifications.show({
-          title: translate('response.success'),
-          message: translate('notifications.personalDataUpdatedMessage'),
-          color: 'teal',
-        });
+        showSuccessNotification(
+          translate('response.success'),
+          translate('notifications.personalDataUpdatedMessage'),
+        );
       } else {
-        notifications.show({
-          title: translate('response.error'),
-          message:
-            data?.updateUser?.message ?? translate('response.unknownError'),
-          color: 'red',
-        });
+        showErrorNotification(
+          translate('response.error'),
+          translate('response.unknownError'),
+          data?.updateUser,
+        );
       }
     } catch {
-      notifications.show({
-        title: translate('response.error'),
-        message: translate('response.somethingWentWrong'),
-        color: 'red',
-      });
+      showErrorNotification(
+        translate('response.error'),
+        translate('response.somethingWentWrong'),
+      );
     }
   };
 

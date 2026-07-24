@@ -1,13 +1,14 @@
 import { useMutation } from '@apollo/client/react';
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import { IconCheck, IconDeviceFloppy } from '@tabler/icons-react';
+import { IconDeviceFloppy } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CREATE_RECIPE } from '@/lib/graphql/mutations';
 import { recipeFormValidationSchema } from '@/lib/validation/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
+import { showSuccessNotification } from '@/utils/notifications';
 import { useRecipeFormHook } from '../FormContext';
 import type {
   DraftState,
@@ -56,12 +57,10 @@ export const useRecipeForm = ({
       onCompleted: () => {
         setDraft(null);
 
-        notifications.show({
-          title: translate('notifications.recipeCreatedTitle'),
-          message: translate('notifications.recipeCreatedMessage'),
-          color: 'teal',
-          icon: <IconCheck size={18} />,
-        });
+        showSuccessNotification(
+          translate('notifications.recipeCreatedTitle'),
+          translate('notifications.recipeCreatedMessage'),
+        );
 
         router.push('/me/my-recipes');
       },

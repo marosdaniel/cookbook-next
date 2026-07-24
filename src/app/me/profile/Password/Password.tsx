@@ -14,7 +14,6 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
 import { IconLock, IconPencil } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -25,6 +24,10 @@ import {
   passwordEditValidationSchema,
 } from '@/lib/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
+import {
+  showErrorNotification,
+  showSuccessNotification,
+} from '@/utils/notifications';
 
 const Password = () => {
   const translate = useTranslations();
@@ -62,42 +65,33 @@ const Password = () => {
         },
       });
 
-      const changePasswordResult = data?.changePassword;
+      const changePasswordResult = data?.changePassword as
+        | boolean
+        | { success?: boolean; message?: string }
+        | undefined;
       const isSuccessfulResponse =
         typeof changePasswordResult === 'boolean'
           ? changePasswordResult
-          : Boolean(
-              (changePasswordResult as { success?: boolean } | null | undefined)
-                ?.success,
-            );
+          : changePasswordResult?.success === true;
 
       if (isSuccessfulResponse) {
-        notifications.show({
-          title: translate('response.success'),
-          message: translate('notifications.passwordChangedMessage'),
-          color: 'teal',
-        });
+        showSuccessNotification(
+          translate('response.success'),
+          translate('notifications.passwordChangedMessage'),
+        );
         handleCancel();
       } else {
-        const errorMessage =
-          typeof changePasswordResult === 'object' &&
-          changePasswordResult !== null
-            ? (changePasswordResult as { message?: string } | null | undefined)
-                ?.message
-            : undefined;
-
-        notifications.show({
-          title: translate('response.error'),
-          message: errorMessage ?? translate('response.unknownError'),
-          color: 'red',
-        });
+        showErrorNotification(
+          translate('response.error'),
+          translate('response.unknownError'),
+          changePasswordResult,
+        );
       }
     } catch {
-      notifications.show({
-        title: translate('response.error'),
-        message: translate('response.somethingWentWrong'),
-        color: 'red',
-      });
+      showErrorNotification(
+        translate('response.error'),
+        translate('response.somethingWentWrong'),
+      );
     }
   };
 

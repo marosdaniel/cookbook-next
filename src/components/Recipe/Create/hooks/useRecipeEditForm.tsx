@@ -1,12 +1,12 @@
 import { useMutation } from '@apollo/client/react';
 import { notifications } from '@mantine/notifications';
-import { IconCheck } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { EDIT_RECIPE } from '@/lib/graphql/mutations';
 import { recipeFormValidationSchema } from '@/lib/validation/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
+import { showSuccessNotification } from '@/utils/notifications';
 import { useRecipeFormHook } from '../FormContext';
 import type {
   ComposerSection,
@@ -106,12 +106,10 @@ export const useRecipeEditForm = ({
           },
         });
 
-        notifications.show({
-          title: translate('notifications.recipeUpdatedTitle'),
-          message: translate('notifications.recipeUpdatedMessage'),
-          color: 'teal',
-          icon: <IconCheck size={18} />,
-        });
+        showSuccessNotification(
+          translate('notifications.recipeUpdatedTitle'),
+          translate('notifications.recipeUpdatedMessage'),
+        );
 
         router.push('/me/my-recipes');
       } catch (error) {
