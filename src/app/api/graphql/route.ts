@@ -45,7 +45,7 @@ const requestStorage = new AsyncLocalStorage<{
 }>();
 
 /**
- * Plugin to log GraphQL operations (development only)
+ * Plugin to emit structured GraphQL request logs for monitoring and audit purposes.
  */
 const loggingPlugin: ApolloServerPlugin<GraphQLContext> = {
   async requestDidStart(
@@ -126,24 +126,6 @@ const armor = new ApolloArmor({
 
 const protection = armor.protect();
 
-/**
- * Plugin to disable Apollo Server's built-in APQ validation.
- * APQ is disabled due to hash mismatches between client and server normalization.
- */
-const disableAPQValidationPlugin: ApolloServerPlugin<GraphQLContext> = {
-  async requestDidStart() {
-    return {
-      async didResolveOperation(requestContext) {
-        // Remove the persisted query validation by clearing extensions
-        // This prevents Apollo Server's built-in APQ plugin from rejecting queries
-        if (requestContext.request.extensions?.persistedQuery) {
-          delete requestContext.request.extensions.persistedQuery;
-        }
-      },
-    };
-  },
-};
-
 const fieldAuthPlugin: ApolloServerPlugin<GraphQLContext> = {
   async requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
     return {
@@ -175,31 +157,35 @@ const fieldAuthPlugin: ApolloServerPlugin<GraphQLContext> = {
 const server = new ApolloServer<GraphQLContext>({
   typeDefs,
   resolvers: { ...scalarResolvers, ...resolvers },
-  plugins: [
-    ...protection.plugins,
-    loggingPlugin,
-    authPlugin,
-    disableAPQValidationPlugin,
-    fieldAuthPlugin,
-  ],
+  plugins: [...protection.plugins, loggingPlugin, authPlugin, fieldAuthPlugin],
   validationRules: [...protection.validationRules],
   introspection: process.env.NODE_ENV !== 'production',
   allowBatchedHttpRequests: false,
   formatError: (formattedError) => {
-    const extensions = { ...(formattedError.extensions ?? undefined) };
+    const publicErrorCodes = new Set([
+      'BAD_USER_INPUT',
+      'UNAUTHENTICATED',
+      'FORBIDDEN',
+      'NOT_FOUND',
+      'RATE_LIMITED',
+    ]);
 
-    if (process.env.NODE_ENV === 'production') {
-      delete extensions.stacktrace;
-      delete extensions.exception;
+    const code = formattedError.extensions?.code?.toString();
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    const extensions = { ...(formattedError.extensions ?? undefined) };
+    delete extensions.stacktrace;
+    delete extensions.exception;
+
+    if (isProduction && !publicErrorCodes.has(code ?? '')) {
+      return {
+        message: 'Internal server error',
+        extensions: { code: 'INTERNAL_SERVER_ERROR' },
+      };
     }
 
     return {
       ...formattedError,
-      message:
-        process.env.NODE_ENV === 'production' &&
-        formattedError.extensions?.code === 'INTERNAL_SERVER_ERROR'
-          ? 'Internal server error'
-          : formattedError.message,
       extensions,
     };
   },
@@ -248,12 +234,6 @@ export const revalidate = 0;
 type GraphQLRequestPayload = {
   operationName?: string;
   query?: string;
-  extensions?: {
-    persistedQuery?: {
-      version?: number;
-      sha256Hash?: string;
-    };
-  };
 };
 
 const createJsonResponse = (
@@ -299,9 +279,18 @@ const enforceRateLimit = async (
     : rateLimiter;
 
   if (!limiter) {
-    console.warn(
-      `Rate limiter unavailable for ${operationName ?? 'unknown'}; proceeding without throttling.`,
+    console.error(
+      `Rate limiter unavailable for ${operationName ?? 'unknown'}.`,
     );
+
+    if (strictOperation) {
+      return createJsonResponse(
+        { error: 'Rate limiter temporarily unavailable' },
+        503,
+        { 'Retry-After': '5' },
+      );
+    }
+
     return null;
   }
 
@@ -343,26 +332,18 @@ const enforceRateLimit = async (
   }
 };
 
-const validatePersistedQueryRequest = (
-  _payload: GraphQLRequestPayload,
-): Response | null => {
-  // DISABLED: APQ validation due to persistent hash mismatches.
-  // Client and server normalization of GraphQL queries differs,
-  // causing valid queries to be rejected. Full queries are sent instead.
-  return null;
-};
-
 const wrappedHandler = async (
   request: Request,
   _context?: { params?: Promise<Record<string, never>> },
 ): Promise<Response> => {
-  if (request.method === 'GET') {
+  if (request.method !== 'POST') {
     return createJsonResponse(
       {
-        message: 'GraphQL API endpoint. Use POST requests.',
-        endpoint: '/api/graphql',
+        error: 'Method not allowed',
+        message: 'GraphQL requests must use POST.',
       },
-      200,
+      405,
+      { Allow: 'POST' },
     );
   }
 
@@ -434,11 +415,6 @@ const wrappedHandler = async (
   );
   if (rateLimitResponse) {
     return rateLimitResponse;
-  }
-
-  const persistedQueryResponse = validatePersistedQueryRequest(payload);
-  if (persistedQueryResponse) {
-    return persistedQueryResponse;
   }
 
   const replayedRequest = new NextRequest(request.url, {

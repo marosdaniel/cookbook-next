@@ -102,9 +102,11 @@ describe('GraphQL route branch coverage', () => {
 
     const response = await wrappedHandler(request as never, {} as never);
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(405);
+    expect(response.headers.get('Allow')).toBe('POST');
     await expect(response.json()).resolves.toMatchObject({
-      message: 'GraphQL API endpoint. Use POST requests.',
+      error: 'Method not allowed',
+      message: 'GraphQL requests must use POST.',
     });
   });
 

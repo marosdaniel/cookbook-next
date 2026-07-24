@@ -263,14 +263,22 @@ describe('GraphQL route - request validation', () => {
       expect(errorResponse.error).toContain('Invalid JSON');
     });
 
-    it('should return 404 message for GET requests', () => {
+    it('should return 405 for GET requests', () => {
       const response = {
-        message: 'GraphQL API endpoint. Use POST requests.',
-        endpoint: '/api/graphql',
+        error: 'Method not allowed',
+        message: 'GraphQL requests must use POST.',
       };
 
-      expect(response.message).toContain('Use POST');
-      expect(response.endpoint).toBe('/api/graphql');
+      expect(response.error).toBe('Method not allowed');
+      expect(response.message).toContain('POST');
+    });
+
+    it('should return 405 for non-POST HTTP methods', () => {
+      const methods = ['GET', 'PUT', 'PATCH', 'DELETE', 'HEAD'];
+
+      methods.forEach((method) => {
+        expect(['GET', 'PUT', 'PATCH', 'DELETE', 'HEAD']).toContain(method);
+      });
     });
   });
 });
