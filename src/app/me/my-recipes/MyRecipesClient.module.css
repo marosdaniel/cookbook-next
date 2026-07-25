@@ -16,9 +16,7 @@
 }
 
 .statCard {
-  transition:
-    transform 150ms ease,
-    box-shadow 150ms ease;
+  transition: transform 150ms ease, box-shadow 150ms ease;
 }
 
 .statCard:hover {
