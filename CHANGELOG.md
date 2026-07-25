@@ -1,3 +1,16 @@
+# [2.75.0](https://github.com/marosdaniel/cookbook-next/compare/v2.74.0...v2.75.0) (2026-07-25)
+
+
+### Bug Fixes
+
+* remove email field from createUser mutation response ([8759480](https://github.com/marosdaniel/cookbook-next/commit/8759480940e60ff70b8f3292dc4228eb055a5a6c))
+
+
+### Features
+
+* add translation support for validation in forms and update German locale entries ([24d2769](https://github.com/marosdaniel/cookbook-next/commit/24d27693d3ac730767f59614568744819ade51d2))
+* implement validation hook with translation support for error messages ([53a5ad3](https://github.com/marosdaniel/cookbook-next/commit/53a5ad36ec7fb0782b4de102fb6e0b8c307e776c))
+
 # [2.74.0](https://github.com/marosdaniel/cookbook-next/compare/v2.73.1...v2.74.0) (2026-07-25)
 
 
