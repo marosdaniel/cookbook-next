@@ -21,7 +21,6 @@ import {
   IconX,
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { useCallback } from 'react';
 
 import { zodResolver } from '@/lib/validation/zodResolver';
 import { DEFAULT_FILTERS, recipeSearchSchema } from './consts';
@@ -41,18 +40,12 @@ const RecipeSearch = ({
 
   const [opened, { toggle }] = useDisclosure(false);
 
-  const validateWithTranslation = useCallback(
-    (values: unknown) =>
-      zodResolver(recipeSearchSchema, (key) => translateValidation(key))(
-        values,
-      ),
-    [translateValidation],
-  );
-
   const form = useForm<RecipeSearchFilters>({
     mode: 'controlled',
     initialValues: initialFilters ?? DEFAULT_FILTERS,
-    validate: validateWithTranslation,
+    validate: zodResolver(recipeSearchSchema, (key) =>
+      translateValidation(key),
+    ),
     validateInputOnBlur: true,
   });
 

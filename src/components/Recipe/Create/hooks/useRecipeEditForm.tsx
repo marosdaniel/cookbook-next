@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client/react';
 import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { EDIT_RECIPE } from '@/lib/graphql/mutations';
 import { recipeFormValidationSchema } from '@/lib/validation/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
@@ -51,16 +51,10 @@ export const useRecipeEditForm = ({
 
   const [editRecipe, { loading: submitLoading }] = useMutation(EDIT_RECIPE);
 
-  const validateWithTranslation = useCallback(
-    (values: unknown) =>
-      zodResolver(recipeFormValidationSchema, (key) => translate(key))(values),
-    [translate],
-  );
-
   const form = useRecipeFormHook({
     mode: 'controlled',
     initialValues: initialValues,
-    validate: validateWithTranslation,
+    validate: zodResolver(recipeFormValidationSchema, (key) => translate(key)),
     validateInputOnBlur: true,
   });
 
