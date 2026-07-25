@@ -1,9 +1,18 @@
+import deMessages from '../../locales/de.json';
+import enGbMessages from '../../locales/en-gb.json';
+import huMessages from '../../locales/hu.json';
 import type { LocaleMessages } from '@/types/common';
 
 export const LOCALE_STORAGE_KEY = 'cookbook-locale';
 export const DEFAULT_LOCALE = 'en-gb';
 
 const SUPPORTED_LOCALES = new Set(['en-gb', 'hu', 'de']);
+
+const MESSAGES_MAP: Record<string, LocaleMessages> = {
+  'en-gb': enGbMessages as unknown as LocaleMessages,
+  hu: huMessages as unknown as LocaleMessages,
+  de: deMessages as unknown as LocaleMessages,
+};
 
 export const normalizeLocale = (locale: string | null | undefined): string => {
   const rawLocale = locale?.trim();
@@ -39,19 +48,5 @@ export const getLocaleMessages = async (
   locale: string,
 ): Promise<LocaleMessages> => {
   const normalizedLocale = normalizeLocale(locale);
-
-  try {
-    // Use dynamic import to load JSON files from src/locales directory
-    const messages = await import(`../../locales/${normalizedLocale}.json`);
-    return messages.default || messages;
-  } catch {
-    // Fallback to English
-    try {
-      const messages = await import('../../locales/en-gb.json');
-      return messages.default || messages;
-    } catch {
-      // Ultimate fallback - return empty object
-      return {};
-    }
-  }
+  return MESSAGES_MAP[normalizedLocale] ?? MESSAGES_MAP['en-gb'] ?? {};
 };

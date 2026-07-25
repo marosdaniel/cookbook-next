@@ -1,9 +1,9 @@
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata, Viewport } from 'next';
-import nextDynamic from 'next/dynamic';
 import { getLocaleMessages } from '@/lib/locale/locale';
 import { getSiteUrl } from '@/lib/seo/site';
 import { ServerProviders } from '@/providers/server';
+import { ClientProviders } from '@/providers/client';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/carousel/styles.css';
@@ -15,13 +15,6 @@ import { getLocaleFromCookies } from '@/lib/locale/locale.server';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
-
-const ClientProviders = nextDynamic(
-  () => import('@/providers/client').then((m) => m.ClientProviders),
-  {
-    ssr: true,
-  },
-);
 
 export const viewport: Viewport = {
   themeColor: [

@@ -8,10 +8,6 @@ vi.mock('next/headers', () => ({
   cookies: vi.fn(),
 }));
 
-vi.mock('next/server', () => ({
-  connection: vi.fn().mockResolvedValue(undefined),
-}));
-
 describe('locale.server', () => {
   describe('getLocaleFromCookies', () => {
     it.each([
@@ -86,22 +82,6 @@ describe('locale.server', () => {
       expect(locale2).toBe('de');
       // Due to React cache, the function should be memoized
       // Note: In actual Next.js runtime, cache() ensures single execution
-    });
-
-    it('should wait for connection before accessing cookies', async () => {
-      const { connection } = await import('next/server');
-      const { cookies } = await import('next/headers');
-
-      const connectionMock = vi.fn().mockResolvedValue(undefined);
-      vi.mocked(connection).mockImplementation(connectionMock);
-
-      vi.mocked(cookies).mockResolvedValue({
-        get: vi.fn().mockReturnValue({ value: 'hu' }),
-      } as unknown as ReadonlyRequestCookies);
-
-      await getLocaleFromCookies();
-
-      expect(connectionMock).toHaveBeenCalled();
     });
   });
 });

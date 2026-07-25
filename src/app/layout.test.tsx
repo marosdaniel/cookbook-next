@@ -21,13 +21,10 @@ vi.mock('@/providers/server', () => ({
   ),
 }));
 
-vi.mock('next/dynamic', () => ({
-  default: () => {
-    const Component = ({ children }: { children: ReactNode }) => (
-      <div data-testid="client-providers">{children}</div>
-    );
-    return Component;
-  },
+vi.mock('@/providers/client', () => ({
+  ClientProviders: ({ children }: { children: ReactNode }) => (
+    <div data-testid="client-providers">{children}</div>
+  ),
 }));
 
 vi.mock('@/components/Shell', () => ({
