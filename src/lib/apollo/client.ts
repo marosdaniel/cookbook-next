@@ -5,6 +5,7 @@ import {
   CombinedProtocolErrors,
   HttpLink,
   InMemoryCache,
+  Observable,
 } from '@apollo/client';
 import { ErrorLink } from '@apollo/client/link/error';
 import type { DocumentNode } from 'graphql';
@@ -93,7 +94,17 @@ declare module '@apollo/client' {
   }
 }
 
-// HTTP link to GraphQL API
+const isServer = typeof window === 'undefined';
+
+// On the server during Next.js SSR, return an empty observable so React SSR renders
+// cleanly without triggering invalid relative HTTP requests ('/api/graphql') on Node.js.
+const ssrServerLink = new ApolloLink(() => {
+  return new Observable((observer) => {
+    observer.complete();
+  });
+});
+
+// HTTP link to GraphQL API (used in browser)
 const httpLink = new HttpLink({
   uri: '/api/graphql',
   credentials: 'same-origin',
@@ -141,7 +152,10 @@ const persistedQueryLink = new ApolloLink((operation, forward) => {
 });
 
 export const apolloClient = new ApolloClient({
-  link: ApolloLink.from([errorLink, persistedQueryLink, httpLink]),
+  link: isServer
+    ? ssrServerLink
+    : ApolloLink.from([errorLink, persistedQueryLink, httpLink]),
+  ssrMode: isServer,
   cache: new InMemoryCache({
     typePolicies: {
       Query: {
