@@ -1,3 +1,10 @@
+# [2.77.0](https://github.com/marosdaniel/cookbook-next/compare/v2.76.0...v2.77.0) (2026-07-25)
+
+
+### Features
+
+* configure Apollo Client to use an empty observable and ssrMode during server-side rendering ([e132fde](https://github.com/marosdaniel/cookbook-next/commit/e132fdede12c15a5eff209f9822db7efde2b877f))
+
 # [2.76.0](https://github.com/marosdaniel/cookbook-next/compare/v2.75.0...v2.76.0) (2026-07-25)
 
 
