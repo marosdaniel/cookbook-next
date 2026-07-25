@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { EDIT_RECIPE } from '@/lib/graphql/mutations';
-import { recipeFormValidationSchema } from '@/lib/validation/validation';
-import { zodResolver } from '@/lib/validation/zodResolver';
+import { recipeFormValidationSchema } from '@/lib/validation/validation';\nimport { zodResolver } from '@/lib/validation/zodResolver';
+
 import { showSuccessNotification } from '@/utils/notifications';
 import { useRecipeFormHook } from '../FormContext';
 import type {
@@ -58,7 +58,7 @@ export const useRecipeEditForm = ({
 
   const form = useRecipeFormHook({
     mode: 'controlled',
-    initialValues,
+    initialValues: recipeValues,
     validate: validateWithTranslation,
     validateInputOnBlur: true,
   });

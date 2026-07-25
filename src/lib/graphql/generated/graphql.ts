@@ -132,7 +132,7 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutation = { createUser: { success: boolean, message: string, messageKey: string, user: { id: string, email: string, firstName: string, lastName: string, userName: string } | null } };
+export type CreateUserMutation = { createUser: { success: boolean, message: string, messageKey: string, user: { id: string, firstName: string, lastName: string, userName: string } | null } };
 
 export type ResetPasswordMutationVariables = Exact<{
   email: string;
@@ -306,7 +306,6 @@ export const CreateUserDocument = new TypedDocumentString(`
     messageKey
     user {
       id
-      email
       firstName
       lastName
       userName

@@ -4,7 +4,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const isDevelopment = process.env.NODE_ENV === 'development';
 const cspValue = [
   "default-src 'self'",
-  `script-src 'self'${isDevelopment ? " 'unsafe-inline'" : ''}`,
+  `script-src 'self'${isDevelopment ? " 'unsafe-inline'" : " 'unsafe-eval'"} https://va.vercel-scripts.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",

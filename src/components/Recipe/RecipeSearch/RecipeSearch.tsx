@@ -22,6 +22,7 @@ import {
 } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
+
 import { zodResolver } from '@/lib/validation/zodResolver';
 import { DEFAULT_FILTERS, recipeSearchSchema } from './consts';
 import classes from './RecipeSearch.module.css';

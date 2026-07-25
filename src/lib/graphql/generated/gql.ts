@@ -15,7 +15,7 @@ import * as types from './graphql';
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n  mutation createUser($userRegisterInput: UserRegisterInput!) {\n    createUser(userRegisterInput: $userRegisterInput) {\n      success\n      message\n      messageKey\n      user {\n        id\n        email\n        firstName\n        lastName\n        userName\n      }\n    }\n  }\n": typeof types.CreateUserDocument,
+    "\n  mutation createUser($userRegisterInput: UserRegisterInput!) {\n    createUser(userRegisterInput: $userRegisterInput) {\n      success\n      message\n      messageKey\n      user {\n        id\n        firstName\n        lastName\n        userName\n      }\n    }\n  }\n": typeof types.CreateUserDocument,
     "\n  mutation resetPassword($email: String!) {\n    resetPassword(email: $email) {\n      success\n      message\n    }\n  }\n": typeof types.ResetPasswordDocument,
     "\n  mutation setNewPassword($token: String!, $newPassword: String!) {\n    setNewPassword(token: $token, newPassword: $newPassword) {\n      success\n      message\n    }\n  }\n": typeof types.SetNewPasswordDocument,
     "\n  mutation changePassword($passwordEditInput: PasswordEditInput!) {\n    changePassword(passwordEditInput: $passwordEditInput) {\n      success\n      message\n    }\n  }\n": typeof types.ChangePasswordDocument,
@@ -38,7 +38,7 @@ type Documents = {
     "\n  query getFollowing($limit: Int) {\n    getFollowing(limit: $limit) {\n      users {\n        id\n        firstName\n        lastName\n        userName\n        recipeCount\n        followedAt\n        latestRecipes {\n          id\n          title\n          description\n          imgSrc\n          cookingTime\n          servings\n          createdBy\n          category {\n            key\n            label\n          }\n          difficultyLevel {\n            key\n            label\n          }\n          averageRating\n          ratingsCount\n          isFavorite\n        }\n      }\n      totalFollowing\n    }\n  }\n": typeof types.GetFollowingDocument,
 };
 const documents: Documents = {
-    "\n  mutation createUser($userRegisterInput: UserRegisterInput!) {\n    createUser(userRegisterInput: $userRegisterInput) {\n      success\n      message\n      messageKey\n      user {\n        id\n        email\n        firstName\n        lastName\n        userName\n      }\n    }\n  }\n": types.CreateUserDocument,
+    "\n  mutation createUser($userRegisterInput: UserRegisterInput!) {\n    createUser(userRegisterInput: $userRegisterInput) {\n      success\n      message\n      messageKey\n      user {\n        id\n        firstName\n        lastName\n        userName\n      }\n    }\n  }\n": types.CreateUserDocument,
     "\n  mutation resetPassword($email: String!) {\n    resetPassword(email: $email) {\n      success\n      message\n    }\n  }\n": types.ResetPasswordDocument,
     "\n  mutation setNewPassword($token: String!, $newPassword: String!) {\n    setNewPassword(token: $token, newPassword: $newPassword) {\n      success\n      message\n    }\n  }\n": types.SetNewPasswordDocument,
     "\n  mutation changePassword($passwordEditInput: PasswordEditInput!) {\n    changePassword(passwordEditInput: $passwordEditInput) {\n      success\n      message\n    }\n  }\n": types.ChangePasswordDocument,
@@ -64,7 +64,7 @@ const documents: Documents = {
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation createUser($userRegisterInput: UserRegisterInput!) {\n    createUser(userRegisterInput: $userRegisterInput) {\n      success\n      message\n      messageKey\n      user {\n        id\n        email\n        firstName\n        lastName\n        userName\n      }\n    }\n  }\n"): typeof import('./graphql').CreateUserDocument;
+export function graphql(source: "\n  mutation createUser($userRegisterInput: UserRegisterInput!) {\n    createUser(userRegisterInput: $userRegisterInput) {\n      success\n      message\n      messageKey\n      user {\n        id\n        firstName\n        lastName\n        userName\n      }\n    }\n  }\n"): typeof import('./graphql').CreateUserDocument;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
