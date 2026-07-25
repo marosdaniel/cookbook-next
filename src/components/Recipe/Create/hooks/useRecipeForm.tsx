@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/client/react';
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
-import { notifications } from '@mantine/notifications';
 import { IconDeviceFloppy } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -9,7 +8,13 @@ import { CREATE_RECIPE } from '@/lib/graphql/mutations';
 import { recipeFormValidationSchema } from '@/lib/validation/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
 
-import { showSuccessNotification } from '@/utils/notifications';
+import {
+  showErrorNotification,
+  showInfoNotification,
+  showNeutralNotification,
+  showSuccessNotification,
+  showWarningNotification,
+} from '@/utils/notifications';
 import { useRecipeFormHook } from '../FormContext';
 import type {
   DraftState,
@@ -66,13 +71,11 @@ export const useRecipeForm = ({
         router.push('/me/my-recipes');
       },
       onError: (error) => {
-        notifications.show({
-          title: translate('notifications.recipeCreateFailedTitle'),
-          message:
-            error.message ||
-            translate('notifications.recipeCreateFailedMessage'),
-          color: 'red',
-        });
+        showErrorNotification(
+          translate('notifications.recipeCreateFailedTitle'),
+          error.message || translate('notifications.recipeCreateFailedMessage'),
+          error,
+        );
       },
     },
   );
@@ -136,11 +139,10 @@ export const useRecipeForm = ({
   const handlePublish = useCallback(
     async (values: RecipeFormValues) => {
       if (!values.difficultyLevel || !values.category) {
-        notifications.show({
-          title: translate('notifications.missingFieldsTitle'),
-          message: translate('notifications.missingFieldsMessage'),
-          color: 'orange',
-        });
+        showWarningNotification(
+          translate('notifications.missingFieldsTitle'),
+          translate('notifications.missingFieldsMessage'),
+        );
 
         onSectionChange('basics');
         return;
@@ -185,9 +187,7 @@ export const useRecipeForm = ({
       values: formRef.current.getValues(),
     });
 
-    notifications.show({
-      message: translate('notifications.draftSavedMessage'),
-      color: 'blue',
+    showInfoNotification(translate('notifications.draftSavedMessage'), {
       icon: <IconDeviceFloppy size={16} />,
       withBorder: true,
     });
@@ -205,11 +205,10 @@ export const useRecipeForm = ({
 
     onSectionChange('basics');
 
-    notifications.show({
-      title: translate('notifications.draftClearedTitle'),
-      message: translate('notifications.draftClearedMessage'),
-      color: 'gray',
-    });
+    showNeutralNotification(
+      translate('notifications.draftClearedTitle'),
+      translate('notifications.draftClearedMessage'),
+    );
   }, [cancelDebouncedDraftSave, onSectionChange, setDraft, translate]);
 
   const addIngredient = useCallback(() => {

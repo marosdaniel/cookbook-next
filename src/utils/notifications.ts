@@ -56,3 +56,44 @@ export const showSuccessNotification = (title: string, message: string) => {
     color: 'teal',
   });
 };
+
+/**
+ * Display warning notification with consistent styling
+ */
+export const showWarningNotification = (title: string, message: string) => {
+  notifications.show({
+    title,
+    message,
+    color: 'orange',
+  });
+};
+
+/**
+ * Display info notification with consistent styling
+ */
+export const showInfoNotification = (
+  message: string,
+  options?: Record<string, unknown>,
+) => {
+  notifications.show({
+    message,
+    color: 'blue',
+    ...options,
+  });
+};
+
+/**
+ * Display neutral/informational notification with consistent styling
+ */
+export const showNeutralNotification = (
+  title: string,
+  message: string,
+  options?: Record<string, unknown>,
+) => {
+  notifications.show({
+    title,
+    message,
+    color: 'gray',
+    ...options,
+  });
+};

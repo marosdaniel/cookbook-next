@@ -1,5 +1,4 @@
 import { useMutation } from '@apollo/client/react';
-import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -7,7 +6,12 @@ import { EDIT_RECIPE } from '@/lib/graphql/mutations';
 import { recipeFormValidationSchema } from '@/lib/validation/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
 
-import { showSuccessNotification } from '@/utils/notifications';
+import {
+  showErrorNotification,
+  showNeutralNotification,
+  showSuccessNotification,
+  showWarningNotification,
+} from '@/utils/notifications';
 import { useRecipeFormHook } from '../FormContext';
 import type {
   ComposerSection,
@@ -87,11 +91,10 @@ export const useRecipeEditForm = ({
   const handlePublish = useCallback(
     async (values: RecipeFormValues) => {
       if (!values.difficultyLevel || !values.category) {
-        notifications.show({
-          title: translate('notifications.missingFieldsTitle'),
-          message: translate('notifications.missingFieldsMessage'),
-          color: 'orange',
-        });
+        showWarningNotification(
+          translate('notifications.missingFieldsTitle'),
+          translate('notifications.missingFieldsMessage'),
+        );
 
         onSectionChange('basics');
         return;
@@ -119,11 +122,11 @@ export const useRecipeEditForm = ({
             ? error.message
             : translate('notifications.recipeUpdateFailedMessage');
 
-        notifications.show({
-          title: translate('notifications.recipeUpdateFailedTitle'),
+        showErrorNotification(
+          translate('notifications.recipeUpdateFailedTitle'),
           message,
-          color: 'red',
-        });
+          error,
+        );
       }
     },
     [editRecipe, labels, onSectionChange, recipeId, router, translate],
@@ -138,11 +141,10 @@ export const useRecipeEditForm = ({
 
     onSectionChange('basics');
 
-    notifications.show({
-      title: translate('notifications.changesResetTitle'),
-      message: translate('notifications.changesResetMessage'),
-      color: 'gray',
-    });
+    showNeutralNotification(
+      translate('notifications.changesResetTitle'),
+      translate('notifications.changesResetMessage'),
+    );
   }, [initialValues, onSectionChange, translate]);
 
   const addIngredient = useCallback(() => {
