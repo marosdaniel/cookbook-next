@@ -126,6 +126,12 @@ minimumReleaseAgeExclude:
   - react@19.2.8
   - '@graphql-codegen/typescript-operations@6.1.2'
   - '@graphql-codegen/visitor-plugin-common@7.2.2'
+  - '@playwright/test@1.62.0'
+  - playwright-core@1.62.0
+  - playwright@1.62.0
+  - sharp@0.35.0
+  - valibot@1.4.2
+  - brace-expansion@5.0.8
 
 overrides:
   '@hono/node-server@<1.19.13': ^1.19.13
@@ -133,3 +139,5 @@ overrides:
   find-my-way: 9.7.0
   graphql: 17.0.2
   postcss@<8.5.10: ^8.5.10
+  sharp@<0.35.0: ^0.35.0
+  valibot@<=1.4.1: ^1.4.2
