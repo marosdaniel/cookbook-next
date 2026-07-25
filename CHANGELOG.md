@@ -1,3 +1,10 @@
+# [2.76.0](https://github.com/marosdaniel/cookbook-next/compare/v2.75.0...v2.76.0) (2026-07-25)
+
+
+### Features
+
+* add global error handling and centralized header configuration to GraphQL route handler ([50f80d1](https://github.com/marosdaniel/cookbook-next/commit/50f80d162f34a205ab80a1bf786bfdd1313af8bf))
+
 # [2.75.0](https://github.com/marosdaniel/cookbook-next/compare/v2.74.0...v2.75.0) (2026-07-25)
 
 
