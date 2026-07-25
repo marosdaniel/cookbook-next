@@ -1,3 +1,10 @@
+# [2.78.0](https://github.com/marosdaniel/cookbook-next/compare/v2.77.0...v2.78.0) (2026-07-25)
+
+
+### Features
+
+* enhance SEO metadata generation with image URL validation and absolute canonical URL ([c12c991](https://github.com/marosdaniel/cookbook-next/commit/c12c991aef192129b198069082b221d9611358f3))
+
 # [2.77.0](https://github.com/marosdaniel/cookbook-next/compare/v2.76.0...v2.77.0) (2026-07-25)
 
 
