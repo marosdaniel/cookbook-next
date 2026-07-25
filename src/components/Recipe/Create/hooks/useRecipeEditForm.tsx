@@ -53,7 +53,7 @@ export const useRecipeEditForm = ({
   const form = useRecipeFormHook({
     mode: 'controlled',
     initialValues,
-    validate: zodResolver(recipeFormValidationSchema),
+    validate: zodResolver(recipeFormValidationSchema, (key) => translate(key)),
     validateInputOnBlur: true,
   });
 

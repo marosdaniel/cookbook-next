@@ -43,7 +43,9 @@ const Password = () => {
       newPassword: '',
       confirmNewPassword: '',
     },
-    validate: zodResolver(passwordEditValidationSchema),
+    validate: zodResolver(passwordEditValidationSchema, (key) =>
+      translate(key),
+    ),
     validateInputOnBlur: true,
   });
 

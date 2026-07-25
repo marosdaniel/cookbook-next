@@ -43,7 +43,9 @@ export const ResetPasswordForm: FC = () => {
     initialValues: {
       email: '',
     },
-    validate: zodResolver(resetPasswordValidationSchema),
+    validate: zodResolver(resetPasswordValidationSchema, (key) =>
+      translate(key),
+    ),
     validateInputOnBlur: true,
   });
 

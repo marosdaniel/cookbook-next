@@ -40,7 +40,7 @@ const PersonalData = ({ user, loading, refetch }: PersonalDataProps) => {
       firstName: user?.firstName ?? '',
       lastName: user?.lastName ?? '',
     },
-    validate: zodResolver(nameValidationSchema),
+    validate: zodResolver(nameValidationSchema, (key) => translate(key)),
     validateInputOnBlur: true,
   });
 

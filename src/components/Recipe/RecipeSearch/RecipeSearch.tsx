@@ -35,13 +35,16 @@ const RecipeSearch = ({
   loading = false,
 }: RecipeSearchProps) => {
   const translate = useTranslations('recipeSearch');
+  const translateValidation = useTranslations();
 
   const [opened, { toggle }] = useDisclosure(false);
 
   const form = useForm<RecipeSearchFilters>({
     mode: 'controlled',
     initialValues: initialFilters ?? DEFAULT_FILTERS,
-    validate: zodResolver(recipeSearchSchema),
+    validate: zodResolver(recipeSearchSchema, (key) =>
+      translateValidation(key),
+    ),
     validateInputOnBlur: true,
   });
 

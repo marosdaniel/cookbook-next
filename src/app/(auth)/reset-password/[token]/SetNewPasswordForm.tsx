@@ -45,7 +45,9 @@ export const SetNewPasswordForm: FC = () => {
       newPassword: '',
       confirmPassword: '',
     },
-    validate: zodResolver(setNewPasswordValidationSchema),
+    validate: zodResolver(setNewPasswordValidationSchema, (key) =>
+      translate(key),
+    ),
     validateInputOnBlur: true,
   });
 

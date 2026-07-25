@@ -46,7 +46,7 @@ const SignUpForm: FC = () => {
       confirmPassword: '',
       privacyAccepted: false,
     },
-    validate: zodResolver(signUpValidationSchema),
+    validate: zodResolver(signUpValidationSchema, (key) => translate(key)),
     validateInputOnBlur: true,
   });
 

@@ -38,7 +38,7 @@ export const LoginForm: FC = () => {
       email: '',
       password: '',
     },
-    validate: zodResolver(loginValidationSchema),
+    validate: zodResolver(loginValidationSchema, (key) => translate(key)),
   });
 
   const handleNavigateToResetPassword = (
