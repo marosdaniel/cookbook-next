@@ -424,19 +424,31 @@ const wrappedHandler = async (
     duplex: 'half',
   });
 
-  const response = await requestStorage.run({ session, requestId }, () =>
-    handler(replayedRequest),
-  );
-  const headers = new Headers(response.headers);
-  headers.set('Cache-Control', 'no-store');
-  headers.set('Vary', 'Cookie, Authorization');
-  headers.set('X-Request-Id', requestId);
+  try {
+    const response = await requestStorage.run({ session, requestId }, () =>
+      handler(replayedRequest),
+    );
 
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
+    response.headers.set('Cache-Control', 'no-store');
+    response.headers.set('Vary', 'Cookie, Authorization');
+    response.headers.set('X-Request-Id', requestId);
+
+    return response;
+  } catch (error) {
+    console.error('Unhandled GraphQL route error:', error);
+    return createJsonResponse(
+      {
+        errors: [
+          {
+            message: 'Internal server error',
+            extensions: { code: 'INTERNAL_SERVER_ERROR' },
+          },
+        ],
+      },
+      500,
+      { 'X-Request-Id': requestId },
+    );
+  }
 };
 
 // Export Next.js route handlers
