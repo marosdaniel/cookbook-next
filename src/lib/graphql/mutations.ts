@@ -26,7 +26,6 @@ export interface CreateUserMutationData {
   createUser: MutationResponseWithMessageKey & {
     user?: {
       id: string;
-      email: string;
       firstName: string;
       lastName: string;
       userName: string;
@@ -146,7 +145,6 @@ export const CREATE_USER: TypedDocumentNode<
       messageKey
       user {
         id
-        email
         firstName
         lastName
         userName
