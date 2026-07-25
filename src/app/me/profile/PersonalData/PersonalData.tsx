@@ -16,7 +16,7 @@ import {
 import { useForm } from '@mantine/form';
 import { IconPencil, IconUser } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { z } from 'zod';
 import { UPDATE_USER } from '@/lib/graphql/mutations';
 import { isFormSubmitDisabled, nameValidationSchema } from '@/lib/validation';
@@ -34,19 +34,13 @@ const PersonalData = ({ user, loading, refetch }: PersonalDataProps) => {
 
   const [updateUser, { loading: updateLoading }] = useMutation(UPDATE_USER);
 
-  const validateWithTranslation = useCallback(
-    (values: unknown) =>
-      zodResolver(nameValidationSchema, (key) => translate(key))(values),
-    [translate],
-  );
-
   const form = useForm<z.infer<typeof nameValidationSchema>>({
     mode: 'controlled',
     initialValues: {
       firstName: user?.firstName ?? '',
       lastName: user?.lastName ?? '',
     },
-    validate: validateWithTranslation,
+    validate: zodResolver(nameValidationSchema, (key) => translate(key)),
     validateInputOnBlur: true,
   });
 

@@ -16,7 +16,7 @@ import {
 import { useForm } from '@mantine/form';
 import { IconLock, IconPencil } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import type { z } from 'zod';
 import { CHANGE_PASSWORD } from '@/lib/graphql/mutations';
 import {
@@ -36,14 +36,6 @@ const Password = () => {
 
   const [changePassword, { loading }] = useMutation(CHANGE_PASSWORD);
 
-  const validateWithTranslation = useCallback(
-    (values: unknown) =>
-      zodResolver(passwordEditValidationSchema, (key) => translate(key))(
-        values,
-      ),
-    [translate],
-  );
-
   const form = useForm<z.infer<typeof passwordEditValidationSchema>>({
     mode: 'uncontrolled',
     initialValues: {
@@ -51,7 +43,9 @@ const Password = () => {
       newPassword: '',
       confirmNewPassword: '',
     },
-    validate: validateWithTranslation,
+    validate: zodResolver(passwordEditValidationSchema, (key) =>
+      translate(key),
+    ),
     validateInputOnBlur: true,
   });
 
