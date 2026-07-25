@@ -1,3 +1,10 @@
+# [2.74.0](https://github.com/marosdaniel/cookbook-next/compare/v2.73.1...v2.74.0) (2026-07-25)
+
+
+### Features
+
+* enhance validation error handling with translation support and add corresponding locale entries ([292454c](https://github.com/marosdaniel/cookbook-next/commit/292454c18190dbd0f6154fbe8d09141ee9d47909))
+
 ## [2.73.1](https://github.com/marosdaniel/cookbook-next/compare/v2.73.0...v2.73.1) (2026-07-24)
 
 
