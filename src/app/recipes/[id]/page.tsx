@@ -118,8 +118,22 @@ export async function generateMetadata({
     (typeof fallback.description === 'string'
       ? fallback.description
       : undefined);
-  const image = recipe.socialImage ?? recipe.imgSrc ?? undefined;
+
+  // Validate image URL - must be absolute and valid
+  const rawImage = recipe.socialImage ?? recipe.imgSrc;
+  let validImage: string | undefined;
+  if (rawImage?.trim()) {
+    try {
+      new URL(rawImage); // Validate it's a proper URL
+      validImage = rawImage;
+    } catch {
+      validImage = undefined;
+    }
+  }
+
   const canonicalPath = PUBLIC_ROUTES.RECIPE_DETAIL(recipe.slug ?? recipe.id);
+  const siteUrl = getSiteUrl();
+  const absoluteCanonicalUrl = `${siteUrl}${canonicalPath}`;
 
   return {
     title,
@@ -130,8 +144,8 @@ export async function generateMetadata({
       title,
       description,
       type: 'article',
-      url: canonicalPath,
-      images: image ? [{ url: image }] : undefined,
+      url: absoluteCanonicalUrl,
+      images: validImage ? [{ url: validImage }] : undefined,
     },
     twitter: { card: 'summary_large_image', title, description },
   };

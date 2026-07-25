@@ -1,15 +1,22 @@
-export const getSiteUrl = () => {
-  const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+export const getSiteUrl = (): string => {
+  const rawUrl =
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+    process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim() ||
+    process.env.VERCEL_URL?.trim();
 
-  if (configuredSiteUrl) {
-    return configuredSiteUrl.replace(/\/$/, '');
+  if (!rawUrl) {
+    return 'http://localhost:3000';
   }
 
-  const vercelProductionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  const formattedUrl =
+    rawUrl.startsWith('http://') || rawUrl.startsWith('https://')
+      ? rawUrl
+      : `https://${rawUrl}`;
 
-  if (vercelProductionUrl) {
-    return `https://${vercelProductionUrl}`;
+  try {
+    const parsed = new URL(formattedUrl);
+    return parsed.origin;
+  } catch {
+    return 'http://localhost:3000';
   }
-
-  return 'http://localhost:3000';
 };
