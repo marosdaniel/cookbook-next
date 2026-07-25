@@ -38,7 +38,8 @@
     "cookiePolicyTitle": "Cookie-Richtlinie",
     "cookiePolicyDescription": "Erfahren Sie mehr darüber, wie Cookbook Cookies verwendet.",
     "privacyPolicyTitle": "Datenschutzrichtlinie",
-    "privacyPolicyDescription": "Erfahren Sie mehr darüber, wie Cookbook Ihre Privatsphäre schützt."
+    "privacyPolicyDescription": "Erfahren Sie mehr darüber, wie Cookbook Ihre Privatsphäre schützt.",
+    "emailPlaceholder": "your@email.com"
   },
   "common": {
     "language": "Sprache",

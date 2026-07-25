@@ -76,10 +76,16 @@ export const useRecipeForm = ({
     },
   );
 
+  const validateWithTranslation = useCallback(
+    (values: unknown) =>
+      zodResolver(recipeFormValidationSchema, (key) => translate(key))(values),
+    [translate],
+  );
+
   const form = useRecipeFormHook({
     mode: 'controlled',
     initialValues: draft?.values ?? EMPTY_FORM_VALUES,
-    validate: zodResolver(recipeFormValidationSchema, (key) => translate(key)),
+    validate: validateWithTranslation,
     validateInputOnBlur: true,
   });
 

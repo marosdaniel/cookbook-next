@@ -18,7 +18,7 @@ import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { CREATE_USER } from '@/lib/graphql/mutations';
 import { isFormSubmitDisabled, signUpValidationSchema } from '@/lib/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
@@ -35,6 +35,12 @@ const SignUpForm: FC = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [createUser, { loading }] = useMutation(CREATE_USER);
 
+  const validateWithTranslation = useCallback(
+    (values: unknown) =>
+      zodResolver(signUpValidationSchema, (key) => translate(key))(values),
+    [translate],
+  );
+
   const form = useForm({
     mode: 'uncontrolled',
     initialValues: {
@@ -46,7 +52,7 @@ const SignUpForm: FC = () => {
       confirmPassword: '',
       privacyAccepted: false,
     },
-    validate: zodResolver(signUpValidationSchema, (key) => translate(key)),
+    validate: validateWithTranslation,
     validateInputOnBlur: true,
   });
 

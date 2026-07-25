@@ -50,10 +50,16 @@ export const useRecipeEditForm = ({
 
   const [editRecipe, { loading: submitLoading }] = useMutation(EDIT_RECIPE);
 
+  const validateWithTranslation = useCallback(
+    (values: unknown) =>
+      zodResolver(recipeFormValidationSchema, (key) => translate(key))(values),
+    [translate],
+  );
+
   const form = useRecipeFormHook({
     mode: 'controlled',
     initialValues,
-    validate: zodResolver(recipeFormValidationSchema, (key) => translate(key)),
+    validate: validateWithTranslation,
     validateInputOnBlur: true,
   });
 

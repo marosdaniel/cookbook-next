@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import type { FC, MouseEvent } from 'react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { zodResolver } from '@/lib/validation/zodResolver';
 import {
   showErrorNotification,
@@ -32,13 +32,19 @@ export const LoginForm: FC = () => {
   const router = useRouter();
   const [isSigningIn, setIsSigningIn] = useState(false);
 
+  const validateWithTranslation = useCallback(
+    (values: unknown) =>
+      zodResolver(loginValidationSchema, (key) => translate(key))(values),
+    [translate],
+  );
+
   const form = useForm<LoginFormValues>({
     mode: 'controlled',
     initialValues: {
       email: '',
       password: '',
     },
-    validate: zodResolver(loginValidationSchema, (key) => translate(key)),
+    validate: validateWithTranslation,
   });
 
   const handleNavigateToResetPassword = (
