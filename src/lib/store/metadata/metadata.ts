@@ -8,7 +8,7 @@ export interface Metadata {
   name: string;
 }
 
-interface MetadataState {
+export interface MetadataState {
   categories: Metadata[];
   labels: Metadata[];
   units: Metadata[];
@@ -23,6 +23,36 @@ interface MetadataState {
   isLoaded: boolean;
   error: string | null;
 }
+
+/**
+ * Groups a flat metadata array into typed buckets.
+ * Used both by the `setMetadata` reducer and for store preloading from
+ * the static METADATA constant — so the bucketing logic lives in one place.
+ */
+export const groupMetadata = (
+  items: Metadata[],
+): Omit<MetadataState, 'isLoading' | 'isLoaded' | 'error'> => ({
+  categories: items.filter((m) => ['category', 'CATEGORY'].includes(m.type)),
+  labels: items.filter((m) => ['label', 'LABEL'].includes(m.type)),
+  units: items.filter((m) => ['unit', 'UNIT'].includes(m.type)),
+  levels: items.filter((m) =>
+    ['level', 'DIFFICULTY_LEVEL'].includes(m.type),
+  ),
+  cuisines: items.filter((m) => ['cuisine', 'CUISINE'].includes(m.type)),
+  servingUnits: items.filter((m) =>
+    ['serving_unit', 'SERVING_UNIT'].includes(m.type),
+  ),
+  dietaryFlags: items.filter((m) => ['diet', 'DIET'].includes(m.type)),
+  allergens: items.filter((m) =>
+    ['allergen', 'ALLERGEN'].includes(m.type),
+  ),
+  equipment: items.filter((m) =>
+    ['equipment', 'EQUIPMENT'].includes(m.type),
+  ),
+  costLevels: items.filter((m) =>
+    ['cost_level', 'COST_LEVEL'].includes(m.type),
+  ),
+});
 
 const initialState: MetadataState = {
   categories: [],
@@ -54,38 +84,7 @@ const metadataSlice = createSlice({
       state.error = action.payload;
     },
     setMetadata(state, action: PayloadAction<Metadata[]>) {
-      const metadata = action.payload;
-
-      // Separate metadata by type
-      state.categories = metadata.filter((m) =>
-        ['category', 'CATEGORY'].includes(m.type),
-      );
-      state.labels = metadata.filter((m) =>
-        ['label', 'LABEL'].includes(m.type),
-      );
-      state.units = metadata.filter((m) => ['unit', 'UNIT'].includes(m.type));
-      state.levels = metadata.filter((m) =>
-        ['level', 'DIFFICULTY_LEVEL'].includes(m.type),
-      );
-      state.cuisines = metadata.filter((m) =>
-        ['cuisine', 'CUISINE'].includes(m.type),
-      );
-      state.servingUnits = metadata.filter((m) =>
-        ['serving_unit', 'SERVING_UNIT'].includes(m.type),
-      );
-      state.dietaryFlags = metadata.filter((m) =>
-        ['diet', 'DIET'].includes(m.type),
-      );
-      state.allergens = metadata.filter((m) =>
-        ['allergen', 'ALLERGEN'].includes(m.type),
-      );
-      state.equipment = metadata.filter((m) =>
-        ['equipment', 'EQUIPMENT'].includes(m.type),
-      );
-      state.costLevels = metadata.filter((m) =>
-        ['cost_level', 'COST_LEVEL'].includes(m.type),
-      );
-
+      Object.assign(state, groupMetadata(action.payload));
       state.isLoaded = true;
       state.isLoading = false;
       state.error = null;

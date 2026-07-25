@@ -1,63 +1,35 @@
 'use client';
 
-import { useApolloClient, useQuery } from '@apollo/client/react';
-import { useEffect, useRef } from 'react';
+import { useQuery } from '@apollo/client/react';
 import { GET_ALL_METADATA } from '@/lib/graphql/queries';
 import { useAppDispatch, useAppSelector } from '../store';
 import type { Metadata } from './metadata';
 import { setMetadata, setMetadataError, setMetadataLoading } from './metadata';
+import { useEffect } from 'react';
 
 interface GetAllMetadataResponse {
   getAllMetadata: Metadata[];
 }
 
-let hasRequestedMetadataLoad = false;
-
 /**
- * Custom hook to fetch and manage metadata in Redux store
- * Fetches metadata from GraphQL API and populates Redux store
- * Should be called once at app initialization
+ * Custom hook to fetch and manage metadata in Redux store.
+ * Because the Redux store is pre-seeded from the static METADATA constant at
+ * startup, `isLoaded` is already `true` and the GraphQL query is always
+ * skipped in normal operation.  `refetch` is retained so callers can manually
+ * re-hydrate if needed (e.g. after an admin update to metadata).
  */
 export const useFetchMetadata = () => {
   const dispatch = useAppDispatch();
   const isMetadataLoaded = useAppSelector((state) => state.metadata.isLoaded);
-  const client = useApolloClient();
-  const wasMetadataLoaded = useRef(false);
-
-  let hasCachedMetadata = false;
-  try {
-    hasCachedMetadata = Boolean(
-      client.readQuery<GetAllMetadataResponse>({
-        query: GET_ALL_METADATA,
-      }),
-    );
-  } catch {
-    hasCachedMetadata = false;
-  }
-
-  const shouldRequestMetadata =
-    !isMetadataLoaded && !hasCachedMetadata && !hasRequestedMetadataLoad;
-
-  if (shouldRequestMetadata) {
-    hasRequestedMetadataLoad = true;
-  }
 
   const { data, loading, error, refetch } = useQuery<GetAllMetadataResponse>(
     GET_ALL_METADATA,
     {
-      fetchPolicy: 'cache-first', // Use cache if available, otherwise fetch
+      fetchPolicy: 'cache-first',
       notifyOnNetworkStatusChange: true,
-      skip: !shouldRequestMetadata,
+      skip: isMetadataLoaded,
     },
   );
-
-  useEffect(() => {
-    if (wasMetadataLoaded.current && !isMetadataLoaded) {
-      hasRequestedMetadataLoad = false;
-    }
-
-    wasMetadataLoaded.current = isMetadataLoaded;
-  }, [isMetadataLoaded]);
 
   useEffect(() => {
     dispatch(setMetadataLoading(loading));
@@ -85,3 +57,4 @@ export const useFetchMetadata = () => {
     refetch,
   };
 };
+

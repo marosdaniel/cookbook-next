@@ -1,27 +1,15 @@
 import { renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { mockUseQuery, mockUseApolloClient, mockReadQuery } = vi.hoisted(() => ({
+const { mockUseQuery } = vi.hoisted(() => ({
   mockUseQuery: vi.fn(),
-  mockUseApolloClient: vi.fn(),
-  mockReadQuery: vi.fn(),
 }));
-
-vi.mock('@apollo/client', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@apollo/client')>();
-
-  return {
-    ...actual,
-    useApolloClient: mockUseApolloClient,
-  };
-});
 
 vi.mock('@apollo/client/react', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@apollo/client/react')>();
 
   return {
     ...actual,
-    useApolloClient: mockUseApolloClient,
     useQuery: mockUseQuery,
   };
 });
@@ -38,10 +26,6 @@ import { useFetchMetadata } from './useMetadata';
 describe('useFetchMetadata', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUseApolloClient.mockReturnValue({
-      readQuery: mockReadQuery,
-    });
-    mockReadQuery.mockReturnValue(null);
     mockUseQuery.mockReturnValue({
       data: null,
       loading: false,
@@ -59,3 +43,4 @@ describe('useFetchMetadata', () => {
     );
   });
 });
+

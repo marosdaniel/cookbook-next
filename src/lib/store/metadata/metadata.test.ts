@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   clearMetadata,
+  groupMetadata,
   metadataReducer,
   setMetadata,
   setMetadataError,
@@ -90,3 +91,42 @@ describe('metadata reducer', () => {
     expect(cleared.error).toBeNull();
   });
 });
+
+describe('groupMetadata helper', () => {
+  it('buckets items into the correct typed arrays', () => {
+    const result = groupMetadata([
+      { key: 'cat', label: 'Cat', type: 'CATEGORY', name: 'cat' },
+      { key: 'lab', label: 'Lab', type: 'LABEL', name: 'lab' },
+      { key: 'unit', label: 'Unit', type: 'UNIT', name: 'unit' },
+      { key: 'level', label: 'Level', type: 'DIFFICULTY_LEVEL', name: 'level' },
+      { key: 'cuisine', label: 'Cuisine', type: 'CUISINE', name: 'cuisine' },
+      { key: 'serving', label: 'Serving', type: 'SERVING_UNIT', name: 'serving' },
+      { key: 'diet', label: 'Diet', type: 'DIET', name: 'diet' },
+      { key: 'allergen', label: 'Allergen', type: 'ALLERGEN', name: 'allergen' },
+      { key: 'equipment', label: 'Equipment', type: 'EQUIPMENT', name: 'equipment' },
+      { key: 'cost', label: 'Cost', type: 'COST_LEVEL', name: 'cost' },
+    ]);
+
+    expect(result.categories).toHaveLength(1);
+    expect(result.labels).toHaveLength(1);
+    expect(result.units).toHaveLength(1);
+    expect(result.levels).toHaveLength(1);
+    expect(result.cuisines).toHaveLength(1);
+    expect(result.servingUnits).toHaveLength(1);
+    expect(result.dietaryFlags).toHaveLength(1);
+    expect(result.allergens).toHaveLength(1);
+    expect(result.equipment).toHaveLength(1);
+    expect(result.costLevels).toHaveLength(1);
+  });
+
+  it('returns empty arrays for unknown types', () => {
+    const result = groupMetadata([
+      { key: 'unknown', label: 'Unknown', type: 'UNKNOWN_TYPE', name: 'unknown' },
+    ]);
+
+    expect(result.categories).toHaveLength(0);
+    expect(result.labels).toHaveLength(0);
+    expect(result.units).toHaveLength(0);
+  });
+});
+
