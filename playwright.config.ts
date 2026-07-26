@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const PORT = 3000;
+const HOSTNAME = '127.0.0.1';
 
 export default defineConfig({
   testDir: './e2e',
@@ -20,7 +21,7 @@ export default defineConfig({
       ]
     : [['html', { open: 'never' }]],
   use: {
-    baseURL: `http://127.0.0.1:${PORT}`,
+    baseURL: `http://${HOSTNAME}:${PORT}`,
     // Ensure tests run with a consistent locale so i18n text is stable.
     locale: 'en-GB',
     extraHTTPHeaders: {
@@ -39,9 +40,9 @@ export default defineConfig({
   webServer: {
     // Ensure NEXTAUTH_SECRET is defined for the dev server used by Playwright.
     // This prevents NextAuth from throwing MissingSecret during e2e runs.
-    command: `NEXTAUTH_SECRET=${process.env.NEXTAUTH_SECRET ?? 'test-secret'} pnpm exec next dev --port ${PORT}`,
-    url: `http://127.0.0.1:${PORT}`,
+    command: `NEXTAUTH_SECRET=${process.env.NEXTAUTH_SECRET ?? 'test-secret'} pnpm exec next dev --hostname ${HOSTNAME} --port ${PORT}`,
+    url: `http://${HOSTNAME}:${PORT}`,
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    timeout: 180_000,
   },
 });
