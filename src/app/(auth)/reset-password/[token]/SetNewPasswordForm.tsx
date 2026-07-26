@@ -4,7 +4,6 @@ import { useMutation } from '@apollo/client/react';
 import {
   Alert,
   Button,
-  Container,
   Group,
   Paper,
   PasswordInput,
@@ -12,7 +11,7 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { motion, type Variants } from 'motion/react';
+import { motion } from 'motion/react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -26,63 +25,18 @@ import {
   setNewPasswordValidationSchema,
 } from '@/lib/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
+import { MotionContainer } from '../../../../lib/motion/components';
 import { AUTH_ROUTES } from '../../../../types/routes';
 import { showErrorNotification } from '../../../../utils/notifications';
 import { AUTH_CONSTANTS } from '../../consts';
+import {
+  buttonVariants,
+  containerVariants,
+  fieldListVariants,
+  fieldVariants,
+  successIconVariants,
+} from './consts';
 import type { SetNewPasswordFormValues } from './types';
-
-// --- Animation variants ---
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.45, ease: 'easeOut' as const },
-  },
-};
-
-const fieldListVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.15,
-    },
-  },
-};
-
-const fieldVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.3, ease: 'easeOut' as const },
-  },
-};
-
-const buttonVariants: Variants = {
-  idle: { scale: 1 },
-  tap: { scale: 0.97 },
-  error: {
-    x: [-6, 6, -4, 4, 0],
-    transition: { duration: 0.35 },
-  },
-};
-
-const successIconVariants: Variants = {
-  hidden: { scale: 0.4, opacity: 0, rotate: -15 },
-  visible: {
-    scale: 1,
-    opacity: 1,
-    rotate: 0,
-    transition: { duration: 0.45, ease: 'backOut' as const, delay: 0.1 },
-  },
-};
-
-// ---
-
-const MotionContainer = motion.create(Container);
 
 export const SetNewPasswordForm: FC = () => {
   const translate = useTranslations();

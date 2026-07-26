@@ -4,7 +4,6 @@ import { useMutation } from '@apollo/client/react';
 import {
   Alert,
   Button,
-  Container,
   Group,
   Paper,
   Stack,
@@ -13,7 +12,7 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { AnimatePresence, motion, type Variants } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
@@ -26,81 +25,21 @@ import {
   resetPasswordValidationSchema,
 } from '@/lib/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
+import { MotionContainer } from '../../../lib/motion/components';
 import { AUTH_ROUTES } from '../../../types/routes';
 import {
   showErrorNotification,
   showSuccessNotification,
 } from '../../../utils/notifications';
+import {
+  buttonVariants,
+  containerVariants,
+  fieldListVariants,
+  fieldVariants,
+  successIconVariants,
+  swapVariants,
+} from './consts';
 import type { ResetPasswordFormValues } from './types';
-
-// --- Animation variants ---
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.45, ease: 'easeOut' as const },
-  },
-};
-
-const fieldListVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.15,
-    },
-  },
-};
-
-const fieldVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.3, ease: 'easeOut' as const },
-  },
-};
-
-const buttonVariants: Variants = {
-  idle: { scale: 1 },
-  tap: { scale: 0.97 },
-  error: {
-    x: [-6, 6, -4, 4, 0],
-    transition: { duration: 0.35 },
-  },
-};
-
-const swapVariants: Variants = {
-  hidden: { opacity: 0, y: 12, position: 'absolute' as const },
-  visible: {
-    opacity: 1,
-    y: 0,
-    position: 'relative' as const,
-    transition: { duration: 0.35, ease: 'easeOut' as const },
-  },
-  exit: {
-    opacity: 0,
-    y: -12,
-    position: 'absolute' as const,
-    transition: { duration: 0.25, ease: 'easeIn' as const },
-  },
-};
-
-const successIconVariants: Variants = {
-  hidden: { scale: 0.6, opacity: 0, rotate: -10 },
-  visible: {
-    scale: 1,
-    opacity: 1,
-    rotate: 0,
-    transition: { duration: 0.4, ease: 'backOut' as const, delay: 0.1 },
-  },
-};
-
-// ---
-
-const MotionContainer = motion.create(Container);
 
 export const ResetPasswordForm: FC = () => {
   const translate = useTranslations();

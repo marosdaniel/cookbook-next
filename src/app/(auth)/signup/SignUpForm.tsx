@@ -4,7 +4,6 @@ import { useMutation } from '@apollo/client/react';
 import {
   Button,
   Checkbox,
-  Container,
   Group,
   Paper,
   PasswordInput,
@@ -13,7 +12,7 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { motion, type Variants } from 'motion/react';
+import { motion } from 'motion/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
@@ -28,54 +27,14 @@ import {
   showSuccessNotification,
 } from '@/utils/notifications';
 import PrivacyPolicyLink from '../../../components/PrivacyPolicyLink';
+import { MotionContainer } from '../../../lib/motion/components';
 import { AUTH_ROUTES } from '../../../types/routes';
-
-// --- Animation variants ---
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.45, ease: 'easeOut' as const },
-  },
-};
-
-const fieldListVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.07,
-      delayChildren: 0.15,
-    },
-  },
-};
-
-const fieldVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.3, ease: 'easeOut' as const },
-  },
-};
-
-const buttonVariants: Variants = {
-  idle: { scale: 1 },
-  tap: { scale: 0.97 },
-  success: {
-    scale: [1, 1.04, 1],
-    transition: { duration: 0.3 },
-  },
-  error: {
-    x: [-6, 6, -4, 4, 0],
-    transition: { duration: 0.35 },
-  },
-};
-
-// ---
-
-const MotionContainer = motion.create(Container);
+import {
+  buttonVariants,
+  containerVariants,
+  fieldListVariants,
+  fieldVariants,
+} from './consts';
 
 const SignUpForm: FC = () => {
   const translate = useTranslations();
