@@ -12,11 +12,13 @@ export async function shouldExploreRecipesAndPolicyPages(
   await expect(page).toHaveURL(/\/recipes$/);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 
-  await page
+  const cookieLink = page
     .getByTestId('footer-cookie')
     .filter({ visible: true })
-    .first()
-    .click();
+    .first();
+  await expect(cookieLink).toBeVisible();
+  await cookieLink.click({ force: true });
+  await page.waitForURL(/\/cookie-policy$/);
   await expect(page).toHaveURL(/\/cookie-policy$/);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 }

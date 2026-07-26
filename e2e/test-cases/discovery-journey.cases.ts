@@ -14,11 +14,13 @@ export async function shouldCompleteDiscoveryJourney(
   await expect(page).toHaveURL(/\/recipes$/);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 
-  await page
+  const privacyLink = page
     .getByTestId('footer-privacy')
     .filter({ visible: true })
-    .first()
-    .click();
+    .first();
+  await expect(privacyLink).toBeVisible();
+  await privacyLink.click({ force: true });
+  await page.waitForURL(/\/privacy-policy$/);
   await expect(page).toHaveURL(/\/privacy-policy$/);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 }

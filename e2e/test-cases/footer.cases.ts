@@ -16,11 +16,13 @@ export async function shouldNavigateToPrivacyPolicyFromFooter(
 ): Promise<void> {
   await page.goto('/');
 
-  await page
+  const privacyLink = page
     .getByTestId('footer-privacy')
     .filter({ visible: true })
-    .first()
-    .click();
+    .first();
+  await expect(privacyLink).toBeVisible();
+  await privacyLink.click({ force: true });
+  await page.waitForURL(/\/privacy-policy$/);
   await expect(page).toHaveURL(/\/privacy-policy$/);
 }
 
@@ -29,11 +31,13 @@ export async function shouldNavigateToCookiePolicyFromFooter(
 ): Promise<void> {
   await page.goto('/');
 
-  await page
+  const cookieLink = page
     .getByTestId('footer-cookie')
     .filter({ visible: true })
-    .first()
-    .click();
+    .first();
+  await expect(cookieLink).toBeVisible();
+  await cookieLink.click({ force: true });
+  await page.waitForURL(/\/cookie-policy$/);
   await expect(page).toHaveURL(/\/cookie-policy$/);
 }
 
