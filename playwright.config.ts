@@ -40,7 +40,7 @@ export default defineConfig({
   webServer: {
     // Ensure NEXTAUTH_SECRET is defined for the dev server used by Playwright.
     // This prevents NextAuth from throwing MissingSecret during e2e runs.
-    command: `NEXTAUTH_SECRET=${process.env.NEXTAUTH_SECRET ?? 'test-secret'} pnpm exec next dev --hostname ${HOSTNAME} --port ${PORT}`,
+    command: `NEXTAUTH_SECRET=${process.env.NEXTAUTH_SECRET ?? 'test-secret'} corepack pnpm exec next dev --hostname ${HOSTNAME} --port ${PORT}`,
     url: `http://${HOSTNAME}:${PORT}`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
