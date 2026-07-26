@@ -108,7 +108,7 @@ const IngredientsSection = ({
 
                 return (
                   <motion.div
-                    key={ingredient.localId}
+                    key={ingredient.localId || `ingredient-${index}`}
                     layout="position"
                     initial={{ opacity: 0, y: 12 }}
                     animate={{

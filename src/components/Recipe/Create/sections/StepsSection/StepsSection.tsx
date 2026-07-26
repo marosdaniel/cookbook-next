@@ -220,7 +220,7 @@ const StepsSection = ({
               <AnimatePresence initial={false} mode="popLayout">
                 {sortedSteps.map((step, index) => (
                   <motion.div
-                    key={step.localId}
+                    key={step.localId || `step-${index}`}
                     layout="position"
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}

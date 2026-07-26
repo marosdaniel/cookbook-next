@@ -121,7 +121,7 @@ export const RecipeIngredients = ({
       </Group>
 
       <Stack gap={0}>
-        {ingredients.map((ingredient) => {
+        {ingredients.map((ingredient, index) => {
           const isChecked = checkedIngredients.has(ingredient.localId);
           const scaledQuantity = scaleQuantity(
             ingredient.quantity,
@@ -130,7 +130,7 @@ export const RecipeIngredients = ({
 
           return (
             <motion.div
-              key={ingredient.localId}
+              key={ingredient.localId || `ingredient-${index}`}
               layout="position"
               className={`${classes.ingredientItem} ${
                 isChecked ? classes.ingredientChecked : ''

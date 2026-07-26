@@ -47,7 +47,7 @@ export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
 
             return (
               <Paper
-                key={step.localId}
+                key={step.localId || `step-${index}`}
                 component="button"
                 type="button"
                 p="lg"

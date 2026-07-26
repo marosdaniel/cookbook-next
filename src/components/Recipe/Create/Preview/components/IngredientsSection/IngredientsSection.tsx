@@ -18,7 +18,7 @@ const IngredientsSection = ({ ingredients }: IngredientsSectionProps) => {
           <AnimatePresence initial={false} mode="popLayout">
             {ingredients.map((ingredient, index) => (
               <IngredientRow
-                key={ingredient.localId}
+                key={ingredient.localId || `ingredient-${index}`}
                 ingredient={ingredient}
                 isLast={index === ingredients.length - 1}
                 isEven={index % 2 === 0}

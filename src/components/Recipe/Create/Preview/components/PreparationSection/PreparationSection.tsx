@@ -54,7 +54,7 @@ const PreparationSection = ({ steps }: PreparationSectionProps) => {
           <AnimatePresence initial={false} mode="popLayout">
             {steps.map((step, index) => (
               <PreparationStep
-                key={step.localId}
+                key={step.localId || `step-${index}`}
                 step={step}
                 stepNumber={index + 1}
               />
