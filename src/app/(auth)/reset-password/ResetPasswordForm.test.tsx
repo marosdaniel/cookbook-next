@@ -69,6 +69,9 @@ vi.mock('next/link', () => ({
 describe('ResetPasswordForm', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockResetPassword.mockReset();
+    mockShowSuccessNotification.mockReset();
+    mockShowErrorNotification.mockReset();
   });
 
   it('renders the reset password form with the expected fields and link', () => {
@@ -120,6 +123,9 @@ describe('ResetPasswordForm', () => {
       );
     });
 
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument();
+    });
     expect(screen.getByText('Email sent')).toBeInTheDocument();
     expect(
       screen.getByTestId('reset-password-send-another-button'),
@@ -168,11 +174,19 @@ describe('ResetPasswordForm', () => {
       ).toBeInTheDocument();
     });
 
+    // Verify success alert is shown
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument();
+    });
+
     fireEvent.click(screen.getByTestId('reset-password-send-another-button'));
 
-    expect(
-      screen.getByTestId('reset-password-email-input'),
-    ).toBeInTheDocument();
+    // Wait for the form to be back
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('reset-password-email-input'),
+      ).toBeInTheDocument();
+    });
     expect(
       screen.getByTestId('reset-password-submit-button'),
     ).toBeInTheDocument();
