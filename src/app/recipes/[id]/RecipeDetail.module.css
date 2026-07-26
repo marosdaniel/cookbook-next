@@ -27,8 +27,8 @@
   background: linear-gradient(
     to top,
     rgba(255, 255, 255, 0.95) 0%,
-    rgba(255, 255, 255, 0.6) 40%,
-    transparent 80%
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 67%
   );
 }
 
@@ -36,8 +36,8 @@
   background: linear-gradient(
     to top,
     rgba(26, 27, 30, 0.95) 0%,
-    rgba(26, 27, 30, 0.6) 40%,
-    transparent 80%
+    rgba(26, 27, 30, 0.3) 50%,
+    transparent 67%
   );
 }
 
@@ -83,7 +83,7 @@
 }
 
 :global([data-mantine-color-scheme="dark"]) .heroDescription {
-  color: var(--mantine-color-dark-0);
+  color: var(--mantine-color-white);
 }
 
 .heroPlaceholder {

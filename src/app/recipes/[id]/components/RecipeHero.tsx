@@ -78,7 +78,7 @@ export const RecipeHero = ({ recipe, isOwner }: Readonly<RecipeHeroProps>) => {
                 component={Link}
                 href={editHref}
                 variant="subtle"
-                color="white"
+                color="pink"
                 size="lg"
                 aria-label={translate('editRecipe')}
               >

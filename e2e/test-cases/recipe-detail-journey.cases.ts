@@ -6,11 +6,17 @@ export async function shouldOpenRecipeDetailPage(page: Page): Promise<void> {
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.getByTestId('recipe-page-root')).toBeVisible();
 
-  const recipeLink = page.locator('a[href^="/recipes/"]').first();
+  // Debug: wait a bit longer for recipe carousel to load
+  await page.waitForTimeout(1000);
 
-  if (await recipeLink.count()) {
-    await expect(recipeLink).toBeVisible();
-    await recipeLink.click();
+  // Look for carousel slides which contain recipe cards
+  const recipeCarouselSlide = page.getByTestId('recipe-carousel-slide').first();
+  const slideCount = await recipeCarouselSlide.count();
+
+  if (slideCount > 0) {
+    // Try clicking on the carousel slide which should navigate to recipe detail
+    await expect(recipeCarouselSlide).toBeVisible();
+    await recipeCarouselSlide.click();
 
     await expect(page).toHaveURL(/\/recipes\//);
     await expect(page.getByTestId('recipe-detail-root')).toBeVisible();
@@ -20,5 +26,6 @@ export async function shouldOpenRecipeDetailPage(page: Page): Promise<void> {
     return;
   }
 
+  // If no recipes found, expect to see an empty state message
   await expect(page.getByText(/no recipes|no results/i)).toBeVisible();
 }

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
 import { LOGO_SRC_DARK, LOGO_SRC_LIGHT } from './consts';
 import type { LogoProps } from './types';
 
@@ -31,8 +32,16 @@ export const Logo = ({
   const pathname = usePathname();
   const t = useTranslations('logo');
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const size = variant === 'icon' ? 40 : 120;
-  const logoSrc = colorScheme === 'dark' ? LOGO_SRC_DARK : LOGO_SRC_LIGHT;
+  // Use light logo on server, switch to actual theme on client after hydration
+  const isDarkTheme = mounted && colorScheme === 'dark';
+  const logoSrc = isDarkTheme ? LOGO_SRC_DARK : LOGO_SRC_LIGHT;
 
   const image = (
     <Image
