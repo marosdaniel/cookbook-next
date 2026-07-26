@@ -11,7 +11,6 @@ import { apolloClient } from '@/lib/apollo/client';
 import { store } from '@/lib/store';
 import { setLocale } from '@/lib/store/global';
 import type { ClientProvidersProps, Locale } from '@/types/common';
-import { MetadataProvider } from './MetadataProvider';
 import { MantineProviderWrapper } from './mantine/mantine';
 
 const ClientProvidersInner: FC<ClientProvidersProps> = ({
@@ -33,9 +32,7 @@ const ClientProvidersInner: FC<ClientProvidersProps> = ({
       messages={messages}
       timeZone="Europe/Budapest"
     >
-      <MantineProviderWrapper>
-        <MetadataProvider>{children}</MetadataProvider>
-      </MantineProviderWrapper>
+      <MantineProviderWrapper>{children}</MantineProviderWrapper>
     </NextIntlClientProvider>
   );
 };

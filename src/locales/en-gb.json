@@ -500,7 +500,8 @@
     },
     "substitutions": {
       "title": "Substitutions"
-    }
+    },
+    "optional": "Optional"
   },
   "recipeCreate": {
     "headerTitle": "Create Recipe",
@@ -659,6 +660,9 @@
         "emptyState": "Start adding the steps to recreate this masterpiece.",
         "addFirst": "Add first step",
         "stepPlaceholder": "Describe step {index}...",
+        "moveUp": "Move up",
+        "moveDown": "Move down",
+        "removeStep": "Remove step",
         "back": "Back",
         "publish": "Publish Recipe"
       }

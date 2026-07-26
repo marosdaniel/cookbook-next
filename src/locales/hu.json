@@ -659,6 +659,9 @@
         "emptyState": "Kezdd el hozzáadni a lépéseket, hogy újraalkothassák ezt a remekművet.",
         "addFirst": "Első lépés hozzáadása",
         "stepPlaceholder": "{index}. lépés leírása...",
+        "moveUp": "Mozgatás fel",
+        "moveDown": "Mozgatás le",
+        "removeStep": "Lépés törlése",
         "back": "Vissza",
         "publish": "Recept közzététele"
       }

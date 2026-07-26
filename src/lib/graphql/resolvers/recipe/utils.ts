@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { METADATA } from '@/lib/data/metadata';
+import { METADATA_DEFINITIONS } from '@/lib/metadata/definitions';
 import { prisma } from '@/lib/prisma/prisma';
 import { sanitizeOptional, sanitizeText } from '@/lib/sanitize/sanitize';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
@@ -69,11 +69,6 @@ export const validateRequiredFields = (input: RecipeInputBase) => {
 
 /* ─── Metadata Resolution ────────────────────── */
 
-/**
- * Since the Metadata model was removed from the database,
- * metadata is now taken directly from input
- * and stored as JSON within the recipe.
- */
 export const resolveRecipeMetadata = async (input: RecipeInputBase) => {
   const {
     category,
@@ -103,16 +98,13 @@ export const resolveRecipeMetadata = async (input: RecipeInputBase) => {
 /* ─── Data Mapping ───────────────────────────── */
 
 const mapMetadataToJson = (m: MetaInputPartial, type: string) => {
-  const existing = METADATA.find(
-    (entry) =>
-      entry.type === type && (entry.key === m.value || entry.name === m.value),
+  const existing = METADATA_DEFINITIONS.find(
+    (entry) => entry.type === type && entry.key === m.value,
   );
 
   return {
-    id: existing?.id || null,
-    name: m.value,
     key: existing?.key || m.value,
-    label: existing?.label ?? m.label,
+    label: existing?.translationKey || m.label,
     type,
   };
 };

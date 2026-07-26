@@ -168,3 +168,30 @@ model Follow {
   @@index([followingId])
   @@map("follows")
 }
+
+// Metadata model
+enum MetadataType {
+  CATEGORY
+  LABEL
+  DIFFICULTY_LEVEL
+  UNIT
+  CUISINE
+  SERVING_UNIT
+  DIET
+  ALLERGEN
+  EQUIPMENT
+  COST_LEVEL
+}
+
+model Metadata {
+  id             String       @id @default(cuid())
+  type           MetadataType
+  key            String
+  translationKey String
+  sortOrder      Int          @default(0)
+  isActive       Boolean      @default(true)
+
+  @@unique([type, key])
+  @@index([type, isActive, sortOrder])
+  @@map("metadata")
+}

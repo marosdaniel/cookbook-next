@@ -8,8 +8,8 @@ import type {
 
 export type RecipeFormFieldPath =
   | keyof RecipeFormValues
-  | `ingredients[${number}].${keyof FormIngredient}`
-  | `preparationSteps[${number}].${keyof FormPreparationStep}`;
+  | `ingredients.${number}.${keyof FormIngredient}`
+  | `preparationSteps.${number}.${keyof FormPreparationStep}`;
 
 export const useFormError = (form: UseFormReturnType<RecipeFormValues>) => {
   const getFieldError = useCallback(

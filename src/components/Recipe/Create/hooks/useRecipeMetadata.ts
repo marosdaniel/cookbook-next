@@ -1,86 +1,99 @@
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
-import {
-  useAllergens,
-  useCategories,
-  useCostLevels,
-  useCuisines,
-  useDietaryFlags,
-  useEquipment,
-  useLabels,
-  useLevels,
-  useMetadataLoaded,
-  useMetadataLoading,
-  useServingUnits,
-  useUnits,
-} from '@/lib/store/metadata';
+import { METADATA_DEFINITIONS } from '@/lib/metadata/definitions';
 import { toCleanedOptions } from '../utils';
 
 export const useRecipeMetadata = () => {
   const translateMisc = useTranslations('misc');
 
-  const categoriesFromStore = useCategories();
-  const levelsFromStore = useLevels();
-  const labelsFromStore = useLabels();
-  const unitsFromStore = useUnits();
-  const cuisinesFromStore = useCuisines();
-  const servingUnitsFromStore = useServingUnits();
-  const dietaryFlagsFromStore = useDietaryFlags();
-  const allergensFromStore = useAllergens();
-  const equipmentFromStore = useEquipment();
-  const costLevelsFromStore = useCostLevels();
-
-  const metadataLoading = useMetadataLoading();
-  const metadataLoaded = useMetadataLoaded();
-
   const categories = useMemo(
-    () => toCleanedOptions(categoriesFromStore, translateMisc),
-    [categoriesFromStore, translateMisc],
+    () =>
+      toCleanedOptions(
+        METADATA_DEFINITIONS.filter((m) => m.type === 'CATEGORY'),
+        translateMisc,
+      ),
+    [translateMisc],
   );
 
   const levels = useMemo(
-    () => toCleanedOptions(levelsFromStore, translateMisc),
-    [levelsFromStore, translateMisc],
+    () =>
+      toCleanedOptions(
+        METADATA_DEFINITIONS.filter((m) => m.type === 'DIFFICULTY_LEVEL'),
+        translateMisc,
+      ),
+    [translateMisc],
   );
 
   const labels = useMemo(
-    () => toCleanedOptions(labelsFromStore, translateMisc),
-    [labelsFromStore, translateMisc],
+    () =>
+      toCleanedOptions(
+        METADATA_DEFINITIONS.filter((m) => m.type === 'LABEL'),
+        translateMisc,
+      ),
+    [translateMisc],
   );
 
   const unitOptions = useMemo(
-    () => toCleanedOptions(unitsFromStore, translateMisc),
-    [translateMisc, unitsFromStore],
+    () =>
+      toCleanedOptions(
+        METADATA_DEFINITIONS.filter((m) => m.type === 'UNIT'),
+        translateMisc,
+      ),
+    [translateMisc],
   );
 
   const cuisines = useMemo(
-    () => toCleanedOptions(cuisinesFromStore, translateMisc),
-    [cuisinesFromStore, translateMisc],
+    () =>
+      toCleanedOptions(
+        METADATA_DEFINITIONS.filter((m) => m.type === 'CUISINE'),
+        translateMisc,
+      ),
+    [translateMisc],
   );
 
   const servingUnits = useMemo(
-    () => toCleanedOptions(servingUnitsFromStore, translateMisc),
-    [servingUnitsFromStore, translateMisc],
+    () =>
+      toCleanedOptions(
+        METADATA_DEFINITIONS.filter((m) => m.type === 'SERVING_UNIT'),
+        translateMisc,
+      ),
+    [translateMisc],
   );
 
   const dietaryFlags = useMemo(
-    () => toCleanedOptions(dietaryFlagsFromStore, translateMisc),
-    [dietaryFlagsFromStore, translateMisc],
+    () =>
+      toCleanedOptions(
+        METADATA_DEFINITIONS.filter((m) => m.type === 'DIET'),
+        translateMisc,
+      ),
+    [translateMisc],
   );
 
   const allergens = useMemo(
-    () => toCleanedOptions(allergensFromStore, translateMisc),
-    [allergensFromStore, translateMisc],
+    () =>
+      toCleanedOptions(
+        METADATA_DEFINITIONS.filter((m) => m.type === 'ALLERGEN'),
+        translateMisc,
+      ),
+    [translateMisc],
   );
 
   const equipment = useMemo(
-    () => toCleanedOptions(equipmentFromStore, translateMisc),
-    [equipmentFromStore, translateMisc],
+    () =>
+      toCleanedOptions(
+        METADATA_DEFINITIONS.filter((m) => m.type === 'EQUIPMENT'),
+        translateMisc,
+      ),
+    [translateMisc],
   );
 
   const costLevels = useMemo(
-    () => toCleanedOptions(costLevelsFromStore, translateMisc),
-    [costLevelsFromStore, translateMisc],
+    () =>
+      toCleanedOptions(
+        METADATA_DEFINITIONS.filter((m) => m.type === 'COST_LEVEL'),
+        translateMisc,
+      ),
+    [translateMisc],
   );
 
   return {
@@ -94,7 +107,7 @@ export const useRecipeMetadata = () => {
     allergens,
     equipment,
     costLevels,
-    metadataLoading,
-    metadataLoaded,
+    metadataLoading: false,
+    metadataLoaded: true,
   };
 };

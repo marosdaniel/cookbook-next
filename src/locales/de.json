@@ -614,6 +614,9 @@
         "emptyState": "Füge Schritte hinzu, um dieses Meisterwerk nachzukochen.",
         "addFirst": "Ersten Schritt hinzufügen",
         "stepPlaceholder": "Schritt {index} beschreiben...",
+        "moveUp": "Nach oben",
+        "moveDown": "Nach unten",
+        "removeStep": "Schritt entfernen",
         "back": "Zurück",
         "publish": "Rezept veröffentlichen"
       }

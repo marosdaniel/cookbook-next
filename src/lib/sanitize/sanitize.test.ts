@@ -37,6 +37,5 @@ describe('store', () => {
     const state = store.getState();
 
     expect(state).toHaveProperty('global');
-    expect(state).toHaveProperty('metadata');
   });
 });

@@ -1,7 +1,7 @@
+import type { LocaleMessages } from '@/types/common';
 import deMessages from '../../locales/de.json';
 import enGbMessages from '../../locales/en-gb.json';
 import huMessages from '../../locales/hu.json';
-import type { LocaleMessages } from '@/types/common';
 
 export const LOCALE_STORAGE_KEY = 'cookbook-locale';
 export const DEFAULT_LOCALE = 'en-gb';

@@ -100,11 +100,11 @@ const IngredientsSection = ({
           <Stack gap="xs">
             <AnimatePresence initial={false} mode="popLayout">
               {values.ingredients.map((ingredient, index) => {
-                const nameFieldPath: RecipeFormFieldPath = `ingredients[${index}].name`;
-                const quantityFieldPath: RecipeFormFieldPath = `ingredients[${index}].quantity`;
-                const unitFieldPath: RecipeFormFieldPath = `ingredients[${index}].unit`;
-                const optionalFieldPath: RecipeFormFieldPath = `ingredients[${index}].isOptional`;
-                const noteFieldPath: RecipeFormFieldPath = `ingredients[${index}].note`;
+                const nameFieldPath: RecipeFormFieldPath = `ingredients.${index}.name`;
+                const quantityFieldPath: RecipeFormFieldPath = `ingredients.${index}.quantity`;
+                const unitFieldPath: RecipeFormFieldPath = `ingredients.${index}.unit`;
+                const optionalFieldPath: RecipeFormFieldPath = `ingredients.${index}.isOptional`;
+                const noteFieldPath: RecipeFormFieldPath = `ingredients.${index}.note`;
 
                 return (
                   <motion.div

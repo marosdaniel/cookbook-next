@@ -164,7 +164,9 @@
 .stepCard {
   position: relative;
   overflow: visible;
-  transition: transform 200ms ease, box-shadow 200ms ease;
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease;
 }
 
 .stepCard:hover {

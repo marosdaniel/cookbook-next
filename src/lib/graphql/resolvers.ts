@@ -1,9 +1,4 @@
 import {
-  getAllMetadata,
-  getMetadataByKey,
-  getMetadataByType,
-} from './resolvers/metadata/queries';
-import {
   createRecipe,
   deleteRating,
   deleteRecipe,
@@ -44,10 +39,6 @@ export const resolvers = {
     getRecipesByUserId,
     getFavoriteRecipes,
     getFollowing,
-    // Metadata queries
-    getAllMetadata,
-    getMetadataByType,
-    getMetadataByKey,
   },
   Mutation: {
     addToFavoriteRecipes,

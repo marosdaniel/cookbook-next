@@ -33,7 +33,7 @@ import RecipeSearch, {
   searchParamsToFilters,
 } from '@/components/Recipe/RecipeSearch';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
-import { useCategories, useLabels, useLevels } from '@/lib/store/metadata';
+import { METADATA_DEFINITIONS } from '@/lib/metadata/definitions';
 import { recipeSearchRoute } from '../../types/routes';
 import classes from '../HomePage.module.css';
 
@@ -54,21 +54,29 @@ const RecipesPage: FC = () => {
   const searching = isSearchActive(filtersFromUrl);
 
   // --- Metadata → select options ---
-  const categoriesFromStore = useCategories();
-  const levelsFromStore = useLevels();
-  const labelsFromStore = useLabels();
-
   const categoryOptions = useMemo(
-    () => toCleanedOptions(categoriesFromStore, translateMisc),
-    [categoriesFromStore, translateMisc],
+    () =>
+      toCleanedOptions(
+        METADATA_DEFINITIONS.filter((m) => m.type === 'CATEGORY'),
+        translateMisc,
+      ),
+    [translateMisc],
   );
   const difficultyOptions = useMemo(
-    () => toCleanedOptions(levelsFromStore, translateMisc),
-    [levelsFromStore, translateMisc],
+    () =>
+      toCleanedOptions(
+        METADATA_DEFINITIONS.filter((m) => m.type === 'DIFFICULTY_LEVEL'),
+        translateMisc,
+      ),
+    [translateMisc],
   );
   const labelOptions = useMemo(
-    () => toCleanedOptions(labelsFromStore, translateMisc),
-    [labelsFromStore, translateMisc],
+    () =>
+      toCleanedOptions(
+        METADATA_DEFINITIONS.filter((m) => m.type === 'LABEL'),
+        translateMisc,
+      ),
+    [translateMisc],
   );
 
   // --- GraphQL query driven by URL filters ---

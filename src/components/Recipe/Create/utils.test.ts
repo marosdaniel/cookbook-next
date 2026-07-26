@@ -4,6 +4,7 @@ import {
   computeCompletion,
   getProgressColor,
   getPublishButtonState,
+  getPublishButtonTooltip,
   getStatusColor,
   sectionCompletion,
   toCleanedOptions,
@@ -280,6 +281,18 @@ describe('getPublishButtonState', () => {
 
     expect(result.disabled).toBe(false);
     expect(result.missingFields).toEqual([]);
+  });
+
+  it('should format a helpful publish tooltip for missing fields', () => {
+    const result = getPublishButtonTooltip([
+      'title',
+      'description',
+      'ingredients',
+    ]);
+
+    expect(result).toBe(
+      'Complete the missing details before publishing: title, description, ingredients',
+    );
   });
 
   it('should block publishing and list what is missing when the form is invalid', () => {

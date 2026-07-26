@@ -1,4 +1,4 @@
-import type { RecipeFormSource, RecipeTaxonomyItem } from '@/types/recipe';
+import type { RecipeFormSource } from '@/types/recipe';
 import type {
   ComposerSection,
   MetadataOption,
@@ -72,6 +72,37 @@ export const getPublishButtonState = (values: RecipeFormValues) => {
   };
 };
 
+export const getPublishButtonTooltip = (missingFields: string[]) => {
+  if (missingFields.length === 0) {
+    return 'Ready to publish';
+  }
+
+  const humanizedFields = missingFields.map((field) => {
+    switch (field) {
+      case 'title':
+        return 'title';
+      case 'description':
+        return 'description';
+      case 'cookingTime':
+        return 'cooking time';
+      case 'servings':
+        return 'servings';
+      case 'category':
+        return 'category';
+      case 'difficultyLevel':
+        return 'difficulty';
+      case 'ingredients':
+        return 'ingredients';
+      case 'preparationSteps':
+        return 'steps';
+      default:
+        return field;
+    }
+  });
+
+  return `Complete the missing details before publishing: ${humanizedFields.join(', ')}`;
+};
+
 export const sectionCompletion = (
   section: ComposerSection,
   values: RecipeFormValues,
@@ -108,14 +139,17 @@ export const sectionCompletion = (
 };
 
 export const toCleanedOptions = (
-  items: RecipeTaxonomyItem[],
+  items: { key: string; translationKey?: string; label?: string }[],
   t?: (key: string) => string,
 ): MetadataOption[] => {
   return items.map((m) => {
-    const translation = t ? t(m.key) : m.label;
+    const translation = t ? t(m.translationKey || m.key) : m.label || m.key;
     return {
       value: m.key,
-      label: translation === m.key ? m.label : translation,
+      label:
+        translation === (m.translationKey || m.key)
+          ? m.label || m.key
+          : translation,
     };
   });
 };

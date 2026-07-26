@@ -24,7 +24,7 @@ import IngredientsSection from './sections/IngredientsSection';
 import MediaSection from './sections/MediaSection';
 import StepsSection from './sections/StepsSection';
 import type { ComposerSection, RecipeComposerProps } from './types';
-import { getPublishButtonState } from './utils';
+import { getPublishButtonState, getPublishButtonTooltip } from './utils';
 
 const RecipeComposer = ({
   form,
@@ -101,7 +101,7 @@ const RecipeComposer = ({
   );
   const goToSteps = useCallback(() => goToSection('steps'), [goToSection]);
 
-  const sectionContent = useMemo(() => {
+  const sectionContent = (() => {
     switch (activeSection) {
       case 'basics':
         return (
@@ -143,29 +143,7 @@ const RecipeComposer = ({
           />
         );
     }
-  }, [
-    activeSection,
-    addIngredient,
-    categories,
-    costLevels,
-    dietaryFlags,
-    equipment,
-    form,
-    goToBasics,
-    goToIngredients,
-    goToMedia,
-    goToSteps,
-    handlePublish,
-    labels,
-    levels,
-    servingUnits,
-    submitLabel,
-    submitLoading,
-    unitOptions,
-    allergens,
-    cuisines,
-    addStep,
-  ]);
+  })();
 
   if (!metadataLoaded && metadataLoading) {
     return (
@@ -201,7 +179,9 @@ const RecipeComposer = ({
           publishLoading={submitLoading}
           submitLabel={submitLabel}
           isPublishDisabled={publishButtonState.disabled}
-          publishTooltip={publishButtonState.missingFields.join(', ')}
+          publishTooltip={getPublishButtonTooltip(
+            publishButtonState.missingFields,
+          )}
         />
 
         <Group

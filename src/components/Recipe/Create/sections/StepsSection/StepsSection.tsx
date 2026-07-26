@@ -30,7 +30,7 @@ import {
   type RecipeFormFieldPath,
   useFormError,
 } from '../../hooks/useFormError';
-import { getPublishButtonState } from '../../utils';
+import { getPublishButtonState, getPublishButtonTooltip } from '../../utils';
 import type { StepDirection, StepsSectionProps } from './types';
 
 const StepsSection = ({
@@ -121,7 +121,7 @@ const StepsSection = ({
         return;
       }
 
-      const fieldPath: RecipeFormFieldPath = `preparationSteps[${stepIndex}].description`;
+      const fieldPath: RecipeFormFieldPath = `preparationSteps.${stepIndex}.description`;
 
       setFieldValue(fieldPath, description);
       revalidateOnChange(fieldPath);
@@ -140,7 +140,7 @@ const StepsSection = ({
       }
 
       return getFieldError(
-        `preparationSteps[${stepIndex}].description` as RecipeFormFieldPath,
+        `preparationSteps.${stepIndex}.description` as RecipeFormFieldPath,
       );
     },
     [getFieldError, values.preparationSteps],
@@ -338,7 +338,7 @@ const StepsSection = ({
           </Button>
 
           <Tooltip
-            label={publishButtonState.missingFields.join(', ')}
+            label={getPublishButtonTooltip(publishButtonState.missingFields)}
             disabled={!publishButtonState.disabled}
             withArrow
             multiline
