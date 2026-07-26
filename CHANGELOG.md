@@ -1,3 +1,24 @@
+# [2.80.0](https://github.com/marosdaniel/cookbook-next/compare/v2.79.0...v2.80.0) (2026-07-26)
+
+
+### Bug Fixes
+
+* add author details to Recipe model and update RecipeHero component to display author information ([29ec170](https://github.com/marosdaniel/cookbook-next/commit/29ec170a1e2c9ba682dadeb97268e07009be4376))
+* improve recipe detail page test by replacing timeout with waitForFunction for carousel loading ([c0247aa](https://github.com/marosdaniel/cookbook-next/commit/c0247aa9460ba4152a939dd97d1a7f6748ce60a2))
+* refactor RecipeSteps component to use activeStepIndex instead of activeStepId for better clarity ([3435d16](https://github.com/marosdaniel/cookbook-next/commit/3435d1654085178e0a4a983a5432c0b84dcceef5))
+* remove unused nonce variable from RecipeDetailPage component ([78306c4](https://github.com/marosdaniel/cookbook-next/commit/78306c4475fb331df798f3bd27d79d6a1ce7dc75))
+* simplify RecipeSteps component by removing unused activeStepIndex and isCompleted logic ([a662f20](https://github.com/marosdaniel/cookbook-next/commit/a662f20c35f285a68b7e5074e198ae2a3fc0330c))
+* update fetchPolicy to 'cache-and-network' in multiple components and improve merge logic in Apollo client ([94f22c3](https://github.com/marosdaniel/cookbook-next/commit/94f22c3eba77a5d2aef9e04e85aa380b34042347))
+* update key prop for ingredient and step components to ensure unique keys ([6e178cd](https://github.com/marosdaniel/cookbook-next/commit/6e178cdf9a0187e50eb5d07b049fa2b8919e2802))
+* update merge functions in Apollo client to use options parameter for pagination handling ([7d9ab25](https://github.com/marosdaniel/cookbook-next/commit/7d9ab25d15351374d5fc42b82db24841a7da48c1))
+* update recipe detail page tests for carousel functionality and enhance styles for dark mode ([aa698ee](https://github.com/marosdaniel/cookbook-next/commit/aa698eebf6faa079cbc9377435da603c7deabacf))
+* update RecipeHero component to display creator information and adjust styles for dark mode ([90fad32](https://github.com/marosdaniel/cookbook-next/commit/90fad32a7fd72e499ed17c3c90a7a5ae786d6f9f))
+
+
+### Features
+
+* add meadow green color to lightTheme and update RecipeSteps styles ([914d953](https://github.com/marosdaniel/cookbook-next/commit/914d953a13808af830837c6f1f7fb7f3a39a8d5b))
+
 # [2.79.0](https://github.com/marosdaniel/cookbook-next/compare/v2.78.0...v2.79.0) (2026-07-26)
 
 
