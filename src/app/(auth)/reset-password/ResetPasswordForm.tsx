@@ -13,6 +13,7 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { AnimatePresence, motion, type Variants } from 'motion/react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
@@ -32,11 +33,81 @@ import {
 } from '../../../utils/notifications';
 import type { ResetPasswordFormValues } from './types';
 
+// --- Animation variants ---
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: 'easeOut' as const },
+  },
+};
+
+const fieldListVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.15,
+    },
+  },
+};
+
+const fieldVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: 'easeOut' as const },
+  },
+};
+
+const buttonVariants: Variants = {
+  idle: { scale: 1 },
+  tap: { scale: 0.97 },
+  error: {
+    x: [-6, 6, -4, 4, 0],
+    transition: { duration: 0.35 },
+  },
+};
+
+const swapVariants: Variants = {
+  hidden: { opacity: 0, y: 12, position: 'absolute' as const },
+  visible: {
+    opacity: 1,
+    y: 0,
+    position: 'relative' as const,
+    transition: { duration: 0.35, ease: 'easeOut' as const },
+  },
+  exit: {
+    opacity: 0,
+    y: -12,
+    position: 'absolute' as const,
+    transition: { duration: 0.25, ease: 'easeIn' as const },
+  },
+};
+
+const successIconVariants: Variants = {
+  hidden: { scale: 0.6, opacity: 0, rotate: -10 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    rotate: 0,
+    transition: { duration: 0.4, ease: 'backOut' as const, delay: 0.1 },
+  },
+};
+
+// ---
+
+const MotionContainer = motion.create(Container);
+
 export const ResetPasswordForm: FC = () => {
   const translate = useTranslations();
   const [resetPassword, { loading }] = useMutation(RESET_PASSWORD);
   const [isResetPasswordEmailSent, setIsResetPasswordEmailSent] =
     useState(false);
+  const [submitState, setSubmitState] = useState<'idle' | 'error'>('idle');
 
   const form = useForm<ResetPasswordFormValues>({
     mode: 'uncontrolled',
@@ -65,6 +136,8 @@ export const ResetPasswordForm: FC = () => {
         );
       }
     } catch (error: unknown) {
+      setSubmitState('error');
+      setTimeout(() => setSubmitState('idle'), 600);
       showErrorNotification(
         translate('response.resetPasswordFailed'),
         translate('response.somethingWentWrong'),
@@ -76,92 +149,150 @@ export const ResetPasswordForm: FC = () => {
   const isSubmitDisabled = isFormSubmitDisabled(form, loading);
 
   return (
-    <Container
+    <MotionContainer
       size={460}
       my={30}
       id="reset-password-page"
       data-testid="reset-password-page"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
     >
-      <Title ta="center" mb="xs" data-testid="reset-password-title">
-        {translate('auth.forgotPasswordTitle')}
-      </Title>
-      <Text c="dimmed" fz="sm" ta="center" mb="xl">
-        {translate('auth.forgotPasswordDescription')}
-      </Text>
-
-      <Paper
-        component="form"
-        onSubmit={form.onSubmit(handleResetPassword)}
-        withBorder
-        data-testid="reset-password-form"
-        shadow="md"
-        p={30}
-        radius="md"
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut' as const }}
       >
-        {isResetPasswordEmailSent ? (
-          <Stack gap="md">
-            <Alert
-              variant="light"
-              color="green"
-              title={translate('response.emailSent')}
-              data-testid="reset-password-success-alert"
-              icon={<CiCircleInfo size={30} />}
-            >
-              <Text size="sm">
-                {translate('response.emailWithResetLinkSent')}
-              </Text>
-              <Text size="sm" mt="sm" c="dimmed">
-                {translate('response.checkSpamFolder')}
-              </Text>
-            </Alert>
+        <Title ta="center" mb="xs" data-testid="reset-password-title">
+          {translate('auth.forgotPasswordTitle')}
+        </Title>
+        <Text c="dimmed" fz="sm" ta="center" mb="xl">
+          {translate('auth.forgotPasswordDescription')}
+        </Text>
+      </motion.div>
 
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.45, ease: 'easeOut' as const }}
+      >
+        <Paper
+          component="form"
+          onSubmit={form.onSubmit(handleResetPassword)}
+          withBorder
+          data-testid="reset-password-form"
+          shadow="md"
+          p={30}
+          radius="md"
+          style={{ position: 'relative', overflow: 'hidden' }}
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            {isResetPasswordEmailSent ? (
+              <motion.div
+                key="success"
+                variants={swapVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                style={{ width: '100%' }}
+              >
+                <Stack gap="md">
+                  <Alert
+                    variant="light"
+                    color="green"
+                    title={translate('response.emailSent')}
+                    data-testid="reset-password-success-alert"
+                    icon={
+                      <motion.div
+                        variants={successIconVariants}
+                        initial="hidden"
+                        animate="visible"
+                      >
+                        <CiCircleInfo size={30} />
+                      </motion.div>
+                    }
+                  >
+                    <Text size="sm">
+                      {translate('response.emailWithResetLinkSent')}
+                    </Text>
+                    <Text size="sm" mt="sm" c="dimmed">
+                      {translate('response.checkSpamFolder')}
+                    </Text>
+                  </Alert>
+
+                  <Button
+                    variant="light"
+                    onClick={() => setIsResetPasswordEmailSent(false)}
+                    fullWidth
+                    data-testid="reset-password-send-another-button"
+                  >
+                    {translate('auth.sendAnotherEmail')}
+                  </Button>
+                </Stack>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="form"
+                variants={swapVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                style={{ width: '100%' }}
+              >
+                <motion.div
+                  variants={fieldListVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <Stack gap="md">
+                    <motion.div variants={fieldVariants}>
+                      <TextInput
+                        id="email"
+                        label={translate('user.email')}
+                        placeholder={translate('auth.emailPlaceholder')}
+                        required
+                        key={form.key('email')}
+                        data-testid="reset-password-email-input"
+                        {...form.getInputProps('email')}
+                      />
+                    </motion.div>
+
+                    <motion.div
+                      variants={buttonVariants}
+                      animate={submitState}
+                      whileTap="tap"
+                    >
+                      <Button
+                        type="submit"
+                        loading={loading}
+                        loaderProps={{ type: 'dots' }}
+                        fullWidth
+                        disabled={isSubmitDisabled}
+                        data-testid="reset-password-submit-button"
+                      >
+                        {translate('auth.sendResetLink')}
+                      </Button>
+                    </motion.div>
+                  </Stack>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <Group justify="center" mt="lg">
             <Button
-              variant="light"
-              onClick={() => setIsResetPasswordEmailSent(false)}
-              fullWidth
-              data-testid="reset-password-send-another-button"
+              component={Link}
+              size="sm"
+              href={AUTH_ROUTES.LOGIN}
+              variant="subtle"
+              leftSection={<IoArrowBackOutline />}
+              data-testid="reset-password-back-link"
             >
-              {translate('auth.sendAnotherEmail')}
+              {translate('auth.backToLogin')}
             </Button>
-          </Stack>
-        ) : (
-          <Stack gap="md">
-            <TextInput
-              id="email"
-              label={translate('user.email')}
-              placeholder={translate('auth.emailPlaceholder')}
-              required
-              key={form.key('email')}
-              data-testid="reset-password-email-input"
-              {...form.getInputProps('email')}
-            />
-
-            <Button
-              type="submit"
-              loading={loading}
-              loaderProps={{ type: 'dots' }}
-              fullWidth
-              disabled={isSubmitDisabled}
-              data-testid="reset-password-submit-button"
-            >
-              {translate('auth.sendResetLink')}
-            </Button>
-          </Stack>
-        )}
-
-        <Group justify="center" mt="lg">
-          <Button
-            component={Link}
-            size="sm"
-            href={AUTH_ROUTES.LOGIN}
-            variant="subtle"
-            leftSection={<IoArrowBackOutline />}
-            data-testid="reset-password-back-link"
-          >
-            {translate('auth.backToLogin')}
-          </Button>
-        </Group>
-      </Paper>
-    </Container>
+          </Group>
+        </Paper>
+      </motion.div>
+    </MotionContainer>
   );
 };
