@@ -55,9 +55,11 @@ describe('MyRecipesClient', () => {
   });
 
   it('shows the empty state and create action when the user has no recipes yet', () => {
+    const refetch = vi.fn();
     mocks.useQuery.mockReturnValue({
       data: { getRecipesByUserId: { recipes: [], totalRecipes: 0 } },
       loading: false,
+      refetch,
     });
 
     render(<MyRecipesClient />);
@@ -65,6 +67,20 @@ describe('MyRecipesClient', () => {
     expect(screen.getByTestId('my-recipes-empty')).toBeInTheDocument();
     expect(screen.getByTestId('my-recipes-create-button')).toBeInTheDocument();
     expect(screen.getByText('noMyRecipesYet')).toBeInTheDocument();
+    expect(refetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('refetches recipes when the authenticated user becomes available', () => {
+    const refetch = vi.fn();
+    mocks.useQuery.mockReturnValue({
+      data: undefined,
+      loading: false,
+      refetch,
+    });
+
+    render(<MyRecipesClient />);
+
+    expect(refetch).toHaveBeenCalledTimes(1);
   });
 
   it('renders the stats and recipe grid when recipes exist', () => {
@@ -76,6 +92,7 @@ describe('MyRecipesClient', () => {
         },
       },
       loading: false,
+      refetch: vi.fn(),
     });
 
     render(<MyRecipesClient />);

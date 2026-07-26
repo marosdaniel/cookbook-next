@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client/react';
+import { useApolloClient, useMutation } from '@apollo/client/react';
 import { useLocalStorage } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { act, renderHook } from '@testing-library/react';
@@ -27,6 +27,7 @@ vi.mock('next-intl', () => ({
 }));
 
 vi.mock('@apollo/client/react', () => ({
+  useApolloClient: vi.fn(),
   useMutation: vi.fn(),
 }));
 
@@ -143,6 +144,7 @@ describe('useRecipeForm', () => {
 
   const routerPush = vi.fn();
   const mockCreateRecipe = vi.fn();
+  const refetchQueries = vi.fn().mockResolvedValue(undefined);
   let mutationOptions:
     | {
         onCompleted?: () => void;
@@ -171,6 +173,9 @@ describe('useRecipeForm', () => {
     vi.mocked(useRouter).mockReturnValue({
       push: routerPush,
     } as unknown as ReturnType<typeof useRouter>);
+    vi.mocked(useApolloClient).mockReturnValue({
+      refetchQueries,
+    } as never);
     vi.mocked(useTranslations).mockReturnValue(
       ((key: string) => key) as ReturnType<typeof useTranslations>,
     );
@@ -354,14 +359,17 @@ describe('useRecipeForm', () => {
     expect(mockProps.onSectionChange).toHaveBeenCalledWith('basics');
   });
 
-  it('should handle successful publish completion', () => {
+  it('should handle successful publish completion', async () => {
     renderHook(() => useRecipeForm(mockProps));
 
-    act(() => {
-      mutationOptions?.onCompleted?.();
+    await act(async () => {
+      await mutationOptions?.onCompleted?.();
     });
 
     expect(setDraft).toHaveBeenCalledWith(null);
+    expect(refetchQueries).toHaveBeenCalledWith({
+      include: ['getRecipesByUserId'],
+    });
     expect(routerPush).toHaveBeenCalledWith('/me/my-recipes');
     expect(notifications.show).toHaveBeenCalledWith(
       expect.objectContaining({

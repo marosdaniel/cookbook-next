@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client/react';
+import { useApolloClient, useMutation } from '@apollo/client/react';
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
 import { IconDeviceFloppy } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
@@ -48,6 +48,7 @@ export const useRecipeForm = ({
 }: UseRecipeFormProps) => {
   const router = useRouter();
   const translate = useTranslations();
+  const client = useApolloClient();
 
   const [draft, setDraftState, removeDraft] =
     useLocalStorage<DraftState | null>({
@@ -80,7 +81,7 @@ export const useRecipeForm = ({
   const [createRecipe, { loading: publishLoading }] = useMutation(
     CREATE_RECIPE,
     {
-      onCompleted: () => {
+      onCompleted: async () => {
         setDraft(null);
 
         showSuccessNotification(
@@ -88,6 +89,7 @@ export const useRecipeForm = ({
           translate('notifications.recipeCreatedMessage'),
         );
 
+        await client.refetchQueries({ include: ['getRecipesByUserId'] });
         router.push('/me/my-recipes');
       },
       onError: (error) => {

@@ -58,6 +58,7 @@ vi.mock('../../hooks/useFormError', () => ({
 
 vi.mock('../../utils', () => ({
   getPublishButtonState: vi.fn(() => ({ disabled: false, missingFields: [] })),
+  getPublishButtonTooltip: vi.fn(() => ''),
 }));
 
 vi.mock('next-intl', () => ({
@@ -163,7 +164,7 @@ describe('StepsSection', () => {
       { localId: 'step-2', description: 'Second step', order: 1 },
     ]);
     expect(revalidateOnChange).toHaveBeenCalledWith(
-      'preparationSteps[0].description',
+      'preparationSteps.0.description',
     );
   });
 
