@@ -162,8 +162,8 @@ describe('IngredientsSection', () => {
     fireEvent.click(screen.getByTestId('recipe-ingredient-remove'));
 
     expect(setFieldValue).toHaveBeenCalledWith('ingredients', []);
-    expect(revalidateOnChange).toHaveBeenCalledWith('ingredients[0].name');
-    expect(revalidateOnChange).toHaveBeenCalledWith('ingredients[0].quantity');
+    expect(revalidateOnChange).toHaveBeenCalledWith('ingredients.0.name');
+    expect(revalidateOnChange).toHaveBeenCalledWith('ingredients.0.quantity');
   });
 
   it('toggles optional flag and note', () => {
@@ -199,11 +199,11 @@ describe('IngredientsSection', () => {
     });
 
     expect(setFieldValue).toHaveBeenCalledWith(
-      'ingredients[0].isOptional',
+      'ingredients.0.isOptional',
       true,
     );
     expect(setFieldValue).toHaveBeenCalledWith(
-      'ingredients[0].note',
+      'ingredients.0.note',
       'Free range',
     );
   });
