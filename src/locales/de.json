@@ -384,7 +384,9 @@
   "legal": {
     "cookiePolicy": {
       "title": "Cookie-Richtlinie",
-      "lastUpdated": "Zuletzt aktualisiert: ",
+      "contentsTitle": "Inhaltsverzeichnis",
+      "lastUpdated": "Zuletzt aktualisiert:",
+      "lastUpdatedDate": "2026-07-26",
       "whatAreCookies": {
         "title": "1. Was sind Cookies?",
         "content": "Cookies sind einfache Textdateien, die vom Server einer Website auf Ihrem Computer oder Mobilgerät gespeichert werden. Jedes Cookie ist einzigartig für Ihren Webbrowser. Es enthält einige anonyme Informationen wie eine eindeutige Kennung, den Domainnamen der Website sowie einige Ziffern und Zahlen."

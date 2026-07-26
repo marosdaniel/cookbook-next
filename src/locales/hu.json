@@ -368,7 +368,9 @@
   "legal": {
     "cookiePolicy": {
       "title": "Süti Szabályzat",
-      "lastUpdated": "Utoljára frissítve: ",
+      "contentsTitle": "Tartalom",
+      "lastUpdated": "Utoljára frissítve:",
+      "lastUpdatedDate": "2026-07-26",
       "whatAreCookies": {
         "title": "1. Mik azok a sütik?",
         "content": "A sütik egyszerű szöveges fájlok, amelyeket a weboldal szervere tárol a számítógépén vagy mobileszközén. Minden süti egyedi az Ön böngészőjében. Névtelen információkat tartalmaz, például egy egyedi azonosítót, a weboldal domain nevét, valamint számjegyeket és számokat."

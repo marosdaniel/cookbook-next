@@ -30,7 +30,9 @@ export type ClientProvidersProps = PropsWithChildren & {
 
 export interface CookiePolicyContent {
   title: string;
+  contentsTitle: string;
   lastUpdated: string;
+  lastUpdatedDate: string;
   whatAreCookies: { title: string; content: string };
   howWeUse: {
     title: string;

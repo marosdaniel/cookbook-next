@@ -1,5 +1,17 @@
-import { Box, Container, Stack, Text, Title } from '@mantine/core';
+import {
+  Anchor,
+  Box,
+  Container,
+  Divider,
+  List,
+  Paper,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+import ReadingProgress from '@/components/ReadingProgress';
 import { getLocaleMessages } from '@/lib/locale/locale';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
 import { getMetadata } from '@/lib/seo/seo';
@@ -7,6 +19,7 @@ import type { LegalMessages } from '@/types/common';
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocaleFromCookies();
+
   return getMetadata(locale, 'seo', {
     titleKey: 'cookiePolicyTitle',
     descriptionKey: 'cookiePolicyDescription',
@@ -17,84 +30,188 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const CookiePolicyPage = async () => {
-  const locale = await getLocaleFromCookies();
+  const [locale, requestHeaders] = await Promise.all([
+    getLocaleFromCookies(),
+    headers(),
+  ]);
+
   const messages = await getLocaleMessages(locale);
   const legalMessages = messages.legal as unknown as LegalMessages;
   const cookiePolicyMessage = legalMessages?.cookiePolicy;
 
-  if (!cookiePolicyMessage) return null;
+  if (!cookiePolicyMessage) {
+    return null;
+  }
+
+  /*
+   * Ezt a dátumot a szabályzat tényleges módosításakor kell frissíteni,
+   * nem minden oldalbetöltéskor.
+   *
+   * A locale fájlokban például:
+   * "lastUpdatedDate": "2026-07-26"
+   */
+  const lastUpdatedDate = new Intl.DateTimeFormat(locale, {
+    dateStyle: 'long',
+  }).format(new Date(cookiePolicyMessage.lastUpdatedDate));
+
+  /*
+   * Ha a proxy.ts más header-nevet használ a nonce továbbítására,
+   * itt ahhoz igazítsd.
+   */
+  const nonce = requestHeaders.get('x-nonce') ?? undefined;
 
   return (
-    <Container size="md" py="xl">
-      <Stack gap="lg">
-        <Title order={1}>{cookiePolicyMessage.title}</Title>
-        <Text size="sm" c="dimmed">
-          {cookiePolicyMessage.lastUpdated}
-          {new Date().toLocaleDateString(locale)}
-        </Text>
+    <>
+      <ReadingProgress nonce={nonce} />
 
-        <Stack gap="md">
-          <Title order={2} size="h3">
-            {cookiePolicyMessage.whatAreCookies.title}
-          </Title>
-          <Text>{cookiePolicyMessage.whatAreCookies.content}</Text>
-        </Stack>
+      <Container size="md" py={{ base: 'xl', sm: 56 }}>
+        <Stack gap="xl">
+          <Stack gap="sm" ta="center">
+            <Title order={1}>{cookiePolicyMessage.title}</Title>
 
-        <Stack gap="md">
-          <Title order={2} size="h3">
-            {cookiePolicyMessage.howWeUse.title}
-          </Title>
-          <Text>{cookiePolicyMessage.howWeUse.content}</Text>
-          <Box component="ul" pl="xl" mt="xs">
-            <Box component="li" mb="xs">
-              <Text component="span">
-                <strong>
-                  {cookiePolicyMessage.howWeUse.list.necessaryTitle}
-                </strong>{' '}
-                {cookiePolicyMessage.howWeUse.list.necessaryContent}
-              </Text>
-            </Box>
-            <Box component="li" mb="xs">
-              <Text component="span">
-                <strong>
-                  {cookiePolicyMessage.howWeUse.list.functionalityTitle}
-                </strong>{' '}
-                {cookiePolicyMessage.howWeUse.list.functionalityContent}
-              </Text>
-            </Box>
-            <Box component="li" mb="xs">
-              <Text component="span">
-                <strong>
-                  {cookiePolicyMessage.howWeUse.list.performanceTitle}
-                </strong>{' '}
-                {cookiePolicyMessage.howWeUse.list.performanceContent}
-              </Text>
-            </Box>
-          </Box>
-        </Stack>
+            <Text c="dimmed" size="sm">
+              {cookiePolicyMessage.lastUpdated} {lastUpdatedDate}
+            </Text>
+          </Stack>
 
-        <Stack gap="md">
-          <Title order={2} size="h3">
-            {cookiePolicyMessage.detailedUsage.title}
-          </Title>
-          <Text>{cookiePolicyMessage.detailedUsage.content}</Text>
-          <Box component="ul" pl="xl" mt="xs">
-            {cookiePolicyMessage.detailedUsage.list.map((item) => (
-              <Box key={item} component="li" mb="xs">
-                <Text component="span">{item}</Text>
+          <Paper
+            withBorder
+            p={{ base: 'md', sm: 'xl' }}
+            radius="md"
+            shadow="xs"
+          >
+            <Stack gap="xl">
+              <Box component="nav" aria-label={cookiePolicyMessage.title}>
+                <Text fw={600} mb="xs" size="sm">
+                  {cookiePolicyMessage.contentsTitle}
+                </Text>
+
+                <List size="sm" spacing={4}>
+                  <List.Item>
+                    <Anchor href="#what-are-cookies">
+                      {cookiePolicyMessage.whatAreCookies.title}
+                    </Anchor>
+                  </List.Item>
+
+                  <List.Item>
+                    <Anchor href="#how-we-use-cookies">
+                      {cookiePolicyMessage.howWeUse.title}
+                    </Anchor>
+                  </List.Item>
+
+                  <List.Item>
+                    <Anchor href="#detailed-cookie-usage">
+                      {cookiePolicyMessage.detailedUsage.title}
+                    </Anchor>
+                  </List.Item>
+
+                  <List.Item>
+                    <Anchor href="#managing-cookies">
+                      {cookiePolicyMessage.managing.title}
+                    </Anchor>
+                  </List.Item>
+                </List>
               </Box>
-            ))}
-          </Box>
-        </Stack>
 
-        <Stack gap="md">
-          <Title order={2} size="h3">
-            {cookiePolicyMessage.managing.title}
-          </Title>
-          <Text>{cookiePolicyMessage.managing.content}</Text>
+              <Divider />
+
+              <Stack
+                component="section"
+                gap="md"
+                id="what-are-cookies"
+                style={{ scrollMarginTop: 24 }}
+              >
+                <Title order={2} size="h3">
+                  {cookiePolicyMessage.whatAreCookies.title}
+                </Title>
+
+                <Text>{cookiePolicyMessage.whatAreCookies.content}</Text>
+              </Stack>
+
+              <Divider />
+
+              <Stack
+                component="section"
+                gap="md"
+                id="how-we-use-cookies"
+                style={{ scrollMarginTop: 24 }}
+              >
+                <Title order={2} size="h3">
+                  {cookiePolicyMessage.howWeUse.title}
+                </Title>
+
+                <Text>{cookiePolicyMessage.howWeUse.content}</Text>
+
+                <List spacing="sm" withPadding>
+                  <List.Item>
+                    <Text component="span">
+                      <strong>
+                        {cookiePolicyMessage.howWeUse.list.necessaryTitle}
+                      </strong>{' '}
+                      {cookiePolicyMessage.howWeUse.list.necessaryContent}
+                    </Text>
+                  </List.Item>
+
+                  <List.Item>
+                    <Text component="span">
+                      <strong>
+                        {cookiePolicyMessage.howWeUse.list.functionalityTitle}
+                      </strong>{' '}
+                      {cookiePolicyMessage.howWeUse.list.functionalityContent}
+                    </Text>
+                  </List.Item>
+
+                  <List.Item>
+                    <Text component="span">
+                      <strong>
+                        {cookiePolicyMessage.howWeUse.list.performanceTitle}
+                      </strong>{' '}
+                      {cookiePolicyMessage.howWeUse.list.performanceContent}
+                    </Text>
+                  </List.Item>
+                </List>
+              </Stack>
+
+              <Divider />
+
+              <Stack
+                component="section"
+                gap="md"
+                id="detailed-cookie-usage"
+                style={{ scrollMarginTop: 24 }}
+              >
+                <Title order={2} size="h3">
+                  {cookiePolicyMessage.detailedUsage.title}
+                </Title>
+
+                <Text>{cookiePolicyMessage.detailedUsage.content}</Text>
+
+                <List spacing="sm" withPadding>
+                  {cookiePolicyMessage.detailedUsage.list.map((item) => (
+                    <List.Item key={item}>{item}</List.Item>
+                  ))}
+                </List>
+              </Stack>
+
+              <Divider />
+
+              <Stack
+                component="section"
+                gap="md"
+                id="managing-cookies"
+                style={{ scrollMarginTop: 24 }}
+              >
+                <Title order={2} size="h3">
+                  {cookiePolicyMessage.managing.title}
+                </Title>
+
+                <Text>{cookiePolicyMessage.managing.content}</Text>
+              </Stack>
+            </Stack>
+          </Paper>
         </Stack>
-      </Stack>
-    </Container>
+      </Container>
+    </>
   );
 };
 
