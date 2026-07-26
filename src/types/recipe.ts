@@ -63,6 +63,13 @@ export interface RecipeBase {
   seoTitle?: string | null;
   seoDescription?: string | null;
   socialImage?: string | null;
+
+  // Author details (populated optionally)
+  author?: {
+    userName: string;
+    firstName: string;
+    lastName: string;
+  } | null;
 }
 
 export interface RecipeDetail extends RecipeBase {

@@ -294,7 +294,17 @@ export const RecipeService = {
 
     const recipe = await prisma.recipe.findFirst({
       where: { OR: [{ slug: idOrSlug }, { id: idOrSlug }] },
-      include: { ingredients: true, preparationSteps: true },
+      include: {
+        ingredients: true,
+        preparationSteps: true,
+        author: {
+          select: {
+            userName: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     });
 
     if (!recipe) {
