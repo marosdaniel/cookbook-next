@@ -85,6 +85,7 @@ const RecipesPage: FC = () => {
       limit: 10,
       filter: buildQueryFilter(filtersFromUrl),
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const recipes: RecipeCardData[] = data?.getRecipes?.recipes ?? [];

@@ -22,7 +22,7 @@ import {
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import { type ReactNode, useEffect, useRef } from 'react';
+import type { ReactNode } from 'react';
 import { RecipeGrid } from '@/components/Recipe/RecipeCard';
 import StyledText from '@/components/StyledText';
 import { GET_RECIPES_BY_USER_ID } from '@/lib/graphql/queries';
@@ -67,30 +67,11 @@ const MyRecipesClient = () => {
   const userId = session?.user?.id;
   const isSessionLoading = status === 'loading';
 
-  const { data, loading, refetch } = useQuery(GET_RECIPES_BY_USER_ID, {
+  const { data, loading } = useQuery(GET_RECIPES_BY_USER_ID, {
     variables: { userId },
     skip: !userId || isSessionLoading,
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
   });
-
-  const hasRefetchedForUser = useRef(false);
-
-  useEffect(() => {
-    if (isSessionLoading || !userId || loading || hasRefetchedForUser.current) {
-      return;
-    }
-
-    const totalRecipes = data?.getRecipesByUserId?.totalRecipes ?? 0;
-    const recipes = data?.getRecipesByUserId?.recipes ?? [];
-
-    if (
-      !data?.getRecipesByUserId ||
-      (totalRecipes === 0 && recipes.length === 0)
-    ) {
-      hasRefetchedForUser.current = true;
-      void refetch?.();
-    }
-  }, [data, isSessionLoading, loading, refetch, userId]);
 
   const recipes = data?.getRecipesByUserId?.recipes ?? [];
   const totalRecipes = data?.getRecipesByUserId?.totalRecipes ?? 0;

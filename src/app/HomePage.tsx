@@ -16,6 +16,7 @@ const HomePage = () => {
 
   const { data, loading } = useQuery(GET_LATEST_RECIPES, {
     variables: { limit: 10 },
+    fetchPolicy: 'cache-and-network',
   });
 
   const latestRecipes: RecipeCardData[] = data?.getRecipes?.recipes ?? [];
