@@ -232,14 +232,14 @@ export type GetUserByIdQuery = { getUserById: { id: string, firstName: string, l
 export type GetAllMetadataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllMetadataQuery = { getAllMetadata: Array<{ key: string, label: string, type: string, name: string } | null> };
+export type GetAllMetadataQuery = { getAllMetadata: Array<{ key: string, label: string, type: string, name: string }> };
 
 export type GetMetadataByTypeQueryVariables = Exact<{
   type: string;
 }>;
 
 
-export type GetMetadataByTypeQuery = { getMetadataByType: Array<{ key: string, label: string, type: string, name: string } | null> };
+export type GetMetadataByTypeQuery = { getMetadataByType: Array<{ key: string, label: string, type: string, name: string }> };
 
 export type GetRecipeByIdQueryVariables = Exact<{
   id: string | number;

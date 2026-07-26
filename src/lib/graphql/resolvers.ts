@@ -31,6 +31,14 @@ import {
   getUserById,
 } from './resolvers/user/queries';
 
+const getAllMetadata = async () => {
+  return [];
+};
+
+const getMetadataByType = async (_parent: unknown, _args: { type: string }) => {
+  return [];
+};
+
 export const resolvers = {
   Query: {
     getUserById,
@@ -39,6 +47,8 @@ export const resolvers = {
     getRecipesByUserId,
     getFavoriteRecipes,
     getFollowing,
+    getAllMetadata,
+    getMetadataByType,
   },
   Mutation: {
     addToFavoriteRecipes,

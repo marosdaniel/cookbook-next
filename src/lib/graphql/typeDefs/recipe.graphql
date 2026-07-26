@@ -235,6 +235,8 @@ type Query {
   getRecipesByUserName(userName: String!, limit: Int): RecipeData!
   getRecipesByUserId(userId: ID!, limit: Int): RecipeData! # deprecated
   getRatingsByRecipe(recipeId: ID!): [Rating!]!
+  getAllMetadata: [MetadataItem!]!
+  getMetadataByType(type: String!): [MetadataItem!]!
 }
 
 type Mutation {
