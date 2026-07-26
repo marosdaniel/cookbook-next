@@ -1,3 +1,14 @@
+# [2.81.0](https://github.com/marosdaniel/cookbook-next/compare/v2.80.0...v2.81.0) (2026-07-26)
+
+
+### Features
+
+* add animation variants to LoginForm and enhance form structure ([db3825f](https://github.com/marosdaniel/cookbook-next/commit/db3825f1bdb4bc71f0cdf0dbbd9d0da27ff92867))
+* add animation variants to ResetPasswordForm and SetNewPasswordForm for improved user experience ([b2cfd18](https://github.com/marosdaniel/cookbook-next/commit/b2cfd18d5b88fdbeceadc597f5960b86d6500637))
+* enhance SignUpForm with animation variants and improve form structure ([c0c7236](https://github.com/marosdaniel/cookbook-next/commit/c0c723610cb7518e485733e7e768375f083a02b7))
+* implement ReadingProgress component and enhance cookie policy page with new metadata and structure ([b1658af](https://github.com/marosdaniel/cookbook-next/commit/b1658aff1052b047fef1276eb7dcdd6c1b183a6d))
+* refactor animation variants and create separate consts files for ResetPasswordForm, SetNewPasswordForm, and SignUpForm ([1da1b62](https://github.com/marosdaniel/cookbook-next/commit/1da1b62c0745ebab7c323a4be59e1b777f568517))
+
 # [2.80.0](https://github.com/marosdaniel/cookbook-next/compare/v2.79.0...v2.80.0) (2026-07-26)
 
 
