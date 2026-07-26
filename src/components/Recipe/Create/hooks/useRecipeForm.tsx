@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client/react';
-import { useDebouncedValue } from '@mantine/hooks';
+import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
 import { IconDeviceFloppy } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -7,7 +7,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CREATE_RECIPE } from '@/lib/graphql/mutations';
 import { recipeFormValidationSchema } from '@/lib/validation/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
-
 import {
   showErrorNotification,
   showInfoNotification,
@@ -50,35 +49,33 @@ export const useRecipeForm = ({
   const router = useRouter();
   const translate = useTranslations();
 
-  
-  const [draft, setDraftState] = useState<DraftState | null>(null);
-  
-  useEffect(() => {
-    try {
-      const stored = window.localStorage.getItem(DRAFT_STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setDraftState(parsed);
-        form.setValues(parsed.values);
-        form.resetDirty(parsed.values);
+  const [draft, setDraftState, removeDraft] =
+    useLocalStorage<DraftState | null>({
+      key: DRAFT_STORAGE_KEY,
+      defaultValue: null,
+      getInitialValueInEffect: false,
+    });
+  const [now, setNow] = useState<number>(() => Date.now());
+
+  const form = useRecipeFormHook({
+    mode: 'controlled',
+    initialValues: draft?.values ?? EMPTY_FORM_VALUES,
+    validate: zodResolver(recipeFormValidationSchema, (key) => translate(key)),
+    validateInputOnBlur: true,
+  });
+
+  const formRef = useRef(form);
+  formRef.current = form;
+
+  const setDraft = useCallback(
+    (nextDraft: DraftState | null) => {
+      setDraftState(nextDraft);
+      if (!nextDraft) {
+        removeDraft();
       }
-    } catch (e) {
-      // console.error(e)
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const setDraft = useCallback((nextDraft: DraftState | null) => {
-    setDraftState(nextDraft);
-    if (!nextDraft) {
-      window.localStorage.removeItem(DRAFT_STORAGE_KEY);
-    } else {
-      window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(nextDraft));
-    }
-  }, []);
-
-
-  const [now, setNow] = useState(() => Date.now());
+    },
+    [removeDraft, setDraftState],
+  );
 
   const [createRecipe, { loading: publishLoading }] = useMutation(
     CREATE_RECIPE,
@@ -103,24 +100,6 @@ export const useRecipeForm = ({
     },
   );
 
-  
-  const [hydrated, setHydrated] = useState(false);
-  useEffect(() => setHydrated(true), []);
-
-  const form = useRecipeFormHook({
-    mode: 'controlled',
-    initialValues: EMPTY_FORM_VALUES,
-    validate: zodResolver(recipeFormValidationSchema, (key) => translate(key)),
-    validateInputOnBlur: true,
-  });
-
-  const formRef = useRef(form);
-  
-
-  formRef.current = form;
-
-  
-
   const completion = useMemo(
     () => computeCompletion(form.values),
     [form.values],
@@ -132,7 +111,11 @@ export const useRecipeForm = ({
   );
 
   useEffect(() => {
-    if (!metadataLoaded || !form.isDirty() || JSON.stringify(draft?.values) === JSON.stringify(debouncedValues)) {
+    if (
+      !metadataLoaded ||
+      !form.isDirty() ||
+      JSON.stringify(draft?.values) === JSON.stringify(debouncedValues)
+    ) {
       return;
     }
 
@@ -204,6 +187,7 @@ export const useRecipeForm = ({
     });
 
     showInfoNotification(translate('notifications.draftSavedMessage'), {
+      title: translate('notifications.draftSavedTitle'),
       icon: <IconDeviceFloppy size={16} />,
       withBorder: true,
     });
