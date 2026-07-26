@@ -13,6 +13,7 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { motion, type Variants } from 'motion/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
@@ -29,10 +30,60 @@ import {
 import PrivacyPolicyLink from '../../../components/PrivacyPolicyLink';
 import { AUTH_ROUTES } from '../../../types/routes';
 
+// --- Animation variants ---
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: 'easeOut' as const },
+  },
+};
+
+const fieldListVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.07,
+      delayChildren: 0.15,
+    },
+  },
+};
+
+const fieldVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: 'easeOut' as const },
+  },
+};
+
+const buttonVariants: Variants = {
+  idle: { scale: 1 },
+  tap: { scale: 0.97 },
+  success: {
+    scale: [1, 1.04, 1],
+    transition: { duration: 0.3 },
+  },
+  error: {
+    x: [-6, 6, -4, 4, 0],
+    transition: { duration: 0.35 },
+  },
+};
+
+// ---
+
+const MotionContainer = motion.create(Container);
+
 const SignUpForm: FC = () => {
   const translate = useTranslations();
   const router = useRouter();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [submitState, setSubmitState] = useState<'idle' | 'success' | 'error'>(
+    'idle',
+  );
   const [createUser, { loading }] = useMutation(CREATE_USER);
 
   const form = useForm({
@@ -65,12 +116,12 @@ const SignUpForm: FC = () => {
       });
 
       if (data?.createUser?.success) {
+        setSubmitState('success');
         showSuccessNotification(
           translate('response.success'),
           translate('auth.accountCreatedSuccess'),
         );
 
-        // Automatically log in the user
         setIsLoggingIn(true);
         const result = await signIn('credentials', {
           email,
@@ -83,16 +134,16 @@ const SignUpForm: FC = () => {
             translate('response.success'),
             translate('auth.loginSuccess'),
           );
-          // Keep loading state active until navigation completes
           router.push('/');
         } else {
-          // Registration succeeded but login failed, redirect to login page
           setIsLoggingIn(false);
           router.push(AUTH_ROUTES.LOGIN);
         }
       }
     } catch (error) {
       setIsLoggingIn(false);
+      setSubmitState('error');
+      setTimeout(() => setSubmitState('idle'), 600);
       showErrorNotification(
         translate('response.error'),
         translate('response.unknownError'),
@@ -103,43 +154,10 @@ const SignUpForm: FC = () => {
 
   const isSubmitDisabled = isFormSubmitDisabled(form, loading, isLoggingIn);
 
-  return (
-    <Container maw={520} my={40} id="sign-up-page" data-testid="sign-up-page">
-      <Title
-        ta="center"
-        c="var(--mantine-color-gray-8)"
-        data-testid="sign-up-title"
-      >
-        {translate('auth.createAccount')}
-      </Title>
-      <Group mt={5} justify="center" align="center">
-        <Text c="dimmed" size="sm" ta="center">
-          {translate('auth.alreadyHaveAnAccount')}
-        </Text>
-        <div data-testid="sign-up-login-link">
-          <Button
-            variant="transparent"
-            size="sm"
-            component={Link}
-            href={AUTH_ROUTES.LOGIN}
-            aria-label="Login"
-            data-testid="login-link"
-          >
-            {translate('auth.login')}
-          </Button>
-        </div>
-      </Group>
-
-      <Paper
-        component="form"
-        withBorder
-        shadow="md"
-        p={30}
-        mt={30}
-        radius="md"
-        onSubmit={form.onSubmit(handleSignUp)}
-        data-testid="sign-up-form"
-      >
+  const fields = [
+    {
+      id: 'firstName',
+      node: (
         <TextInput
           required
           id="first-name"
@@ -149,6 +167,11 @@ const SignUpForm: FC = () => {
           data-testid="sign-up-first-name-input"
           {...form.getInputProps('firstName')}
         />
+      ),
+    },
+    {
+      id: 'lastName',
+      node: (
         <TextInput
           required
           id="last-name"
@@ -159,6 +182,11 @@ const SignUpForm: FC = () => {
           data-testid="sign-up-last-name-input"
           {...form.getInputProps('lastName')}
         />
+      ),
+    },
+    {
+      id: 'userName',
+      node: (
         <TextInput
           required
           id="user-name"
@@ -169,6 +197,11 @@ const SignUpForm: FC = () => {
           data-testid="sign-up-user-name-input"
           {...form.getInputProps('userName')}
         />
+      ),
+    },
+    {
+      id: 'email',
+      node: (
         <TextInput
           label={translate('user.email')}
           placeholder={translate('auth.emailPlaceholder')}
@@ -179,6 +212,11 @@ const SignUpForm: FC = () => {
           data-testid="sign-up-email-input"
           {...form.getInputProps('email')}
         />
+      ),
+    },
+    {
+      id: 'password',
+      node: (
         <PasswordInput
           placeholder={translate('user.password')}
           required
@@ -189,6 +227,11 @@ const SignUpForm: FC = () => {
           data-testid="sign-up-password-input"
           {...form.getInputProps('password')}
         />
+      ),
+    },
+    {
+      id: 'confirmPassword',
+      node: (
         <PasswordInput
           placeholder={translate('user.confirmPassword')}
           required
@@ -199,32 +242,120 @@ const SignUpForm: FC = () => {
           data-testid="sign-up-confirm-password-input"
           {...form.getInputProps('confirmPassword')}
         />
+      ),
+    },
+  ];
 
-        <Checkbox
-          size="md"
-          label={<PrivacyPolicyLink />}
-          mt="xl"
-          key={form.key('privacyAccepted')}
-          data-testid="sign-up-privacy-checkbox"
-          {...form.getInputProps('privacyAccepted', { type: 'checkbox' })}
-        />
+  return (
+    <MotionContainer
+      maw={520}
+      my={40}
+      id="sign-up-page"
+      data-testid="sign-up-page"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+      >
+        <Title
+          ta="center"
+          c="var(--mantine-color-gray-8)"
+          data-testid="sign-up-title"
+        >
+          {translate('auth.createAccount')}
+        </Title>
+      </motion.div>
 
-        <div data-testid="submit-button">
-          <Button
-            id="submit-button"
-            data-testid="sign-up-submit-button"
-            fullWidth
-            mt="xl"
-            type="submit"
-            disabled={isSubmitDisabled}
-            loading={loading || isLoggingIn}
-            loaderProps={{ type: 'dots' }}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.35 }}
+      >
+        <Group mt={5} justify="center" align="center">
+          <Text c="dimmed" size="sm" ta="center">
+            {translate('auth.alreadyHaveAnAccount')}
+          </Text>
+          <div data-testid="sign-up-login-link">
+            <Button
+              variant="transparent"
+              size="sm"
+              component={Link}
+              href={AUTH_ROUTES.LOGIN}
+              aria-label="Login"
+              data-testid="login-link"
+            >
+              {translate('auth.login')}
+            </Button>
+          </div>
+        </Group>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.45, ease: 'easeOut' as const }}
+      >
+        <Paper
+          component="form"
+          withBorder
+          shadow="md"
+          p={30}
+          mt={30}
+          radius="md"
+          onSubmit={form.onSubmit(handleSignUp)}
+          data-testid="sign-up-form"
+        >
+          {/* Staggered fields */}
+          <motion.div
+            variants={fieldListVariants}
+            initial="hidden"
+            animate="visible"
           >
-            {translate('auth.createAnAccountButton')}
-          </Button>
-        </div>
-      </Paper>
-    </Container>
+            {fields.map(({ id, node }) => (
+              <motion.div key={id} variants={fieldVariants}>
+                {node}
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div variants={fieldVariants}>
+            <Checkbox
+              size="md"
+              label={<PrivacyPolicyLink />}
+              mt="xl"
+              key={form.key('privacyAccepted')}
+              data-testid="sign-up-privacy-checkbox"
+              {...form.getInputProps('privacyAccepted', { type: 'checkbox' })}
+            />
+          </motion.div>
+
+          <div data-testid="submit-button">
+            <motion.div
+              variants={buttonVariants}
+              animate={submitState}
+              whileTap="tap"
+            >
+              <Button
+                id="submit-button"
+                data-testid="sign-up-submit-button"
+                fullWidth
+                mt="xl"
+                type="submit"
+                disabled={isSubmitDisabled}
+                loading={loading || isLoggingIn}
+                loaderProps={{ type: 'dots' }}
+              >
+                {translate('auth.createAnAccountButton')}
+              </Button>
+            </motion.div>
+          </div>
+        </Paper>
+      </motion.div>
+    </MotionContainer>
   );
 };
 
