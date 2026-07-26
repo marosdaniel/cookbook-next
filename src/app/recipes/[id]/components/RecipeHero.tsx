@@ -14,6 +14,7 @@ import {
   IconClock,
   IconEdit,
   IconFlame,
+  IconUser,
   IconUsers,
 } from '@tabler/icons-react';
 import { motion } from 'motion/react';
@@ -152,6 +153,13 @@ export const RecipeHero = ({ recipe, isOwner }: Readonly<RecipeHeroProps>) => {
             <span className={classes.infoPill}>
               <IconFlame size={16} />
               {recipe.averageRating.toFixed(1)} ({recipe.ratingsCount})
+            </span>
+          )}
+
+          {recipe.createdBy && (
+            <span className={classes.infoPill}>
+              <IconUser size={16} />
+              {recipe.createdBy}
             </span>
           )}
         </Box>

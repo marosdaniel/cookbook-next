@@ -26,9 +26,18 @@
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.85) 0%,
-    rgba(0, 0, 0, 0.4) 40%,
-    transparent 70%
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.6) 40%,
+    transparent 80%
+  );
+}
+
+:global([data-mantine-color-scheme="dark"]) .heroOverlay {
+  background: linear-gradient(
+    to top,
+    rgba(26, 27, 30, 0.95) 0%,
+    rgba(26, 27, 30, 0.6) 40%,
+    transparent 80%
   );
 }
 
@@ -49,11 +58,14 @@
 }
 
 .heroTitle {
-  color: white;
+  color: var(--mantine-color-black);
   font-size: 2.4rem;
   font-weight: 800;
   line-height: 1.15;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+:global([data-mantine-color-scheme="dark"]) .heroTitle {
+  color: var(--mantine-color-white);
 }
 
 @media (max-width: 48em) {
@@ -63,10 +75,15 @@
 }
 
 .heroDescription {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--mantine-color-dark-4);
   font-size: var(--mantine-font-size-md);
   max-width: 600px;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+  line-height: 1.5;
+  margin-top: var(--mantine-spacing-xs);
+}
+
+:global([data-mantine-color-scheme="dark"]) .heroDescription {
+  color: var(--mantine-color-dark-0);
 }
 
 .heroPlaceholder {
@@ -111,11 +128,16 @@
   gap: 6px;
   padding: 4px 12px;
   border-radius: var(--mantine-radius-xl);
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(8px);
-  color: var(--mantine-color-gray-2);
+  color: var(--mantine-color-black);
   font-size: var(--mantine-font-size-sm);
   font-weight: 500;
+}
+
+:global([data-mantine-color-scheme="dark"]) .infoPill {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--mantine-color-white);
 }
 
 .ingredientsCard {
