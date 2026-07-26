@@ -1,3 +1,18 @@
+# [2.79.0](https://github.com/marosdaniel/cookbook-next/compare/v2.78.0...v2.79.0) (2026-07-26)
+
+
+### Bug Fixes
+
+* add missing newline at end of locale JSON files ([4ec4269](https://github.com/marosdaniel/cookbook-next/commit/4ec426977f7dbb234bab9bf3c66923503dc05cb3))
+* update Playwright config to use corepack for running the dev server command ([a83c731](https://github.com/marosdaniel/cookbook-next/commit/a83c7316b0e9f2da108eb1947c1560d5841cbba4))
+* update Playwright config to use HOSTNAME variable for baseURL and webServer URL ([b77d9b9](https://github.com/marosdaniel/cookbook-next/commit/b77d9b978af084d0fabce5f0b5dccd8ea9718879))
+
+
+### Features
+
+* add metadata query resolvers and update GraphQL schema ([cc77782](https://github.com/marosdaniel/cookbook-next/commit/cc777822efb1eba90310d8b1c1ab711f37fc642d))
+* implement refetch logic for recipes in MyRecipesClient and update useRecipeForm to refetch on publish ([ba8685d](https://github.com/marosdaniel/cookbook-next/commit/ba8685d166ea1a07d6569c41d44f70da64d891a8))
+
 # [2.78.0](https://github.com/marosdaniel/cookbook-next/compare/v2.77.0...v2.78.0) (2026-07-25)
 
 
