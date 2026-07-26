@@ -10,7 +10,7 @@ import type { RecipeStepsProps } from '../types';
 
 export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
   const translate = useTranslations('recipeDetail');
-  const [activeStepId, setActiveStepId] = useState<string | null>(null);
+  const [activeStepIndex, setActiveStepIndex] = useState<number | null>(null);
 
   const sortedSteps = useMemo(
     () =>
@@ -20,9 +20,9 @@ export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
     [steps],
   );
 
-  const handleStepClick = (localId: string) => {
-    setActiveStepId((currentActiveStepId) =>
-      currentActiveStepId === localId ? null : localId,
+  const handleStepClick = (index: number) => {
+    setActiveStepIndex((currentIndex) =>
+      currentIndex === index ? null : index,
     );
   };
 
@@ -37,7 +37,7 @@ export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
       <LayoutGroup id="recipe-detail-steps">
         <Stack gap="lg">
           {sortedSteps.map((step, index) => {
-            const isActive = activeStepId === step.localId;
+            const isActive = activeStepIndex === index;
 
             return (
               <Paper
@@ -48,7 +48,7 @@ export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
                 radius="md"
                 withBorder
                 className={classes.stepCard}
-                onClick={() => handleStepClick(step.localId)}
+                onClick={() => handleStepClick(index)}
                 aria-pressed={isActive}
                 data-testid={`recipe-step-${step.localId}`}
                 style={{
