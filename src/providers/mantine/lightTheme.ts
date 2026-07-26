@@ -17,6 +17,7 @@ import {
  * - pink   → primary / brand (CTA, links, active states)
  * - violet → secondary accent (gradients: pink → violet, deg 45)
  * - teal   → fresh/success accent (dietary badges, success states)
+ * - meadow → friendly green accent (highlights, active selections)
  * - orange → warm accent (warnings, cost/spice indicators)
  * - red    → error / destructive
  * - gray   → warm-tinted neutral scale
@@ -62,6 +63,20 @@ const herbTeal: MantineColorsTuple = [
   '#12B87F',
   '#00A470',
   '#008F5F',
+];
+
+/** Friendly meadow green — harmonizes with brand pink for highlights */
+const meadowGreen: MantineColorsTuple = [
+  '#F0FBF5',
+  '#DFF6E8',
+  '#BAEFD0',
+  '#92E7B5',
+  '#6FDE9F',
+  '#56D891',
+  '#45D388',
+  '#33BB75',
+  '#28A667',
+  '#1D9057',
 ];
 
 /** Warm accent — warning states, cooking-time / cost indicators */
@@ -130,6 +145,7 @@ export const lightTheme: MantineThemeOverride = createTheme({
     'bright-pink': brandPink,
     violet: berryViolet,
     teal: herbTeal,
+    meadow: meadowGreen,
     orange: saffronOrange,
     red: errorRed,
     gray: warmGray,

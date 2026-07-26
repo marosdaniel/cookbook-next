@@ -11,6 +11,11 @@ describe('lightTheme', () => {
     expect(lightTheme.colors?.['bright-pink']).toHaveLength(10);
   });
 
+  it('should have meadow green colors', () => {
+    expect(lightTheme.colors).toHaveProperty('meadow');
+    expect(lightTheme.colors?.meadow).toHaveLength(10);
+  });
+
   it('should have autoContrast enabled', () => {
     expect(lightTheme.autoContrast).toBe(true);
   });

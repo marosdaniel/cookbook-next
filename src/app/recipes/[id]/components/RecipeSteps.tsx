@@ -67,7 +67,8 @@ export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
                       inset: 0,
                       zIndex: 0,
                       borderRadius: 'var(--mantine-radius-md)',
-                      backgroundColor: 'rgba(230, 245, 255, 0.4)',
+                      backgroundColor: 'var(--mantine-color-meadow-1)',
+                      border: '2px solid var(--mantine-color-meadow-6)',
                     }}
                   />
                 )}
