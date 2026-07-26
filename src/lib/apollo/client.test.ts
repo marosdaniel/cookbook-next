@@ -41,7 +41,7 @@ describe('apollo client cache configuration', () => {
           getTypePolicy: (typeName: string) => {
             fields?: Record<
               string,
-              { merge?: (incoming: unknown, existing: unknown) => unknown }
+              { merge?: (...args: unknown[]) => unknown }
             >;
           };
         };
@@ -49,15 +49,23 @@ describe('apollo client cache configuration', () => {
 
     const queryPolicy = cacheWithPolicies.policies.getTypePolicy('Query');
     const getFavoriteRecipesMerge =
-      queryPolicy.fields?.getFavoriteRecipes.merge;
-    const getRecipesMerge = queryPolicy.fields?.getRecipes.merge;
-    const getFollowingMerge = queryPolicy.fields?.getFollowing.merge;
+      queryPolicy.fields?.getFavoriteRecipes?.merge;
+    const getRecipesMerge = queryPolicy.fields?.getRecipes?.merge;
+    const getFollowingMerge = queryPolicy.fields?.getFollowing?.merge;
 
     expect(getFavoriteRecipesMerge).toBeTypeOf('function');
     expect(getRecipesMerge).toBeTypeOf('function');
     expect(getFollowingMerge).toBeTypeOf('function');
 
+    // getFavoriteRecipes: fresh fetch without pagination
     expect(getFavoriteRecipesMerge?.(['one'], [])).toEqual(['one']);
+
+    // getFavoriteRecipes: pagination with 'after' cursor should append
+    expect(
+      getFavoriteRecipesMerge?.(['two'], ['one'], {
+        args: { after: 'cursor123' },
+      }),
+    ).toEqual(['one', 'two']);
 
     expect(
       getRecipesMerge?.({ recipes: [{ id: 'b' }], totalRecipes: 2 }, undefined),
@@ -66,20 +74,36 @@ describe('apollo client cache configuration', () => {
       totalRecipes: 2,
     });
 
+    // Fresh fetch (no pagination) - should replace existing data
     expect(
       getRecipesMerge?.(
         { recipes: [{ id: 'b' }], totalRecipes: 2 },
         { recipes: [{ id: 'a' }], totalRecipes: 1 },
+        undefined, // no 'after' cursor means fresh fetch
+      ),
+    ).toEqual({
+      recipes: [{ id: 'b' }],
+      totalRecipes: 2,
+    });
+
+    // Pagination (with 'after' cursor) - should append new data to existing
+    expect(
+      getRecipesMerge?.(
+        { recipes: [{ id: 'b' }], totalRecipes: 2 },
+        { recipes: [{ id: 'a' }], totalRecipes: 1 },
+        { args: { after: 'cursor123' } }, // 'after' cursor means pagination
       ),
     ).toEqual({
       recipes: [{ id: 'a' }, { id: 'b' }],
       totalRecipes: 2,
     });
 
+    // Following pagination - should append new data
     expect(
       getFollowingMerge?.(
         { users: [{ id: 'u2' }], totalFollowing: 2 },
         { users: [{ id: 'u1' }], totalFollowing: 1 },
+        { args: { after: 'cursor123' } }, // pagination
       ),
     ).toEqual({
       users: [{ id: 'u1' }, { id: 'u2' }],

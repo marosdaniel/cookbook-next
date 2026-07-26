@@ -96,10 +96,22 @@ export const getAuthMetadata = async (
   });
 };
 
+/**
+ * Convert date to ISO string, handling both Date objects and strings.
+ */
+const toISOString = (
+  date: Date | string | null | undefined,
+): string | undefined => {
+  if (!date) return undefined;
+  if (typeof date === 'string') return date;
+  if (date instanceof Date) return date.toISOString();
+  return undefined;
+};
+
 export const buildRecipeJsonLd = (
   recipe: RecipeDetail,
   url?: string,
-  dates?: { createdAt?: Date; updatedAt?: Date },
+  dates?: { createdAt?: Date | string; updatedAt?: Date | string },
 ) => {
   const ingredientList = recipe.ingredients
     .map((ingredient) => {
@@ -172,8 +184,8 @@ export const buildRecipeJsonLd = (
         contentUrl: youtubeLink,
         embedUrl: `https://www.youtube.com/embed/${encodeURIComponent(videoId)}`,
         ...(recipeImage ? { thumbnailUrl: recipeImage } : {}),
-        ...(dates?.createdAt
-          ? { uploadDate: dates.createdAt.toISOString() }
+        ...(toISOString(dates?.createdAt)
+          ? { uploadDate: toISOString(dates?.createdAt) }
           : {}),
       };
     } catch {
@@ -188,8 +200,8 @@ export const buildRecipeJsonLd = (
     description: recipe.description ?? undefined,
     image: recipeImage,
     url,
-    datePublished: dates?.createdAt?.toISOString(),
-    dateModified: dates?.updatedAt?.toISOString(),
+    datePublished: toISOString(dates?.createdAt),
+    dateModified: toISOString(dates?.updatedAt),
     recipeYield: [String(recipe.servings ?? 1), servingUnit]
       .filter(Boolean)
       .join(' '),
