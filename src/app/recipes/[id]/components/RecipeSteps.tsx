@@ -20,10 +20,6 @@ export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
     [steps],
   );
 
-  const activeStepIndex = sortedSteps.findIndex(
-    (step) => step.localId === activeStepId,
-  );
-
   const handleStepClick = (localId: string) => {
     setActiveStepId((currentActiveStepId) =>
       currentActiveStepId === localId ? null : localId,
@@ -42,8 +38,6 @@ export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
         <Stack gap="lg">
           {sortedSteps.map((step, index) => {
             const isActive = activeStepId === step.localId;
-            const isCompleted =
-              activeStepIndex !== -1 && index < activeStepIndex;
 
             return (
               <Paper
@@ -62,7 +56,6 @@ export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
                   width: '100%',
                   cursor: 'pointer',
                   textAlign: 'left',
-                  opacity: isCompleted ? 0.6 : 1,
                 }}
               >
                 {isActive && (
@@ -96,11 +89,7 @@ export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
                     zIndex: 1,
                   }}
                 >
-                  <Text
-                    size="md"
-                    lh={1.7}
-                    td={isCompleted ? 'line-through' : 'none'}
-                  >
+                  <Text size="md" lh={1.7}>
                     {step.description}
                   </Text>
                 </Box>
