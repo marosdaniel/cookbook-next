@@ -16,6 +16,16 @@ export const ActionIcon = ({ children, ...props }: ButtonProps) => (
   <button {...props}>{children}</button>
 );
 
+export const Anchor = ({
+  children,
+  href,
+  ...props
+}: DivProps & { href?: string }) => (
+  <a href={href} {...props}>
+    {children}
+  </a>
+);
+
 export const Badge = ({ children, ...props }: ParagraphProps) => (
   <span {...props}>{children}</span>
 );
@@ -164,6 +174,15 @@ export const Skeleton = ({ children, ...props }: DivProps) => (
 export const Stack = ({ children, ...props }: DivProps) => (
   <div {...props}>{children}</div>
 );
+
+export const List = ({
+  children,
+  component = 'ul',
+  ...props
+}: DivProps & { component?: string }) => {
+  const Component = component as React.ElementType;
+  return <Component {...props}>{children}</Component>;
+};
 
 export const Switch = ({ checked, onChange, ...props }: InputProps) => (
   <input

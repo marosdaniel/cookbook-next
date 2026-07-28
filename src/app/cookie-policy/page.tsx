@@ -86,30 +86,30 @@ const CookiePolicyPage = async () => {
                   {cookiePolicyMessage.contentsTitle}
                 </Text>
 
-                <List size="sm" spacing={4}>
-                  <List.Item>
+                <List size="sm" spacing={4} component="ul">
+                  <li>
                     <Anchor href="#what-are-cookies">
                       {cookiePolicyMessage.whatAreCookies.title}
                     </Anchor>
-                  </List.Item>
+                  </li>
 
-                  <List.Item>
+                  <li>
                     <Anchor href="#how-we-use-cookies">
                       {cookiePolicyMessage.howWeUse.title}
                     </Anchor>
-                  </List.Item>
+                  </li>
 
-                  <List.Item>
+                  <li>
                     <Anchor href="#detailed-cookie-usage">
                       {cookiePolicyMessage.detailedUsage.title}
                     </Anchor>
-                  </List.Item>
+                  </li>
 
-                  <List.Item>
+                  <li>
                     <Anchor href="#managing-cookies">
                       {cookiePolicyMessage.managing.title}
                     </Anchor>
-                  </List.Item>
+                  </li>
                 </List>
               </Box>
 
@@ -142,33 +142,33 @@ const CookiePolicyPage = async () => {
 
                 <Text>{cookiePolicyMessage.howWeUse.content}</Text>
 
-                <List spacing="sm" withPadding>
-                  <List.Item>
+                <List spacing="sm" withPadding component="ul">
+                  <li>
                     <Text component="span">
                       <strong>
                         {cookiePolicyMessage.howWeUse.list.necessaryTitle}
                       </strong>{' '}
                       {cookiePolicyMessage.howWeUse.list.necessaryContent}
                     </Text>
-                  </List.Item>
+                  </li>
 
-                  <List.Item>
+                  <li>
                     <Text component="span">
                       <strong>
                         {cookiePolicyMessage.howWeUse.list.functionalityTitle}
                       </strong>{' '}
                       {cookiePolicyMessage.howWeUse.list.functionalityContent}
                     </Text>
-                  </List.Item>
+                  </li>
 
-                  <List.Item>
+                  <li>
                     <Text component="span">
                       <strong>
                         {cookiePolicyMessage.howWeUse.list.performanceTitle}
                       </strong>{' '}
                       {cookiePolicyMessage.howWeUse.list.performanceContent}
                     </Text>
-                  </List.Item>
+                  </li>
                 </List>
               </Stack>
 
@@ -186,9 +186,9 @@ const CookiePolicyPage = async () => {
 
                 <Text>{cookiePolicyMessage.detailedUsage.content}</Text>
 
-                <List spacing="sm" withPadding>
+                <List spacing="sm" withPadding component="ul">
                   {cookiePolicyMessage.detailedUsage.list.map((item) => (
-                    <List.Item key={item}>{item}</List.Item>
+                    <li key={item}>{item}</li>
                   ))}
                 </List>
               </Stack>
