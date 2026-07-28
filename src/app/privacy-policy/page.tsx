@@ -1,5 +1,16 @@
-import { Box, Container, Stack, Text, Title } from '@mantine/core';
+import {
+  Anchor,
+  Container,
+  Divider,
+  List,
+  Paper,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+import ReadingProgress from '@/components/ReadingProgress';
 import { getLocaleMessages } from '@/lib/locale/locale';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
 import { getMetadata } from '@/lib/seo/seo';
@@ -17,76 +28,165 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const PrivacyPolicyPage = async () => {
-  const locale = await getLocaleFromCookies();
+  const [locale, requestHeaders] = await Promise.all([
+    getLocaleFromCookies(),
+    headers(),
+  ]);
+
   const messages = await getLocaleMessages(locale);
   const legalMessages = messages.legal as unknown as LegalMessages;
   const privacyPolicyMessages = legalMessages?.privacyPolicy;
 
   if (!privacyPolicyMessages) return null;
 
+  const lastUpdatedDate = new Intl.DateTimeFormat(locale, {
+    dateStyle: 'long',
+  }).format(new Date());
+
+  const nonce = requestHeaders.get('x-nonce') ?? undefined;
+
   return (
-    <Container size="md" py="xl">
-      <Stack gap="lg">
-        <Title order={1}>{privacyPolicyMessages.title}</Title>
-        <Text size="sm" c="dimmed">
-          {privacyPolicyMessages.lastUpdated}
-          {new Date().toLocaleDateString(locale)}
-        </Text>
+    <>
+      <ReadingProgress nonce={nonce} />
 
-        <Stack gap="md">
-          <Title order={2} size="h3">
-            {privacyPolicyMessages.introduction.title}
-          </Title>
-          <Text>{privacyPolicyMessages.introduction.content}</Text>
-        </Stack>
+      <Container size="md" py={{ base: 'xl', sm: 56 }}>
+        <Stack gap="xl">
+          <Stack gap="sm" ta="center">
+            <Title order={1}>{privacyPolicyMessages.title}</Title>
 
-        <Stack gap="md">
-          <Title order={2} size="h3">
-            {privacyPolicyMessages.infoCollect.title}
-          </Title>
-          <Text>{privacyPolicyMessages.infoCollect.content}</Text>
-          <Box component="ul" pl="xl" mt="xs">
-            <Box component="li" mb="xs">
-              <Text component="span">
-                <strong>
-                  {privacyPolicyMessages.infoCollect.list.personalTitle}
-                </strong>{' '}
-                {privacyPolicyMessages.infoCollect.list.personalContent}
-              </Text>
-            </Box>
-            <Box component="li" mb="xs">
-              <Text component="span">
-                <strong>
-                  {privacyPolicyMessages.infoCollect.list.usageTitle}
-                </strong>{' '}
-                {privacyPolicyMessages.infoCollect.list.usageContent}
-              </Text>
-            </Box>
-          </Box>
-        </Stack>
+            <Text c="dimmed" size="sm">
+              {privacyPolicyMessages.lastUpdated} {lastUpdatedDate}
+            </Text>
+          </Stack>
 
-        <Stack gap="md">
-          <Title order={2} size="h3">
-            {privacyPolicyMessages.howUse.title}
-          </Title>
-          <Text>{privacyPolicyMessages.howUse.content}</Text>
-          <Box component="ul" pl="xl" mt="xs">
-            {privacyPolicyMessages.howUse.list.map((item) => (
-              <Box key={item} component="li" mb="xs">
-                <Text component="span">{item}</Text>
-              </Box>
-            ))}
-          </Box>
-        </Stack>
+          <Paper
+            withBorder
+            p={{ base: 'md', sm: 'xl' }}
+            radius="md"
+            shadow="xs"
+          >
+            <Stack gap="xl">
+              <Stack
+                component="nav"
+                aria-label={privacyPolicyMessages.title}
+                gap="md"
+              >
+                <Text fw={600} size="sm">
+                  {privacyPolicyMessages.contentsTitle}
+                </Text>
 
-        <Stack gap="md">
-          <Title order={2} size="h3">
-            {privacyPolicyMessages.contact.title}
-          </Title>
-          <Text>{privacyPolicyMessages.contact.content}</Text>
+                <List size="sm" spacing={4} component="ul">
+                  <li>
+                    <Anchor href="#introduction">
+                      {privacyPolicyMessages.introduction.title}
+                    </Anchor>
+                  </li>
+
+                  <li>
+                    <Anchor href="#info-collect">
+                      {privacyPolicyMessages.infoCollect.title}
+                    </Anchor>
+                  </li>
+
+                  <li>
+                    <Anchor href="#how-use">
+                      {privacyPolicyMessages.howUse.title}
+                    </Anchor>
+                  </li>
+
+                  <li>
+                    <Anchor href="#contact">
+                      {privacyPolicyMessages.contact.title}
+                    </Anchor>
+                  </li>
+                </List>
+              </Stack>
+
+              <Divider />
+              <Stack
+                component="section"
+                gap="md"
+                id="introduction"
+                style={{ scrollMarginTop: 24 }}
+              >
+                <Title order={2} size="h3">
+                  {privacyPolicyMessages.introduction.title}
+                </Title>
+                <Text>{privacyPolicyMessages.introduction.content}</Text>
+              </Stack>
+
+              <Divider />
+
+              <Stack
+                component="section"
+                gap="md"
+                id="info-collect"
+                style={{ scrollMarginTop: 24 }}
+              >
+                <Title order={2} size="h3">
+                  {privacyPolicyMessages.infoCollect.title}
+                </Title>
+                <Text>{privacyPolicyMessages.infoCollect.content}</Text>
+
+                <List spacing="sm" withPadding component="ul">
+                  <li>
+                    <Text component="span">
+                      <strong>
+                        {privacyPolicyMessages.infoCollect.list.personalTitle}
+                      </strong>{' '}
+                      {privacyPolicyMessages.infoCollect.list.personalContent}
+                    </Text>
+                  </li>
+
+                  <li>
+                    <Text component="span">
+                      <strong>
+                        {privacyPolicyMessages.infoCollect.list.usageTitle}
+                      </strong>{' '}
+                      {privacyPolicyMessages.infoCollect.list.usageContent}
+                    </Text>
+                  </li>
+                </List>
+              </Stack>
+
+              <Divider />
+
+              <Stack
+                component="section"
+                gap="md"
+                id="how-use"
+                style={{ scrollMarginTop: 24 }}
+              >
+                <Title order={2} size="h3">
+                  {privacyPolicyMessages.howUse.title}
+                </Title>
+                <Text>{privacyPolicyMessages.howUse.content}</Text>
+
+                <List spacing="sm" withPadding component="ul">
+                  {privacyPolicyMessages.howUse.list.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </List>
+              </Stack>
+
+              <Divider />
+
+              <Stack
+                component="section"
+                gap="md"
+                id="contact"
+                style={{ scrollMarginTop: 24 }}
+              >
+                <Title order={2} size="h3">
+                  {privacyPolicyMessages.contact.title}
+                </Title>
+                <Text>{privacyPolicyMessages.contact.content}</Text>
+              </Stack>
+            </Stack>
+          </Paper>
         </Stack>
-      </Stack>
-    </Container>
+      </Container>
+    </>
   );
 };
 

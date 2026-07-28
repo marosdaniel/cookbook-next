@@ -405,7 +405,8 @@
     },
     "privacyPolicy": {
       "title": "Privacy Policy",
-      "lastUpdated": "Last updated: ",
+      "contentsTitle": "Contents",
+      "lastUpdated": "Last updated:",
       "introduction": {
         "title": "1. Introduction",
         "content": "Welcome to Cookbook (\"we,\" \"our,\" or \"us\"). We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about this privacy notice or our practices with regard to your personal information, please contact us."

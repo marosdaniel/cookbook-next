@@ -56,6 +56,7 @@ export interface CookiePolicyContent {
 
 export interface PrivacyPolicyContent {
   title: string;
+  contentsTitle: string;
   lastUpdated: string;
   introduction: { title: string; content: string };
   infoCollect: {

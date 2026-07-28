@@ -404,7 +404,8 @@
     },
     "privacyPolicy": {
       "title": "Adatvédelmi Szabályzat",
-      "lastUpdated": "Utoljára frissítve: ",
+      "contentsTitle": "Tartalom",
+      "lastUpdated": "Utoljára frissítve:",
       "introduction": {
         "title": "1. Bevezetés",
         "content": "Üdvözöli a Cookbook („mi” vagy „minket”). Elkötelezettek vagyunk az Ön személyes adatainak és magánéletének védelme mellett. Ha kérdése vagy aggálya van ezzel az adatvédelmi tájékoztatóval vagy a személyes adataival kapcsolatos gyakorlatunkkal kapcsolatban, kérjük, lépjen kapcsolatba velünk."

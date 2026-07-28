@@ -420,7 +420,8 @@
     },
     "privacyPolicy": {
       "title": "Datenschutzrichtlinie",
-      "lastUpdated": "Zuletzt aktualisiert: ",
+      "contentsTitle": "Inhaltsverzeichnis",
+      "lastUpdated": "Zuletzt aktualisiert:",
       "introduction": {
         "title": "1. Einführung",
         "content": "Willkommen bei Cookbook (\"wir\", \"unser\" oder \"uns\"). Wir sind dem Schutz Ihrer persönlichen Daten und Ihrer Privatsphäre verpflichtet. Wenn Sie Fragen oder Bedenken zu dieser Datenschutzerklärung oder unseren Praktiken in Bezug auf Ihre persönlichen Daten haben, kontaktieren Sie uns bitte."
