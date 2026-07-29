@@ -8,10 +8,7 @@ import {
   useSpring,
 } from 'motion/react';
 import type { FC } from 'react';
-
-type ReadingProgressProps = {
-  nonce?: string;
-};
+import type { ReadingProgressProps } from './types';
 
 const ReadingProgress: FC<ReadingProgressProps> = ({ nonce }) => {
   const shouldReduceMotion = useReducedMotion();
@@ -33,7 +30,7 @@ const ReadingProgress: FC<ReadingProgressProps> = ({ nonce }) => {
         aria-hidden="true"
         style={{
           background:
-            'linear-gradient(90deg, var(--mantine-color-blue-6), var(--mantine-color-cyan-5))',
+            'linear-gradient(45deg, var(--mantine-color-pink-2), var(--mantine-color-pink-6))',
           height: 3,
           left: 0,
           originX: 0,
