@@ -1,3 +1,15 @@
+# [2.83.0](https://github.com/marosdaniel/cookbook-next/compare/v2.82.0...v2.83.0) (2026-07-29)
+
+
+### Bug Fixes
+
+* update recipe-related strings for better clarity in German, English, and Hungarian locales ([e4c7fe5](https://github.com/marosdaniel/cookbook-next/commit/e4c7fe58f7806e5f30bad9f4521c31f4c92436bc))
+
+
+### Features
+
+* implement ReadingProgress component with updated styles and add tests ([6ece271](https://github.com/marosdaniel/cookbook-next/commit/6ece271e1761d90edce0c8760ed38dde869097ed))
+
 # [2.82.0](https://github.com/marosdaniel/cookbook-next/compare/v2.81.0...v2.82.0) (2026-07-29)
 
 
