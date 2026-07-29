@@ -40,7 +40,7 @@ minimumReleaseAgeExclude:
   - '@rolldown/binding-win32-x64-msvc@1.0.2'
   - rolldown@1.0.2
   - vite@8.0.14 || 8.0.15 || 8.0.16 || 8.1.2 || 8.1.4 || 8.1.5
-  - baseline-browser-mapping@2.10.32 || 2.10.35 || 2.10.40 || 2.10.42 || 2.10.43 || 2.10.44 || 2.11.0 || 2.11.1 || 2.11.3 || 2.11.4 || 2.11.5
+  - baseline-browser-mapping@2.10.32 || 2.10.35 || 2.10.40 || 2.10.42 || 2.10.43 || 2.10.44 || 2.11.0 || 2.11.1 || 2.11.3 || 2.11.4 || 2.11.5 || 2.11.6
   - nodemailer@8.0.9 || 8.0.10 || 8.0.11
   - '@biomejs/biome@2.4.16 || 2.5.2 || 2.5.3 || 2.5.4 || 2.5.5 || 2.5.6'
   - '@biomejs/cli-darwin-arm64@2.4.16 || 2.5.2 || 2.5.3 || 2.5.4 || 2.5.5 || 2.5.6'
@@ -104,8 +104,8 @@ minimumReleaseAgeExclude:
   - typescript@7.0.2
   - sanitize-html@2.17.6
   - ws@8.21.1
-  - '@tabler/icons-react@3.45.0'
-  - '@tabler/icons@3.45.0'
+  - '@tabler/icons-react@3.45.0 || 3.46.0'
+  - '@tabler/icons@3.45.0 || 3.46.0'
   - happy-dom@20.11.0 || 20.11.1
   - argon2@0.45.0 || 0.45.1
   - '@prisma/adapter-neon@7.9.0 || 7.9.1'
@@ -133,6 +133,9 @@ minimumReleaseAgeExclude:
   - valibot@1.4.2
   - brace-expansion@5.0.8
   - '@prisma/dev@0.24.17'
+  - framer-motion@12.43.0
+  - motion-dom@12.43.0
+  - motion@12.43.0
 
 overrides:
   '@hono/node-server@<1.19.13': ^1.19.13
