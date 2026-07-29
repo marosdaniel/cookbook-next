@@ -1,3 +1,16 @@
+# [2.82.0](https://github.com/marosdaniel/cookbook-next/compare/v2.81.0...v2.82.0) (2026-07-29)
+
+
+### Bug Fixes
+
+* update Anchor component props type to use ComponentPropsWithoutRef<'a'> ([df38315](https://github.com/marosdaniel/cookbook-next/commit/df3831517458c55a6eab96b383cf66e4d4b8adbc))
+
+
+### Features
+
+* add Anchor and List components to mock @mantine/core and update CookiePolicyPage to use them ([1784ea4](https://github.com/marosdaniel/cookbook-next/commit/1784ea4b8309b7f30979a14d71259ce2cc3dbf14))
+* enhance Privacy Policy page with new structure and localization updates ([3d947f9](https://github.com/marosdaniel/cookbook-next/commit/3d947f96cfaa57470bb43a39bdc573e70afb9e3a))
+
 # [2.81.0](https://github.com/marosdaniel/cookbook-next/compare/v2.80.0...v2.81.0) (2026-07-26)
 
 
