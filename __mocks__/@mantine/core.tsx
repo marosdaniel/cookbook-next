@@ -20,7 +20,7 @@ export const Anchor = ({
   children,
   href,
   ...props
-}: DivProps & { href?: string }) => (
+}: ComponentPropsWithoutRef<'a'>) => (
   <a href={href} {...props}>
     {children}
   </a>
