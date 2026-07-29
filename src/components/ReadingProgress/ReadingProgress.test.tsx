@@ -35,16 +35,18 @@ describe('ReadingProgress', () => {
     mockUseSpring.mockReturnValue('scaleX');
   });
 
-  it('uses the violet accent color for the progress bar', () => {
+  it('renders the progress bar with the expected pink gradient', () => {
     const { container } = render(<ReadingProgress nonce="test-nonce" />);
 
     const bar = container.querySelector('div[aria-hidden="true"]');
 
     expect(bar).toHaveAttribute(
       'style',
-      expect.stringContaining(
-        'linear-gradient(45deg, var(--mantine-color-pink-6), var(--mantine-color-violet-6))',
-      ),
+      expect.stringContaining('var(--mantine-color-pink-2)'),
+    );
+    expect(bar).toHaveAttribute(
+      'style',
+      expect.stringContaining('var(--mantine-color-pink-6)'),
     );
   });
 });
