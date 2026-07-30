@@ -1,3 +1,10 @@
+## [2.83.1](https://github.com/marosdaniel/cookbook-next/compare/v2.83.0...v2.83.1) (2026-07-30)
+
+
+### Bug Fixes
+
+* update @vitejs/plugin-react to version 6.0.5 and baseline-browser-mapping to 2.11.7 ([38d0a4a](https://github.com/marosdaniel/cookbook-next/commit/38d0a4a5292bd492e549ef1a32502705f32acd9e))
+
 # [2.83.0](https://github.com/marosdaniel/cookbook-next/compare/v2.82.0...v2.83.0) (2026-07-29)
 
 
