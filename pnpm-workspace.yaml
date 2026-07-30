@@ -121,7 +121,7 @@ minimumReleaseAgeExclude:
   - prisma@7.9.0 || 7.9.1
   - '@semantic-release/changelog@7.0.0'
   - '@semantic-release/git@11.0.0 || 11.0.1'
-  - '@vitejs/plugin-react@6.0.4'
+  - '@vitejs/plugin-react@6.0.4 || 6.0.5'
   - react-dom@19.2.8
   - react@19.2.8
   - '@graphql-codegen/typescript-operations@6.1.2'
