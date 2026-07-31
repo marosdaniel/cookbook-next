@@ -1,3 +1,10 @@
+## [2.83.2](https://github.com/marosdaniel/cookbook-next/compare/v2.83.1...v2.83.2) (2026-07-31)
+
+
+### Bug Fixes
+
+* update fast-uri to version 4.1.2 and baseline-browser-mapping to 2.11.8 ([d86db63](https://github.com/marosdaniel/cookbook-next/commit/d86db63683868ee5438b7187af59f7949e97cce7))
+
 ## [2.83.1](https://github.com/marosdaniel/cookbook-next/compare/v2.83.0...v2.83.1) (2026-07-30)
 
 
