@@ -44,7 +44,7 @@
     "audit:fix": "pnpm audit --fix=update || pnpm audit --fix=override"
   },
   "dependencies": {
-    "@apollo/client": "^4.2.8",
+    "@apollo/client": "^4.2.9",
     "@apollo/server": "^5.5.1",
     "@as-integrations/next": "^4.1.0",
     "@escape.tech/graphql-armor": "^3.2.0",
@@ -92,7 +92,7 @@
     "@graphql-codegen/typescript": "^6.1.0",
     "@graphql-codegen/typescript-operations": "^6.1.2",
     "@graphql-typed-document-node/core": "^3.2.0",
-    "@playwright/test": "^1.62.0",
+    "@playwright/test": "^1.62.1",
     "@prisma/config": "^7.9.1",
     "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/git": "^11.0.1",
@@ -103,13 +103,13 @@
     "@testing-library/react": "^16.3.2",
     "@types/node": "^26.1.2",
     "@types/nodemailer": "^8.0.1",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
     "@types/sanitize-html": "^2.16.1",
     "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^6.0.5",
     "@vitest/coverage-v8": "4.1.10",
-    "baseline-browser-mapping": "^2.11.7",
+    "baseline-browser-mapping": "^2.11.8",
     "dotenv": "^17.4.2",
     "fast-uri": "^4.1.1",
     "find-my-way": "9.7.0",
@@ -118,7 +118,7 @@
     "semantic-release": "^25.0.8",
     "sharp": "^0.35.3",
     "typescript": "6.0.3",
-    "vite": "^8.1.5",
+    "vite": "^8.2.0",
     "vitest": "^4.1.10"
   },
   "prisma": {
