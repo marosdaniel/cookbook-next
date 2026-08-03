@@ -208,8 +208,8 @@ importers:
         specifier: 4.1.10
         version: 4.1.10(vitest@4.1.10)
       baseline-browser-mapping:
-        specifier: ^2.11.10
-        version: 2.11.10
+        specifier: ^2.11.11
+        version: 2.11.11
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
@@ -2332,8 +2332,8 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  baseline-browser-mapping@2.11.9:
-    resolution: {integrity: sha512-cp447VUsGS07+n1Dqf7YSQ8maeJrjEhaDxTm1ZefbqDtypHBC5GzGMQbklR6IPR13Y8OAJRHZWEMtZipJLCttg==}
+  baseline-browser-mapping@2.11.11:
+    resolution: {integrity: sha512-/yImnXwyTvgMkhgekLHok/Rx5vO6E0BmStWlSqKWMVm2a2ITuZ1Tn+9bgLS+gZRdZmWtd8nxuhHpdmCUOWsTQQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -7253,7 +7253,7 @@ snapshots:
 
   baseline-browser-mapping@2.11.10: {}
 
-  baseline-browser-mapping@2.11.9: {}
+  baseline-browser-mapping@2.11.11: {}
 
   bcryptjs@3.0.3: {}
 
@@ -7287,7 +7287,7 @@ snapshots:
 
   browserslist@4.28.7:
     dependencies:
-      baseline-browser-mapping: 2.11.9
+      baseline-browser-mapping: 2.11.10
       caniuse-lite: 1.0.30001806
       electron-to-chromium: 1.5.395
       node-releases: 2.0.51
@@ -8602,7 +8602,7 @@ snapshots:
     dependencies:
       '@next/env': 16.2.12
       '@swc/helpers': 0.5.15
-      baseline-browser-mapping: 2.11.9
+      baseline-browser-mapping: 2.11.10
       caniuse-lite: 1.0.30001806
       postcss: 8.5.20
       react: 19.2.8
