@@ -129,6 +129,7 @@ describe('LoginForm', () => {
     forward: vi.fn(),
     prefetch: vi.fn(),
     replace: vi.fn(),
+    bfcacheId: '',
   };
 
   beforeEach(() => {
