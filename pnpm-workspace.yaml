@@ -41,7 +41,7 @@ minimumReleaseAgeExclude:
   - rolldown@1.0.2
   - vite@8.0.14 || 8.0.15 || 8.0.16 || 8.1.2 || 8.1.4 || 8.1.5 || 8.2.0
   - baseline-browser-mapping@2.10.32 || 2.10.35 || 2.10.40 || 2.10.42 || 2.10.43 || 2.10.44 || 2.11.0 || 2.11.1 || 2.11.3 || 2.11.4 || 2.11.5 || 2.11.6 || 2.11.7 || 2.11.8 || 2.11.9 || 2.11.10 || 2.11.11 || 2.11.12
-  - nodemailer@8.0.9 || 8.0.10 || 8.0.11
+  - nodemailer@8.0.9 || 8.0.10 || 8.0.11 || 9.0.4
   - '@biomejs/biome@2.4.16 || 2.5.2 || 2.5.3 || 2.5.4 || 2.5.5 || 2.5.6'
   - '@biomejs/cli-darwin-arm64@2.4.16 || 2.5.2 || 2.5.3 || 2.5.4 || 2.5.5 || 2.5.6'
   - '@biomejs/cli-darwin-x64@2.4.16 || 2.5.2 || 2.5.3 || 2.5.4 || 2.5.5 || 2.5.6'
@@ -73,14 +73,14 @@ minimumReleaseAgeExclude:
   - semantic-release@25.0.5 || 25.0.6 || 25.0.7 || 25.0.8
   - '@types/nodemailer@8.0.1'
   - '@hono/node-server@1.19.13'
-  - postcss@8.5.10
+  - postcss@8.5.10 || 8.5.23
   - js-yaml@4.1.2
   - hono@4.12.25
-  - undici@6.27.0 || 7.28.0
-  - icu-minify@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4
-  - next-intl-swc-plugin-extractor@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4
-  - next-intl@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4
-  - use-intl@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4
+  - undici@6.27.0 || 6.28.0 || 7.28.0 || 7.29.0
+  - icu-minify@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5
+  - next-intl-swc-plugin-extractor@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5
+  - next-intl@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5
+  - use-intl@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5
   - '@typescript/typescript-aix-ppc64@7.0.2'
   - '@typescript/typescript-darwin-arm64@7.0.2'
   - '@typescript/typescript-darwin-x64@7.0.2'
@@ -131,13 +131,13 @@ minimumReleaseAgeExclude:
   - playwright@1.62.0 || 1.62.1
   - sharp@0.35.0
   - valibot@1.4.2
-  - brace-expansion@5.0.8
+  - brace-expansion@5.0.8 || 5.0.9
   - '@prisma/dev@0.24.17'
   - framer-motion@12.43.0
   - motion-dom@12.43.0
   - motion@12.43.0
   - '@types/react-dom@19.2.4'
-  - fast-uri@4.1.2
+  - fast-uri@3.1.5 || 4.1.2
   - '@upstash/redis@1.38.1'
 
 overrides:
