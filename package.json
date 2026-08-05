@@ -44,7 +44,7 @@
     "audit:fix": "pnpm audit --fix=update || pnpm audit --fix=override"
   },
   "dependencies": {
-    "@apollo/client": "^4.2.9",
+    "@apollo/client": "^4.2.10",
     "@apollo/server": "^5.5.1",
     "@as-integrations/next": "^4.1.0",
     "@escape.tech/graphql-armor": "^3.2.0",
@@ -62,7 +62,7 @@
     "@reduxjs/toolkit": "^2.12.0",
     "@tabler/icons-react": "^3.46.0",
     "@upstash/ratelimit": "^2.0.8",
-    "@upstash/redis": "^1.38.1",
+    "@upstash/redis": "^1.38.2",
     "@vercel/speed-insights": "^2.0.0",
     "argon2": "^0.45.1",
     "bcryptjs": "^3.0.3",
@@ -86,7 +86,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.6",
+    "@biomejs/biome": "2.5.7",
     "@graphql-codegen/cli": "^7.2.0",
     "@graphql-codegen/client-preset": "^6.1.0",
     "@graphql-codegen/typescript": "^6.1.0",
@@ -115,7 +115,7 @@
     "find-my-way": "9.7.0",
     "happy-dom": "^20.11.1",
     "prisma": "7.9.1",
-    "semantic-release": "^25.0.8",
+    "semantic-release": "^25.0.9",
     "sharp": "^0.35.3",
     "typescript": "6.0.3",
     "vite": "^8.2.0",
