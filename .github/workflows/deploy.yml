@@ -47,7 +47,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 11.20.0
+          version: 11.21.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -60,7 +60,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Scan repository for leaked secrets
-        uses: gitleaks/gitleaks-action@v3
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -91,7 +91,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 11.20.0
+          version: 11.21.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -157,7 +157,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 11.20.0
+          version: 11.21.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -239,7 +239,7 @@ jobs:
           fi
 
       - name: SonarQube Cloud Scan
-        uses: SonarSource/sonarqube-scan-action@v8
+        uses: SonarSource/sonarqube-scan-action@22918119ff8e1ca75a623e15c8296b6ea4fbe28f # v8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -346,7 +346,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 11.20.0
+          version: 11.21.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -430,7 +430,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 11.20.0
+          version: 11.21.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
