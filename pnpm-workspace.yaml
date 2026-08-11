@@ -77,10 +77,10 @@ minimumReleaseAgeExclude:
   - js-yaml@4.1.2 || 4.3.1
   - hono@4.12.25
   - undici@6.27.0 || 6.28.0 || 7.28.0 || 7.29.0
-  - icu-minify@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5
-  - next-intl-swc-plugin-extractor@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5
-  - next-intl@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5
-  - use-intl@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5
+  - icu-minify@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5 || 4.13.6
+  - next-intl-swc-plugin-extractor@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5 || 4.13.6
+  - next-intl@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5 || 4.13.6
+  - use-intl@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5 || 4.13.6
   - '@typescript/typescript-aix-ppc64@7.0.2'
   - '@typescript/typescript-darwin-arm64@7.0.2'
   - '@typescript/typescript-darwin-x64@7.0.2'
@@ -133,9 +133,9 @@ minimumReleaseAgeExclude:
   - valibot@1.4.2
   - brace-expansion@5.0.8 || 5.0.9
   - '@prisma/dev@0.24.17'
-  - framer-motion@12.43.0 || 13.0.0
+  - framer-motion@12.43.0 || 13.0.0 || 13.1.0
   - motion-dom@12.43.0 || 13.0.0
-  - motion@12.43.0 || 13.0.0
+  - motion@12.43.0 || 13.0.0 || 13.1.0
   - '@types/react-dom@19.2.4'
   - fast-uri@3.1.5 || 4.1.2
   - '@upstash/redis@1.38.1 || 1.38.2'
