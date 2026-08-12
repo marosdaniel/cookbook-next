@@ -22,7 +22,7 @@ minimumReleaseAgeExclude:
   - '@vitest/spy@4.1.7 || 4.1.8 || 4.1.10'
   - '@vitest/utils@4.1.7 || 4.1.8 || 4.1.10'
   - vitest@4.1.7 || 4.1.8 || 4.1.10
-  - '@apollo/client@4.2.0 || 4.2.1 || 4.2.4 || 4.2.6 || 4.2.7 || 4.2.8 || 4.2.9 || 4.2.10'
+  - '@apollo/client@4.2.0 || 4.2.1 || 4.2.4 || 4.2.6 || 4.2.7 || 4.2.8 || 4.2.9 || 4.2.10 || 4.2.11'
   - '@rolldown/binding-android-arm64@1.0.2'
   - '@rolldown/binding-darwin-arm64@1.0.2'
   - '@rolldown/binding-darwin-x64@1.0.2'
@@ -142,6 +142,7 @@ minimumReleaseAgeExclude:
   - '@graphql-codegen/client-preset@6.1.1'
   - motion-utils@13.0.0
   - nanoid@3.3.17
+  - graphql-scalars@1.26.0
 
 overrides:
   '@hono/node-server@<1.19.13': ^1.19.13
