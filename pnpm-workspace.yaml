@@ -108,12 +108,12 @@ minimumReleaseAgeExclude:
   - '@tabler/icons@3.45.0 || 3.46.0'
   - happy-dom@20.11.0 || 20.11.1 || 20.11.6
   - argon2@0.45.0 || 0.45.1
-  - '@prisma/adapter-neon@7.9.0 || 7.9.1'
+  - '@prisma/adapter-neon@7.9.0 || 7.9.1 || 7.10.0'
   - '@prisma/client-runtime-utils@7.9.0 || 7.9.1'
   - '@prisma/client@7.9.0 || 7.9.1'
-  - '@prisma/config@7.9.0 || 7.9.1'
-  - '@prisma/debug@7.9.0 || 7.9.1'
-  - '@prisma/driver-adapter-utils@7.9.0 || 7.9.1'
+  - '@prisma/config@7.9.0 || 7.9.1 || 7.10.0'
+  - '@prisma/debug@7.9.0 || 7.9.1 || 7.10.0'
+  - '@prisma/driver-adapter-utils@7.9.0 || 7.9.1 || 7.10.0'
   - '@prisma/engines@7.9.0 || 7.9.1'
   - '@prisma/fetch-engine@7.9.0 || 7.9.1'
   - '@prisma/get-platform@7.9.0 || 7.9.1'
