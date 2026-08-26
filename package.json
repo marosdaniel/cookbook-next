@@ -20,7 +20,7 @@
   "engines": {
     "node": "24.x"
   },
-  "packageManager": "pnpm@11.23.0",
+  "packageManager": "pnpm@11.24.0",
   "scripts": {
     "dev": "next dev --turbopack",
     "start": "next start",
@@ -58,7 +58,7 @@
     "@mantine/spotlight": "^9.5.2",
     "@neondatabase/serverless": "^1.1.0",
     "@prisma/adapter-neon": "^7.10.0",
-    "@prisma/client": "7.9.1",
+    "@prisma/client": "7.10.0",
     "@reduxjs/toolkit": "^2.12.0",
     "@tabler/icons-react": "^3.46.0",
     "@upstash/ratelimit": "^2.0.8",
@@ -72,7 +72,7 @@
     "graphql-scalars": "^2.0.0",
     "mantine-form-zod-resolver": "^1.3.0",
     "motion": "^13.1.1",
-    "next": "16.3.2",
+    "next": "16.3.3",
     "next-auth": "5.0.0-beta.32",
     "next-intl": "^4.13.7",
     "nextjs-toploader": "^3.9.17",
@@ -114,7 +114,7 @@
     "fast-uri": "^4.1.3",
     "find-my-way": "9.9.0",
     "happy-dom": "^20.11.6",
-    "prisma": "7.9.1",
+    "prisma": "7.10.0",
     "semantic-release": "^25.0.9",
     "sharp": "^0.35.3",
     "typescript": "6.0.3",
