@@ -173,9 +173,12 @@ minimumReleaseAgeExclude:
 
 overrides:
   '@hono/node-server@<1.19.13': ^1.19.13
-  '@prisma/dev>find-my-way': 9.7.0
-  find-my-way: 9.7.0
+  '@prisma/dev>find-my-way': ^9.7.0
+  find-my-way: ^9.7.0
+  fast-uri: ^4.1.3
   graphql: 17.0.2
+  next>sharp: ^0.35.3
   postcss@<8.5.10: ^8.5.10
+  sharp: ^0.35.4
   sharp@<0.35.0: ^0.35.0
   valibot@<=1.4.1: ^1.4.2
