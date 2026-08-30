@@ -1,3 +1,10 @@
+# [2.85.0](https://github.com/marosdaniel/cookbook-next/compare/v2.84.0...v2.85.0) (2026-08-30)
+
+
+### Features
+
+* implement recipe rating restriction and improve performance of list queries ([8f52bfb](https://github.com/marosdaniel/cookbook-next/commit/8f52bfb372b771ab4b16ca2c1f120278431916db))
+
 # [2.84.0](https://github.com/marosdaniel/cookbook-next/compare/v2.83.2...v2.84.0) (2026-08-30)
 
 
