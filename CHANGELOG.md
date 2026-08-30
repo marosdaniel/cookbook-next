@@ -1,3 +1,12 @@
+# [2.84.0](https://github.com/marosdaniel/cookbook-next/compare/v2.83.2...v2.84.0) (2026-08-30)
+
+
+### Features
+
+* add mock implementation for iframe component in tests ([5f2b5c6](https://github.com/marosdaniel/cookbook-next/commit/5f2b5c6f54f649de683b4b697686d0450ce45849))
+* add mock implementations for motion/react components in tests ([c42d50f](https://github.com/marosdaniel/cookbook-next/commit/c42d50ff1fe97fdbc1a54c8609deb33df7a77052))
+* add UX motion upgrade plan and validation unification documentation ([3b79d75](https://github.com/marosdaniel/cookbook-next/commit/3b79d7526a3a5a0fbf5a887205e616ab95ed6a5f))
+
 ## [2.83.2](https://github.com/marosdaniel/cookbook-next/compare/v2.83.1...v2.83.2) (2026-07-31)
 
 
