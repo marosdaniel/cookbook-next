@@ -1,10 +1,13 @@
 'use client';
 
 import { Container, Group, Text } from '@mantine/core';
+import {
+  IconArrowLeft,
+  IconBook,
+  IconToolsKitchen2,
+} from '@tabler/icons-react';
 import { motion, useReducedMotion } from 'motion/react';
 import { useTranslations } from 'next-intl';
-import { FiArrowLeft, FiBookOpen } from 'react-icons/fi';
-import { GiCookingPot } from 'react-icons/gi';
 import NavButton from '../buttons/NavButton';
 import StyledText from '../StyledText';
 import classes from './UnderConstruction.module.css';
@@ -64,7 +67,7 @@ const UnderConstruction = () => {
               }
         }
       >
-        <GiCookingPot
+        <IconToolsKitchen2
           aria-hidden="true"
           style={{ fill: 'url(#pot-gradient)' }}
         />
@@ -129,14 +132,14 @@ const UnderConstruction = () => {
           <NavButton
             label={translate('backButton')}
             href="/"
-            icon={<FiArrowLeft size={20} />}
+            icon={<IconArrowLeft size={20} />}
             dataTestId="underconstruction-back"
           />
 
           <NavButton
             label={translate('browseRecipes')}
             href="/recipes"
-            icon={<FiBookOpen size={20} />}
+            icon={<IconBook size={20} />}
             dataTestId="underconstruction-recipes"
           />
         </Group>

@@ -1,10 +1,10 @@
 'use client';
 
 import { ActionIcon, Menu, useMantineTheme } from '@mantine/core';
+import { IconCheck, IconWorld } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { type FC, useTransition } from 'react';
-import { FiCheck, FiGlobe } from 'react-icons/fi';
 import { LANGUAGES } from '@/i18n/languages';
 import { setStoredLocale } from '@/lib/locale/locale.client';
 
@@ -44,7 +44,7 @@ const LanguageSelector: FC = () => {
           aria-label={translate('languageSelector')}
           data-testid="language-selector-button"
         >
-          <FiGlobe size={20} />
+          <IconWorld size={20} />
         </ActionIcon>
       </Menu.Target>
 
@@ -59,7 +59,7 @@ const LanguageSelector: FC = () => {
             leftSection={<span style={{ fontSize: 18 }}>{lang.flag}</span>}
             rightSection={
               lang.code === locale ? (
-                <FiCheck size={16} color={theme.colors.pink[7]} />
+                <IconCheck size={16} color={theme.colors.pink[7]} />
               ) : null
             }
             onClick={() => handleLanguageChange(lang.code)}

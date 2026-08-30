@@ -20,9 +20,9 @@ vi.mock('next-intl', () => ({
   },
 }));
 
-// Mock react-icons
-vi.mock('react-icons/fi', () => ({
-  FiLogIn: () => <span data-testid="login-icon">LoginIcon</span>,
+// Mock Tabler icons
+vi.mock('@tabler/icons-react', () => ({
+  IconLogin: () => <span data-testid="login-icon">LoginIcon</span>,
 }));
 
 describe('AuthButton', () => {

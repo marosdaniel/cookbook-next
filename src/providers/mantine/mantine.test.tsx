@@ -1,9 +1,21 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { MantineProviderWrapper } from './mantine';
+import { darkTheme } from './darkTheme';
+import { lightTheme } from './lightTheme';
+import { MantineProviderWrapper, resolveMantineTheme } from './mantine';
 
 // Mock Mantine modules if necessary, but MantineProvider is usually okay in happy-dom if matchMedia is mocked.
 // The matchMedia mock is already in vitest.setup.mts
+
+describe('resolveMantineTheme', () => {
+  it('returns the dark theme for dark color schemes', () => {
+    expect(resolveMantineTheme('dark')).toBe(darkTheme);
+  });
+
+  it('returns the light theme for light color schemes', () => {
+    expect(resolveMantineTheme('light')).toBe(lightTheme);
+  });
+});
 
 describe('MantineProviderWrapper', () => {
   it('renders children correctly', () => {

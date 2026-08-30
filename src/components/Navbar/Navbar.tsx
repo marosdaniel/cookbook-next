@@ -1,13 +1,13 @@
 'use client';
 
 import { Box, Button, Loader, ScrollArea, Stack } from '@mantine/core';
+import { IconBook, IconLogin, IconLogout, IconPlus } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { usePathname } from 'next/navigation';
 import type { Session } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
-import { FiBook, FiLogIn, FiLogOut, FiPlusCircle } from 'react-icons/fi';
 import { apolloClient } from '@/lib/apollo/client';
 import {
   AUTH_ROUTES,
@@ -69,7 +69,7 @@ const Navbar: FC = () => {
       : []),
     {
       label: translate('recipes'),
-      icon: FiBook,
+      icon: IconBook,
       initiallyOpened: true,
       links: [
         {
@@ -82,7 +82,7 @@ const Navbar: FC = () => {
       ? [
           {
             label: translate('newRecipe'),
-            icon: FiPlusCircle,
+            icon: IconPlus,
             link: PROTECTED_ROUTES.RECIPES_CREATE,
           },
         ]
@@ -121,7 +121,7 @@ const Navbar: FC = () => {
             color="red"
             fullWidth
             leftSection={
-              isPending ? <Loader size="xs" /> : <FiLogOut size={20} />
+              isPending ? <Loader size="xs" /> : <IconLogout size={20} />
             }
             onClick={handleLogout}
             disabled={isPending}
@@ -144,7 +144,7 @@ const Navbar: FC = () => {
           label={authTranslate('login')}
           href={AUTH_ROUTES.LOGIN}
           size="md"
-          icon={<FiLogIn size={20} />}
+          icon={<IconLogin size={20} />}
         />
       </Box>
     );

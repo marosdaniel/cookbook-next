@@ -1,11 +1,11 @@
 'use client';
 
 import { ActionIcon, Button } from '@mantine/core';
+import { IconLogin } from '@tabler/icons-react';
 import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { type FC, useTransition } from 'react';
-import { FiLogIn } from 'react-icons/fi';
 import { AUTH_ROUTES } from '@/types/routes';
 import classes from './AuthButton.module.css';
 import type { AuthButtonProps } from './types';
@@ -52,7 +52,7 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
             hiddenFrom="sm"
             loading={isPending}
           >
-            <FiLogIn size={18} />
+            <IconLogin size={18} />
           </ActionIcon>
         </motion.div>
 
@@ -67,7 +67,7 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
             variant="gradient"
             gradient={{ from: 'pink', to: 'violet', deg: 45 }}
             size="sm"
-            leftSection={<FiLogIn size={16} />}
+            leftSection={<IconLogin size={16} />}
             onClick={handleClick}
             visibleFrom="sm"
             loading={isPending}
@@ -97,7 +97,7 @@ const AuthButton: FC<AuthButtonProps> = ({ variant = 'default' }) => {
         variant="gradient"
         gradient={{ from: 'pink', to: 'violet', deg: 45 }}
         size="sm"
-        leftSection={<FiLogIn size={16} />}
+        leftSection={<IconLogin size={16} />}
         onClick={handleClick}
         loading={isPending}
         className={classes.authButton}

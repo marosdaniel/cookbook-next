@@ -1,8 +1,6 @@
 import { Container, Stack, Text, Title } from '@mantine/core';
-
+import { IconChefHat, IconHome } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
-import { FiHome } from 'react-icons/fi';
-import { GiChefToque } from 'react-icons/gi';
 import NavButton from '../components/buttons/NavButton';
 import { PUBLIC_ROUTES } from '../types/routes';
 export const dynamic = 'force-dynamic';
@@ -13,7 +11,7 @@ const NotFound = () => {
   return (
     <Container size="sm" style={{ textAlign: 'center', paddingTop: '4rem' }}>
       <Stack align="center" gap="xl">
-        <GiChefToque
+        <IconChefHat
           size={120}
           style={{ opacity: 0.5 }}
           data-testid="icon-chef-hat"
@@ -39,7 +37,7 @@ const NotFound = () => {
           dataTestId="back-home"
           label={translate('backButton')}
           href={PUBLIC_ROUTES.HOME}
-          icon={<FiHome size={20} data-testid="icon-home" />}
+          icon={<IconHome size={20} data-testid="icon-home" />}
           linkProps={{ 'data-testid': 'back-home-link' }}
         />
       </Stack>

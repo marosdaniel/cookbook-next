@@ -1,11 +1,11 @@
 'use client';
 
 import { Box, Collapse, Group, rem, Text, UnstyledButton } from '@mantine/core';
+import { IconChevronRight } from '@tabler/icons-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { FiChevronRight } from 'react-icons/fi';
 import classes from './NavbarLinksGroup.module.css';
 import type { NavbarLinksGroupProps } from './types';
 
@@ -52,7 +52,7 @@ const NavbarLinksGroup = ({
           }}
           aria-hidden="true"
         >
-          <FiChevronRight style={{ width: rem(16), height: rem(16) }} />
+          <IconChevronRight style={{ width: rem(16), height: rem(16) }} />
         </motion.span>
       )}
     </Group>

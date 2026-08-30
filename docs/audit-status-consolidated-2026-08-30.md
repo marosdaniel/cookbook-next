@@ -60,7 +60,7 @@
 | A8 | 07-24 P1-3 | GraphQL `no-store` + `Vary` | ✅ | Minden válaszon `Cache-Control: no-store`, `Vary: Cookie, Authorization` | |
 | A9 | 07-24 P2-8 | GraphQL domain-modulokra bontás | 🟡 | Resolvers domain-mappákban (recipe/user/metadata), operationsConfig + fieldPolicies + authorization külön modul | A jelenlegi méretnél elegendő; admin bevezetésekor bővítendő |
 | A10 | 07-04 #20 | Apollo Client cache (typePolicies) | ✅ | keyFields, merge policy-k, errorPolicy `'all'` + ErrorLink + lokalizált notification | 07-06-ban zárult |
-| A11 | 07-06 #17 (4.3) | **darkTheme bekötése** | ❌ | A [mantine.tsx](../src/providers/mantine/mantine.tsx) ma is **csak** a `lightTheme`-et adja át; `SchemeAwareTheme` nem készült el — a darkTheme komponens-overridejai dead code-ok | **Releváns, S méretű** — az új backlogban szerepel |
+| A11 | 07-06 #17 (4.3) | **darkTheme bekötése** | 🟡 | A [darkTheme.ts](../src/providers/mantine/darkTheme.ts) és a hozzá tartozó teszt elkészült, de a [mantine.tsx](../src/providers/mantine/mantine.tsx) továbbra is **csak** a `lightTheme`-et adja át; a dark mode wiring ezért még nincs élesben bekötve | **Részben megvalósult**: a sötét paletta és override-ok kész, a production integráció hiányzik |
 | A12 | 07-06 #42, 10. szekció | Microfrontend / monorepo | 🚫 | Elemzés alapján elvetve (0/5 feltétel) | Helyes döntés; admin Multi-Zones csak ha kinövi |
 | A13 | 07-24 P2-5 | Neon branch preview DB-k | ❌ | CI-ban nincs branch-per-PR | Releváns (Neon free tier tudja), M |
 
@@ -69,8 +69,8 @@
 | # | Eredeti forrás | Tétel | Státusz | Tényleges megoldás | Megjegyzés |
 |---|---|---|---|---|---|
 | D1 | 07-24 P1-7 | GraphQL codegen SDL-ből | 🟡 | `codegen.ts` (client preset) + `codegen:check` a CI-ban ✅; **de** a generált típusokat **egyetlen app-fájl sem importálja** — a [queries.ts](../src/lib/graphql/queries.ts) kézzel írt interfészekkel + `TypedDocumentNode` casttal dolgozik | A „migrate remaining handwritten interfaces incrementally” rész nem történt meg → [type-unification-2026-08-30.md](type-unification-2026-08-30.md) |
-| D2 | 07-04 #29, 07-24 P1-16 | `noImplicitAny: true` | ❌ | [tsconfig.json](../tsconfig.json): explicit `false` | Releváns, M |
-| D3 | 07-04 #19, #40, 07-06 #21 | `react-icons` + `@mantine/nprogress` trim | ❌ | Mindkettő (és a `nextjs-toploader` is) a dependencies-ben; react-icons még importálva | Releváns, S — háromszor javasolt, sosem készült el |
+| D2 | 07-04 #29, 07-24 P1-16 | `noImplicitAny: true` | 🚫 | [tsconfig.json](../tsconfig.json): explicit `false`; a projekt a teljes app-re kiterjesztett `noImplicitAny`-kötelezés helyett a kritikus GraphQL/auth/route területekre fókuszál | Tudatosan elvetett: a teljes kódbázisra szigorú `any`-tiltás jelenlegi roadmapban nem arányos a projekt méretéhez és a codegen/GraphQL worklowhoz; a biztonságos, kritikus területeken a pontos típusok maradtak meg |
+| D3 | 07-04 #19, #40, 07-06 #21 | `react-icons` + `@mantine/nprogress` trim | 🟡 | A `@mantine/nprogress` helyett a projekt már a [mantine.tsx](../src/providers/mantine/mantine.tsx)-ben használt `nextjs-toploader`-t használja; a `react-icons` azonban továbbra is aktív használatban van, ezért a teljes deps-trim nem fejeződött be | Részben megoldott: a top-loader csere elkészült, a teljes ikon-dependency cleanup még nyitott |
 | D4 | 07-24 P2-1 | GraphQL route integrációs tesztek | ✅ | `route.test.ts` + `route.branch.test.ts`: request-validáció, headerek, hibaválaszok, konfig-kontraktok | |
 | D5 | 07-24 P2-4 | CI gate-ek | 🟡 | Van: Gitleaks, Biome, codegen:check, typecheck, unit+integration teszt. **Nincs**: `pnpm audit`, `prisma validate`, migration-status check | Hiányzó része S méretű |
 | D6 | 07-06 #39 (F8) | a11y audit (axe a Playwrightban) | ❌ | Nincs axe-core | Releváns, ingyenes, M |
@@ -116,9 +116,9 @@
 | Státusz | Darab | Arány |
 |---|---|---|
 | ✅ Lezárt | 35 | ~58% |
-| 🟡 Részleges | 10 | ~17% |
-| ❌ Nyitott | 11 | ~18% |
-| 🚫 Elvetett (tudatos döntés) | 4 | ~7% |
+| 🟡 Részleges | 12 | ~20% |
+| ❌ Nyitott | 8 | ~13% |
+| 🚫 Elvetett (tudatos döntés) | 5 | ~8% |
 
 A 2026. júliusi auditok óta a projekt **a P0 biztonsági réteget teljesen lezárta** (GraphQL authz, rate limiting, CSP nonce, sessionVersion, request-size limit, secret-scan), és a P1 architektúra-tételek nagy részét is (cursor pagináció, trigram keresés, cache-invalidáció, persisted query allowlist, observability-alapok, Metadata DB-modell). **2026-08-30 folyamán további 5 tétel zárult le**: a saját recept értékelésének tiltása (S13), a session- és locale-cookie biztonsági attribútumainak explicit, tesztelt kontraktja (S14), a receptek dinamikus OG-image-e (SEO7), az RSS-feed (SEO8), és a lista-/detail-projekciók szétválasztása (A5).
 
@@ -128,6 +128,6 @@ A 2026. júliusi auditok óta a projekt **a P0 biztonsági réteget teljesen lez
 2. **Nincs hibamonitoring** (D7) — a maszkolt prod-hibák láthatatlanok.
 3. **Mock „recently viewed” a főoldalon** (F1) — éles UI-ban placeholder adat.
 4. **Codegen-típusok nem használtak** (D1) + kézi típusduplikáció — lásd típusegységesítési terv.
-5. **darkTheme dead code** (A11) — kétszer megtervezett, sosem bekötött.
+5. **darkTheme részben megvalósult, de még nincs bekötve** (A11) — a sötét paletta elkészült, a production integráció hiányzik.
 6. **Admin UI hiánya** (F13) — az összes előfeltétel (RBAC, route family, DB-modell) kész, csak a felület hiányzik.
 

@@ -14,14 +14,11 @@ vi.mock('next/link', () => ({
   ),
 }));
 
-vi.mock('react-icons/gi', () => ({
-  GiChefToque: ({ size, style }: { size: number; style: CSSProperties }) => (
+vi.mock('@tabler/icons-react', () => ({
+  IconChefHat: ({ size, style }: { size: number; style: CSSProperties }) => (
     <svg data-testid="icon-chef-hat" width={size} height={size} style={style} />
   ),
-}));
-
-vi.mock('react-icons/fi', () => ({
-  FiHome: ({ size }: { size: number }) => (
+  IconHome: ({ size }: { size: number }) => (
     <svg data-testid="icon-home" width={size} height={size} />
   ),
 }));

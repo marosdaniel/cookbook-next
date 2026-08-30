@@ -1,10 +1,10 @@
 'use client';
 
 import { ActionIcon, useMantineColorScheme } from '@mantine/core';
+import { IconMoon, IconSun } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
 import { type FC, useEffect, useState } from 'react';
-import { FiMoon, FiSun } from 'react-icons/fi';
 import { useAppDispatch } from '@/lib/store';
 import { setDarkMode } from '@/lib/store/global';
 import { useIsDarkMode } from '@/lib/store/global/selectors';
@@ -83,9 +83,9 @@ const ThemeSwitcher: FC = () => {
           }}
         >
           {isDarkMode ? (
-            <FiSun size={ICON_SIZE} />
+            <IconSun size={ICON_SIZE} />
           ) : (
-            <FiMoon size={ICON_SIZE} />
+            <IconMoon size={ICON_SIZE} />
           )}
         </motion.span>
       </AnimatePresence>

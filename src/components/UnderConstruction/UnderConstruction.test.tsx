@@ -27,22 +27,19 @@ vi.mock('next/link', () => ({
   ),
 }));
 
-// Mock react-icons
-vi.mock('react-icons/gi', () => ({
-  GiCookingPot: ({ style }: { style: CSSProperties }) => (
+// Mock Tabler icons
+vi.mock('@tabler/icons-react', () => ({
+  IconToolsKitchen2: ({ style }: { style: CSSProperties }) => (
     <svg data-testid="cooking-pot-icon" style={style}>
       <title>Cooking Pot Icon</title>
     </svg>
   ),
-}));
-
-vi.mock('react-icons/fi', () => ({
-  FiArrowLeft: ({ size }: { size: number }) => (
+  IconArrowLeft: ({ size }: { size: number }) => (
     <svg data-testid="arrow-left-icon" width={size} height={size}>
       <title>Arrow Left Icon</title>
     </svg>
   ),
-  FiBookOpen: ({ size }: { size: number }) => (
+  IconBook: ({ size }: { size: number }) => (
     <svg data-testid="book-open-icon" width={size} height={size}>
       <title>Book Open Icon</title>
     </svg>

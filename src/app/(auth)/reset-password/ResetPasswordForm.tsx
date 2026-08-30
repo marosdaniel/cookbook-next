@@ -12,13 +12,12 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { IconArrowLeft, IconInfoCircle } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'motion/react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 import { useState } from 'react';
-import { CiCircleInfo } from 'react-icons/ci';
-import { IoArrowBackOutline } from 'react-icons/io5';
 import { RESET_PASSWORD } from '@/lib/graphql/mutations';
 import {
   isFormSubmitDisabled,
@@ -147,7 +146,7 @@ export const ResetPasswordForm: FC = () => {
                         initial="hidden"
                         animate="visible"
                       >
-                        <CiCircleInfo size={30} />
+                        <IconInfoCircle size={30} />
                       </motion.div>
                     }
                   >
@@ -224,7 +223,7 @@ export const ResetPasswordForm: FC = () => {
               size="sm"
               href={AUTH_ROUTES.LOGIN}
               variant="subtle"
-              leftSection={<IoArrowBackOutline />}
+              leftSection={<IconArrowLeft />}
               data-testid="reset-password-back-link"
             >
               {translate('auth.backToLogin')}
