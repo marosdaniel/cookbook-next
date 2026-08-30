@@ -1,8 +1,21 @@
 import '@testing-library/jest-dom';
-import type { ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@/utils/test-utils';
 import { ResetPasswordForm } from './ResetPasswordForm';
+
+vi.mock('motion/react', () => ({
+  AnimatePresence: ({ children }: { children: ReactNode }) => <>{children}</>,
+  motion: {
+    create: (Component: React.ComponentType<any>) => Component,
+    div: ({ children, ...props }: ComponentProps<'div'>) => (
+      <div {...props}>{children}</div>
+    ),
+    span: ({ children, ...props }: ComponentProps<'span'>) => (
+      <span {...props}>{children}</span>
+    ),
+  },
+}));
 
 const {
   mockResetPassword,

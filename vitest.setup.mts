@@ -1,9 +1,17 @@
 import '@testing-library/jest-dom';
 
 class MockResizeObserver {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+  observe() {
+    return undefined;
+  }
+
+  unobserve() {
+    return undefined;
+  }
+
+  disconnect() {
+    return undefined;
+  }
 }
 
 Object.defineProperty(window, 'matchMedia', {
@@ -12,10 +20,10 @@ Object.defineProperty(window, 'matchMedia', {
     matches: false,
     media: query,
     onchange: null,
-    addListener: () => {}, // deprecated
-    removeListener: () => {}, // deprecated
-    addEventListener: () => {},
-    removeEventListener: () => {},
+    addListener: () => undefined, // deprecated
+    removeListener: () => undefined, // deprecated
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
     dispatchEvent: () => false,
   }),
 });

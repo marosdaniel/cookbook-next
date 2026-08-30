@@ -1,9 +1,21 @@
 import '@testing-library/jest-dom';
 import { act } from '@testing-library/react';
-import type { ReactNode } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@/utils/test-utils';
 import { SetNewPasswordForm } from './SetNewPasswordForm';
+
+vi.mock('motion/react', () => ({
+  motion: {
+    create: (Component: React.ComponentType<any>) => Component,
+    div: ({ children, ...props }: ComponentProps<'div'>) => (
+      <div {...props}>{children}</div>
+    ),
+    span: ({ children, ...props }: ComponentProps<'span'>) => (
+      <span {...props}>{children}</span>
+    ),
+  },
+}));
 
 const {
   mockSetNewPassword,
