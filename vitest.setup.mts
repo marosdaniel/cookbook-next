@@ -1,4 +1,11 @@
 import '@testing-library/jest-dom';
+import {
+  type ComponentProps,
+  createElement,
+  Fragment,
+  type ReactNode,
+} from 'react';
+import { vi } from 'vitest';
 
 class MockResizeObserver {
   observe() {
@@ -43,11 +50,49 @@ Object.defineProperty(globalThis, 'ResizeObserver', {
 Object.defineProperty(window.HTMLElement.prototype, 'scrollIntoView', {
   writable: true,
   configurable: true,
-  value: () => {},
+  value: () => undefined,
 });
 
-import type { ReactNode } from 'react';
-import { vi } from 'vitest';
+vi.mock('motion/react', () => ({
+  AnimatePresence: ({ children }: { children?: ReactNode }) =>
+    createElement(Fragment, null, children),
+  LayoutGroup: ({ children }: { children?: ReactNode }) =>
+    createElement(Fragment, null, children),
+  MotionConfig: ({ children }: { children?: ReactNode }) =>
+    createElement(Fragment, null, children),
+  useReducedMotion: () => false,
+  useScroll: () => ({
+    scrollYProgress: {
+      get: () => 0,
+      onChange: () => undefined,
+    },
+  }),
+  useInView: () => true,
+  useAnimationControls: () => ({
+    start: () => undefined,
+    stop: () => undefined,
+    set: () => undefined,
+  }),
+  motion: {
+    create: (Component: unknown) => Component,
+    div: ({ children, ...props }: ComponentProps<'div'>) =>
+      createElement('div', props, children),
+    span: ({ children, ...props }: ComponentProps<'span'>) =>
+      createElement('span', props, children),
+    button: ({ children, type, ...props }: ComponentProps<'button'>) =>
+      createElement('button', { ...props, type: type ?? 'button' }, children),
+    p: ({ children, ...props }: ComponentProps<'p'>) =>
+      createElement('p', props, children),
+    section: ({ children, ...props }: ComponentProps<'section'>) =>
+      createElement('section', props, children),
+    main: ({ children, ...props }: ComponentProps<'main'>) =>
+      createElement('main', props, children),
+    article: ({ children, ...props }: ComponentProps<'article'>) =>
+      createElement('article', props, children),
+    h1: ({ children, ...props }: ComponentProps<'h1'>) =>
+      createElement('h1', props, children),
+  },
+}));
 
 // Provide a lightweight mock for next-intl so tests can render components
 // that use `useTranslations` without loading locale files.
