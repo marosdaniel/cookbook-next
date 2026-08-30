@@ -91,6 +91,17 @@ vi.mock('motion/react', () => ({
       createElement('article', props, children),
     h1: ({ children, ...props }: ComponentProps<'h1'>) =>
       createElement('h1', props, children),
+    iframe: ({ children, src, title, ...props }: ComponentProps<'iframe'>) =>
+      createElement(
+        'div',
+        {
+          ...props,
+          'data-mock-iframe': 'true',
+          'data-src': src,
+          title,
+        },
+        children,
+      ),
   },
 }));
 
