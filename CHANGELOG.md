@@ -1,3 +1,10 @@
+# [2.86.0](https://github.com/marosdaniel/cookbook-next/compare/v2.85.0...v2.86.0) (2026-08-30)
+
+
+### Features
+
+* replace react-icons with Tabler icons across components and tests ([8e55a38](https://github.com/marosdaniel/cookbook-next/commit/8e55a38ed939f14e59a16ec87b3cb63d82159fd7))
+
 # [2.85.0](https://github.com/marosdaniel/cookbook-next/compare/v2.84.0...v2.85.0) (2026-08-30)
 
 
