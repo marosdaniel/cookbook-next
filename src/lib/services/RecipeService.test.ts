@@ -130,6 +130,51 @@ describe('RecipeService cache resilience', () => {
       }),
     ).rejects.toThrow('Rating must be between 1 and 5');
   });
+
+  it('rejects rating your own recipe', async () => {
+    const { prisma } = await import('@/lib/prisma/prisma');
+    vi.mocked(prisma.recipe.findUnique).mockResolvedValue({
+      id: 'recipe-1',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      title: 'Test recipe',
+      description: null,
+      category: null,
+      labels: null,
+      imgSrc: null,
+      cookingTime: 30,
+      difficultyLevel: null,
+      servings: 2,
+      youtubeLink: null,
+      prepTimeMinutes: null,
+      cookTimeMinutes: null,
+      restTimeMinutes: null,
+      totalTimeMinutes: null,
+      servingUnit: null,
+      cuisine: null,
+      dietaryFlags: null,
+      allergens: null,
+      equipment: null,
+      costLevel: null,
+      tips: null,
+      substitutions: null,
+      slug: null,
+      seoTitle: null,
+      seoDescription: null,
+      socialImage: null,
+      createdBy: 'user-1',
+    } as Awaited<ReturnType<typeof prisma.recipe.findUnique>>);
+
+    await expect(
+      RecipeService.rateRecipe('user-1', {
+        recipeId: 'recipe-1',
+        ratingValue: 5,
+      }),
+    ).rejects.toThrow('You cannot rate your own recipe:FORBIDDEN');
+
+    const { rating } = prisma;
+    expect(rating.upsert).not.toHaveBeenCalled();
+  });
 });
 
 describe('getRecipeBySlugOrId', () => {

@@ -28,8 +28,8 @@
 | S10 | 07-24 P0-5, C-5 | Revokálható session (`sessionVersion`) | ✅ / 🟡 | `User.sessionVersion` + JWT-check + increment jelszóváltásnál — migráció: `20260724000000_add_session_version` | A minimál-megoldás kész; eszközönkénti session-lista (C-5 teljes scope) továbbra sincs —**maradó P2** |
 | S11 | 07-24 P0-6 | `rememberMe` félrevezető viselkedés kivezetése | ✅ | Egységes 14 napos JWT session, nincs rememberMe control — [auth.config.ts](../src/lib/auth/auth.config.ts) | |
 | S12 | 07-04 #9, 07-06 #8, 07-24 P1-15 | **next-auth beta → stabil** | ❌ | `next-auth: 5.0.0-beta.32` — továbbra is beta production-ben | **Még mindig releváns, az egyik legrégebb óta nyitott kockázat** |
-| S13 | 07-06 #7 | **Saját recept értékelésének szerveroldali tiltása** | ❌ | `RecipeService.rateRecipe` ([RecipeService.ts](../src/lib/services/RecipeService.ts#L479)) nem ellenőrzi a `createdBy`-t — bárki a saját receptjét is értékelheti | **Releváns, S méretű, az új backlogban P0** |
-| S14 | 07-24 C-3 | Cookie security attribútumok integrációs tesztje | ❌ | Nincs Playwright/integrációs check a `HttpOnly`/`Secure`/`SameSite`-ra | Releváns, S/M |
+| S13 | 07-06 #7 | **Saját recept értékelésének szerveroldali tiltása** | ✅ **(2026-08-30 lezárva)** | `RecipeService.rateRecipe` most `FORBIDDEN`-t dob, ha `recipe.createdBy === userId`; a kliens `RecipeRating` a saját recepten `readOnly`-ra vált ([RecipeService.ts](../src/lib/services/RecipeService.ts), [RecipeDetailClient.tsx](../src/app/recipes/[id]/RecipeDetailClient.tsx)) | Unit teszt: `RecipeService.test.ts` „rejects rating your own recipe” |
+| S14 | 07-24 C-3 | Cookie security attribútumok integrációs tesztje | ✅ **(2026-08-30 lezárva)** | A session-cookie kontraktja explicitté vált (`getSessionCookieConfig` a [auth.config.ts](../src/lib/auth/auth.config.ts)-ben: HttpOnly, SameSite=Lax, path `/`, `Secure` + `__Secure-` prefix csak https-en) + a locale-cookie is kap `Secure`-t https-en ([locale.client.ts](../src/lib/locale/locale.client.ts)) — mindkettő kontraktteszttel lefedve, nem élő Playwright-integrációval | Kontraktteszt Playwright helyett (nincs élő szerver/DB ehhez a workspace-hez) — élő cookie-header ellenőrzés Playwright-tal továbbra is nyitott, kisebb kiegészítésként hagyható |
 | S15 | 07-24 C-4 | Consent-modell (essential vs. analytics) | ❌ | Nincs consent state; analytics jelenleg csak Vercel Speed Insights | Analytics bevezetése ELŐTT kötelező — új backlogban szerepel |
 | S16 | 07-04 #17, 07-06 #24 | Social login | ❌ | Csak Credentials provider — [auth.ts](../src/lib/auth/auth.ts) | Releváns marad (Google OAuth ingyenes) |
 
@@ -43,8 +43,8 @@
 | SEO4 | 07-06 F, 5.2(e) | Slug-alapú URL-ek + id→slug redirect | ✅ | `getRecipeBySlugOrId` + redirect; kártya/kereső linkek slug-preferáltak | |
 | SEO5 | 07-04 #22, 07-06 #11, 07-24 P1-2 | ISR/SSG vs. explicit cache policy | 🚫→✅ **eltérő megoldás** | Az ISR-javaslat helyett **explicit route-family cache policy** született: [cache-policy.md](cache-policy.md), cookie-alapú HTML dinamikus marad, sitemap óránként revalidál | Tudatos döntés: a cookie-alapú locale mellett a publikus HTML-cache félrevezető lenne. Egyenértékű, dokumentált |
 | SEO6 | 07-24 P1-1, C-2, P2-14 | URL-locale (`/en-gb/...`) | 🚫 | **Elvetett termékdöntés** — cookie-alapú locale marad, canonical locale-semleges | Lezárva; recept-tartalom fordítás (P2-14) is emiatt parkolva |
-| SEO7 | 07-06 #33 (N7), 07-24 P2-11 | Dinamikus OG-image (`next/og`) | ❌ | Nincs `opengraph-image.tsx` | Releváns, olcsó (S/M), ingyenes |
-| SEO8 | 07-06 #41 (N15), 07-24 P2-11 | RSS/Atom feed | ❌ | Nincs `feed.xml` route | Releváns, S |
+| SEO7 | 07-06 #33 (N7), 07-24 P2-11 | Dinamikus OG-image (`next/og`) | ✅ **(2026-08-30 lezárva)** | [src/app/recipes/[id]/opengraph-image.tsx](../src/app/recipes/%5Bid%5D/opengraph-image.tsx): `ImageResponse` címmel, kategóriával, nehézségi szinttel és főzési idővel, brand-színekkel; hiányzó receptnél generikus branded kártya fallback | Unit tesztelve (`opengraph-image.test.tsx`) |
+| SEO8 | 07-06 #41 (N15), 07-24 P2-11 | RSS/Atom feed | ✅ **(2026-08-30 lezárva)** | [src/app/feed.xml/route.ts](../src/app/feed.xml/route.ts): RSS 2.0, legutóbbi 20 recept, XML-escape, `s-maxage=3600`; a root layout `alternates.types['application/rss+xml']` hivatkozza | Unit tesztelve (`route.test.ts`) |
 
 ## 3. Architektúra, adat, teljesítmény
 
@@ -54,7 +54,7 @@
 | A2 | 07-04 #14, 07-06 #12, 07-24 P1-10 | **Full-text keresés** | ✅ **eltérő megoldás** | A javasolt `tsvector` helyett **`pg_trgm` trigram GIN indexek** (title, description, tips, substitutions, **ingredient name**) — migráció: `20260724000100_add_recipe_trigram_search` | Egyenértékű/jobb ehhez a méretez­­hez: typo-toleráns, nyelvfüggetlen (magyar toldalékokkal a tsvector English stemmer rosszabb lenne) |
 | A3 | 07-24 P1-11 | Cache-kulcs centralizálás + invalidáció | ✅ | [cacheKeys.ts](../src/lib/cache/cacheKeys.ts) + Redis namespace-verzió, mutációk bump-olják | |
 | A4 | 07-24 P1-13, 07-06 3.3 | **Metadata: statikus tömb → DB** | ✅ **eltérő megoldás** | `Metadata` modell (`MetadataType` enum, `isActive`, `sortOrder`) — migráció `20260726000000_add_metadata_model`; **seed-alapú feltöltés** a [prisma/seed.ts](../prisma/seed.ts)-ből (`METADATA_DEFINITIONS`); a recept JSON-snapshot tárolás megmaradt | A 07-06 terv `MetadataEntry` + admin CRUD-ot javasolt; a megvalósítás a modell + seed. Az admin CRUD UI még hiányzik → az [admin-panel-plan-2026-08-30.md](admin-panel-plan-2026-08-30.md) erre épít |
-| A5 | 07-24 P1-12 | Lista- vs. detail-projekciók szétválasztása | ❌ | A `listRecipes` továbbra is `include: { ingredients: true, preparationSteps: true }`-t használ ([RecipeService.ts](../src/lib/services/RecipeService.ts#L227)) | **Releváns**: a kártyákhoz felesleges a teljes hozzávaló/lépés payload |
+| A5 | 07-24 P1-12 | Lista- vs. detail-projekciók szétválasztása | ✅ **(2026-08-30 lezárva)** | `getRecipes`/`getRecipesByUserId` mostantól `select: RECIPE_LIST_SELECT`-tel (minden skalár mező, `ingredients`/`preparationSteps` nélkül) fut `include` helyett — [RecipeService.ts](../src/lib/services/RecipeService.ts) | A kliens list-query-k (`GET_LATEST_RECIPES`, `GET_RECIPES_BY_USER_ID`) amúgy sem kértek ingredients/steps mezőt; a detail lekérdezések (`getRecipeById`, `getRecipeBySlugOrId`) változatlanul `include`-osak |
 | A6 | 07-24 P1-14 | Prisma/Redis timeout observability | 🟡 | `createPrismaTimeoutProxy(prisma, 10000)` a GraphQL route-on + unit tesztek; **de** nincs metrika/per-op budget, cache-miss vs. backend-hiba nem megkülönböztetett | Részben releváns; alacsony prioritás monitoring nélkül |
 | A7 | 07-24 P1-8 | Strukturált GraphQL metrikák + request ID | ✅ | `X-Request-Id` propagálás, structured JSON log (op, duration, status, userClass) | |
 | A8 | 07-24 P1-3 | GraphQL `no-store` + `Vary` | ✅ | Minden válaszon `Cache-Control: no-store`, `Vary: Cookie, Authorization` | |
@@ -111,23 +111,23 @@
 
 ## 7. Vezetői összefoglaló
 
-**Számszerűen** (a három forrás 60 egyedi, összevont tételéből):
+**Számszerűen** (a három forrás 60 egyedi, összevont tételéből, 2026-08-30 esti állapot):
 
 | Státusz | Darab | Arány |
 |---|---|---|
-| ✅ Lezárt | 30 | 50% |
+| ✅ Lezárt | 35 | ~58% |
 | 🟡 Részleges | 10 | ~17% |
-| ❌ Nyitott | 16 | ~27% |
+| ❌ Nyitott | 11 | ~18% |
 | 🚫 Elvetett (tudatos döntés) | 4 | ~7% |
 
-A 2026. júliusi auditok óta a projekt **a P0 biztonsági réteget teljesen lezárta** (GraphQL authz, rate limiting, CSP nonce, sessionVersion, request-size limit, secret-scan), és a P1 architektúra-tételek nagy részét is (cursor pagináció, trigram keresés, cache-invalidáció, persisted query allowlist, observability-alapok, Metadata DB-modell).
+A 2026. júliusi auditok óta a projekt **a P0 biztonsági réteget teljesen lezárta** (GraphQL authz, rate limiting, CSP nonce, sessionVersion, request-size limit, secret-scan), és a P1 architektúra-tételek nagy részét is (cursor pagináció, trigram keresés, cache-invalidáció, persisted query allowlist, observability-alapok, Metadata DB-modell). **2026-08-30 folyamán további 5 tétel zárult le**: a saját recept értékelésének tiltása (S13), a session- és locale-cookie biztonsági attribútumainak explicit, tesztelt kontraktja (S14), a receptek dinamikus OG-image-e (SEO7), az RSS-feed (SEO8), és a lista-/detail-projekciók szétválasztása (A5).
 
 **A legkritikusabb nyitott pontok** (részletesen az új backlogban):
 
-1. **Saját recept értékelhető** (S13) — az egyetlen nyitott, tisztán biztonsági/integritási tétel; S méretű.
-2. **next-auth beta production-ben** (S12) — 3 audit óta nyitott.
-3. **Nincs hibamonitoring** (D7) — a maszkolt prod-hibák láthatatlanok.
-4. **Mock „recently viewed” a főoldalon** (F1) — éles UI-ban placeholder adat.
-5. **Codegen-típusok nem használtak** (D1) + kézi típusduplikáció — lásd típusegységesítési terv.
-6. **darkTheme dead code** (A11) — kétszer megtervezett, sosem bekötött.
-7. **Admin UI hiánya** (F13) — az összes előfeltétel (RBAC, route family, DB-modell) kész, csak a felület hiányzik.
+1. **next-auth beta production-ben** (S12) — 3 audit óta nyitott.
+2. **Nincs hibamonitoring** (D7) — a maszkolt prod-hibák láthatatlanok.
+3. **Mock „recently viewed” a főoldalon** (F1) — éles UI-ban placeholder adat.
+4. **Codegen-típusok nem használtak** (D1) + kézi típusduplikáció — lásd típusegységesítési terv.
+5. **darkTheme dead code** (A11) — kétszer megtervezett, sosem bekötött.
+6. **Admin UI hiánya** (F13) — az összes előfeltétel (RBAC, route family, DB-modell) kész, csak a felület hiányzik.
+

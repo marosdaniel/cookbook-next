@@ -44,8 +44,11 @@ export const setStoredLocale = (locale: string): void => {
     globalThis.localStorage.setItem(LOCALE_STORAGE_KEY, normalizedLocale);
 
     const maxAge = 60 * 60 * 24 * 365;
+    // Secure only when served over https - keeps http://localhost dev working.
+    const secureAttribute =
+      globalThis.location?.protocol === 'https:' ? '; secure' : '';
     // biome-ignore lint/suspicious/noDocumentCookie: We need to set the cookie manually for i18n
-    document.cookie = `${LOCALE_STORAGE_KEY}=${normalizedLocale}; path=/; max-age=${maxAge}; samesite=lax`;
+    document.cookie = `${LOCALE_STORAGE_KEY}=${normalizedLocale}; path=/; max-age=${maxAge}; samesite=lax${secureAttribute}`;
   } catch (error) {
     console.error('[setStoredLocale] Error setting locale:', error);
   }

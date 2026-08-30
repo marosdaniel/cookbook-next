@@ -73,6 +73,9 @@ export async function generateMetadata(): Promise<Metadata> {
       title: appTitle,
       description: appDescription,
     },
+    alternates: {
+      types: { 'application/rss+xml': '/feed.xml' },
+    },
     robots: {
       index: true,
       follow: true,

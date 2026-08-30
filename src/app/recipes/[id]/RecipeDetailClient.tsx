@@ -91,6 +91,7 @@ const RecipeDetailClient = ({
                     userRating={recipe.userRating ?? undefined}
                     averageRating={recipe.averageRating}
                     ratingsCount={recipe.ratingsCount}
+                    readOnly={isOwner}
                   />
                 </Paper>
               </Stack>

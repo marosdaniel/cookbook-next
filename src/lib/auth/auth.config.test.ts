@@ -1,7 +1,7 @@
 import type { Session } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
-import { describe, expect, it } from 'vitest';
-import { authConfig } from './auth.config';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { authConfig, getSessionCookieConfig } from './auth.config';
 
 const redirectCallback = authConfig.callbacks?.redirect;
 
@@ -16,6 +16,43 @@ describe('authConfig', () => {
   it('should have the correct pages configuration', () => {
     expect(authConfig.pages?.signIn).toBeDefined();
     expect(authConfig.pages?.error).toBeDefined();
+  });
+
+  describe('session cookie security contract', () => {
+    afterEach(() => {
+      vi.unstubAllEnvs();
+    });
+
+    it('is always HttpOnly, SameSite=Lax and scoped to the root path', () => {
+      const config = getSessionCookieConfig();
+      expect(config.options.httpOnly).toBe(true);
+      expect(config.options.sameSite).toBe('lax');
+      expect(config.options.path).toBe('/');
+    });
+
+    it('uses a non-secure, unprefixed cookie name over http (e.g. local dev)', () => {
+      vi.stubEnv('NEXTAUTH_URL', 'http://localhost:3000');
+
+      const config = getSessionCookieConfig();
+
+      expect(config.name).toBe('authjs.session-token');
+      expect(config.options.secure).toBe(false);
+    });
+
+    it('uses a Secure, __Secure-prefixed cookie name over https (production)', () => {
+      vi.stubEnv('NEXTAUTH_URL', 'https://cookbook-next.vercel.app');
+
+      const config = getSessionCookieConfig();
+
+      expect(config.name).toBe('__Secure-authjs.session-token');
+      expect(config.options.secure).toBe(true);
+    });
+
+    it('applies the same contract to the wired authConfig.cookies.sessionToken', () => {
+      expect(authConfig.cookies?.sessionToken).toEqual(
+        getSessionCookieConfig(),
+      );
+    });
   });
 
   describe('callbacks', () => {

@@ -106,6 +106,26 @@ describe('locale.client', () => {
       expect(document.cookie).toContain('max-age=');
     });
 
+    it('should set cookie with SameSite=Lax', () => {
+      setStoredLocale('de');
+      expect(document.cookie).toContain('samesite=lax');
+    });
+
+    it('should not set the Secure attribute over http (e.g. local dev)', () => {
+      setStoredLocale('de');
+      expect(document.cookie).not.toContain('secure');
+    });
+
+    it('should set the Secure attribute when served over https', () => {
+      vi.spyOn(globalThis, 'location', 'get').mockReturnValue({
+        protocol: 'https:',
+      } as Location);
+
+      setStoredLocale('de');
+
+      expect(document.cookie).toContain('; secure');
+    });
+
     it('should do nothing when window is undefined (SSR)', () => {
       const originalWindow = globalThis.window;
       // @ts-expect-error - Testing SSR behavior

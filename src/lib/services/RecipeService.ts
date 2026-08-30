@@ -53,6 +53,41 @@ function buildWhereClause(filter?: RecipeFilterInput): Prisma.RecipeWhereInput {
 
 type RecipeCursor = { createdAt: string; id: string };
 
+// Card/list projection — excludes heavy relations (ingredients, preparationSteps)
+// that only the detail views need. Keeps every scalar Recipe field so any
+// GraphQL query field can still be served without another round trip.
+const RECIPE_LIST_SELECT = {
+  id: true,
+  title: true,
+  description: true,
+  category: true,
+  labels: true,
+  imgSrc: true,
+  cookingTime: true,
+  difficultyLevel: true,
+  servings: true,
+  youtubeLink: true,
+  createdAt: true,
+  updatedAt: true,
+  prepTimeMinutes: true,
+  cookTimeMinutes: true,
+  restTimeMinutes: true,
+  totalTimeMinutes: true,
+  servingUnit: true,
+  cuisine: true,
+  dietaryFlags: true,
+  allergens: true,
+  equipment: true,
+  costLevel: true,
+  tips: true,
+  substitutions: true,
+  slug: true,
+  seoTitle: true,
+  seoDescription: true,
+  socialImage: true,
+  createdBy: true,
+} satisfies Prisma.RecipeSelect;
+
 const encodeCursor = (cursor: { createdAt: Date; id: string }) =>
   Buffer.from(
     JSON.stringify({
@@ -224,7 +259,7 @@ export const RecipeService = {
     const [recipes, totalRecipes] = await Promise.all([
       prisma.recipe.findMany({
         where,
-        include: { ingredients: true, preparationSteps: true },
+        select: RECIPE_LIST_SELECT,
         orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
         ...(normalizedLimit && !searchIds ? { take: normalizedLimit + 1 } : {}),
       }),
@@ -326,7 +361,7 @@ export const RecipeService = {
     const [recipes, totalRecipes] = await Promise.all([
       prisma.recipe.findMany({
         where: { createdBy: userId },
-        include: { ingredients: true, preparationSteps: true },
+        select: RECIPE_LIST_SELECT,
         orderBy: { createdAt: 'desc' },
         ...(normalizedLimit ? { take: normalizedLimit } : {}),
       }),
@@ -493,6 +528,13 @@ export const RecipeService = {
     });
     if (!recipe) {
       return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
+    }
+
+    if (recipe.createdBy === userId) {
+      return throwCustomError(
+        'You cannot rate your own recipe',
+        ErrorTypes.FORBIDDEN,
+      );
     }
 
     await prisma.rating.upsert({

@@ -2,6 +2,25 @@ import type { NextAuthConfig } from 'next-auth';
 import { AUTH_ROUTES } from '../../types/routes';
 import { createIssuedAt, createTokenId } from './password';
 
+// Explicit, testable cookie security contract instead of relying on NextAuth's
+// implicit per-request "useSecureCookies" default. Mirrors that default
+// (secure cookies + `__Secure-` prefix only when served over https).
+export const isSecureCookieDeployment = (): boolean =>
+  (process.env.NEXTAUTH_URL ?? '').startsWith('https://');
+
+export const getSessionCookieConfig = () => {
+  const secure = isSecureCookieDeployment();
+  return {
+    name: secure ? '__Secure-authjs.session-token' : 'authjs.session-token',
+    options: {
+      httpOnly: true,
+      sameSite: 'lax' as const,
+      path: '/',
+      secure,
+    },
+  };
+};
+
 const isSafeRelativeCallbackUrl = (url: string | undefined): boolean => {
   if (!url) {
     return false;
@@ -35,6 +54,9 @@ export const authConfig = {
   session: {
     strategy: 'jwt',
     maxAge: 14 * 24 * 60 * 60, // 14 days
+  },
+  cookies: {
+    sessionToken: getSessionCookieConfig(),
   },
   pages: {
     signIn: AUTH_ROUTES.LOGIN,
