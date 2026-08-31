@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { LOCALE_STORAGE_KEY } from './locale';
+import { buildLocaleCookieHeader, LOCALE_STORAGE_KEY } from './locale';
 import { getStoredLocale, setStoredLocale } from './locale.client';
 
 /**
@@ -80,6 +80,16 @@ describe('locale.client', () => {
   });
 
   describe('setStoredLocale', () => {
+    it('should centralize the cookie contract in one helper', () => {
+      const header = buildLocaleCookieHeader('de', true);
+
+      expect(header).toContain(`${LOCALE_STORAGE_KEY}=de`);
+      expect(header).toContain('path=/');
+      expect(header).toContain('max-age=31536000');
+      expect(header).toContain('samesite=lax');
+      expect(header).toContain('secure');
+    });
+
     it('should set locale in localStorage', () => {
       setStoredLocale('de');
       expect(localStorage.getItem(LOCALE_STORAGE_KEY)).toBe('de');

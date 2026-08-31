@@ -1,18 +1,16 @@
 'use client';
 
-import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY, normalizeLocale } from './locale';
+import {
+  buildLocaleCookieHeader,
+  DEFAULT_LOCALE,
+  LOCALE_STORAGE_KEY,
+  normalizeLocale,
+  readLocaleCookieValue,
+} from './locale';
 
 const getCookieLocale = (): string | null => {
   try {
-    const stored = document.cookie
-      .split(';')
-      .map((row) => row.trim())
-      .find((row) => row.startsWith(`${LOCALE_STORAGE_KEY}=`))
-      ?.split('=')
-      .slice(1)
-      .join('=');
-
-    return stored || null;
+    return readLocaleCookieValue(document.cookie);
   } catch {
     return null;
   }
@@ -43,12 +41,9 @@ export const setStoredLocale = (locale: string): void => {
   try {
     globalThis.localStorage.setItem(LOCALE_STORAGE_KEY, normalizedLocale);
 
-    const maxAge = 60 * 60 * 24 * 365;
-    // Secure only when served over https - keeps http://localhost dev working.
-    const secureAttribute =
-      globalThis.location?.protocol === 'https:' ? '; secure' : '';
+    const isSecure = globalThis.location?.protocol === 'https:';
     // biome-ignore lint/suspicious/noDocumentCookie: We need to set the cookie manually for i18n
-    document.cookie = `${LOCALE_STORAGE_KEY}=${normalizedLocale}; path=/; max-age=${maxAge}; samesite=lax${secureAttribute}`;
+    document.cookie = buildLocaleCookieHeader(normalizedLocale, isSecure);
   } catch (error) {
     console.error('[setStoredLocale] Error setting locale:', error);
   }

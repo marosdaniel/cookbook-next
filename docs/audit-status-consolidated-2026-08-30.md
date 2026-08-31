@@ -75,7 +75,7 @@
 | D5 | 07-24 P2-4 | CI gate-ek | 🟡 | Van: Gitleaks, Biome, codegen:check, typecheck, unit+integration teszt. **Nincs**: `pnpm audit`, `prisma validate`, migration-status check | Hiányzó része S méretű |
 | D6 | 07-06 #39 (F8) | a11y audit (axe a Playwrightban) | ❌ | Nincs axe-core | Releváns, ingyenes, M |
 | D7 | 07-06 #27 (N9), 07-24 P2-3 | Hibamonitoring (Sentry/GlitchTip) | ❌ | Nincs monitoring, nincs `instrumentation.ts`; a maszkolt prod-hibák nyomtalanok | **A legrégebb óta nyitott observability-rés** |
-| D8 | 07-24 C-1 | Locale cookie írás centralizálása | 🟡 | `locale.client.ts` / `locale.server.ts` külön olvas; attribútumok nincsenek egy helyen definiálva | S méretű, releváns |
+| D8 | 07-24 C-1 | Locale cookie írás centralizálása | ✅ | Közös `locale` helper (`readLocaleCookieValue`, `getLocaleCookieOptions`, `buildLocaleCookieHeader`) a [locale.ts](../src/lib/locale/locale.ts)-ben; a kliens írása a [locale.client.ts](../src/lib/locale/locale.client.ts)-ben ezt használja; a kontraktus egy helyen van definiálva és tesztelve | Lezárva: a cleanup nem változtat a funkcionális viselkedésen, csak a cookie attribútumok és parse-logic közös, ellenőrizhető forrására redukál |
 
 ## 5. Funkciók, UX
 
@@ -84,7 +84,7 @@
 | F1 | 07-06 #18 (6. szekció) | **Recently viewed — valós tracking** | ❌ | A HomePage továbbra is a [mockRecentlyViewed.ts](../src/app/mockRecentlyViewed.ts) hardcode-olt tömbjét mutatja | **Mock adat production UI-ban — prioritás** |
 | F2 | 07-06 #9 (7.2) | Rating UI: optimista update + törlés gomb | 🟡 | Átlag és saját értékelés megjelenítése szétvált ✅, motion-visszajelzés van; **de** továbbra is `refetchQueries`, nincs `optimisticResponse`, nincs Remove gomb (a `DELETE_RATING` mutation-t egyetlen komponens sem hívja) | Releváns, M |
 | F3 | 07-06 #25 (8.2) | Create flow: slug-gen, szekció-hibajelzés, autosave-jelző, DnD | 🟡 | Slug-gen ✅ (`slugify.ts` + ↻ gomb), szekció-hibabadge ✅; DnD ❌ (nincs dnd lib), autosave-indikátor ❌ | Maradék: R1, R8 |
-| F4 | 07-06 #26, 07-24 P2-7 | Server-side draft (`RecipeStatus`) | ❌ | Csak localStorage draft | Releváns, admin-moderációval együtt éri meg (lásd admin terv) |
+| F4 | 07-06 #26, 07-24 P2-7 | Server-side draft (`RecipeStatus`) | 🚫 | Csak localStorage draft | Elvetett: a funkció nem lesz lefejlesztve; a mai roadmap szerint a localStorage-based draft/autosave és az admin-moderáció kölcsönösen elégnek tűnik |
 | F5 | 07-04 #15, 07-06 #22, 07-24 döntésfüggő | Komment rendszer | ❌ | Nincs Comment modell | Döntésfüggő (moderáció!) — admin panel után |
 | F6 | 07-04 #16, 07-06 #23, 07-24 P2-9 | Kép-feltöltés (managed media) | ❌ | `imgSrc` külső URL | Releváns (Vercel Blob free) |
 | F7 | 07-04 #23, 07-24 P2-12 | Összetevő-alapú keresés | 🟡 | A trigram keresés **lefedi az ingredient name-eket** (index + SQL) ✅; de nincs „mi van a hűtőmben” chips-UI és hiányzó-összetevő rangsor | A backend-alap kész, a UI-réteg hiányzik |
@@ -115,10 +115,10 @@
 
 | Státusz | Darab | Arány |
 |---|---|---|
-| ✅ Lezárt | 35 | ~58% |
-| 🟡 Részleges | 12 | ~20% |
-| ❌ Nyitott | 8 | ~13% |
-| 🚫 Elvetett (tudatos döntés) | 5 | ~8% |
+| ✅ Lezárt | 36 | ~60% |
+| 🟡 Részleges | 11 | ~18% |
+| ❌ Nyitott | 7 | ~12% |
+| 🚫 Elvetett (tudatos döntés) | 6 | ~10% |
 
 A 2026. júliusi auditok óta a projekt **a P0 biztonsági réteget teljesen lezárta** (GraphQL authz, rate limiting, CSP nonce, sessionVersion, request-size limit, secret-scan), és a P1 architektúra-tételek nagy részét is (cursor pagináció, trigram keresés, cache-invalidáció, persisted query allowlist, observability-alapok, Metadata DB-modell). **2026-08-30 folyamán további 5 tétel zárult le**: a saját recept értékelésének tiltása (S13), a session- és locale-cookie biztonsági attribútumainak explicit, tesztelt kontraktja (S14), a receptek dinamikus OG-image-e (SEO7), az RSS-feed (SEO8), és a lista-/detail-projekciók szétválasztása (A5).
 

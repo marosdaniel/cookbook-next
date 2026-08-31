@@ -14,6 +14,43 @@ const MESSAGES_MAP: Record<string, LocaleMessages> = {
   de: deMessages as unknown as LocaleMessages,
 };
 
+export const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+
+export const readLocaleCookieValue = (
+  cookieHeader: string | null | undefined,
+): string | null => {
+  if (!cookieHeader) {
+    return null;
+  }
+
+  return (
+    cookieHeader
+      .split(';')
+      .map((row) => row.trim())
+      .find((row) => row.startsWith(`${LOCALE_STORAGE_KEY}=`))
+      ?.split('=')
+      .slice(1)
+      .join('=') || null
+  );
+};
+
+export const getLocaleCookieOptions = (isSecure: boolean = false) => ({
+  path: '/',
+  maxAge: LOCALE_COOKIE_MAX_AGE,
+  sameSite: 'lax' as const,
+  secure: isSecure,
+});
+
+export const buildLocaleCookieHeader = (
+  locale: string,
+  isSecure: boolean = false,
+): string => {
+  const normalizedLocale = normalizeLocale(locale);
+  const { path, maxAge, sameSite, secure } = getLocaleCookieOptions(isSecure);
+
+  return `${LOCALE_STORAGE_KEY}=${normalizedLocale}; path=${path}; max-age=${maxAge}; samesite=${sameSite}${secure ? '; secure' : ''}`;
+};
+
 export const normalizeLocale = (locale: string | null | undefined): string => {
   const rawLocale = locale?.trim();
 
