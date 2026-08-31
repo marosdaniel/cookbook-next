@@ -1,3 +1,10 @@
+# [2.87.0](https://github.com/marosdaniel/cookbook-next/compare/v2.86.0...v2.87.0) (2026-08-31)
+
+
+### Features
+
+* centralize locale cookie handling with new helper functions ([0001501](https://github.com/marosdaniel/cookbook-next/commit/0001501cb89350f579a6366fff838c186b0bdb9e))
+
 # [2.86.0](https://github.com/marosdaniel/cookbook-next/compare/v2.85.0...v2.86.0) (2026-08-30)
 
 
