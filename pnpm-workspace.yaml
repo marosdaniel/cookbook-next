@@ -77,10 +77,10 @@ minimumReleaseAgeExclude:
   - js-yaml@4.1.2 || 4.3.1
   - hono@4.12.25
   - undici@6.27.0 || 6.28.0 || 7.28.0 || 7.29.0
-  - icu-minify@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5 || 4.13.6 || 4.13.7
-  - next-intl-swc-plugin-extractor@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5 || 4.13.6 || 4.13.7
-  - next-intl@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5 || 4.13.6 || 4.13.7
-  - use-intl@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5 || 4.13.6 || 4.13.7
+  - icu-minify@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5 || 4.13.6 || 4.13.7 || 4.14.2
+  - next-intl-swc-plugin-extractor@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5 || 4.13.6 || 4.13.7 || 4.14.2
+  - next-intl@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5 || 4.13.6 || 4.13.7 || 4.14.2
+  - use-intl@4.13.1 || 4.13.2 || 4.13.3 || 4.13.4 || 4.13.5 || 4.13.6 || 4.13.7 || 4.14.2
   - '@typescript/typescript-aix-ppc64@7.0.2'
   - '@typescript/typescript-darwin-arm64@7.0.2'
   - '@typescript/typescript-darwin-x64@7.0.2'
@@ -170,6 +170,9 @@ minimumReleaseAgeExclude:
   - '@img/sharp-win32-ia32@0.35.4'
   - '@img/sharp-win32-x64@0.35.4'
   - zod@4.5.4
+  - '@eloqnt/config@0.1.0'
+  - '@eloqnt/format-json@0.1.0'
+  - '@eloqnt/format-po@0.1.0'
 
 overrides:
   '@hono/node-server@<1.19.13': ^1.19.13
