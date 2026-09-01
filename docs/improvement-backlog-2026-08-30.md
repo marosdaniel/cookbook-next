@@ -58,6 +58,25 @@ Kapcsolódó résztervek (külön dokumentumban, ide csak hivatkozva):
 | **N-P2-13** | Tesztelés | A vitest coverage-küszöbök alacsonyak (23/23/19/17%), és nem emelkednek. | Ratchet-stratégia: minden sprintben +2-3% küszöb; kritikus modulokra (services, auth, validation) külön 80%-os per-file küszöb. | **S** | Vitest beépített |
 | **N-P2-14** | Arch | Redis/Prisma timeout-viselkedés metrika nélkül (07-24 P1-14 maradéka). | A monitoring (N-P0-3) bevezetése UTÁN: timeout/circuit-breaker események eseményként a Sentry/GlitchTip felé. | **S** | A monitoring melléktermékeként |
 
+## V — Vercel Platform Features
+
+A Vercel Hobby csomag számos ingyenes, kódmódosítást nem igénylő feature-t kínál, amelyek a cookbook-next fejlesztési élménye és termelési funkcionalitása javítására alkalmasak.
+
+| ID | Terület | Probléma | Javasolt megoldás | Méret | Miért ingyenes |
+|---|---|---|---|---|---|
+| **V-P1-1** | Feature flag & konfig | Funkciók release-e, A/B tesztelés, konfigurációs értékek (banner, maintenance mode, rate-limit küszöbök) kód nélkül nem módosítható. | **Vercel Flags SDK** + **Edge Config**: `@vercel/flags` npm csomag, Next.js Server Components & middleware integrációval. Flags dashboard: boolean/string/JSON típus, targeting rules, progresszív rollout, A/B test, A/B teszt szétválasztás; rate-limit küszöbök, featured receptek listája, maintenance-mode switch a dashboardról módosítható kód nélkül. CSP allowlist kiterjesztése az Explorer Toolbar-hoz dev-ben. **Hobby limit**: 100k read + 100 write / hó (hobby recipe appnál bőven elég). | **S/M** | Vercel Flags + Edge Config a Hobby csomagban teljes |
+| **V-P1-2** | Analytics | Web Analytics 50k event/hó + Speed Insights 10k adatpont; jelenleg csak Speed Insights van. | Web Analytics dashboard bekapcsolása (Settings → Integrations → Web Analytics), majd `<Analytics />` komponens integrálása [_document.tsx](../src/app/layout.tsx)-be — 1 sor kód. A meglévő Edge Config-kal összekapcsolva: a consent-modell (N-P2-10) alapján analytics cookie/script csak then-if engedélyezve. | **S** | Web Analytics a Hobby csomag része |
+| **V-P1-3** | DX | Preview deploymentek jól kihasználatlanok: nincs On-Demand ISR trigger, nincs real-time collab comments, nincs draft-content preview. | **Draft Mode**: a `draftMode()` API ([Next.js docs](https://nextjs.org/docs/app/building-your-application/configuring/draft-mode)), jelszó-védett route (pl. `/api/draft`) aktiválása → preview deploy URL-en a draft `RecipeStatus` receptek is megjelennek. **Vercel Toolbar Comments**: preview deploy-on UI-elemre jobb klikk → comment hozzáadása, pull request-re mappelve; önálló review workflow nélkül is. | **S** | Mindkettő beépített Next.js + Vercel |
+| **V-P1-4** | DevOps | Seed adatok, token cleanup, rate-limit reset — jelenleg kézi vagy GitHub Actions cron alapú. | **Cron Jobs**: 2 job/hó az ingyenes csomagon, napi 1× futtatható. `vercel.json` `crons` array: 1) `0 2 * * *` — RecipeService seed/reset, 2) `0 3 * * *` — expired reset-password token, refresh-token lejárat cleanup. **Korlát**: napi 1× fix, ha óránkénti kellene, fallback GitHub Actions cron + HTTP trigger. | **S** | Cron Jobs Hobby freetier része |
+| **V-P1-5** | Teljesítmény | Image optim nincs dedikált; Blob + next/image kell a kép-handling-hez. | Az N-P2-4 **Vercel Blob** Storage-ot (Hobby: 1 GB ingyen) kombinálni `<Image>` next/image-szel: signed upload [src/app/admin/recipes/create/page.tsx](../src/app/admin/recipes/create/page.tsx) MIME+méret validáció, Blob-re feltöltés, majd `Image loader` beállítása (`next.config.ts` `images.loader: 'custom'`) — Vercel automatikusan cache + CDN-ezi. | **S/M** | Vercel Blob + next/image natívan összerendelhet |
+| **V-P1-6** | Konfig & CI | Cron job error handling, draft mode secret key management. | `vercel.json` configuration: `crons` array definiálása + error notifikáció (Vercel Dashboard email). Draft Mode secret (`VERCEL_DRAFT_SECRET`) `.env.local`-ben, majd `/api/draft` auth route-ban validálása. Tesztelés: `vercel env pull` + `pnpm dev`-ben `draftMode().enable()`. | **S** | Csak konfigurációs munka |
+
+**Kapcsolódások**:
+- V-P1-1 (Flags) + N-P0-3 (monitoring) = maintenance-mode flag → status page trigger
+- V-P1-2 (Analytics) + N-P2-9/N-P2-10 (Umami consent) = kétszintű analytics: Vercel Web Analytics (kód nélkül) + Umami (személyre szabott)
+- V-P1-3 (Draft Mode) + N-P2-5 (RecipeStatus) = draft recipe preview a `/api/draft` route-on
+- V-P1-4 (Cron Jobs) + admin terv (N-P1-13) = moderation cleanup, recipe recommendation refresh
+
 ## Fizetős eszköz lenne ideális — ingyenes alternatívával
 
 | Igény | Ideális (fizetős) | Választott ingyenes alternatíva |
@@ -69,10 +88,10 @@ Kapcsolódó résztervek (külön dokumentumban, ide csak hivatkozva):
 
 ## Sprint-javaslat
 
-1. **Sprint 1 — „lezárás és láthatóság” (csupa S/M)**: N-P0-1, N-P0-3, N-P0-4, N-P1-6, N-P1-7, N-P1-8, N-P1-11, N-P1-14, N-P1-15
-2. **Sprint 2 — „adat és típusréteg”**: N-P1-2, N-P1-3 (indítás), N-P1-4, N-P1-5, N-P0-2 (verifikáció)
-3. **Sprint 3 — „UX-hullám”**: N-P1-1, N-P1-10, N-P1-12, N-P2-1, N-P2-2 + [ux-motion-upgrade-plan](ux-motion-upgrade-plan-2026-08-30.md) 1. üteme + [footer-redesign](footer-redesign-2026-08-30.md)
-4. **Sprint 4–6 — „admin”**: N-P1-13 (MVP az admin terv szerint), N-P2-5 vele közös sémamunkában
+1. **Sprint 1 — „lezárás és láthatóság" (csupa S/M)**: N-P0-1, N-P0-3, N-P0-4, N-P1-6, N-P1-7, N-P1-8, N-P1-11, N-P1-14, N-P1-15, **V-P1-6** (Cron Config alapok)
+2. **Sprint 2 — „adat és típusréteg"**: N-P1-2, N-P1-3 (indítás), N-P1-4, N-P1-5, N-P0-2 (verifikáció), **V-P1-1** (Vercel Flags/Edge Config setup)
+3. **Sprint 3 — „UX-hullám + monitoring"**: N-P1-1, N-P1-10, N-P1-12, N-P2-1, N-P2-2 + **V-P1-2** (Web Analytics) + **V-P1-3** (Draft Mode) + [ux-motion-upgrade-plan](ux-motion-upgrade-plan-2026-08-30.md) 1. üteme + [footer-redesign](footer-redesign-2026-08-30.md)
+4. **Sprint 4–6 — „admin + storage"**: N-P1-13 (MVP az admin terv szerint), N-P2-5 vele közös sémamunkában, **V-P1-4** (Cron Jobs implementáció), **V-P1-5** (Blob Storage + kép-upload)
 5. **Utána**: N-P1-9, N-P2-3, N-P2-4, N-P2-6…N-P2-13 érték/erőfeszítés arány szerint
 
 ## Megjegyzések
