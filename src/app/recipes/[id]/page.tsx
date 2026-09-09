@@ -50,6 +50,7 @@ const toInitialRecipe = (recipe: RecipeLookupResult): RecipeDetail => ({
   servings: recipe.servings,
   youtubeLink: recipe.youtubeLink,
   createdBy: recipe.createdBy,
+  author: recipe.author,
   category: recipe.category,
   difficultyLevel: recipe.difficultyLevel,
   labels: recipe.labels,

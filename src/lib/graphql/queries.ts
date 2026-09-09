@@ -136,6 +136,11 @@ export const GET_RECIPE_BY_ID: TypedDocumentNode<
       servings
       youtubeLink
       createdBy
+      author {
+        userName
+        firstName
+        lastName
+      }
       category {
         key
         label

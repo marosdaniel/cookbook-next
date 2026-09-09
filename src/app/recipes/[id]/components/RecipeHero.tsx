@@ -156,10 +156,10 @@ export const RecipeHero = ({ recipe, isOwner }: Readonly<RecipeHeroProps>) => {
             </span>
           )}
 
-          {(recipe.author || recipe.createdBy) && (
-            <span className={classes.infoPill}>
+          {(recipe.author?.userName || recipe.createdBy) && (
+            <span className={classes.infoPill} data-testid="recipe-hero-author">
               <IconUser size={16} />
-              {recipe.author ? recipe.author.userName : recipe.createdBy}
+              {recipe.author?.userName ?? recipe.createdBy}
             </span>
           )}
         </Box>

@@ -74,6 +74,18 @@ export type ProtectedRoute =
 export type AppRoute = PublicRoute | AuthRoute | ProtectedRoute;
 
 /**
+ * Checks whether a pathname belongs to a recipe edit page.
+ */
+export const isRecipeEditRoute = (path: string): boolean =>
+  /^\/recipes\/[^/]+\/edit$/.test(path);
+
+/**
+ * Checks whether a pathname requires an immersive full-screen workspace layout.
+ */
+export const isImmersiveRoute = (path: string): boolean =>
+  path.startsWith(PROTECTED_ROUTES.RECIPES_CREATE) || isRecipeEditRoute(path);
+
+/**
  * Checks whether a pathname belongs to an authentication page.
  */
 export const isAuthRoute = (path: string): boolean =>
@@ -103,4 +115,4 @@ export const isProtectedRoute = (path: string): boolean =>
   path === PROTECTED_ROUTES.RECIPES_MY ||
   path === PROTECTED_ROUTES.RECIPES_FAVORITES ||
   path === PROTECTED_ROUTES.FOLLOWING ||
-  /^\/recipes\/[^/]+\/edit$/.test(path);
+  isRecipeEditRoute(path);

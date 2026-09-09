@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import type { FC, PropsWithChildren } from 'react';
-import { isAuthRoute, PROTECTED_ROUTES, PUBLIC_ROUTES } from '@/types/routes';
+import { isAuthRoute, isImmersiveRoute, PUBLIC_ROUTES } from '@/types/routes';
 import BackToTop from '../BackToTop';
 import AuthButton from '../buttons/AuthButton';
 import Footer from '../Footer';
@@ -27,7 +27,7 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
 
   const isSessionLoading = status === 'loading';
   const isAuthPage = isAuthRoute(pathname);
-  const isImmersive = pathname.startsWith(PROTECTED_ROUTES.RECIPES_CREATE);
+  const isImmersive = isImmersiveRoute(pathname);
   const showShellChrome = !isImmersive;
 
   const shouldShowAuthButton = !isSessionLoading && !session && !isAuthPage;

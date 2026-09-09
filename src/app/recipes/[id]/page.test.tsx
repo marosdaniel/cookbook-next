@@ -117,6 +117,7 @@ describe('RecipeDetailPage', () => {
       cookingTime: 20,
       servings: 2,
       createdBy: 'user-1',
+      author: { userName: 'chef_mario', firstName: 'Mario', lastName: 'Rossi' },
     });
 
     const result = await RecipeDetailPage({
@@ -127,6 +128,7 @@ describe('RecipeDetailPage', () => {
     expect(html).toContain('application/ld+json');
     expect(html).toContain('Pasta Primavera');
     expect(html).toContain('initialRecipe');
+    expect(html).toContain('chef_mario');
   });
 
   it('uses the Next 404 boundary for a missing recipe', async () => {

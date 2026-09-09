@@ -41,16 +41,25 @@ const Preview = memo(({ labels, values }: Readonly<PreviewProps>) => {
         data-testid="recipe-preview"
         style={{
           minHeight: 0,
+          height: '100%',
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
           overflow: 'hidden',
           backgroundColor: 'var(--mantine-color-body)',
           border: '1px solid var(--mantine-color-gray-2)',
           boxShadow: 'var(--mantine-shadow-sm)',
         }}
       >
-        <ScrollArea h="100%" type="scroll" offsetScrollbars>
+        <ScrollArea
+          h="100%"
+          style={{ flex: 1, minHeight: 0 }}
+          type="auto"
+          offsetScrollbars
+        >
           <RecipeHero values={values} />
 
-          <Container size="md" p={{ base: 'md', sm: 'xl' }}>
+          <Container size="md" p={{ base: 'md', sm: 'xl' }} pb={80}>
             <RecipeStats values={values} />
 
             <RecipeDescription description={values.description} />

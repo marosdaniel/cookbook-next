@@ -97,6 +97,21 @@ describe('Shell', () => {
     expect(screen.queryByTestId('shell-footer')).not.toBeInTheDocument();
   });
 
+  it('hides the shell chrome on immersive edit route', () => {
+    mockUseSession.mockReturnValue({ data: null, status: 'unauthenticated' });
+    mockUsePathname.mockReturnValue('/recipes/recipe-1/edit');
+
+    render(
+      <Shell>
+        <div>content</div>
+      </Shell>,
+    );
+
+    expect(screen.queryByTestId('shell-header')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('shell-navbar')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('shell-footer')).not.toBeInTheDocument();
+  });
+
   it('hides the header search on auth pages', () => {
     mockUseSession.mockReturnValue({ data: null, status: 'unauthenticated' });
     mockUsePathname.mockReturnValue('/login');

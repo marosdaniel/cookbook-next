@@ -3,8 +3,10 @@ import { describe, expect, it } from 'vitest';
 import {
   AUTH_ROUTES,
   isAuthRoute,
+  isImmersiveRoute,
   isProtectedRoute,
   isPublicRoute,
+  isRecipeEditRoute,
   PROTECTED_ROUTES,
   PUBLIC_ROUTES,
 } from './routes';
@@ -25,7 +27,19 @@ describe('routes helpers', () => {
   it('detects protected routes and nested protected paths', () => {
     expect(isProtectedRoute(PROTECTED_ROUTES.PROFILE)).toBe(true);
     expect(isProtectedRoute('/recipes/create')).toBe(true);
+    expect(isProtectedRoute('/recipes/recipe-123/edit')).toBe(true);
     expect(isProtectedRoute(PUBLIC_ROUTES.PRIVACY_POLICY)).toBe(false);
+  });
+
+  it('detects recipe edit and immersive routes', () => {
+    expect(isRecipeEditRoute('/recipes/123/edit')).toBe(true);
+    expect(isRecipeEditRoute('/recipes/create')).toBe(false);
+    expect(isRecipeEditRoute('/recipes/123')).toBe(false);
+
+    expect(isImmersiveRoute('/recipes/create')).toBe(true);
+    expect(isImmersiveRoute('/recipes/123/edit')).toBe(true);
+    expect(isImmersiveRoute('/recipes/123')).toBe(false);
+    expect(isImmersiveRoute('/recipes')).toBe(false);
   });
 
   it('exposes the route constants used by the app', () => {

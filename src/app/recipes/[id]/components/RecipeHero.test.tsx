@@ -90,4 +90,47 @@ describe('RecipeHero', () => {
       screen.queryByTestId('recipe-hero-edit-action'),
     ).not.toBeInTheDocument();
   });
+
+  it('renders author username when author details are available', () => {
+    render(
+      <RecipeHero
+        recipe={
+          {
+            ...recipe,
+            author: {
+              userName: 'chef_mario',
+              firstName: 'Mario',
+              lastName: 'Rossi',
+            },
+            createdBy: 'user-id-123',
+          } as never
+        }
+        isOwner={false}
+      />,
+    );
+
+    const authorElement = screen.getByTestId('recipe-hero-author');
+    expect(authorElement).toBeInTheDocument();
+    expect(authorElement).toHaveTextContent('chef_mario');
+    expect(authorElement).not.toHaveTextContent('user-id-123');
+  });
+
+  it('falls back to createdBy when author is not available', () => {
+    render(
+      <RecipeHero
+        recipe={
+          {
+            ...recipe,
+            author: null,
+            createdBy: 'user-id-123',
+          } as never
+        }
+        isOwner={false}
+      />,
+    );
+
+    const authorElement = screen.getByTestId('recipe-hero-author');
+    expect(authorElement).toBeInTheDocument();
+    expect(authorElement).toHaveTextContent('user-id-123');
+  });
 });

@@ -234,9 +234,14 @@ const RecipeComposer = ({
           <Box
             visibleFrom="lg"
             w={400}
+            h="100%"
             style={{
               borderLeft: '1px solid var(--mantine-color-gray-2)',
               flexShrink: 0,
+              minHeight: 0,
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
             <Preview labels={labels} values={debouncedPreviewValues} />
@@ -249,7 +254,16 @@ const RecipeComposer = ({
           position="right"
           size="lg"
           withCloseButton={false}
-          styles={{ body: { height: '100%', padding: 0 } }}
+          styles={{
+            body: {
+              height: '100%',
+              padding: 0,
+              minHeight: 0,
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column',
+            },
+          }}
         >
           <Preview labels={labels} values={debouncedPreviewValues} />
 

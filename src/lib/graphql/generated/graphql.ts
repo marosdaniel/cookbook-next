@@ -246,7 +246,7 @@ export type GetRecipeByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetRecipeByIdQuery = { getRecipeById: { id: string, title: string, description: string | null, imgSrc: string | null, cookingTime: number, servings: number, youtubeLink: string | null, createdBy: string, averageRating: number, ratingsCount: number, userRating: number | null, isFavorite: boolean | null, prepTimeMinutes: number | null, cookTimeMinutes: number | null, restTimeMinutes: number | null, totalTimeMinutes: number | null, tips: string | null, substitutions: string | null, slug: string | null, seoTitle: string | null, seoDescription: string | null, socialImage: string | null, category: { key: string, label: string }, difficultyLevel: { key: string, label: string }, labels: Array<{ key: string, label: string } | null>, ingredients: Array<{ localId: string, name: string, quantity: number, unit: string, isOptional: boolean, note: string | null } | null>, preparationSteps: Array<{ description: string, order: number } | null>, servingUnit: { key: string, label: string } | null, cuisine: { key: string, label: string } | null, dietaryFlags: Array<{ key: string, label: string } | null> | null, allergens: Array<{ key: string, label: string } | null> | null, equipment: Array<{ key: string, label: string } | null> | null, costLevel: { key: string, label: string } | null } };
+export type GetRecipeByIdQuery = { getRecipeById: { id: string, title: string, description: string | null, imgSrc: string | null, cookingTime: number, servings: number, youtubeLink: string | null, createdBy: string, averageRating: number, ratingsCount: number, userRating: number | null, isFavorite: boolean | null, prepTimeMinutes: number | null, cookTimeMinutes: number | null, restTimeMinutes: number | null, totalTimeMinutes: number | null, tips: string | null, substitutions: string | null, slug: string | null, seoTitle: string | null, seoDescription: string | null, socialImage: string | null, author: { userName: string, firstName: string, lastName: string }, category: { key: string, label: string }, difficultyLevel: { key: string, label: string }, labels: Array<{ key: string, label: string } | null>, ingredients: Array<{ localId: string, name: string, quantity: number, unit: string, isOptional: boolean, note: string | null } | null>, preparationSteps: Array<{ description: string, order: number } | null>, servingUnit: { key: string, label: string } | null, cuisine: { key: string, label: string } | null, dietaryFlags: Array<{ key: string, label: string } | null> | null, allergens: Array<{ key: string, label: string } | null> | null, equipment: Array<{ key: string, label: string } | null> | null, costLevel: { key: string, label: string } | null } };
 
 export type GetFavoriteRecipesQueryVariables = Exact<{
   limit?: number | null | undefined;
@@ -467,6 +467,11 @@ export const GetRecipeByIdDocument = new TypedDocumentString(`
     servings
     youtubeLink
     createdBy
+    author {
+      userName
+      firstName
+      lastName
+    }
     category {
       key
       label
