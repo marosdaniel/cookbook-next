@@ -1,3 +1,10 @@
+# [2.88.0](https://github.com/marosdaniel/cookbook-next/compare/v2.87.0...v2.88.0) (2026-09-09)
+
+
+### Features
+
+* Enhance RecipesPage with animated search results and empty state handling ([cf61fbe](https://github.com/marosdaniel/cookbook-next/commit/cf61fbef0df0af240a540039fffd2fa77996dea7))
+
 # [2.87.0](https://github.com/marosdaniel/cookbook-next/compare/v2.86.0...v2.87.0) (2026-08-31)
 
 
