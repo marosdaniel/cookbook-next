@@ -1,3 +1,10 @@
+# [2.89.0](https://github.com/marosdaniel/cookbook-next/compare/v2.88.0...v2.89.0) (2026-09-09)
+
+
+### Features
+
+* Implement draft expiration logic and update related tests ([34ce244](https://github.com/marosdaniel/cookbook-next/commit/34ce244c5362cfd47bed1338a9aab4bc1db99b9d))
+
 # [2.88.0](https://github.com/marosdaniel/cookbook-next/compare/v2.87.0...v2.88.0) (2026-09-09)
 
 
