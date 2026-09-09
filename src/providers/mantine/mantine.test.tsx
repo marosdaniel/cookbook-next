@@ -54,4 +54,16 @@ describe('MantineProviderWrapper', () => {
     // NextTopLoader injects its styles/divs. We just ensure it doesn't crash.
     expect(container).toBeInTheDocument();
   });
+
+  it('renders the nested theme-aware provider with children', () => {
+    render(
+      <MantineProviderWrapper>
+        <div data-testid="theme-child">Theme content</div>
+      </MantineProviderWrapper>,
+    );
+
+    expect(screen.getByTestId('theme-child')).toHaveTextContent(
+      'Theme content',
+    );
+  });
 });
