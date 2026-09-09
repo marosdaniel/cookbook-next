@@ -4,9 +4,9 @@
 
 **A modern recipe sharing platform built with Next.js, Apollo Server, and Neon (Serverless Postgres)**
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.2.11-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.3.4-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.2.8-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7.0.2-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 [🚀 Live Demo](https://cookbook-next.vercel.app) • [📊 Coverage Report](https://marosdaniel.github.io/cookbook-next/) • [📝 Changelog](./CHANGELOG.md)
@@ -53,31 +53,31 @@
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework:** Next.js 16.2.11 (App Router, Turbopack)
-- **Language:** TypeScript 6.0.3
-- **UI Library:** Mantine 9.4.2 (core, form, hooks, notifications, modals, spotlight, carousel)
-- **Animation:** Motion 12.42.2 for page and card transitions
+- **Framework:** Next.js 16.3.4 (App Router, Turbopack)
+- **Language:** TypeScript 7.0.2
+- **UI Library:** Mantine 9.6.0 (core, form, hooks, notifications, modals, spotlight, carousel)
+- **Animation:** Motion 13.2.0 for page and card transitions
 - **State Management:** Redux Toolkit 2.12.0
 - **Forms:** Mantine Form + `mantine-form-zod-resolver` (Zod validation)
-- **Data fetching:** Apollo Client 4.2.7 (custom error-handling link with localized notifications)
-- **Icons:** Tabler Icons / React Icons
-- **i18n:** next-intl 4.13.3 (English, Hungarian, German)
+- **Data fetching:** Apollo Client 4.2.12 (custom error-handling link with localized notifications)
+- **Icons:** Tabler Icons React
+- **i18n:** next-intl 4.14.2 (English, Hungarian, German)
 
 ### Backend
 - **API:** Apollo Server 5.5.1 + GraphQL (`@as-integrations/next`), modular schema (user/recipe/metadata), `graphql-armor` hardening, DataLoader batching
 - **Database:** Serverless Postgres via Neon (`@neondatabase/serverless` + `@prisma/adapter-neon`, connection pooling)
-- **ORM:** Prisma 7.9.0
+- **ORM:** Prisma 7.10.0
 - **Authentication:** NextAuth 5.0.0-beta.32 with JWT session strategy
 - **Password hashing:** Argon2id (primary) with legacy bcryptjs fallback
-- **Caching:** Upstash Redis 1.38.0 (TTL-based query caching with fallback behavior)
+- **Caching:** Upstash Redis 1.38.4 (TTL-based query caching with fallback behavior)
 - **Rate limiting:** Upstash Ratelimit 2.0.8 (sliding window) on auth & mutation-heavy operations
-- **Validation & sanitization:** Zod 4.4.3 + isomorphic-dompurify
+- **Validation & sanitization:** Zod 4.5.4 + sanitize-html 2.17.7
 
 ### DevOps & Tools
 - **Build Tool:** Turbopack
-- **Testing:** Vitest 4.1.10 + Testing Library + Happy DOM (unit/integration), Playwright 1.61.1 (E2E)
-- **Code Quality:** Biome 2.5.5
-- **Package Manager:** pnpm 11.15.1
+- **Testing:** Vitest 5.0.0 + Testing Library + Happy DOM (unit/integration), Playwright 1.63.0 (E2E)
+- **Code Quality:** Biome 2.5.12
+- **Package Manager:** pnpm 12.3.4
 - **Deployment:** Vercel
 - **CI/CD:** GitHub Actions + Semantic Release
 
@@ -88,7 +88,7 @@
 ### Prerequisites
 
 - **Node.js** 24.x
-- **pnpm** 11.15.1
+- **pnpm** 12.3.4
 - **Postgres / Neon** (Postgres-compatible, e.g. Neon serverless)
 
 ### Installation
@@ -405,16 +405,23 @@ enum UserRole {
 | `pnpm dev` | Start the Next.js development server with Turbopack |
 | `pnpm build` | Generate Prisma client and build the production app |
 | `pnpm start` | Start the production server |
+| `pnpm postinstall` | Generate the Prisma client after dependency installation |
 | `pnpm typecheck` | Run Prisma generation and TypeScript type checking |
 | `pnpm test:unit` | Run unit and integration tests with Vitest |
 | `pnpm test:coverage` | Run tests and generate coverage reports |
 | `pnpm test:e2e` | Run Playwright end-to-end tests |
 | `pnpm test:e2e:ui` | Launch the Playwright UI runner |
+| `pnpm test:integration` | Run the integration test suite with Vitest |
 | `pnpm lint` | Lint the codebase with Biome |
 | `pnpm lint:fix` | Auto-fix Biome issues |
 | `pnpm format` | Format code with Biome |
 | `pnpm format:fix` | Auto-format code with Biome |
 | `pnpm deps:update` | Refresh dependency versions with npm-check-updates |
+| `pnpm deps:update:without-ts` | Refresh dependencies while keeping TypeScript pinned |
+| `pnpm analyze` | Build the app with the Next.js bundle analyzer |
+| `pnpm audit:fix` | Apply available pnpm audit fixes |
+| `pnpm codegen` | Generate TypeScript types from the GraphQL schema |
+| `pnpm codegen:check` | Verify generated GraphQL types are up to date |
 
 ---
 

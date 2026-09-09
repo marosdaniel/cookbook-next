@@ -14,9 +14,10 @@ This document explains the GitHub Actions CI/CD pipeline defined in `.github/wor
    - [quality-checks](#1-quality-checks)
    - [e2e](#2-e2e)
    - [test-coverage](#3-test-coverage)
-   - [deploy-coverage-report](#4-deploy-coverage-report)
-   - [deploy-production](#5-deploy-production)
-   - [semantic-release](#6-semantic-release)
+  - [sonarqube](#4-sonarqube)
+  - [deploy-coverage-report](#5-deploy-coverage-report)
+  - [deploy-production](#6-deploy-production)
+  - [semantic-release](#7-semantic-release)
 6. [Secrets & Environment Variables](#secrets--environment-variables)
 7. [Why This Pipeline Exists](#why-this-pipeline-exists)
 
@@ -85,8 +86,7 @@ quality-checks
     ├── e2e ──────────────────────────┐
     │                                 ├── deploy-coverage-report (main only)
     └── test-coverage ────────────────┘
-              │
-              └── (used by deploy-coverage-report)
+        └── sonarqube
 
 quality-checks + e2e
     └── deploy-production (main only)
@@ -95,7 +95,7 @@ quality-checks + e2e
 
 **Note**: `deploy-coverage-report` also has its own guard (`if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'`), so it never runs for pull requests even though it depends on jobs that do.
 
-**Key insight**: `e2e` and `test-coverage` both run **in parallel** after `quality-checks` passes. This makes the pipeline faster — E2E tests and coverage collection don't wait on each other.
+**Key insight**: `e2e` and `test-coverage` both run **in parallel** after `quality-checks` passes. SonarQube starts after coverage is available, while production deployment only waits for `quality-checks` and `e2e`.
 
 ---
 
@@ -114,10 +114,11 @@ quality-checks + e2e
 | Step | Command | What it does |
 |------|---------|--------------|
 | Checkout code | `actions/checkout@v7` | Clones the repository at the triggering commit |
-| Setup pnpm | `pnpm/action-setup@v6` | Installs pnpm as the package manager (version pinned via the `packageManager` field in `package.json`, currently `11.12.0`) |
-| Setup Node.js | `actions/setup-node@v6` | Installs Node.js 24 and restores the pnpm dependency cache |
+| Setup pnpm | `pnpm/action-setup@v6` | Installs pnpm 12.3.4, matching the `packageManager` field in `package.json` |
+| Setup Node.js | `actions/setup-node@v7` | Installs Node.js 24 and restores the pnpm dependency cache |
 | Install dependencies | `pnpm install --frozen-lockfile` | Installs all project dependencies from the lockfile |
 | Run Biome Lint | `pnpm lint:fix` | Runs Biome static analysis and auto-fixes formatting issues |
+| Verify GraphQL generated types | `pnpm codegen:check` | Verifies generated GraphQL types are synchronized with the schema and client documents |
 | Run Type Check | `pnpm run typecheck` | Runs `tsc --noEmit` to catch TypeScript type errors |
 | Run Unit Tests | `pnpm test:unit` | Runs Vitest unit tests |
 | Run Integration Tests | `pnpm test:integration` | Runs Vitest integration tests (these may require `DATABASE_URL`) |
@@ -170,7 +171,26 @@ quality-checks + e2e
 
 ---
 
-### 4. `deploy-coverage-report`
+### 4. `sonarqube`
+
+**Purpose**: Analyze the source code and uploaded coverage data with SonarQube Cloud.
+
+**Depends on**: `test-coverage`
+
+**Steps:**
+
+| Step | What it does |
+|------|--------------|
+| Checkout code | Fetches the full repository history required by the scanner |
+| Download coverage artifact | Downloads the coverage report produced by `test-coverage` |
+| Verify coverage report | Fails if `coverage/lcov.info` is missing |
+| Run SonarQube Cloud Scan | Uploads source and coverage data using `SONAR_TOKEN` |
+
+**Why this job matters**: It provides the repository's static-analysis, reliability, security, and maintainability signal without blocking the coverage artifact publication or production deployment job.
+
+---
+
+### 5. `deploy-coverage-report`
 
 **Purpose**: Combine the coverage and E2E reports into a single static site and publish it to GitHub Pages.
 
@@ -201,7 +221,7 @@ quality-checks + e2e
 
 ---
 
-### 5. `deploy-production`
+### 6. `deploy-production`
 
 **Purpose**: Build and deploy the application to Vercel production.
 
@@ -226,7 +246,7 @@ quality-checks + e2e
 
 ---
 
-### 6. `semantic-release`
+### 7. `semantic-release`
 
 **Purpose**: Automatically determine the next version number, create a GitHub release, and update the changelog — based entirely on commit message conventions.
 
@@ -271,9 +291,11 @@ The pipeline relies on the following secrets configured in the repository's GitH
 | Secret | Used in | Purpose |
 |--------|---------|---------|
 | `DATABASE_URL` | `quality-checks`, `test-coverage`, `deploy-production` | Connection string for the Neon PostgreSQL database. Required by Prisma for type generation and migrations |
+| `DIRECT_URL` | `deploy-production` | Optional direct Neon connection string used for Prisma migrations; falls back to `DATABASE_URL` |
 | `VERCEL_TOKEN` | `deploy-production` | Personal access token for authenticating with the Vercel API |
 | `VERCEL_ORG_ID` | `deploy-production` | Identifies the Vercel organization/team |
 | `VERCEL_PROJECT_ID` | `deploy-production` | Identifies the specific Vercel project to deploy to |
+| `SONAR_TOKEN` | `sonarqube` | Authentication token for the SonarQube Cloud scan |
 | `GITHUB_TOKEN` | `semantic-release`, `deploy-coverage-report` | Automatically provided by GitHub Actions. Used by semantic-release to create tags and releases, and by `deploy-coverage-report` to clean up stale `github-pages` artifacts via the GitHub API |
 
 Codecov upload in `test-coverage` uses `codecov/codecov-action@v7` without an explicit token secret (`fail_ci_if_error: false`), relying on tokenless upload for public repos.

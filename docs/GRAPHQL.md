@@ -98,9 +98,12 @@ export default {
   generates: {
     'src/lib/graphql/generated/': {
       preset: 'client',
-      documentMode: 'string',  // Generates string docs for runtime validation
-      onlyOperationTypes: true,  // Only operation-specific types
-      preResolveTypes: true,     // Inline fragment types automatically
+      config: {
+        documentMode: 'string',  // Generates string docs for runtime validation
+        scalars: {
+          DateTime: 'string',
+        },
+      },
     },
   },
 };

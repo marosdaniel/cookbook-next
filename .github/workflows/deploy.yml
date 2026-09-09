@@ -35,7 +35,7 @@ permissions:
 jobs:
   quality-checks:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[ci skip]')"
+    if: "!contains(github.event.head_commit.message || '', '[skip ci]') && !contains(github.event.head_commit.message || '', '[ci skip]')"
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
@@ -65,7 +65,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run Biome Lint
-        run: pnpm lint:fix
+        run: pnpm lint
 
       - name: Verify GraphQL generated types
         run: pnpm codegen:check
@@ -82,6 +82,9 @@ jobs:
   e2e:
     needs: quality-checks
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
@@ -148,6 +151,9 @@ jobs:
   test-coverage:
     needs: quality-checks
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
@@ -218,6 +224,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -334,7 +341,7 @@ jobs:
         uses: actions/deploy-pages@v5
 
   deploy-production:
-    needs: [quality-checks, e2e]
+    needs: [quality-checks, e2e, sonarqube]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
@@ -405,7 +412,7 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL || secrets.DATABASE_URL }}
 
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"

@@ -42,7 +42,7 @@ Playwright config highlights
 The project ships `playwright.config.ts` which configures:
 
 - `baseURL` pointing to the local dev server (`http://127.0.0.1:3000`).
-- `webServer` section that runs `pnpm exec next dev --port 3000` when tests start.
+- `webServer` section that runs `NEXTAUTH_SECRET=... corepack pnpm exec next dev --hostname 127.0.0.1 --port 3000` when tests start. The test configuration supplies a local fallback secret when `NEXTAUTH_SECRET` is not set.
 - reporters: HTML, GitHub, and `json` (for CI summaries).
 - artifacts: `trace`, `screenshot` and `video` policy on failure.
 
