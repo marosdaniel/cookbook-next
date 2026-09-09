@@ -1,3 +1,10 @@
+# [2.92.0](https://github.com/marosdaniel/cookbook-next/compare/v2.91.0...v2.92.0) (2026-09-09)
+
+
+### Features
+
+* Add unit translation for ingredients in RecipeIngredients component ([7e72c8e](https://github.com/marosdaniel/cookbook-next/commit/7e72c8edfc46754ea266aaa580d00d91738c3403))
+
 # [2.91.0](https://github.com/marosdaniel/cookbook-next/compare/v2.90.0...v2.91.0) (2026-09-09)
 
 
