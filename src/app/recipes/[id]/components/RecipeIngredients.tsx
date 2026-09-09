@@ -13,6 +13,7 @@ import {
 import { IconMinus, IconPlus } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
+import { METADATA_DEFINITIONS } from '../../../../lib/metadata/definitions';
 import { MOTION_TRANSITION } from '../../../../lib/motion/transitions';
 import classes from '../RecipeDetail.module.css';
 import type { RecipeIngredientsProps } from '../types';
@@ -32,6 +33,7 @@ export const RecipeIngredients = ({
 }: Readonly<RecipeIngredientsProps>) => {
   const translate = useTranslations('recipeDetail');
   const translateIngredients = useTranslations('recipeIngredients');
+  const translateMisc = useTranslations('misc');
 
   return (
     <Paper
@@ -127,6 +129,13 @@ export const RecipeIngredients = ({
             ingredient.quantity,
             servingMultiplier,
           );
+          const unitDefinition = METADATA_DEFINITIONS.find(
+            (definition) =>
+              definition.type === 'UNIT' && definition.key === ingredient.unit,
+          );
+          const translatedUnit = unitDefinition
+            ? translateMisc(unitDefinition.translationKey)
+            : ingredient.unit;
 
           return (
             <motion.div
@@ -168,7 +177,7 @@ export const RecipeIngredients = ({
                       </motion.span>
                     </AnimatePresence>
                     <Text component="span" fw={700} ml={4}>
-                      {ingredient.unit}
+                      {translatedUnit}
                     </Text>{' '}
                     {ingredient.name}
                   </Text>

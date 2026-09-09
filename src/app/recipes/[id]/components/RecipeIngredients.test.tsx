@@ -11,6 +11,8 @@ vi.mock('next-intl', () => ({
       servings: 'Servings',
       decreaseServings: 'Decrease servings',
       increaseServings: 'Increase servings',
+      'unit-g': 'g',
+      'unit-ml': 'ml',
     };
 
     return translations[key] || key;
@@ -49,6 +51,8 @@ describe('RecipeIngredients', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('Salt')).toBeInTheDocument();
     expect(screen.getByText('Oil')).toBeInTheDocument();
+    expect(screen.getByText('g')).toBeInTheDocument();
+    expect(screen.getByText('ml')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('recipe-ingredients-decrease'));
     fireEvent.click(screen.getByTestId('recipe-ingredients-increase'));
