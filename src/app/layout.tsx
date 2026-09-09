@@ -1,4 +1,3 @@
-import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata, Viewport } from 'next';
 import { getLocaleMessages } from '@/lib/locale/locale';
 import { getSiteUrl } from '@/lib/seo/site';
@@ -91,7 +90,6 @@ export default async function RootLayout(props: Readonly<PropsWithChildren>) {
   return (
     <html lang={locale}>
       <body suppressHydrationWarning>
-        <SpeedInsights />
         <ServerProviders>
           <ClientProviders messages={messages} locale={locale}>
             <Shell>{props.children}</Shell>

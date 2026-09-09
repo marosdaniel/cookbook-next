@@ -33,10 +33,6 @@ vi.mock('@/components/Shell', () => ({
   ),
 }));
 
-vi.mock('@vercel/speed-insights/next', () => ({
-  SpeedInsights: () => <div data-testid="speed-insights" />,
-}));
-
 import type { ReactNode } from 'react';
 import RootLayout, { generateMetadata } from './layout';
 

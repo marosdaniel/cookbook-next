@@ -3,6 +3,38 @@
 > **Dátum**: 2026-08-30
 > **Stack-kontextus**: `motion@13` (`motion/react` import), globális `MotionConfig reducedMotion="user"`, közös [transitions.ts](../src/lib/motion/transitions.ts) (`MOTION_TRANSITION.fast/standard/slow/interactive`), [MotionContainer](../src/lib/motion/components.ts). Szigorú, **nonce-alapú CSP** (proxy generálja) — lásd 1.3.
 
+## Megvalósítási státusz — 2026-09-09
+
+A terv P1-es motion-feladatai és a P2-es polish-elemek lefejlesztésre kerültek. Az animált részek célzott klienskomponensek maradtak, a meglévő `MotionConfig reducedMotion="user"` beállítást használják, és az új scroll-reveal megoldások StrictMode-kompatibilis `useInView` + `animate` mintát követnek.
+
+### Elkészült
+
+- **Közös motion alapok**: `Reveal` scroll-reveal wrapper és a `listVariants` / `listItemVariants` lista-variánsok elkészültek.
+- **RecipeGrid**: skeleton → tartalom crossfade, staggerelt kártyabelépés, kilépési animáció, desktopon `layout` átrendezés, mobilon layout-animáció nélküli belépés, valamint `whileTap` visszajelzés.
+- **RecipesPage / RecipeSearch**: a keresési eredményblokk és a fejlett szűrők nyitása-zárása `AnimatePresence` height-collapse + opacity animációt kapott.
+- **HomePage**: a legfrissebb receptek és a nemrég megtekintett receptek szekciója `Reveal` wrapperrel jelenik meg; a carousel-slide-ok továbbra is az Embla animációját használják.
+- **BackToTop**: 600px scrollpozíció után jelenik meg, 44px-es touch targettel, és redukált mozgásnál automatikus görgetést használ.
+- **EmptyState**: egységes, lokalizálható üres állapot ikon-, cím-, leírás- és opcionális CTA-támogatással; az ikon animációja viewport- és reduced-motion-guardot kapott. Használatba került a recipe gridben, a keresési nézetben, a kedvenceknél, a saját recepteknél és a követéseknél.
+- **Page transition**: létrejött a minimális route-entry fade a [template.tsx](../src/app/template.tsx) fájlban.
+- **Vizuális polish**: létrejött a közös `SectionTitle`; a Logo és az AuthButton fókuszgyűrűje az animált wrapperre került; a RecipeCard hover-liftje CSS-ben maradt, a motion csak belépést, kilépést és tap-visszajelzést kezel.
+- **Dark theme**: a Mantine provider már a tényleges színséma alapján választja a `darkTheme` / `lightTheme` témát.
+
+### Tudatosan változatlan
+
+- A Mantine modal/drawer transitionök megmaradtak Mantine-komponensként.
+- A carousel-slide-ok nem kaptak külön scroll-reveal animációt.
+- A Footer külön redesign-terv szerint kezelendő; a jelenlegi motion-bevezetés nem módosította a footer információs struktúráját.
+
+### Ellenőrzés
+
+- `pnpm test:unit`: **169 tesztfájl, 866 teszt sikeres**.
+- `pnpm typecheck`: **hibamentes**.
+- `pnpm lint`: **hibamentes** a motion upgrade által érintett kódban; a korábban meglévő két tesztmock `noExplicitAny` figyelmeztetése megmaradt.
+- `pnpm format`: **hibamentes**.
+- `pnpm build`: **sikeres production build** Next.js 16 / Turbopack alatt.
+- SonarQube elemzés: **nem talált új problémát** az érintett motion-komponensekben.
+- A releváns új komponensekhez unit tesztek készültek: `Reveal`, motion variánsok, `BackToTop`, `EmptyState`, `SectionTitle` és a route template.
+
 ---
 
 ## 1. Motion audit — jelenlegi állapot
@@ -21,15 +53,15 @@
 
 | # | Hely | Hiány | UX-indok (miért nem dekoráció) |
 |---|---|---|---|
-| M1 | RecipeCard + listák | Nincs belépő/hover motion, nincs lista-átrendezési animáció | A szűrés/rendezés/Load More eredménye ma „ugrik” — az animáció **vizuális kontinuitást** ad: a user látja, mi került be/ki, nem veszti el a kontextust |
-| M2 | RecipesPage szűrősáv | Mantine `Transition` (abrupt) | Az `AnimatePresence` height-collapse jelzi, hogy a tartalom *ugyanaz maradt*, csak a szűrő nyílt/záródott |
-| M3 | Skeleton → tartalom | Hard swap | Crossfade csökkenti az észlelt betöltési időt (perceived performance) |
-| M4 | HomePage carousel + szekciók | Statikus | Scroll-reveal irányítja a figyelmet a fold alatti tartalomra |
+| M1 | RecipeCard + listák | ✅ Belépő, exit, tap és desktop lista-átrendezési motion elkészült | A szűrés/rendezés/Load More eredménye ma „ugrik” — az animáció **vizuális kontinuitást** ad: a user látja, mi került be/ki, nem veszti el a kontextust |
+| M2 | RecipesPage szűrősáv | ✅ `AnimatePresence` height-collapse + opacity | Az `AnimatePresence` height-collapse jelzi, hogy a tartalom *ugyanaz maradt*, csak a szűrő nyílt/záródott |
+| M3 | Skeleton → tartalom | ✅ Crossfade a `RecipeGrid`-ben | Crossfade csökkenti az észlelt betöltési időt (perceived performance) |
+| M4 | HomePage carousel + szekciók | ✅ Szekciónkénti `Reveal` | Scroll-reveal irányítja a figyelmet a fold alatti tartalomra |
 | M5 | Footer | Statikus | Lásd [footer-redesign-2026-08-30.md](footer-redesign-2026-08-30.md) |
-| M6 | Back-to-top gomb | Nincs | Hosszú listáknál (RecipesPage) navigációs alapfunkció |
-| M7 | Üres állapotok | Nincs egységes EmptyState | Az üres lista ma „hibának” tűnhet; animált empty state megnyugtat + akciót ajánl |
+| M6 | Back-to-top gomb | ✅ Scroll-küszöb, entry/exit motion, reduced-motion guard | Hosszú listáknál (RecipesPage) navigációs alapfunkció |
+| M7 | Üres állapotok | ✅ Közös, animált `EmptyState` CTA-támogatással | Az üres lista ma „hibának” tűnhet; animált empty state megnyugtat + akciót ajánl |
 | M8 | Modal/Drawer | Mantine beépített transition | **Nem bántjuk** — a Mantine transitionök konzisztensek és CSP-safe-ek; motionre cserélni öncélú lenne |
-| M9 | Page transition | Nincs | Csak minimál fade-et javaslunk (1.4) — az agresszív route-transition App Routerben törékeny |
+| M9 | Page transition | ✅ Minimális route-entry fade `template.tsx`-szel | Csak minimál fade-et javaslunk (1.4) — az agresszív route-transition App Routerben törékeny |
 
 ### 1.3 Keretfeltételek (minden javaslatra érvényes)
 
