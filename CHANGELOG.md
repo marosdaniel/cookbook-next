@@ -1,3 +1,10 @@
+# [2.91.0](https://github.com/marosdaniel/cookbook-next/compare/v2.90.0...v2.91.0) (2026-09-09)
+
+
+### Features
+
+* Remove SpeedInsights component from layout for cleaner rendering ([a48301c](https://github.com/marosdaniel/cookbook-next/commit/a48301c39833bb033a47238006f9d32e9be98b33))
+
 # [2.90.0](https://github.com/marosdaniel/cookbook-next/compare/v2.89.0...v2.90.0) (2026-09-09)
 
 
