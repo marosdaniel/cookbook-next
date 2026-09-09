@@ -2,10 +2,12 @@ import { describe, expect, it } from 'vitest';
 import type { MetadataOption, RecipeFormValues } from './types';
 import {
   computeCompletion,
+  DRAFT_MAX_AGE_MS,
   getProgressColor,
   getPublishButtonState,
   getPublishButtonTooltip,
   getStatusColor,
+  isDraftExpired,
   sectionCompletion,
   toCleanedOptions,
   transformValuesToInput,
@@ -346,5 +348,25 @@ describe('getStatusColor', () => {
 
   it('should return gray for inactive and not complete', () => {
     expect(getStatusColor(false, false)).toBe('gray');
+  });
+});
+
+describe('isDraftExpired', () => {
+  it('returns true when updatedAt is missing or null or 0', () => {
+    expect(isDraftExpired(undefined)).toBe(true);
+    expect(isDraftExpired(null)).toBe(true);
+    expect(isDraftExpired(0)).toBe(true);
+  });
+
+  it('returns false when draft was updated recently within max age', () => {
+    const now = 1_000_000_000_000;
+    const updatedAt = now - (DRAFT_MAX_AGE_MS - 1000);
+    expect(isDraftExpired(updatedAt, now)).toBe(false);
+  });
+
+  it('returns true when draft is older than 7 days', () => {
+    const now = 1_000_000_000_000;
+    const updatedAt = now - (DRAFT_MAX_AGE_MS + 1000);
+    expect(isDraftExpired(updatedAt, now)).toBe(true);
   });
 });

@@ -26,6 +26,7 @@ import {
   computeCompletion,
   DRAFT_STORAGE_KEY,
   EMPTY_FORM_VALUES,
+  isDraftExpired,
   transformValuesToInput,
 } from '../utils';
 
@@ -58,16 +59,6 @@ export const useRecipeForm = ({
     });
   const [now, setNow] = useState<number>(() => Date.now());
 
-  const form = useRecipeFormHook({
-    mode: 'controlled',
-    initialValues: draft?.values ?? EMPTY_FORM_VALUES,
-    validate: zodResolver(recipeFormValidationSchema, (key) => translate(key)),
-    validateInputOnBlur: true,
-  });
-
-  const formRef = useRef(form);
-  formRef.current = form;
-
   const setDraft = useCallback(
     (nextDraft: DraftState | null) => {
       setDraftState(nextDraft);
@@ -78,11 +69,68 @@ export const useRecipeForm = ({
     [removeDraft, setDraftState],
   );
 
+  const activeDraft = useMemo(() => {
+    if (!draft) return null;
+    if (isDraftExpired(draft.updatedAt, now)) {
+      return null;
+    }
+    return draft;
+  }, [draft, now]);
+
+  useEffect(() => {
+    if (draft && isDraftExpired(draft.updatedAt, Date.now())) {
+      setDraft(null);
+    }
+  }, [draft, setDraft]);
+
+  const form = useRecipeFormHook({
+    mode: 'controlled',
+    initialValues: activeDraft?.values ?? EMPTY_FORM_VALUES,
+    validate: zodResolver(recipeFormValidationSchema, (key) => translate(key)),
+    validateInputOnBlur: true,
+  });
+
+  const formRef = useRef(form);
+  formRef.current = form;
+
+  const completion = useMemo(
+    () => computeCompletion(form.values),
+    [form.values],
+  );
+
+  const [debouncedValues, cancelDebouncedDraftSave] = useDebouncedValue(
+    form.values,
+    AUTOSAVE_DELAY_MS,
+  );
+
+  const resetDraft = useCallback(
+    (options?: { showNotification?: boolean }) => {
+      const currentForm = formRef.current;
+
+      cancelDebouncedDraftSave();
+
+      setDraft(null);
+
+      currentForm.setValues(EMPTY_FORM_VALUES);
+      currentForm.resetDirty(EMPTY_FORM_VALUES);
+
+      onSectionChange('basics');
+
+      if (options?.showNotification ?? true) {
+        showNeutralNotification(
+          translate('notifications.draftClearedTitle'),
+          translate('notifications.draftClearedMessage'),
+        );
+      }
+    },
+    [cancelDebouncedDraftSave, onSectionChange, setDraft, translate],
+  );
+
   const [createRecipe, { loading: publishLoading }] = useMutation(
     CREATE_RECIPE,
     {
       onCompleted: async () => {
-        setDraft(null);
+        resetDraft({ showNotification: false });
 
         showSuccessNotification(
           translate('notifications.recipeCreatedTitle'),
@@ -100,16 +148,6 @@ export const useRecipeForm = ({
         );
       },
     },
-  );
-
-  const completion = useMemo(
-    () => computeCompletion(form.values),
-    [form.values],
-  );
-
-  const [debouncedValues, cancelDebouncedDraftSave] = useDebouncedValue(
-    form.values,
-    AUTOSAVE_DELAY_MS,
   );
 
   useEffect(() => {
@@ -194,24 +232,6 @@ export const useRecipeForm = ({
       withBorder: true,
     });
   }, [cancelDebouncedDraftSave, setDraft, translate]);
-
-  const resetDraft = useCallback(() => {
-    const currentForm = formRef.current;
-
-    cancelDebouncedDraftSave();
-
-    setDraft(null);
-
-    currentForm.setValues(EMPTY_FORM_VALUES);
-    currentForm.resetDirty(EMPTY_FORM_VALUES);
-
-    onSectionChange('basics');
-
-    showNeutralNotification(
-      translate('notifications.draftClearedTitle'),
-      translate('notifications.draftClearedMessage'),
-    );
-  }, [cancelDebouncedDraftSave, onSectionChange, setDraft, translate]);
 
   const addIngredient = useCallback(() => {
     const currentForm = formRef.current;

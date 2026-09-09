@@ -50,6 +50,13 @@ vi.mock('../utils', () => ({
   computeCompletion: vi.fn(() => ({ done: 5, total: 8, percent: 62 })),
   transformValuesToInput: vi.fn((values) => values),
   DRAFT_STORAGE_KEY: 'cookbook:create:draft:v2',
+  DRAFT_MAX_AGE_MS: 7 * 24 * 60 * 60 * 1000,
+  isDraftExpired: vi.fn(
+    (updatedAt: number | undefined | null, now = Date.now()) => {
+      if (!updatedAt) return true;
+      return now - updatedAt > 7 * 24 * 60 * 60 * 1000;
+    },
+  ),
   EMPTY_FORM_VALUES: {
     title: '',
     description: '',
@@ -201,7 +208,7 @@ describe('useRecipeForm', () => {
     );
   });
 
-  it('should initialize with draft values when draft exists', () => {
+  it('should initialize with draft values when draft exists and is not expired', () => {
     const draftValues = { title: 'Draft Recipe', ingredients: [] };
     vi.mocked(useLocalStorage).mockImplementation(
       () =>
@@ -219,6 +226,30 @@ describe('useRecipeForm', () => {
         initialValues: draftValues,
       }),
     );
+  });
+
+  it('should clear draft and initialize with empty values when draft is expired', () => {
+    const draftValues = { title: 'Old Draft Recipe', ingredients: [] };
+    const eightDaysAgo = Date.now() - 8 * 24 * 60 * 60 * 1000;
+    vi.mocked(useLocalStorage).mockImplementation(
+      () =>
+        [
+          { values: draftValues, updatedAt: eightDaysAgo },
+          setDraft,
+          removeDraft,
+        ] as never,
+    );
+
+    renderHook(() => useRecipeForm(mockProps));
+
+    expect(vi.mocked(useRecipeFormHook)).toHaveBeenCalledWith(
+      expect.objectContaining({
+        initialValues: expect.objectContaining({
+          title: '',
+        }),
+      }),
+    );
+    expect(setDraft).toHaveBeenCalledWith(null);
   });
 
   it('should add ingredient', () => {
@@ -367,6 +398,18 @@ describe('useRecipeForm', () => {
     });
 
     expect(setDraft).toHaveBeenCalledWith(null);
+    expect(mockForm.setValues).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: '',
+        ingredients: [],
+      }),
+    );
+    expect(mockForm.resetDirty).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: '',
+        ingredients: [],
+      }),
+    );
     expect(refetchQueries).toHaveBeenCalledWith({
       include: ['getRecipesByUserId'],
     });

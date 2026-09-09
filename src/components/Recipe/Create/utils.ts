@@ -7,9 +7,18 @@ import type {
 
 /* ─── Constants ───────────────────────────────── */
 export const DRAFT_STORAGE_KEY = 'cookbook:create:draft:v2';
+export const DRAFT_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 export const DESCRIPTION_MAX_LENGTH = 500;
 export const SEO_TITLE_MAX_LENGTH = 60;
 export const SEO_DESCRIPTION_MAX_LENGTH = 160;
+
+export const isDraftExpired = (
+  updatedAt: number | undefined | null,
+  now = Date.now(),
+): boolean => {
+  if (!updatedAt) return true;
+  return now - updatedAt > DRAFT_MAX_AGE_MS;
+};
 
 /* ─── Helpers ─────────────────────────────────── */
 export const computeCompletion = (values: RecipeFormValues) => {
