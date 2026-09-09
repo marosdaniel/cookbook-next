@@ -12,6 +12,12 @@ export const DESCRIPTION_MAX_LENGTH = 500;
 export const SEO_TITLE_MAX_LENGTH = 60;
 export const SEO_DESCRIPTION_MAX_LENGTH = 160;
 
+export const clearRecipeDraft = (): void => {
+  if (typeof window !== 'undefined') {
+    window.localStorage.removeItem(DRAFT_STORAGE_KEY);
+  }
+};
+
 export const isDraftExpired = (
   updatedAt: number | undefined | null,
   now = Date.now(),

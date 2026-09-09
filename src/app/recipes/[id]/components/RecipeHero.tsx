@@ -32,7 +32,8 @@ export const RecipeHero = ({ recipe, isOwner }: Readonly<RecipeHeroProps>) => {
   const translate = useTranslations('recipeDetail');
   const translateMisc = useTranslations('misc');
 
-  const editHref = `${PUBLIC_ROUTES.RECIPES}/${recipe.id}/edit` as Route;
+  const editHref =
+    `${PUBLIC_ROUTES.RECIPES}/${recipe.slug || recipe.id}/edit` as Route;
 
   return (
     <Box className={classes.hero} data-testid="recipe-hero">

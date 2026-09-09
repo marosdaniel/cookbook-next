@@ -9,6 +9,7 @@ const mocks = vi.hoisted(() => ({
   useQuery: vi.fn(),
   useRecipeEditForm: vi.fn(),
   useRecipeMetadata: vi.fn(),
+  clearRecipeDraft: vi.fn(),
 }));
 
 vi.mock('next/navigation', () => ({
@@ -76,6 +77,7 @@ vi.mock('@/components/Recipe/Create/RecipeComposer', () => ({
 }));
 
 vi.mock('@/components/Recipe/Create/utils', () => ({
+  clearRecipeDraft: mocks.clearRecipeDraft,
   EMPTY_FORM_VALUES: {
     title: '',
     description: '',
@@ -156,6 +158,22 @@ describe('RecipeEditClient', () => {
     expect(screen.getByTestId('recipe-edit-error-state')).toBeInTheDocument();
     expect(screen.getByText('Failed to load recipe')).toBeInTheDocument();
     expect(screen.getByText('Request failed')).toBeInTheDocument();
+  });
+
+  it('clears the create draft when the edit page mounts', () => {
+    mocks.useSession.mockReturnValue({
+      data: { user: { id: 'user-1' } },
+      status: 'authenticated',
+    });
+    mocks.useQuery.mockReturnValue({
+      data: { getRecipeById: null },
+      loading: false,
+      error: undefined,
+    });
+
+    render(<RecipeEditClient recipeId="recipe-1" />);
+
+    expect(mocks.clearRecipeDraft).toHaveBeenCalledTimes(1);
   });
 
   it('renders the not-found state when the recipe is missing', () => {

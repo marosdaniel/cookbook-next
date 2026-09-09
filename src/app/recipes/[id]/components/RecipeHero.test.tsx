@@ -69,12 +69,28 @@ describe('RecipeHero', () => {
     );
     expect(screen.getByTestId('recipe-hero-image')).toBeInTheDocument();
     expect(screen.getByTestId('recipe-hero-edit-action')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('recipe-hero-edit-action').querySelector('a'),
+    ).toHaveAttribute('href', '/recipes/recipe-1/edit');
     expect(screen.getByText('Main')).toBeInTheDocument();
     expect(screen.getByText('Easy')).toBeInTheDocument();
     expect(screen.getByText('Healthy')).toBeInTheDocument();
     expect(screen.getByText('Cook 20')).toBeInTheDocument();
     expect(screen.getByText('Serves 4')).toBeInTheDocument();
     expect(screen.getByText('4.5 (3)')).toBeInTheDocument();
+  });
+
+  it('uses the recipe slug in the edit link when available', () => {
+    render(
+      <RecipeHero
+        recipe={{ ...recipe, slug: 'pasta-primavera' } as never}
+        isOwner
+      />,
+    );
+
+    expect(
+      screen.getByTestId('recipe-hero-edit-action').querySelector('a'),
+    ).toHaveAttribute('href', '/recipes/pasta-primavera/edit');
   });
 
   it('renders the placeholder state and hides the edit action when the user is not the owner', () => {

@@ -11,6 +11,7 @@ import { useRecipeMetadata } from '@/components/Recipe/Create/hooks/useRecipeMet
 import RecipeComposer from '@/components/Recipe/Create/RecipeComposer';
 import type { ComposerSection } from '@/components/Recipe/Create/types';
 import {
+  clearRecipeDraft,
   EMPTY_FORM_VALUES,
   recipeToFormValues,
 } from '@/components/Recipe/Create/utils';
@@ -21,6 +22,10 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
   const router = useRouter();
   const { data: session, status: authStatus } = useSession();
   const translate = useTranslations('recipeEdit');
+
+  useEffect(() => {
+    clearRecipeDraft();
+  }, []);
 
   useEffect(() => {
     if (authStatus === 'unauthenticated') {

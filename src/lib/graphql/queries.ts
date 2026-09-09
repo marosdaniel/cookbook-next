@@ -137,6 +137,7 @@ export const GET_RECIPE_BY_ID: TypedDocumentNode<
       youtubeLink
       createdBy
       author {
+         id
         userName
         firstName
         lastName

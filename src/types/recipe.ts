@@ -66,6 +66,7 @@ export interface RecipeBase {
 
   // Author details (populated optionally)
   author?: {
+    id: string;
     userName: string;
     firstName: string;
     lastName: string;
