@@ -1,3 +1,11 @@
+# [2.90.0](https://github.com/marosdaniel/cookbook-next/compare/v2.89.0...v2.90.0) (2026-09-09)
+
+
+### Features
+
+* Add author details to RecipeHero and related components, enhance route checks for immersive editing ([d36fe69](https://github.com/marosdaniel/cookbook-next/commit/d36fe6907493990641c756e85e447464d3d89ef3))
+* Enhance RecipeHero and RecipeEditClient with slug-based edit links, clear draft on mount, and update GraphQL types for author details ([e68ef6f](https://github.com/marosdaniel/cookbook-next/commit/e68ef6fb4e161f25ddc6f5a01151f47dd8738f24))
+
 # [2.89.0](https://github.com/marosdaniel/cookbook-next/compare/v2.88.0...v2.89.0) (2026-09-09)
 
 
