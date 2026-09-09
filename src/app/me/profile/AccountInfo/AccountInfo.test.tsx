@@ -34,4 +34,45 @@ describe('AccountInfo', () => {
     expect(screen.getByText('user.roleAdmin')).toBeInTheDocument();
     expect(screen.getByText('user.memberSince')).toBeInTheDocument();
   });
+
+  it.each([
+    ['BLOGGER', 'user.roleBlogger'],
+    ['USER', 'user.roleUser'],
+    ['UNKNOWN', 'user.roleUser'],
+  ])('renders the correct label for %s roles', (role, label) => {
+    const user: ProfileUser = {
+      id: 'user-1',
+      firstName: 'Ada',
+      lastName: 'Lovelace',
+      userName: 'ada',
+      email: 'ada@example.com',
+      role,
+      locale: 'en_GB',
+      createdAt: '',
+      updatedAt: '',
+    };
+
+    render(<AccountInfo user={user} loading={true} />);
+
+    expect(screen.getByText(label)).toBeInTheDocument();
+    expect(screen.getByTestId('account-info-content')).toBeInTheDocument();
+  });
+
+  it('renders empty date values when dates are missing', () => {
+    const user: ProfileUser = {
+      id: 'user-1',
+      firstName: 'Ada',
+      lastName: 'Lovelace',
+      userName: 'ada',
+      email: 'ada@example.com',
+      role: 'USER',
+      locale: 'en_GB',
+      createdAt: '',
+      updatedAt: '',
+    };
+
+    render(<AccountInfo user={user} loading={false} />);
+
+    expect(screen.getByTestId('account-info-content')).toBeInTheDocument();
+  });
 });

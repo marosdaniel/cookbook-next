@@ -50,10 +50,21 @@ describe('FavoriteButton', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(useSession).mockReturnValue({
-      data: { user: { id: 'user-1' } },
+      data: {
+        user: {
+          id: 'user-1',
+          userName: 'test-user',
+          firstName: 'Test',
+          lastName: 'User',
+          role: 'USER',
+          locale: 'en-gb',
+          email: 'test@example.com',
+        },
+      },
+      expires: '2099-01-01T00:00:00.000Z',
       status: 'authenticated',
       update: vi.fn(),
-    });
+    } as unknown as ReturnType<typeof useSession>);
     vi.mocked(useMutation).mockImplementation(
       () => [mockMutation, { loading: false }] as never,
     );
@@ -61,10 +72,21 @@ describe('FavoriteButton', () => {
 
   it('renders nothing when the session has no user id', () => {
     vi.mocked(useSession).mockReturnValue({
-      data: { user: {} },
+      data: {
+        user: {
+          id: '',
+          userName: 'test-user',
+          firstName: 'Test',
+          lastName: 'User',
+          role: 'USER',
+          locale: 'en-gb',
+          email: 'test@example.com',
+        },
+      },
+      expires: '2099-01-01T00:00:00.000Z',
       status: 'authenticated',
       update: vi.fn(),
-    });
+    } as unknown as ReturnType<typeof useSession>);
 
     render(<FavoriteButton recipeId="recipe-1" />);
 

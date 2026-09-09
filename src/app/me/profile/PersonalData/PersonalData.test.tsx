@@ -162,4 +162,64 @@ describe('PersonalData', () => {
       expect(mocks.notificationsShow).toHaveBeenCalled();
     });
   });
+
+  it('renders loading fields and hides edit while the user is loading', () => {
+    render(<PersonalData user={undefined} loading refetch={vi.fn()} />);
+
+    expect(screen.getByTestId('personal-data-form')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('personal-data-edit-button'),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('general.edit')).not.toBeInTheDocument();
+  });
+
+  it('cancels editing and returns to the read-only view', () => {
+    const user: ProfileUser = {
+      id: 'user-1',
+      firstName: 'Ada',
+      lastName: 'Lovelace',
+      userName: 'ada',
+      email: 'ada@example.com',
+      role: 'USER',
+      locale: 'en_GB',
+      createdAt: '2024-01-01T00:00:00.000Z',
+      updatedAt: '2024-02-01T00:00:00.000Z',
+    };
+
+    render(<PersonalData user={user} loading={false} refetch={vi.fn()} />);
+    fireEvent.click(screen.getByTestId('personal-data-edit-button'));
+    fireEvent.click(screen.getByRole('button', { name: 'general.cancel' }));
+
+    expect(screen.getByTestId('personal-data-edit-button')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'general.cancel' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows the fallback notification for an unsuccessful update response', async () => {
+    const updateUser = vi.fn().mockResolvedValue({
+      data: { updateUser: { success: false, message: 'not used' } },
+    });
+    mocks.useMutation.mockReturnValue([updateUser, { loading: false }]);
+    const user = {
+      id: 'user-1',
+      firstName: 'Ada',
+      lastName: 'Lovelace',
+      userName: 'ada',
+      email: 'ada@example.com',
+      role: 'USER',
+      locale: 'en_GB',
+      createdAt: '2024-01-01T00:00:00.000Z',
+      updatedAt: '2024-02-01T00:00:00.000Z',
+    } satisfies ProfileUser;
+
+    render(<PersonalData user={user} loading={false} refetch={vi.fn()} />);
+    fireEvent.click(screen.getByTestId('personal-data-edit-button'));
+    fireEvent.submit(screen.getByTestId('personal-data-form'));
+
+    await waitFor(() => expect(mocks.notificationsShow).toHaveBeenCalled());
+    expect(
+      screen.getByRole('button', { name: 'general.cancel' }),
+    ).toBeInTheDocument();
+  });
 });

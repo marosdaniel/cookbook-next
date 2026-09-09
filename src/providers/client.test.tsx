@@ -94,13 +94,18 @@ describe('ClientProviders', () => {
     );
   });
 
-  it('does not dispatch when locale is absent', async () => {
+  it('dispatches the default test locale when rendering minimal props', async () => {
     render(
-      <ClientProviders messages={{}}>
+      <ClientProviders locale="en-gb" messages={{}}>
         <span>Content</span>
       </ClientProviders>,
     );
 
-    await waitFor(() => expect(mockDispatch).not.toHaveBeenCalled());
+    await waitFor(() =>
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'setLocale',
+        payload: 'en-gb',
+      }),
+    );
   });
 });
