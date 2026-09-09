@@ -12,3 +12,19 @@
   background: transparent;
   opacity: 0.8;
 }
+
+.logoLink {
+  color: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  border-radius: var(--mantine-radius-sm);
+}
+
+.logoLink:focus-visible {
+  outline: 2px solid var(--mantine-primary-color-filled);
+  outline-offset: 2px;
+}
+
+.logoLink:focus:not(:focus-visible) {
+  outline: none;
+}

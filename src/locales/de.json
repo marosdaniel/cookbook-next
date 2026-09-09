@@ -47,7 +47,8 @@
     "theme": "Thema",
     "lightMode": "Heller Modus",
     "darkMode": "Dunkler Modus",
-    "toggleTheme": "Thema wechseln"
+    "toggleTheme": "Thema wechseln",
+    "backToTop": "Zurück nach oben"
   },
   "general": {
     "edit": "Bearbeiten",

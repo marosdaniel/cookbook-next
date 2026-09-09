@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { LOGO_SRC_DARK, LOGO_SRC_LIGHT } from './consts';
+import classes from './Logo.module.css';
 import type { LogoProps } from './types';
 
 const LOGO_TRANSITION = {
@@ -84,33 +85,32 @@ export const Logo = ({
   const isCurrentPage = pathname === href;
 
   return (
-    <motion.div
-      whileHover={isCurrentPage ? undefined : { scale: 1.025 }}
-      whileTap={isCurrentPage ? undefined : { scale: 0.98 }}
-      transition={LOGO_TRANSITION}
+    <Link
+      href={href}
       style={{
-        display: 'inline-flex',
-        transformOrigin: 'left center',
+        cursor: isCurrentPage ? 'default' : 'pointer',
       }}
+      className={classes.logoLink}
+      onClick={(event) => {
+        if (isCurrentPage) {
+          event.preventDefault();
+        }
+      }}
+      aria-current={isCurrentPage ? 'page' : undefined}
+      data-testid="logo-link"
     >
-      <Link
-        href={href}
+      <motion.div
+        whileHover={isCurrentPage ? undefined : { scale: 1.025 }}
+        whileTap={isCurrentPage ? undefined : { scale: 0.98 }}
+        transition={LOGO_TRANSITION}
         style={{
-          color: 'inherit',
-          cursor: isCurrentPage ? 'default' : 'pointer',
-          textDecoration: 'none',
+          display: 'inline-flex',
+          transformOrigin: 'left center',
         }}
-        onClick={(event) => {
-          if (isCurrentPage) {
-            event.preventDefault();
-          }
-        }}
-        aria-current={isCurrentPage ? 'page' : undefined}
-        data-testid="logo-link"
       >
         {logo}
-      </Link>
-    </motion.div>
+      </motion.div>
+    </Link>
   );
 };
 

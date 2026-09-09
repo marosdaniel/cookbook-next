@@ -2,7 +2,6 @@ import {
   ActionIcon,
   Box,
   Button,
-  Collapse,
   Group,
   MultiSelect,
   NumberInput,
@@ -20,8 +19,10 @@ import {
   IconSearch,
   IconX,
 } from '@tabler/icons-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
 
+import { MOTION_TRANSITION } from '@/lib/motion/transitions';
 import { zodResolver } from '@/lib/validation/zodResolver';
 import { DEFAULT_FILTERS, recipeSearchSchema } from './consts';
 import classes from './RecipeSearch.module.css';
@@ -114,83 +115,94 @@ const RecipeSearch = ({
           </Button>
         </Group>
 
-        <Collapse expanded={opened}>
-          <Box pt="sm">
-            <Group justify="space-between" mb="sm">
-              <Text fw={500} size="sm">
-                {translate('advancedFilters')}
-              </Text>
-              <Button
-                variant="subtle"
-                size="xs"
-                color="gray"
-                type="button"
-                onClick={handleClear}
-                rightSection={<IconX size={14} />}
-                data-testid="recipe-search-clear-filters"
-              >
-                {translate('clearFilters')}
-              </Button>
-            </Group>
-            <Group grow align="flex-start" className={classes.filterRow}>
-              <Select
-                label={translate('category')}
-                placeholder={translate('categoryPlaceholder')}
-                data={categoryOptions}
-                clearable
-                key={form.key('categoryKey')}
-                data-testid="recipe-search-category-select"
-                {...form.getInputProps('categoryKey')}
-              />
-              <Select
-                label={translate('difficulty')}
-                placeholder={translate('difficultyPlaceholder')}
-                data={difficultyOptions}
-                clearable
-                key={form.key('difficultyLevelKey')}
-                data-testid="recipe-search-difficulty-select"
-                {...form.getInputProps('difficultyLevelKey')}
-              />
-            </Group>
-            <Group
-              grow
-              align="flex-start"
-              mt="sm"
-              className={classes.filterRow}
+        <AnimatePresence initial={false}>
+          {opened && (
+            <motion.div
+              key="advanced-filters"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={MOTION_TRANSITION.standard}
+              style={{ overflow: 'hidden' }}
             >
-              <MultiSelect
-                label={translate('labels')}
-                placeholder={translate('labelsPlaceholder')}
-                data={labelOptions}
-                clearable
-                searchable
-                key={form.key('labelKeys')}
-                data-testid="recipe-search-labels-select"
-                {...form.getInputProps('labelKeys')}
-              />
-              <NumberInput
-                label={translate('maxCookingTime')}
-                placeholder={translate('maxCookingTimePlaceholder')}
-                min={0}
-                hideControls
-                key={form.key('maxCookingTime')}
-                data-testid="recipe-search-max-time-input"
-                {...form.getInputProps('maxCookingTime')}
-              />
-            </Group>
+              <Box pt="sm">
+                <Group justify="space-between" mb="sm">
+                  <Text fw={500} size="sm">
+                    {translate('advancedFilters')}
+                  </Text>
+                  <Button
+                    variant="subtle"
+                    size="xs"
+                    color="gray"
+                    type="button"
+                    onClick={handleClear}
+                    rightSection={<IconX size={14} />}
+                    data-testid="recipe-search-clear-filters"
+                  >
+                    {translate('clearFilters')}
+                  </Button>
+                </Group>
+                <Group grow align="flex-start" className={classes.filterRow}>
+                  <Select
+                    label={translate('category')}
+                    placeholder={translate('categoryPlaceholder')}
+                    data={categoryOptions}
+                    clearable
+                    key={form.key('categoryKey')}
+                    data-testid="recipe-search-category-select"
+                    {...form.getInputProps('categoryKey')}
+                  />
+                  <Select
+                    label={translate('difficulty')}
+                    placeholder={translate('difficultyPlaceholder')}
+                    data={difficultyOptions}
+                    clearable
+                    key={form.key('difficultyLevelKey')}
+                    data-testid="recipe-search-difficulty-select"
+                    {...form.getInputProps('difficultyLevelKey')}
+                  />
+                </Group>
+                <Group
+                  grow
+                  align="flex-start"
+                  mt="sm"
+                  className={classes.filterRow}
+                >
+                  <MultiSelect
+                    label={translate('labels')}
+                    placeholder={translate('labelsPlaceholder')}
+                    data={labelOptions}
+                    clearable
+                    searchable
+                    key={form.key('labelKeys')}
+                    data-testid="recipe-search-labels-select"
+                    {...form.getInputProps('labelKeys')}
+                  />
+                  <NumberInput
+                    label={translate('maxCookingTime')}
+                    placeholder={translate('maxCookingTimePlaceholder')}
+                    min={0}
+                    hideControls
+                    key={form.key('maxCookingTime')}
+                    data-testid="recipe-search-max-time-input"
+                    {...form.getInputProps('maxCookingTime')}
+                  />
+                </Group>
 
-            <Button
-              fullWidth
-              type="submit"
-              loading={loading}
-              mt="md"
-              className={classes.applyBtn}
-              data-testid="recipe-search-apply-filters"
-            >
-              {translate('applyFilters')}
-            </Button>
-          </Box>
-        </Collapse>
+                <Button
+                  fullWidth
+                  type="submit"
+                  loading={loading}
+                  mt="md"
+                  className={classes.applyBtn}
+                  data-testid="recipe-search-apply-filters"
+                >
+                  {translate('applyFilters')}
+                </Button>
+              </Box>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Stack>
     </Paper>
   );

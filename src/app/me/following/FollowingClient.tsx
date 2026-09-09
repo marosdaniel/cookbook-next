@@ -6,13 +6,11 @@ import {
   Box,
   Button,
   Card,
-  Center,
   Group,
   SimpleGrid,
   Skeleton,
   Stack,
   Text,
-  ThemeIcon,
   Tooltip,
 } from '@mantine/core';
 import {
@@ -27,6 +25,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
+import { EmptyState } from '@/components/EmptyState';
 import { RecipeCarousel } from '@/components/Recipe/RecipeCarousel';
 import StyledText from '@/components/StyledText';
 import { UNFOLLOW_USER } from '@/lib/graphql/mutations';
@@ -121,31 +120,22 @@ const FollowingClient = () => {
       )}
 
       {totalFollowing === 0 ? (
-        <Center py={60} data-testid="following-empty">
-          <Stack align="center" gap="md">
-            <ThemeIcon
-              size={80}
-              radius="xl"
-              variant="gradient"
-              gradient={{ from: 'pink.3', to: 'violet.3', deg: 45 }}
-            >
-              <IconUsers size={40} />
-            </ThemeIcon>
-            <Text c="dimmed" size="lg" ta="center" maw={400}>
-              {translate('noFollowingYet')}
-            </Text>
-            <Button
-              component={Link}
-              href={PUBLIC_ROUTES.RECIPES}
-              variant="gradient"
-              gradient={{ from: 'pink', to: 'violet', deg: 45 }}
-              size="lg"
-              mt="sm"
-            >
-              {translate('discoverChefs')}
-            </Button>
-          </Stack>
-        </Center>
+        <EmptyState
+          data-testid="following-empty"
+          icon={<IconUsers size={40} />}
+          iconSize={80}
+          iconVariant="gradient"
+          iconGradient={{ from: 'pink.3', to: 'violet.3', deg: 45 }}
+          title={translate('noFollowingYet')}
+          action={{
+            label: translate('discoverChefs'),
+            component: Link,
+            href: PUBLIC_ROUTES.RECIPES,
+            variant: 'gradient',
+            gradient: { from: 'pink', to: 'violet', deg: 45 },
+            size: 'lg',
+          }}
+        />
       ) : (
         <Stack gap="lg">
           {users.map((user) => (

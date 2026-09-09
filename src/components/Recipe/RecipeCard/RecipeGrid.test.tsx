@@ -33,6 +33,16 @@ vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => key,
 }));
 
+vi.mock('@/components/EmptyState', () => ({
+  EmptyState: ({
+    'data-testid': testId,
+    title,
+  }: {
+    'data-testid'?: string;
+    title?: ReactNode;
+  }) => <div data-testid={testId}>{title}</div>,
+}));
+
 vi.mock('./RecipeCard', () => ({
   default: ({
     recipe,

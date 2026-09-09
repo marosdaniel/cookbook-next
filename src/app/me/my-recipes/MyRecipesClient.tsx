@@ -3,7 +3,6 @@ import { useQuery } from '@apollo/client/react';
 import {
   Box,
   Button,
-  Center,
   Group,
   Paper,
   SimpleGrid,
@@ -23,6 +22,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
+import { EmptyState } from '@/components/EmptyState';
 import { RecipeGrid } from '@/components/Recipe/RecipeCard';
 import StyledText from '@/components/StyledText';
 import { GET_RECIPES_BY_USER_ID } from '@/lib/graphql/queries';
@@ -163,33 +163,24 @@ const MyRecipesClient = () => {
       )}
 
       {totalRecipes === 0 && !loading ? (
-        <Center py={60} data-testid="my-recipes-empty">
-          <Stack align="center" gap="md">
-            <ThemeIcon
-              size={80}
-              radius="xl"
-              variant="gradient"
-              gradient={{ from: 'pink.3', to: 'violet.3', deg: 45 }}
-            >
-              <IconChefHat size={40} />
-            </ThemeIcon>
-            <Text c="dimmed" size="lg" ta="center" maw={400}>
-              {t('noMyRecipesYet')}
-            </Text>
-            <Button
-              component={Link}
-              href={PROTECTED_ROUTES.RECIPES_CREATE}
-              leftSection={<IconPlus size={18} />}
-              variant="gradient"
-              gradient={{ from: 'pink', to: 'violet', deg: 45 }}
-              size="lg"
-              mt="sm"
-              data-testid="my-recipes-create-button"
-            >
-              {t('createFirstRecipe')}
-            </Button>
-          </Stack>
-        </Center>
+        <EmptyState
+          data-testid="my-recipes-empty"
+          icon={<IconChefHat size={40} />}
+          iconSize={80}
+          iconVariant="gradient"
+          iconGradient={{ from: 'pink.3', to: 'violet.3', deg: 45 }}
+          title={t('noMyRecipesYet')}
+          action={{
+            label: t('createFirstRecipe'),
+            component: Link,
+            href: PROTECTED_ROUTES.RECIPES_CREATE,
+            leftSection: <IconPlus size={18} />,
+            variant: 'gradient',
+            gradient: { from: 'pink', to: 'violet', deg: 45 },
+            size: 'lg',
+            'data-testid': 'my-recipes-create-button',
+          }}
+        />
       ) : (
         <RecipeGrid
           recipes={recipes}

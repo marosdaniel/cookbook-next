@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import type { RecipeCardData } from '@/components/Recipe/RecipeCard';
 import { RecipeCarousel } from '@/components/Recipe/RecipeCarousel';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
+import { Reveal } from '@/lib/motion/Reveal';
 import classes from './HomePage.module.css';
 import { MOCK_RECENTLY_VIEWED_RECIPES } from './mockRecentlyViewed';
 
@@ -23,45 +24,49 @@ const HomePage = () => {
 
   return (
     <Stack gap="xl" p="md" data-testid="home-page-root">
-      <Box className={classes.section} data-testid="latest-recipes-section">
-        <Box className={classes.sectionHeader}>
-          <Title order={1} size="h3">
-            <span className={classes.titleIcon}>
-              <IconFlame size={22} />
-            </span>
-            {translate('latestRecipes')}
-          </Title>
+      <Reveal delay={0}>
+        <Box className={classes.section} data-testid="latest-recipes-section">
+          <Box className={classes.sectionHeader}>
+            <Title order={1} size="h3">
+              <span className={classes.titleIcon}>
+                <IconFlame size={22} />
+              </span>
+              {translate('latestRecipes')}
+            </Title>
+          </Box>
+
+          <RecipeCarousel
+            loading={loading}
+            recipes={latestRecipes}
+            emptyMessage={translateHome('carouselEmpty')}
+            withFavorite
+          />
         </Box>
+      </Reveal>
 
-        <RecipeCarousel
-          loading={loading}
-          recipes={latestRecipes}
-          emptyMessage={translateHome('carouselEmpty')}
-          withFavorite
-        />
-      </Box>
+      <Reveal delay={0.05}>
+        <Box className={classes.section} data-testid="recently-viewed-section">
+          <Box className={classes.sectionHeader}>
+            <Title order={3}>
+              <span className={classes.titleIcon}>
+                <IconClockHour4 size={22} />
+              </span>
+              {translateHome('recentlyViewed')}
+            </Title>
+          </Box>
 
-      <Box className={classes.section} data-testid="recently-viewed-section">
-        <Box className={classes.sectionHeader}>
-          <Title order={3}>
-            <span className={classes.titleIcon}>
-              <IconClockHour4 size={22} />
-            </span>
-            {translateHome('recentlyViewed')}
-          </Title>
+          <RecipeCarousel
+            recipes={MOCK_RECENTLY_VIEWED_RECIPES}
+            withFavorite={false}
+          />
+
+          <Center mt="xs" data-testid="recently-viewed-hint">
+            <Text size="xs" c="dimmed" fs="italic">
+              {translateHome('recentlyViewedHint')}
+            </Text>
+          </Center>
         </Box>
-
-        <RecipeCarousel
-          recipes={MOCK_RECENTLY_VIEWED_RECIPES}
-          withFavorite={false}
-        />
-
-        <Center mt="xs" data-testid="recently-viewed-hint">
-          <Text size="xs" c="dimmed" fs="italic">
-            {translateHome('recentlyViewedHint')}
-          </Text>
-        </Center>
-      </Box>
+      </Reveal>
     </Stack>
   );
 };

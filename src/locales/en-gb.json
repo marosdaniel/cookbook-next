@@ -47,7 +47,8 @@
     "theme": "Theme",
     "lightMode": "Light mode",
     "darkMode": "Dark mode",
-    "toggleTheme": "Toggle theme"
+    "toggleTheme": "Toggle theme",
+    "backToTop": "Back to top"
   },
   "general": {
     "edit": "Edit",

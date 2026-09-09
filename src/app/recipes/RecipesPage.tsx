@@ -10,7 +10,6 @@ import {
   Stack,
   Text,
   Title,
-  Transition,
 } from '@mantine/core';
 import {
   IconChefHat,
@@ -18,9 +17,11 @@ import {
   IconRotateClockwise2,
   IconSearch,
 } from '@tabler/icons-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { type FC, useCallback, useMemo } from 'react';
+import { EmptyState } from '@/components/EmptyState';
 import { toCleanedOptions } from '@/components/Recipe/Create/utils';
 import type { RecipeCardData } from '@/components/Recipe/RecipeCard';
 import { RecipeGrid } from '@/components/Recipe/RecipeCard';
@@ -34,6 +35,7 @@ import RecipeSearch, {
 } from '@/components/Recipe/RecipeSearch';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
 import { METADATA_DEFINITIONS } from '@/lib/metadata/definitions';
+import { MOTION_TRANSITION } from '@/lib/motion/transitions';
 import { recipeSearchRoute } from '../../types/routes';
 import classes from '../HomePage.module.css';
 
@@ -145,49 +147,52 @@ const RecipesPage: FC = () => {
           loading={loading}
         />
 
-        <Transition
-          mounted={searching}
-          transition="fade"
-          duration={200}
-          exitDuration={150}
-        >
-          {(styles) => (
-            <Box
-              component="section"
-              style={styles}
-              data-testid="recipe-search-results-section"
+        <AnimatePresence initial={false}>
+          {searching && (
+            <motion.div
+              key="search-results"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={MOTION_TRANSITION.standard}
+              style={{ overflow: 'hidden' }}
             >
-              <Group justify="space-between" mb="md">
-                <Group gap="xs">
-                  <IconSearch size={20} color="var(--mantine-color-pink-6)" />
-                  <Title order={2} size="h3">
-                    {translateRecipeSearch('searchResults')}
-                  </Title>
+              <Box
+                component="section"
+                data-testid="recipe-search-results-section"
+              >
+                <Group justify="space-between" mb="md">
+                  <Group gap="xs">
+                    <IconSearch size={20} color="var(--mantine-color-pink-6)" />
+                    <Title order={2} size="h3">
+                      {translateRecipeSearch('searchResults')}
+                    </Title>
+                  </Group>
+                  {!loading && (
+                    <Text c="dimmed" size="sm">
+                      {translateRecipeSearch('totalResults', {
+                        count: totalRecipes,
+                      })}
+                    </Text>
+                  )}
                 </Group>
-                {!loading && (
-                  <Text c="dimmed" size="sm">
-                    {translateRecipeSearch('totalResults', {
-                      count: totalRecipes,
-                    })}
-                  </Text>
+                <RecipeGrid
+                  loading={loading}
+                  recipes={recipes}
+                  emptyMessage={translateRecipeSearch('noResults')}
+                  withFavorite
+                />
+                {hasNextPage && (
+                  <Center mt="lg">
+                    <Button onClick={handleLoadMore} loading={loading}>
+                      {translateRecipeSearch('loadMore')}
+                    </Button>
+                  </Center>
                 )}
-              </Group>
-              <RecipeGrid
-                loading={loading}
-                recipes={recipes}
-                emptyMessage={translateRecipeSearch('noResults')}
-                withFavorite
-              />
-              {hasNextPage && (
-                <Center mt="lg">
-                  <Button onClick={handleLoadMore} loading={loading}>
-                    {translateRecipeSearch('loadMore')}
-                  </Button>
-                </Center>
-              )}
-            </Box>
+              </Box>
+            </motion.div>
           )}
-        </Transition>
+        </AnimatePresence>
 
         {!searching && (
           <Box component="section" className={classes.section}>
@@ -205,17 +210,15 @@ const RecipesPage: FC = () => {
               </Title>
             </Box>
             {recipes.length === 0 && !loading ? (
-              <Center py="xl">
-                <Stack align="center" gap="xs">
+              <EmptyState
+                icon={
                   <IconMoodSmile
                     size={48}
                     color="var(--mantine-color-dimmed)"
                   />
-                  <Text c="dimmed" size="lg" ta="center">
-                    {translateRecipeSearch('noRecipes')}
-                  </Text>
-                </Stack>
-              </Center>
+                }
+                title={translateRecipeSearch('noRecipes')}
+              />
             ) : (
               <RecipeCarousel
                 loading={loading}

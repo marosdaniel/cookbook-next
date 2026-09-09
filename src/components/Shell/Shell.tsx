@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import type { FC, PropsWithChildren } from 'react';
 import { isAuthRoute, PROTECTED_ROUTES, PUBLIC_ROUTES } from '@/types/routes';
+import BackToTop from '../BackToTop';
 import AuthButton from '../buttons/AuthButton';
 import Footer from '../Footer';
 import { HeaderSearch } from '../HeaderSearch';
@@ -164,6 +165,8 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
           <Footer />
         </AppShell.Footer>
       )}
+
+      {showShellChrome && <BackToTop />}
     </AppShell>
   );
 };

@@ -25,6 +25,10 @@ vi.mock('../Footer', () => ({
   default: () => <div data-testid="footer" />,
 }));
 
+vi.mock('../BackToTop', () => ({
+  default: () => <div data-testid="back-to-top" />,
+}));
+
 vi.mock('../HeaderSearch', () => ({
   HeaderSearch: () => <div data-testid="header-search" />,
 }));

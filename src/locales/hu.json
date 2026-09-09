@@ -47,7 +47,8 @@
     "theme": "Téma",
     "lightMode": "Világos mód",
     "darkMode": "Sötét mód",
-    "toggleTheme": "Téma váltása"
+    "toggleTheme": "Téma váltása",
+    "backToTop": "Vissza a tetejére"
   },
   "general": {
     "edit": "Szerkesztés",

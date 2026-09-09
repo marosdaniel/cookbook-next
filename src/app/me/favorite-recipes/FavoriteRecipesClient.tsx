@@ -3,7 +3,6 @@ import { useQuery } from '@apollo/client/react';
 import {
   Box,
   Button,
-  Center,
   Group,
   Paper,
   SimpleGrid,
@@ -22,6 +21,7 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
+import { EmptyState } from '@/components/EmptyState';
 import {
   type RecipeCardData,
   RecipeGrid,
@@ -155,33 +155,24 @@ const FavoriteRecipesClient = () => {
       )}
 
       {totalFavorites === 0 ? (
-        <Center py={60} data-testid="favorite-recipes-empty">
-          <Stack align="center" gap="md">
-            <ThemeIcon
-              size={80}
-              radius="xl"
-              variant="gradient"
-              gradient={{ from: 'pink.3', to: 'violet.3', deg: 45 }}
-            >
-              <IconHeart size={40} />
-            </ThemeIcon>
-            <Text c="dimmed" size="lg" ta="center" maw={400}>
-              {t('noFavoriteRecipesYet')}
-            </Text>
-            <Button
-              component={Link}
-              href={PUBLIC_ROUTES.RECIPES}
-              leftSection={<IconSearch size={18} />}
-              variant="gradient"
-              gradient={{ from: 'pink', to: 'violet', deg: 45 }}
-              size="lg"
-              mt="sm"
-              data-testid="favorite-recipes-browse"
-            >
-              {t('browseRecipes')}
-            </Button>
-          </Stack>
-        </Center>
+        <EmptyState
+          data-testid="favorite-recipes-empty"
+          icon={<IconHeart size={40} />}
+          iconSize={80}
+          iconVariant="gradient"
+          iconGradient={{ from: 'pink.3', to: 'violet.3', deg: 45 }}
+          title={t('noFavoriteRecipesYet')}
+          action={{
+            label: t('browseRecipes'),
+            component: Link,
+            href: PUBLIC_ROUTES.RECIPES,
+            leftSection: <IconSearch size={18} />,
+            variant: 'gradient',
+            gradient: { from: 'pink', to: 'violet', deg: 45 },
+            size: 'lg',
+            'data-testid': 'favorite-recipes-browse',
+          }}
+        />
       ) : (
         <RecipeGrid
           recipes={recipes}
