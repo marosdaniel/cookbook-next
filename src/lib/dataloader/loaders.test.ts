@@ -32,7 +32,17 @@ describe('data loaders', () => {
     expect(findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { id: { in: ['user-1', 'user-2'] } },
-        select: { id: true, firstName: true, lastName: true, userName: true },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          userName: true,
+          email: true,
+          role: true,
+          locale: true,
+          createdAt: true,
+          updatedAt: true,
+        },
       }),
     );
     expect(firstAuthor?.id).toBe('user-1');

@@ -33,6 +33,10 @@ describe('getRecipesByUserId resolver', () => {
     );
 
     expect(mockGetRecipesByUserId).toHaveBeenCalledWith('user-1', 3);
-    expect(result).toEqual({ recipes: [], totalRecipes: 0 });
+    expect(result).toEqual({
+      recipes: [],
+      totalRecipes: 0,
+      pageInfo: { hasNextPage: false, endCursor: null },
+    });
   });
 });

@@ -14,6 +14,7 @@ vi.mock('@/lib/services/RecipeService', () => ({
 }));
 
 vi.mock('../utils', () => ({
+  assertPresent: vi.fn((value) => value),
   resolveAuthenticatedUser: mockResolveAuthenticatedUser,
 }));
 
