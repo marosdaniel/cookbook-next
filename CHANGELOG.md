@@ -1,3 +1,12 @@
+# [2.93.0](https://github.com/marosdaniel/cookbook-next/compare/v2.92.0...v2.93.0) (2026-09-10)
+
+
+### Features
+
+* **graphql:** add user and recipe mutations and queries ([54853d8](https://github.com/marosdaniel/cookbook-next/commit/54853d8686f950def133a2d77b6ec9db55fa9efa))
+* **tests:** enhance data loader tests with additional user fields and update recipe query results structure ([295f25e](https://github.com/marosdaniel/cookbook-next/commit/295f25e5d0a5b197322d8d3b211dff0d0a144761))
+* update type unification plan with implementation status and validation results ([e022301](https://github.com/marosdaniel/cookbook-next/commit/e022301feb81c70993c09e0036a63169f471a7d2))
+
 # [2.92.0](https://github.com/marosdaniel/cookbook-next/compare/v2.91.0...v2.92.0) (2026-09-09)
 
 
