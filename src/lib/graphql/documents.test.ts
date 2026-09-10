@@ -8,8 +8,14 @@ describe('GraphQL document exports', () => {
     expect(queries.GET_USER_BY_ID).toBeDefined();
     expect(queries.GET_LATEST_RECIPES).toBeDefined();
 
-    const querySource = queries.GET_RECIPE_BY_ID.loc?.source.body ?? '';
-    expect(querySource).toContain('query getRecipeById');
+    expect(queries.GET_RECIPE_BY_ID.definitions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          kind: 'OperationDefinition',
+          name: expect.objectContaining({ value: 'getRecipeById' }),
+        }),
+      ]),
+    );
   });
 
   it('exports mutation documents with expected operation names', () => {
@@ -17,7 +23,13 @@ describe('GraphQL document exports', () => {
     expect(mutations.RESET_PASSWORD).toBeDefined();
     expect(mutations.CREATE_RECIPE).toBeDefined();
 
-    const mutationSource = mutations.CREATE_USER.loc?.source.body ?? '';
-    expect(mutationSource).toContain('mutation createUser');
+    expect(mutations.CREATE_USER.definitions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          kind: 'OperationDefinition',
+          name: expect.objectContaining({ value: 'createUser' }),
+        }),
+      ]),
+    );
   });
 });

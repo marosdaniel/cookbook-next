@@ -68,7 +68,7 @@ const MyRecipesClient = () => {
   const isSessionLoading = status === 'loading';
 
   const { data, loading } = useQuery(GET_RECIPES_BY_USER_ID, {
-    variables: { userId },
+    variables: { userId: userId ?? '' },
     skip: !userId || isSessionLoading,
     fetchPolicy: 'cache-and-network',
   });

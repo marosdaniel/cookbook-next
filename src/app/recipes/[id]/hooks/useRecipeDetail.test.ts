@@ -46,6 +46,7 @@ describe('useRecipeDetail', () => {
       servings: 4,
       createdBy: 'user-1',
       youtubeLink: 'https://www.youtube.com/watch?v=abc123',
+      ingredients: [],
       preparationSteps: [
         { localId: 'step-2', description: 'Second', order: 2 },
         { localId: 'step-1', description: 'First', order: 1 },
@@ -77,6 +78,7 @@ describe('useRecipeDetail', () => {
       servings: 2,
       createdBy: 'user-2',
       youtubeLink: 'https://youtu.be/xyz789',
+      ingredients: [],
       preparationSteps: [],
     };
 
@@ -115,6 +117,7 @@ describe('useRecipeDetail', () => {
       servings: 4,
       createdBy: 'user-1',
       youtubeLink: 'not-a-url',
+      ingredients: [],
       preparationSteps: [],
     };
 

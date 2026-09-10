@@ -1,4 +1,9 @@
 import { Prisma } from '@prisma/client';
+import type {
+  RecipeCreateInput as GeneratedRecipeCreateInput,
+  RecipeEditInput as GeneratedRecipeEditInput,
+  MetaInputPartial,
+} from '@/lib/graphql/generated/resolvers-types';
 import { METADATA_DEFINITIONS } from '@/lib/metadata/definitions';
 import { prisma } from '@/lib/prisma/prisma';
 import { sanitizeOptional, sanitizeText } from '@/lib/sanitize/sanitize';
@@ -6,7 +11,10 @@ import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
 import type { GraphQLContext } from '@/types/graphql/context';
 
-import type { MetaInputPartial, RecipeInputBase } from './types';
+import type {
+  NormalizablePreparationStep,
+  NormalizedRecipeInput,
+} from './types';
 
 /* ─── Assertion Helper ───────────────────────── */
 
@@ -40,7 +48,7 @@ export const resolveAuthenticatedUser = async (context: GraphQLContext) => {
 
 /* ─── Input Validation ───────────────────────── */
 
-export const validateRequiredFields = (input: RecipeInputBase) => {
+export const validateRequiredFields = (input: NormalizedRecipeInput) => {
   const {
     title,
     ingredients,
@@ -67,9 +75,90 @@ export const validateRequiredFields = (input: RecipeInputBase) => {
   }
 };
 
+type GeneratedRecipeInput =
+  | GeneratedRecipeCreateInput
+  | GeneratedRecipeEditInput;
+
+type NormalizableRecipeInput = Omit<
+  GeneratedRecipeInput,
+  'preparationSteps'
+> & {
+  preparationSteps: Array<NormalizablePreparationStep | null | undefined>;
+};
+
+export const normalizeRecipeInput = (
+  input: NormalizableRecipeInput,
+): NormalizedRecipeInput => {
+  const ingredients = input.ingredients.map((ingredient, index) => {
+    assertPresent(
+      ingredient,
+      `Ingredient ${index + 1} must be provided`,
+      ErrorTypes.BAD_REQUEST,
+    );
+    return {
+      ...ingredient,
+      isOptional: ingredient.isOptional ?? undefined,
+      note: ingredient.note ?? undefined,
+    };
+  });
+
+  const preparationSteps = input.preparationSteps.map((step, index) => {
+    assertPresent(
+      step,
+      `Preparation step ${index + 1} must be provided`,
+      ErrorTypes.BAD_REQUEST,
+    );
+    return step;
+  });
+
+  const normalizeMetadataList = (
+    values: typeof input.labels,
+    fieldName: string,
+  ): MetaInputPartial[] | undefined => {
+    if (!values) return undefined;
+    return values.map((value, index) => {
+      assertPresent(
+        value,
+        `${fieldName} item ${index + 1} must be provided`,
+        ErrorTypes.BAD_REQUEST,
+      );
+      return value;
+    });
+  };
+
+  return {
+    title: input.title,
+    description: input.description ?? undefined,
+    ingredients,
+    preparationSteps,
+    category: input.category,
+    labels: normalizeMetadataList(input.labels, 'Label'),
+    imgSrc: input.imgSrc ?? undefined,
+    cookingTime: input.cookingTime,
+    difficultyLevel: input.difficultyLevel,
+    servings: input.servings,
+    youtubeLink: input.youtubeLink ?? undefined,
+    prepTimeMinutes: input.prepTimeMinutes ?? undefined,
+    cookTimeMinutes: input.cookTimeMinutes ?? undefined,
+    restTimeMinutes: input.restTimeMinutes ?? undefined,
+    servingUnit: input.servingUnit ?? undefined,
+    cuisine: input.cuisine ?? undefined,
+    dietaryFlags: normalizeMetadataList(input.dietaryFlags, 'Dietary flag'),
+    allergens: normalizeMetadataList(input.allergens, 'Allergen'),
+    equipment: normalizeMetadataList(input.equipment, 'Equipment'),
+    costLevel: input.costLevel ?? undefined,
+    tips: input.tips ?? undefined,
+    substitutions: input.substitutions ?? undefined,
+    slug: input.slug ?? undefined,
+    seoTitle: input.seoTitle ?? undefined,
+    seoDescription: input.seoDescription ?? undefined,
+    socialImage: input.socialImage ?? undefined,
+  };
+};
+
 /* ─── Metadata Resolution ────────────────────── */
 
-export const resolveRecipeMetadata = async (input: RecipeInputBase) => {
+export const resolveRecipeMetadata = async (input: NormalizedRecipeInput) => {
   const {
     category,
     difficultyLevel,
@@ -109,7 +198,7 @@ const mapMetadataToJson = (m: MetaInputPartial, type: string) => {
   };
 };
 
-export const sanitizeRecipeInput = (input: RecipeInputBase) => {
+export const sanitizeRecipeInput = (input: NormalizedRecipeInput) => {
   return {
     ...input,
     ingredients: (input.ingredients ?? []).map((ingredient) => ({
@@ -126,7 +215,7 @@ export const sanitizeRecipeInput = (input: RecipeInputBase) => {
 };
 
 export const buildRecipeData = (
-  input: RecipeInputBase,
+  input: NormalizedRecipeInput,
   metadata: Awaited<ReturnType<typeof resolveRecipeMetadata>>,
 ) => {
   const {

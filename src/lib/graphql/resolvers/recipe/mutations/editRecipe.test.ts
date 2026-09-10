@@ -1,9 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { RecipeEditInput } from '@/lib/graphql/generated/resolvers-types';
 import type { GraphQLContext } from '@/types/graphql/context';
-import type { RecipeEditInput } from '../types';
 
 const mockResolveAuthenticatedUser = vi.fn();
 const mockEditRecipe = vi.fn();
+const mockNormalizeRecipeInput = vi.fn((input) => input);
 
 vi.mock('@/lib/services/RecipeService', () => ({
   RecipeService: {
@@ -12,6 +13,7 @@ vi.mock('@/lib/services/RecipeService', () => ({
 }));
 
 vi.mock('../utils', () => ({
+  normalizeRecipeInput: mockNormalizeRecipeInput,
   resolveAuthenticatedUser: mockResolveAuthenticatedUser,
 }));
 

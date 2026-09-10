@@ -92,7 +92,7 @@ type FollowingData {
 type Query {
   getUserById(id: ID!): User!
   getUserByUserName(userName: String!): User!
-  getAllUser: [User]!
+  getAllUser: [User!]!
   getFavoriteRecipes(limit: Int): [Recipe!]!
   getFollowing(limit: Int): FollowingData!
 }

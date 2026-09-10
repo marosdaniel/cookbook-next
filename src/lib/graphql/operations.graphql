@@ -1,0 +1,338 @@
+mutation createUser($userRegisterInput: UserRegisterInput!) {
+  createUser(userRegisterInput: $userRegisterInput) {
+    success
+    message
+    messageKey
+    user {
+      id
+      firstName
+      lastName
+      userName
+    }
+  }
+}
+
+mutation resetPassword($email: String!) {
+  resetPassword(email: $email) {
+    success
+    message
+  }
+}
+
+mutation setNewPassword($token: String!, $newPassword: String!) {
+  setNewPassword(token: $token, newPassword: $newPassword) {
+    success
+    message
+  }
+}
+
+mutation changePassword($passwordEditInput: PasswordEditInput!) {
+  changePassword(passwordEditInput: $passwordEditInput) {
+    success
+    message
+  }
+}
+
+mutation updateUser($userUpdateInput: UserUpdateInput!) {
+  updateUser(userUpdateInput: $userUpdateInput) {
+    success
+    message
+    user {
+      id
+      firstName
+      lastName
+    }
+  }
+}
+
+mutation CreateRecipe($recipeCreateInput: RecipeCreateInput!) {
+  createRecipe(recipeCreateInput: $recipeCreateInput) {
+    id
+    title
+  }
+}
+
+mutation EditRecipe($id: ID!, $recipeEditInput: RecipeEditInput!) {
+  editRecipe(id: $id, recipeEditInput: $recipeEditInput) {
+    id
+    title
+  }
+}
+
+mutation RateRecipe($ratingInput: RatingInput!) {
+  rateRecipe(ratingInput: $ratingInput) {
+    id
+    averageRating
+    ratingsCount
+    userRating
+  }
+}
+
+mutation DeleteRating($recipeId: ID!) {
+  deleteRating(recipeId: $recipeId)
+}
+
+mutation AddToFavoriteRecipes($userId: ID!, $recipeId: ID!) {
+  addToFavoriteRecipes(userId: $userId, recipeId: $recipeId) {
+    success
+    message
+    messageKey
+    statusCode
+  }
+}
+
+mutation RemoveFromFavoriteRecipes($userId: ID!, $recipeId: ID!) {
+  removeFromFavoriteRecipes(userId: $userId, recipeId: $recipeId) {
+    success
+    message
+    messageKey
+    statusCode
+  }
+}
+
+mutation FollowUser($targetUserId: ID!) {
+  followUser(targetUserId: $targetUserId) {
+    success
+    message
+    messageKey
+    statusCode
+  }
+}
+
+mutation UnfollowUser($targetUserId: ID!) {
+  unfollowUser(targetUserId: $targetUserId) {
+    success
+    message
+    messageKey
+    statusCode
+  }
+}
+
+query getUserById($id: ID!) {
+  getUserById(id: $id) {
+    id
+    firstName
+    lastName
+    userName
+    email
+    role
+    locale
+    createdAt
+    updatedAt
+  }
+}
+
+query getAllMetadata {
+  getAllMetadata {
+    key
+    label
+    type
+    name
+  }
+}
+
+query getMetadataByType($type: String!) {
+  getMetadataByType(type: $type) {
+    key
+    label
+    type
+    name
+  }
+}
+
+query getRecipeById($id: ID!) {
+  getRecipeById(id: $id) {
+    id
+    title
+    description
+    imgSrc
+    cookingTime
+    servings
+    youtubeLink
+    createdBy
+    author {
+      id
+      userName
+      firstName
+      lastName
+    }
+    category {
+      key
+      label
+    }
+    difficultyLevel {
+      key
+      label
+    }
+    labels {
+      key
+      label
+    }
+    ingredients {
+      localId
+      name
+      quantity
+      unit
+      isOptional
+      note
+    }
+    preparationSteps {
+      description
+      order
+    }
+    averageRating
+    ratingsCount
+    userRating
+    isFavorite
+    prepTimeMinutes
+    cookTimeMinutes
+    restTimeMinutes
+    totalTimeMinutes
+    servingUnit {
+      key
+      label
+    }
+    cuisine {
+      key
+      label
+    }
+    dietaryFlags {
+      key
+      label
+    }
+    allergens {
+      key
+      label
+    }
+    equipment {
+      key
+      label
+    }
+    costLevel {
+      key
+      label
+    }
+    tips
+    substitutions
+    slug
+    seoTitle
+    seoDescription
+    socialImage
+  }
+}
+
+query getFavoriteRecipes($limit: Int) {
+  getFavoriteRecipes(limit: $limit) {
+    id
+    title
+    description
+    imgSrc
+    cookingTime
+    servings
+    createdBy
+    category {
+      key
+      label
+    }
+    difficultyLevel {
+      key
+      label
+    }
+    averageRating
+    ratingsCount
+    isFavorite
+    slug
+  }
+}
+
+query getRecipes($limit: Int, $after: String, $filter: RecipeFilterInput) {
+  getRecipes(limit: $limit, after: $after, filter: $filter) {
+    recipes {
+      id
+      title
+      description
+      imgSrc
+      cookingTime
+      servings
+      createdBy
+      category {
+        key
+        label
+      }
+      difficultyLevel {
+        key
+        label
+      }
+      averageRating
+      ratingsCount
+      isFavorite
+      slug
+    }
+    totalRecipes
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query getRecipesByUserId($userId: ID!, $limit: Int) {
+  getRecipesByUserId(userId: $userId, limit: $limit) {
+    recipes {
+      id
+      title
+      description
+      imgSrc
+      cookingTime
+      servings
+      createdBy
+      category {
+        key
+        label
+      }
+      difficultyLevel {
+        key
+        label
+      }
+      averageRating
+      ratingsCount
+      isFavorite
+      slug
+    }
+    totalRecipes
+  }
+}
+
+query getFollowing($limit: Int) {
+  getFollowing(limit: $limit) {
+    users {
+      id
+      firstName
+      lastName
+      userName
+      recipeCount
+      followedAt
+      latestRecipes {
+        id
+        title
+        description
+        imgSrc
+        cookingTime
+        servings
+        createdBy
+        category {
+          key
+          label
+        }
+        difficultyLevel {
+          key
+          label
+        }
+        averageRating
+        ratingsCount
+        isFavorite
+      }
+    }
+    totalFollowing
+  }
+}

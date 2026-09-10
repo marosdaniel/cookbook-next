@@ -3,7 +3,7 @@
 type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** Internal type. DO NOT USE DIRECTLY. */
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-import { DocumentTypeDecoration } from '@graphql-typed-document-node/core';
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type IngredientInput = {
   isOptional?: boolean | null | undefined;
   localId: string;
@@ -246,7 +246,7 @@ export type GetRecipeByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetRecipeByIdQuery = { getRecipeById: { id: string, title: string, description: string | null, imgSrc: string | null, cookingTime: number, servings: number, youtubeLink: string | null, createdBy: string, averageRating: number, ratingsCount: number, userRating: number | null, isFavorite: boolean | null, prepTimeMinutes: number | null, cookTimeMinutes: number | null, restTimeMinutes: number | null, totalTimeMinutes: number | null, tips: string | null, substitutions: string | null, slug: string | null, seoTitle: string | null, seoDescription: string | null, socialImage: string | null, author: { id: string, userName: string, firstName: string, lastName: string }, category: { key: string, label: string }, difficultyLevel: { key: string, label: string }, labels: Array<{ key: string, label: string } | null>, ingredients: Array<{ localId: string, name: string, quantity: number, unit: string, isOptional: boolean, note: string | null } | null>, preparationSteps: Array<{ description: string, order: number } | null>, servingUnit: { key: string, label: string } | null, cuisine: { key: string, label: string } | null, dietaryFlags: Array<{ key: string, label: string } | null> | null, allergens: Array<{ key: string, label: string } | null> | null, equipment: Array<{ key: string, label: string } | null> | null, costLevel: { key: string, label: string } | null } };
+export type GetRecipeByIdQuery = { getRecipeById: { id: string, title: string, description: string | null, imgSrc: string | null, cookingTime: number, servings: number, youtubeLink: string | null, createdBy: string, averageRating: number, ratingsCount: number, userRating: number | null, isFavorite: boolean | null, prepTimeMinutes: number | null, cookTimeMinutes: number | null, restTimeMinutes: number | null, totalTimeMinutes: number | null, tips: string | null, substitutions: string | null, slug: string | null, seoTitle: string | null, seoDescription: string | null, socialImage: string | null, author: { id: string, userName: string, firstName: string, lastName: string }, category: { key: string, label: string }, difficultyLevel: { key: string, label: string }, labels: Array<{ key: string, label: string }>, ingredients: Array<{ localId: string, name: string, quantity: number, unit: string, isOptional: boolean, note: string | null }>, preparationSteps: Array<{ description: string, order: number }>, servingUnit: { key: string, label: string } | null, cuisine: { key: string, label: string } | null, dietaryFlags: Array<{ key: string, label: string }> | null, allergens: Array<{ key: string, label: string }> | null, equipment: Array<{ key: string, label: string }> | null, costLevel: { key: string, label: string } | null } };
 
 export type GetFavoriteRecipesQueryVariables = Exact<{
   limit?: number | null | undefined;
@@ -262,7 +262,7 @@ export type GetRecipesQueryVariables = Exact<{
 }>;
 
 
-export type GetRecipesQuery = { getRecipes: { totalRecipes: number, recipes: Array<{ id: string, title: string, description: string | null, imgSrc: string | null, cookingTime: number, servings: number, createdBy: string, averageRating: number, ratingsCount: number, isFavorite: boolean | null, slug: string | null, category: { key: string, label: string }, difficultyLevel: { key: string, label: string } } | null>, pageInfo: { hasNextPage: boolean, endCursor: string | null } } };
+export type GetRecipesQuery = { getRecipes: { totalRecipes: number, recipes: Array<{ id: string, title: string, description: string | null, imgSrc: string | null, cookingTime: number, servings: number, createdBy: string, averageRating: number, ratingsCount: number, isFavorite: boolean | null, slug: string | null, category: { key: string, label: string }, difficultyLevel: { key: string, label: string } }>, pageInfo: { hasNextPage: boolean, endCursor: string | null } } };
 
 export type GetRecipesByUserIdQueryVariables = Exact<{
   userId: string | number;
@@ -270,7 +270,7 @@ export type GetRecipesByUserIdQueryVariables = Exact<{
 }>;
 
 
-export type GetRecipesByUserIdQuery = { getRecipesByUserId: { totalRecipes: number, recipes: Array<{ id: string, title: string, description: string | null, imgSrc: string | null, cookingTime: number, servings: number, createdBy: string, averageRating: number, ratingsCount: number, isFavorite: boolean | null, slug: string | null, category: { key: string, label: string }, difficultyLevel: { key: string, label: string } } | null> } };
+export type GetRecipesByUserIdQuery = { getRecipesByUserId: { totalRecipes: number, recipes: Array<{ id: string, title: string, description: string | null, imgSrc: string | null, cookingTime: number, servings: number, createdBy: string, averageRating: number, ratingsCount: number, isFavorite: boolean | null, slug: string | null, category: { key: string, label: string }, difficultyLevel: { key: string, label: string } }> } };
 
 export type GetFollowingQueryVariables = Exact<{
   limit?: number | null | undefined;
@@ -279,382 +279,25 @@ export type GetFollowingQueryVariables = Exact<{
 
 export type GetFollowingQuery = { getFollowing: { totalFollowing: number, users: Array<{ id: string, firstName: string, lastName: string, userName: string, recipeCount: number, followedAt: string, latestRecipes: Array<{ id: string, title: string, description: string | null, imgSrc: string | null, cookingTime: number, servings: number, createdBy: string, averageRating: number, ratingsCount: number, isFavorite: boolean | null, category: { key: string, label: string }, difficultyLevel: { key: string, label: string } }> }> } };
 
-export class TypedDocumentString<TResult, TVariables>
-  extends String
-  implements DocumentTypeDecoration<TResult, TVariables>
-{
-  __apiType?: NonNullable<DocumentTypeDecoration<TResult, TVariables>['__apiType']>;
-  private value: string;
-  public __meta__?: Record<string, any> | undefined;
 
-  constructor(value: string, __meta__?: Record<string, any> | undefined) {
-    super(value);
-    this.value = value;
-    this.__meta__ = __meta__;
-  }
-
-  override toString(): string & DocumentTypeDecoration<TResult, TVariables> {
-    return this.value;
-  }
-}
-
-export const CreateUserDocument = new TypedDocumentString(`
-    mutation createUser($userRegisterInput: UserRegisterInput!) {
-  createUser(userRegisterInput: $userRegisterInput) {
-    success
-    message
-    messageKey
-    user {
-      id
-      firstName
-      lastName
-      userName
-    }
-  }
-}
-    `) as unknown as TypedDocumentString<CreateUserMutation, CreateUserMutationVariables>;
-export const ResetPasswordDocument = new TypedDocumentString(`
-    mutation resetPassword($email: String!) {
-  resetPassword(email: $email) {
-    success
-    message
-  }
-}
-    `) as unknown as TypedDocumentString<ResetPasswordMutation, ResetPasswordMutationVariables>;
-export const SetNewPasswordDocument = new TypedDocumentString(`
-    mutation setNewPassword($token: String!, $newPassword: String!) {
-  setNewPassword(token: $token, newPassword: $newPassword) {
-    success
-    message
-  }
-}
-    `) as unknown as TypedDocumentString<SetNewPasswordMutation, SetNewPasswordMutationVariables>;
-export const ChangePasswordDocument = new TypedDocumentString(`
-    mutation changePassword($passwordEditInput: PasswordEditInput!) {
-  changePassword(passwordEditInput: $passwordEditInput) {
-    success
-    message
-  }
-}
-    `) as unknown as TypedDocumentString<ChangePasswordMutation, ChangePasswordMutationVariables>;
-export const UpdateUserDocument = new TypedDocumentString(`
-    mutation updateUser($userUpdateInput: UserUpdateInput!) {
-  updateUser(userUpdateInput: $userUpdateInput) {
-    success
-    message
-    user {
-      id
-      firstName
-      lastName
-    }
-  }
-}
-    `) as unknown as TypedDocumentString<UpdateUserMutation, UpdateUserMutationVariables>;
-export const CreateRecipeDocument = new TypedDocumentString(`
-    mutation CreateRecipe($recipeCreateInput: RecipeCreateInput!) {
-  createRecipe(recipeCreateInput: $recipeCreateInput) {
-    id
-    title
-  }
-}
-    `) as unknown as TypedDocumentString<CreateRecipeMutation, CreateRecipeMutationVariables>;
-export const EditRecipeDocument = new TypedDocumentString(`
-    mutation EditRecipe($id: ID!, $recipeEditInput: RecipeEditInput!) {
-  editRecipe(id: $id, recipeEditInput: $recipeEditInput) {
-    id
-    title
-  }
-}
-    `) as unknown as TypedDocumentString<EditRecipeMutation, EditRecipeMutationVariables>;
-export const RateRecipeDocument = new TypedDocumentString(`
-    mutation RateRecipe($ratingInput: RatingInput!) {
-  rateRecipe(ratingInput: $ratingInput) {
-    id
-    averageRating
-    ratingsCount
-    userRating
-  }
-}
-    `) as unknown as TypedDocumentString<RateRecipeMutation, RateRecipeMutationVariables>;
-export const DeleteRatingDocument = new TypedDocumentString(`
-    mutation DeleteRating($recipeId: ID!) {
-  deleteRating(recipeId: $recipeId)
-}
-    `) as unknown as TypedDocumentString<DeleteRatingMutation, DeleteRatingMutationVariables>;
-export const AddToFavoriteRecipesDocument = new TypedDocumentString(`
-    mutation AddToFavoriteRecipes($userId: ID!, $recipeId: ID!) {
-  addToFavoriteRecipes(userId: $userId, recipeId: $recipeId) {
-    success
-    message
-    messageKey
-    statusCode
-  }
-}
-    `) as unknown as TypedDocumentString<AddToFavoriteRecipesMutation, AddToFavoriteRecipesMutationVariables>;
-export const RemoveFromFavoriteRecipesDocument = new TypedDocumentString(`
-    mutation RemoveFromFavoriteRecipes($userId: ID!, $recipeId: ID!) {
-  removeFromFavoriteRecipes(userId: $userId, recipeId: $recipeId) {
-    success
-    message
-    messageKey
-    statusCode
-  }
-}
-    `) as unknown as TypedDocumentString<RemoveFromFavoriteRecipesMutation, RemoveFromFavoriteRecipesMutationVariables>;
-export const FollowUserDocument = new TypedDocumentString(`
-    mutation FollowUser($targetUserId: ID!) {
-  followUser(targetUserId: $targetUserId) {
-    success
-    message
-    messageKey
-    statusCode
-  }
-}
-    `) as unknown as TypedDocumentString<FollowUserMutation, FollowUserMutationVariables>;
-export const UnfollowUserDocument = new TypedDocumentString(`
-    mutation UnfollowUser($targetUserId: ID!) {
-  unfollowUser(targetUserId: $targetUserId) {
-    success
-    message
-    messageKey
-    statusCode
-  }
-}
-    `) as unknown as TypedDocumentString<UnfollowUserMutation, UnfollowUserMutationVariables>;
-export const GetUserByIdDocument = new TypedDocumentString(`
-    query getUserById($id: ID!) {
-  getUserById(id: $id) {
-    id
-    firstName
-    lastName
-    userName
-    email
-    role
-    locale
-    createdAt
-    updatedAt
-  }
-}
-    `) as unknown as TypedDocumentString<GetUserByIdQuery, GetUserByIdQueryVariables>;
-export const GetAllMetadataDocument = new TypedDocumentString(`
-    query getAllMetadata {
-  getAllMetadata {
-    key
-    label
-    type
-    name
-  }
-}
-    `) as unknown as TypedDocumentString<GetAllMetadataQuery, GetAllMetadataQueryVariables>;
-export const GetMetadataByTypeDocument = new TypedDocumentString(`
-    query getMetadataByType($type: String!) {
-  getMetadataByType(type: $type) {
-    key
-    label
-    type
-    name
-  }
-}
-    `) as unknown as TypedDocumentString<GetMetadataByTypeQuery, GetMetadataByTypeQueryVariables>;
-export const GetRecipeByIdDocument = new TypedDocumentString(`
-    query getRecipeById($id: ID!) {
-  getRecipeById(id: $id) {
-    id
-    title
-    description
-    imgSrc
-    cookingTime
-    servings
-    youtubeLink
-    createdBy
-    author {
-      id
-      userName
-      firstName
-      lastName
-    }
-    category {
-      key
-      label
-    }
-    difficultyLevel {
-      key
-      label
-    }
-    labels {
-      key
-      label
-    }
-    ingredients {
-      localId
-      name
-      quantity
-      unit
-      isOptional
-      note
-    }
-    preparationSteps {
-      description
-      order
-    }
-    averageRating
-    ratingsCount
-    userRating
-    isFavorite
-    prepTimeMinutes
-    cookTimeMinutes
-    restTimeMinutes
-    totalTimeMinutes
-    servingUnit {
-      key
-      label
-    }
-    cuisine {
-      key
-      label
-    }
-    dietaryFlags {
-      key
-      label
-    }
-    allergens {
-      key
-      label
-    }
-    equipment {
-      key
-      label
-    }
-    costLevel {
-      key
-      label
-    }
-    tips
-    substitutions
-    slug
-    seoTitle
-    seoDescription
-    socialImage
-  }
-}
-    `) as unknown as TypedDocumentString<GetRecipeByIdQuery, GetRecipeByIdQueryVariables>;
-export const GetFavoriteRecipesDocument = new TypedDocumentString(`
-    query getFavoriteRecipes($limit: Int) {
-  getFavoriteRecipes(limit: $limit) {
-    id
-    title
-    description
-    imgSrc
-    cookingTime
-    servings
-    createdBy
-    category {
-      key
-      label
-    }
-    difficultyLevel {
-      key
-      label
-    }
-    averageRating
-    ratingsCount
-    isFavorite
-    slug
-  }
-}
-    `) as unknown as TypedDocumentString<GetFavoriteRecipesQuery, GetFavoriteRecipesQueryVariables>;
-export const GetRecipesDocument = new TypedDocumentString(`
-    query getRecipes($limit: Int, $after: String, $filter: RecipeFilterInput) {
-  getRecipes(limit: $limit, after: $after, filter: $filter) {
-    recipes {
-      id
-      title
-      description
-      imgSrc
-      cookingTime
-      servings
-      createdBy
-      category {
-        key
-        label
-      }
-      difficultyLevel {
-        key
-        label
-      }
-      averageRating
-      ratingsCount
-      isFavorite
-      slug
-    }
-    totalRecipes
-    pageInfo {
-      hasNextPage
-      endCursor
-    }
-  }
-}
-    `) as unknown as TypedDocumentString<GetRecipesQuery, GetRecipesQueryVariables>;
-export const GetRecipesByUserIdDocument = new TypedDocumentString(`
-    query getRecipesByUserId($userId: ID!, $limit: Int) {
-  getRecipesByUserId(userId: $userId, limit: $limit) {
-    recipes {
-      id
-      title
-      description
-      imgSrc
-      cookingTime
-      servings
-      createdBy
-      category {
-        key
-        label
-      }
-      difficultyLevel {
-        key
-        label
-      }
-      averageRating
-      ratingsCount
-      isFavorite
-      slug
-    }
-    totalRecipes
-  }
-}
-    `) as unknown as TypedDocumentString<GetRecipesByUserIdQuery, GetRecipesByUserIdQueryVariables>;
-export const GetFollowingDocument = new TypedDocumentString(`
-    query getFollowing($limit: Int) {
-  getFollowing(limit: $limit) {
-    users {
-      id
-      firstName
-      lastName
-      userName
-      recipeCount
-      followedAt
-      latestRecipes {
-        id
-        title
-        description
-        imgSrc
-        cookingTime
-        servings
-        createdBy
-        category {
-          key
-          label
-        }
-        difficultyLevel {
-          key
-          label
-        }
-        averageRating
-        ratingsCount
-        isFavorite
-      }
-    }
-    totalFollowing
-  }
-}
-    `) as unknown as TypedDocumentString<GetFollowingQuery, GetFollowingQueryVariables>;
+export const CreateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userRegisterInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UserRegisterInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userRegisterInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userRegisterInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"messageKey"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userName"}}]}}]}}]}}]} as unknown as DocumentNode<CreateUserMutation, CreateUserMutationVariables>;
+export const ResetPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"resetPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"email"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"resetPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"email"},"value":{"kind":"Variable","name":{"kind":"Name","value":"email"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<ResetPasswordMutation, ResetPasswordMutationVariables>;
+export const SetNewPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"setNewPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"token"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"newPassword"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"setNewPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"token"},"value":{"kind":"Variable","name":{"kind":"Name","value":"token"}}},{"kind":"Argument","name":{"kind":"Name","value":"newPassword"},"value":{"kind":"Variable","name":{"kind":"Name","value":"newPassword"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<SetNewPasswordMutation, SetNewPasswordMutationVariables>;
+export const ChangePasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"changePassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"passwordEditInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PasswordEditInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"changePassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"passwordEditInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"passwordEditInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<ChangePasswordMutation, ChangePasswordMutationVariables>;
+export const UpdateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userUpdateInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UserUpdateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userUpdateInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userUpdateInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateUserMutation, UpdateUserMutationVariables>;
+export const CreateRecipeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateRecipe"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"recipeCreateInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RecipeCreateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createRecipe"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"recipeCreateInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"recipeCreateInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]} as unknown as DocumentNode<CreateRecipeMutation, CreateRecipeMutationVariables>;
+export const EditRecipeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"EditRecipe"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"recipeEditInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RecipeEditInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"editRecipe"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"recipeEditInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"recipeEditInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]} as unknown as DocumentNode<EditRecipeMutation, EditRecipeMutationVariables>;
+export const RateRecipeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RateRecipe"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ratingInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RatingInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rateRecipe"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ratingInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ratingInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"averageRating"}},{"kind":"Field","name":{"kind":"Name","value":"ratingsCount"}},{"kind":"Field","name":{"kind":"Name","value":"userRating"}}]}}]}}]} as unknown as DocumentNode<RateRecipeMutation, RateRecipeMutationVariables>;
+export const DeleteRatingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteRating"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"recipeId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteRating"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"recipeId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"recipeId"}}}]}]}}]} as unknown as DocumentNode<DeleteRatingMutation, DeleteRatingMutationVariables>;
+export const AddToFavoriteRecipesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddToFavoriteRecipes"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"recipeId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addToFavoriteRecipes"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}},{"kind":"Argument","name":{"kind":"Name","value":"recipeId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"recipeId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"messageKey"}},{"kind":"Field","name":{"kind":"Name","value":"statusCode"}}]}}]}}]} as unknown as DocumentNode<AddToFavoriteRecipesMutation, AddToFavoriteRecipesMutationVariables>;
+export const RemoveFromFavoriteRecipesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RemoveFromFavoriteRecipes"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"recipeId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeFromFavoriteRecipes"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}},{"kind":"Argument","name":{"kind":"Name","value":"recipeId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"recipeId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"messageKey"}},{"kind":"Field","name":{"kind":"Name","value":"statusCode"}}]}}]}}]} as unknown as DocumentNode<RemoveFromFavoriteRecipesMutation, RemoveFromFavoriteRecipesMutationVariables>;
+export const FollowUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"FollowUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"targetUserId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"followUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"targetUserId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"targetUserId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"messageKey"}},{"kind":"Field","name":{"kind":"Name","value":"statusCode"}}]}}]}}]} as unknown as DocumentNode<FollowUserMutation, FollowUserMutationVariables>;
+export const UnfollowUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UnfollowUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"targetUserId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"unfollowUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"targetUserId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"targetUserId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"messageKey"}},{"kind":"Field","name":{"kind":"Name","value":"statusCode"}}]}}]}}]} as unknown as DocumentNode<UnfollowUserMutation, UnfollowUserMutationVariables>;
+export const GetUserByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getUserById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUserById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userName"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"locale"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<GetUserByIdQuery, GetUserByIdQueryVariables>;
+export const GetAllMetadataDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getAllMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getAllMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<GetAllMetadataQuery, GetAllMetadataQueryVariables>;
+export const GetMetadataByTypeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getMetadataByType"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getMetadataByType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<GetMetadataByTypeQuery, GetMetadataByTypeQueryVariables>;
+export const GetRecipeByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getRecipeById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getRecipeById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"imgSrc"}},{"kind":"Field","name":{"kind":"Name","value":"cookingTime"}},{"kind":"Field","name":{"kind":"Name","value":"servings"}},{"kind":"Field","name":{"kind":"Name","value":"youtubeLink"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"userName"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}}]}},{"kind":"Field","name":{"kind":"Name","value":"category"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"difficultyLevel"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"labels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"ingredients"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"localId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"isOptional"}},{"kind":"Field","name":{"kind":"Name","value":"note"}}]}},{"kind":"Field","name":{"kind":"Name","value":"preparationSteps"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"order"}}]}},{"kind":"Field","name":{"kind":"Name","value":"averageRating"}},{"kind":"Field","name":{"kind":"Name","value":"ratingsCount"}},{"kind":"Field","name":{"kind":"Name","value":"userRating"}},{"kind":"Field","name":{"kind":"Name","value":"isFavorite"}},{"kind":"Field","name":{"kind":"Name","value":"prepTimeMinutes"}},{"kind":"Field","name":{"kind":"Name","value":"cookTimeMinutes"}},{"kind":"Field","name":{"kind":"Name","value":"restTimeMinutes"}},{"kind":"Field","name":{"kind":"Name","value":"totalTimeMinutes"}},{"kind":"Field","name":{"kind":"Name","value":"servingUnit"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"cuisine"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"dietaryFlags"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"allergens"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"equipment"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"costLevel"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"tips"}},{"kind":"Field","name":{"kind":"Name","value":"substitutions"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}},{"kind":"Field","name":{"kind":"Name","value":"seoTitle"}},{"kind":"Field","name":{"kind":"Name","value":"seoDescription"}},{"kind":"Field","name":{"kind":"Name","value":"socialImage"}}]}}]}}]} as unknown as DocumentNode<GetRecipeByIdQuery, GetRecipeByIdQueryVariables>;
+export const GetFavoriteRecipesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getFavoriteRecipes"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getFavoriteRecipes"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"imgSrc"}},{"kind":"Field","name":{"kind":"Name","value":"cookingTime"}},{"kind":"Field","name":{"kind":"Name","value":"servings"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"}},{"kind":"Field","name":{"kind":"Name","value":"category"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"difficultyLevel"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"averageRating"}},{"kind":"Field","name":{"kind":"Name","value":"ratingsCount"}},{"kind":"Field","name":{"kind":"Name","value":"isFavorite"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}}]}}]}}]} as unknown as DocumentNode<GetFavoriteRecipesQuery, GetFavoriteRecipesQueryVariables>;
+export const GetRecipesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getRecipes"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"RecipeFilterInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getRecipes"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"recipes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"imgSrc"}},{"kind":"Field","name":{"kind":"Name","value":"cookingTime"}},{"kind":"Field","name":{"kind":"Name","value":"servings"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"}},{"kind":"Field","name":{"kind":"Name","value":"category"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"difficultyLevel"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"averageRating"}},{"kind":"Field","name":{"kind":"Name","value":"ratingsCount"}},{"kind":"Field","name":{"kind":"Name","value":"isFavorite"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalRecipes"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}}]}}]}}]}}]} as unknown as DocumentNode<GetRecipesQuery, GetRecipesQueryVariables>;
+export const GetRecipesByUserIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getRecipesByUserId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getRecipesByUserId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}},{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"recipes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"imgSrc"}},{"kind":"Field","name":{"kind":"Name","value":"cookingTime"}},{"kind":"Field","name":{"kind":"Name","value":"servings"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"}},{"kind":"Field","name":{"kind":"Name","value":"category"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"difficultyLevel"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"averageRating"}},{"kind":"Field","name":{"kind":"Name","value":"ratingsCount"}},{"kind":"Field","name":{"kind":"Name","value":"isFavorite"}},{"kind":"Field","name":{"kind":"Name","value":"slug"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalRecipes"}}]}}]}}]} as unknown as DocumentNode<GetRecipesByUserIdQuery, GetRecipesByUserIdQueryVariables>;
+export const GetFollowingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getFollowing"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getFollowing"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"users"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"firstName"}},{"kind":"Field","name":{"kind":"Name","value":"lastName"}},{"kind":"Field","name":{"kind":"Name","value":"userName"}},{"kind":"Field","name":{"kind":"Name","value":"recipeCount"}},{"kind":"Field","name":{"kind":"Name","value":"followedAt"}},{"kind":"Field","name":{"kind":"Name","value":"latestRecipes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"imgSrc"}},{"kind":"Field","name":{"kind":"Name","value":"cookingTime"}},{"kind":"Field","name":{"kind":"Name","value":"servings"}},{"kind":"Field","name":{"kind":"Name","value":"createdBy"}},{"kind":"Field","name":{"kind":"Name","value":"category"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"difficultyLevel"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"averageRating"}},{"kind":"Field","name":{"kind":"Name","value":"ratingsCount"}},{"kind":"Field","name":{"kind":"Name","value":"isFavorite"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalFollowing"}}]}}]}}]} as unknown as DocumentNode<GetFollowingQuery, GetFollowingQueryVariables>;

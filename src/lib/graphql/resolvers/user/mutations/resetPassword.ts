@@ -1,9 +1,9 @@
+import type { MutationResetPasswordArgs } from '@/lib/graphql/generated/resolvers-types';
 import { UserService } from '@/lib/services/UserService';
-import type { ResetPasswordInput } from './types';
 
 export const resetPassword = async (
   _: unknown,
-  { email }: ResetPasswordInput,
+  { email }: MutationResetPasswordArgs,
 ) => {
   return await UserService.resetPassword(email);
 };

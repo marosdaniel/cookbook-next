@@ -8,7 +8,10 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!!src/lib/graphql/generated"]
+    "includes": [
+      "**",
+      "!!src/lib/graphql/generated"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -21,6 +24,30 @@
     }
   },
   "overrides": [
+    {
+      "includes": [
+        "src/app/**/*.ts*",
+        "!src/app/api/**",
+        "src/components/**/*.ts*",
+        "src/providers/**/*.ts*"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "@prisma/client": {
+                    "message": "Import Prisma only from server-side service or API modules."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     {
       "includes": [
         "**/*.test.tsx",

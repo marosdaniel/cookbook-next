@@ -64,7 +64,7 @@ describe('graphql resolvers registry', () => {
   });
 
   it('exposes metadata query resolvers', () => {
-    expect(resolvers.Query.getAllMetadata).toBeDefined();
-    expect(resolvers.Query.getMetadataByType).toBeDefined();
+    expect(resolvers.Query?.getAllMetadata).toBeDefined();
+    expect(resolvers.Query?.getMetadataByType).toBeDefined();
   });
 });

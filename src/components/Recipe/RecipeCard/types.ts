@@ -3,7 +3,7 @@ import type { RecipeCardDataBase } from '@/types/recipe';
 export interface RecipeCardData extends RecipeCardDataBase {
   averageRating?: number;
   ratingsCount?: number;
-  isFavorite?: boolean;
+  isFavorite?: boolean | null;
 }
 
 export interface RecipeCardProps {

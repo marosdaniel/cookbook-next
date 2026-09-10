@@ -1,3 +1,4 @@
+import type { Resolvers } from './generated/resolvers-types';
 import {
   createRecipe,
   deleteRating,
@@ -39,7 +40,7 @@ const getMetadataByType = async (_parent: unknown, _args: { type: string }) => {
   return [];
 };
 
-export const resolvers = {
+export const resolvers: Resolvers = {
   Query: {
     getUserById,
     getRecipeById,
@@ -76,7 +77,11 @@ export const resolvers = {
       _: unknown,
       context: import('@/types/graphql/context').GraphQLContext,
     ) => {
-      return context.loaders.recipeAuthor.load(parent.createdBy);
+      const author = await context.loaders.recipeAuthor.load(parent.createdBy);
+      if (!author) {
+        throw new Error('Recipe author not found');
+      }
+      return author;
     },
     averageRating: async (
       parent: { id: string },

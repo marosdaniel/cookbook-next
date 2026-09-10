@@ -1,12 +1,29 @@
 import { useQuery } from '@apollo/client/react';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { GetRecipeByIdQuery } from '@/lib/graphql/generated/graphql';
 import { GET_RECIPE_BY_ID } from '@/lib/graphql/queries';
 import type { RecipeDetail, RecipeIngredientId } from '@/types/recipe';
 import { extractYoutubeId, sortByOrder } from '../utils';
 
 const SERVING_MIN = 1;
 const SERVING_MAX = 20;
+
+export const mapRecipeQueryToDetail = (
+  recipe: GetRecipeByIdQuery['getRecipeById'],
+): RecipeDetail => ({
+  ...recipe,
+  ingredients: (recipe.ingredients ?? []).map((ingredient) => ({
+    ...ingredient,
+    note: ingredient.note ?? undefined,
+  })),
+  preparationSteps: (recipe.preparationSteps ?? []).map((step, index) => ({
+    ...step,
+    localId:
+      (step as typeof step & { localId?: string }).localId ??
+      `step-${index + 1}`,
+  })),
+});
 
 export const useRecipeDetail = (
   recipeId: string,
@@ -18,7 +35,9 @@ export const useRecipeDetail = (
     variables: { id: recipeId },
   });
 
-  const recipe = data?.getRecipeById ?? initialRecipe;
+  const recipe = data?.getRecipeById
+    ? mapRecipeQueryToDetail(data.getRecipeById)
+    : initialRecipe;
 
   const [servingMultiplier, setServingMultiplier] = useState(1);
   const [checkedIngredients, setCheckedIngredients] = useState<

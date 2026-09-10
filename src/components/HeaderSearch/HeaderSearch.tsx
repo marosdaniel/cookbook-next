@@ -9,7 +9,6 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
-import type { RecipeBase } from '@/types/recipe';
 import { PUBLIC_ROUTES } from '@/types/routes';
 
 const MIN_SEARCH_LENGTH = 4;
@@ -40,7 +39,7 @@ export const HeaderSearch = () => {
   });
 
   const recipes = useMemo(
-    () => (data?.getRecipes?.recipes ?? []) as RecipeBase[],
+    () => data?.getRecipes?.recipes ?? [],
     [data],
   );
 

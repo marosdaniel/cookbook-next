@@ -64,7 +64,11 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
             className={classes.favoriteButton}
             data-testid="recipe-card-favorite"
           >
-            <FavoriteButton recipeId={id} isFavorite={isFavorite} size="sm" />
+            <FavoriteButton
+              recipeId={id}
+              isFavorite={isFavorite ?? false}
+              size="sm"
+            />
           </Box>
         )}
       </Card.Section>

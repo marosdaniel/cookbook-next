@@ -1,20 +1,18 @@
 import type {
-  RecipeIngredient,
-  RecipeMetadataOption,
-  RecipePreparationStep,
-} from '@/types/recipe';
+  IngredientInput,
+  MetaInputPartial,
+  PreparationStepInput,
+} from '@/lib/graphql/generated/resolvers-types';
 
-export type IngredientInput = RecipeIngredient;
+export type NormalizablePreparationStep = PreparationStepInput & {
+  localId?: string;
+};
 
-export type PreparationStepInput = RecipePreparationStep;
-
-export type MetaInputPartial = RecipeMetadataOption;
-
-export interface RecipeInputBase {
+export interface NormalizedRecipeInput {
   title: string;
   description?: string;
   ingredients: IngredientInput[];
-  preparationSteps: PreparationStepInput[];
+  preparationSteps: NormalizablePreparationStep[];
   category: MetaInputPartial;
   labels?: MetaInputPartial[];
   imgSrc?: string;
@@ -45,13 +43,4 @@ export interface RecipeInputBase {
   seoTitle?: string;
   seoDescription?: string;
   socialImage?: string;
-}
-
-export interface RecipeCreateInput extends RecipeInputBase {}
-
-export interface RecipeEditInput extends RecipeInputBase {}
-
-export interface RatingInput {
-  recipeId: string;
-  ratingValue: number;
 }

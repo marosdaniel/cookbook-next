@@ -26,7 +26,10 @@ const isRecipeNotFoundError = (error: unknown): boolean =>
   'code' in error.extensions &&
   error.extensions.code === 'NOT_FOUND';
 
-type RecipeLookupResult = Omit<RecipeDetail, 'preparationSteps'> & {
+type RecipeLookupResult = Omit<
+  RecipeDetail,
+  'averageRating' | 'ratingsCount' | 'preparationSteps'
+> & {
   createdAt?: Date;
   updatedAt?: Date;
   preparationSteps: Array<{
@@ -86,7 +89,7 @@ export async function generateMetadata({
 
   let recipe: RecipeLookupResult;
   try {
-    recipe = (await getRecipe(id)) as RecipeLookupResult;
+    recipe = (await getRecipe(id)) as unknown as RecipeLookupResult;
   } catch (error) {
     if (isRecipeNotFoundError(error)) {
       return {
@@ -161,7 +164,7 @@ export default async function RecipeDetailPage({
   // links keep working because getRecipeBySlugOrId resolves both.
   let recipe: RecipeLookupResult;
   try {
-    recipe = (await getRecipe(id)) as RecipeLookupResult;
+    recipe = (await getRecipe(id)) as unknown as RecipeLookupResult;
   } catch (error) {
     if (isRecipeNotFoundError(error)) {
       notFound();

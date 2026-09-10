@@ -16,6 +16,7 @@ import {
   recipeToFormValues,
 } from '@/components/Recipe/Create/utils';
 import { GET_RECIPE_BY_ID } from '@/lib/graphql/queries';
+import { mapRecipeQueryToDetail } from '../hooks/useRecipeDetail';
 import type { RecipeEditClientProps } from './types';
 
 const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
@@ -52,7 +53,9 @@ const RecipeEditClient = ({ recipeId }: Readonly<RecipeEditClientProps>) => {
     goToSectionRef.current?.(section);
   }, []);
 
-  const recipe = recipeData?.getRecipeById;
+  const recipe = recipeData?.getRecipeById
+    ? mapRecipeQueryToDetail(recipeData.getRecipeById)
+    : undefined;
 
   const initialValues = useMemo(() => {
     if (!recipe) {

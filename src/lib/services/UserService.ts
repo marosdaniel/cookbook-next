@@ -8,17 +8,18 @@ import {
   sendPasswordResetEmail,
   sendWelcomeEmail,
 } from '@/lib/email/nodemailer';
+import type {
+  UserRegisterInput as GeneratedUserRegisterInput,
+  UserUpdateInput as GeneratedUserUpdateInput,
+  PasswordEditInput,
+} from '@/lib/graphql/generated/resolvers-types';
 import {
   USER_FAVORITE_MESSAGE_KEYS,
   USER_FOLLOW_MESSAGE_KEYS,
   USER_REGISTER_MESSAGE_KEYS,
 } from '@/lib/graphql/MESSAGE_KEYS';
 import { resolveQueryLimit } from '@/lib/graphql/protection';
-import type {
-  ChangePasswordInput,
-  SetNewPasswordInput,
-  UpdateUserInput,
-} from '@/lib/graphql/resolvers/user/mutations/types';
+import type { RecipeResolverParent } from '@/lib/graphql/resolvers/types';
 import { prisma } from '@/lib/prisma/prisma';
 import { redis } from '@/lib/redis/redis';
 import { sanitizeText } from '@/lib/sanitize/sanitize';
@@ -31,10 +32,22 @@ import {
   resetPasswordValidationSchema,
   setNewPasswordValidationSchema,
 } from '@/lib/validation/validation';
-import type { CreateUserArgs } from '@/types/user';
 
 const LATEST_RECIPES_LIMIT = 4;
 const ADMIN_DESTRUCTIVE_ACTION_CONFIRMATION = 'DELETE_ALL';
+
+type FollowingResult = {
+  users: Array<{
+    id: string;
+    firstName: string;
+    lastName: string;
+    userName: string;
+    recipeCount: number;
+    followedAt: Date;
+    latestRecipes: RecipeResolverParent[];
+  }>;
+  totalFollowing: number;
+};
 
 export const UserService = {
   // Queries
@@ -66,7 +79,7 @@ export const UserService = {
     if (redis) {
       try {
         const cached = await redis.get(cacheKey);
-        if (cached) return cached;
+        if (cached) return cached as RecipeResolverParent[];
       } catch (error) {
         console.error('Redis cache get error:', error);
       }
@@ -104,7 +117,7 @@ export const UserService = {
     if (redis) {
       try {
         const cached = await redis.get(cacheKey);
-        if (cached) return cached;
+        if (cached) return cached as FollowingResult;
       } catch (error) {
         console.error('Redis cache get error:', error);
       }
@@ -155,7 +168,7 @@ export const UserService = {
   },
 
   // Mutations
-  async createUser(userRegisterInput: CreateUserArgs['userRegisterInput']) {
+  async createUser(userRegisterInput: GeneratedUserRegisterInput) {
     const {
       firstName: rawFirstName,
       lastName: rawLastName,
@@ -260,10 +273,7 @@ export const UserService = {
     };
   },
 
-  async changePassword(
-    userId: string,
-    passwordEditInput: ChangePasswordInput['passwordEditInput'],
-  ) {
+  async changePassword(userId: string, passwordEditInput: PasswordEditInput) {
     const validation =
       passwordEditValidationSchema.safeParse(passwordEditInput);
     if (!validation.success) {
@@ -364,7 +374,7 @@ export const UserService = {
     };
   },
 
-  async setNewPassword(input: SetNewPasswordInput) {
+  async setNewPassword(input: { token: string; newPassword: string }) {
     const { token, newPassword } = input;
     const validation = setNewPasswordValidationSchema.safeParse({
       newPassword,
@@ -415,10 +425,7 @@ export const UserService = {
     };
   },
 
-  async updateUser(
-    userId: string,
-    userUpdateInput: UpdateUserInput['userUpdateInput'],
-  ) {
+  async updateUser(userId: string, userUpdateInput: GeneratedUserUpdateInput) {
     const {
       firstName: rawFirstName,
       lastName: rawLastName,

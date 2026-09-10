@@ -1,11 +1,8 @@
 import type { Prisma } from '@prisma/client';
 import { cacheKeys } from '@/lib/cache/cacheKeys';
+import type { RatingInput } from '@/lib/graphql/generated/resolvers-types';
 import { resolveQueryLimit } from '@/lib/graphql/protection';
-import type {
-  RatingInput,
-  RecipeCreateInput,
-  RecipeEditInput,
-} from '@/lib/graphql/resolvers/recipe/types';
+import type { NormalizedRecipeInput } from '@/lib/graphql/resolvers/recipe/types';
 import {
   buildRecipeData,
   resolveRecipeMetadata,
@@ -88,6 +85,30 @@ const RECIPE_LIST_SELECT = {
   createdBy: true,
 } satisfies Prisma.RecipeSelect;
 
+type RecipeListItem = Prisma.RecipeGetPayload<{
+  select: typeof RECIPE_LIST_SELECT;
+}>;
+type RecipeListResult = {
+  recipes: RecipeListItem[];
+  totalRecipes: number;
+  pageInfo: {
+    hasNextPage: boolean;
+    endCursor: string | null;
+  };
+};
+type RecipeWithRelations = Prisma.RecipeGetPayload<{
+  include: { ingredients: true; preparationSteps: true };
+}>;
+type RecipeWithAuthor = Prisma.RecipeGetPayload<{
+  include: {
+    ingredients: true;
+    preparationSteps: true;
+    author: {
+      select: { userName: true; firstName: true; lastName: true };
+    };
+  };
+}>;
+
 const encodeCursor = (cursor: { createdAt: Date; id: string }) =>
   Buffer.from(
     JSON.stringify({
@@ -114,11 +135,11 @@ const decodeCursor = (cursor: string | undefined): RecipeCursor | null => {
   }
 };
 
-async function getCachedData(key: string) {
+async function getCachedData<T>(key: string): Promise<T | null> {
   if (!redis) return null;
   try {
     const cached = await redis.get(key);
-    if (cached) return cached;
+    if (cached) return cached as T;
   } catch (error) {
     console.warn('Redis cache get error:', error);
   }
@@ -152,7 +173,9 @@ async function invalidateCache(keys: string[]) {
 }
 
 async function getRecipeListVersion() {
-  const cachedVersion = await getCachedData(cacheKeys.recipeListVersion);
+  const cachedVersion = await getCachedData<number>(
+    cacheKeys.recipeListVersion,
+  );
   return typeof cachedVersion === 'number' ? cachedVersion : 1;
 }
 
@@ -214,7 +237,7 @@ export const RecipeService = {
       after,
     );
 
-    const cached = await getCachedData(cacheKey);
+    const cached = await getCachedData<RecipeListResult>(cacheKey);
     if (cached) return cached;
 
     const cursor = decodeCursor(after);
@@ -301,7 +324,7 @@ export const RecipeService = {
   async getRecipeById(id: string) {
     const cacheKey = cacheKeys.recipeDetail(id);
 
-    const cached = await getCachedData(cacheKey);
+    const cached = await getCachedData<RecipeWithRelations>(cacheKey);
     if (cached) return cached;
 
     const existingRecipe = await prisma.recipe.findUnique({
@@ -324,7 +347,7 @@ export const RecipeService = {
   async getRecipeBySlugOrId(idOrSlug: string) {
     const cacheKey = cacheKeys.recipeLookup(idOrSlug);
 
-    const cached = await getCachedData(cacheKey);
+    const cached = await getCachedData<RecipeWithAuthor>(cacheKey);
     if (cached) return cached;
 
     const recipe = await prisma.recipe.findFirst({
@@ -355,7 +378,10 @@ export const RecipeService = {
     const normalizedLimit = resolveQueryLimit(limit);
     const cacheKey = cacheKeys.userRecipes(userId, normalizedLimit);
 
-    const cached = await getCachedData(cacheKey);
+    const cached = await getCachedData<{
+      recipes: RecipeListItem[];
+      totalRecipes: number;
+    }>(cacheKey);
     if (cached) return cached;
 
     const [recipes, totalRecipes] = await Promise.all([
@@ -376,7 +402,7 @@ export const RecipeService = {
   },
 
   // Mutations
-  async createRecipe(userId: string, recipeCreateInput: RecipeCreateInput) {
+  async createRecipe(userId: string, recipeCreateInput: NormalizedRecipeInput) {
     const sanitizedInput = sanitizeRecipeInput(recipeCreateInput);
     validateRequiredFields(sanitizedInput);
 
@@ -422,7 +448,7 @@ export const RecipeService = {
     userId: string,
     userRole: string | undefined,
     recipeId: string,
-    recipeEditInput: RecipeEditInput,
+    recipeEditInput: NormalizedRecipeInput,
   ) {
     const sanitizedInput = sanitizeRecipeInput(recipeEditInput);
     validateRequiredFields(sanitizedInput);

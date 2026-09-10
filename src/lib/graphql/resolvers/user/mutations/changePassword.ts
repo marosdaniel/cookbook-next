@@ -1,12 +1,12 @@
+import type { MutationChangePasswordArgs } from '@/lib/graphql/generated/resolvers-types';
 import { UserService } from '@/lib/services/UserService';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
 import type { GraphQLContext } from '@/types/graphql/context';
-import type { ChangePasswordInput } from './types';
 
 export const changePassword = async (
   _: unknown,
-  { passwordEditInput }: ChangePasswordInput,
+  { passwordEditInput }: MutationChangePasswordArgs,
   { userId }: GraphQLContext,
 ): Promise<{ success: boolean; message: string }> => {
   if (!userId) {

@@ -70,7 +70,7 @@ export const ResetPasswordForm: FC = () => {
 
         showSuccessNotification(
           translate('response.success'),
-          result.data.resetPassword.message,
+          result.data.resetPassword.message ?? '',
         );
       }
     } catch (error: unknown) {

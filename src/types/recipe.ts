@@ -1,6 +1,13 @@
+import type { GetRecipeByIdQuery } from '@/lib/graphql/generated/graphql';
+
+type GeneratedRecipe = GetRecipeByIdQuery['getRecipeById'];
+type GeneratedRecipeIngredient = GeneratedRecipe['ingredients'][number];
+type GeneratedRecipePreparationStep =
+  GeneratedRecipe['preparationSteps'][number];
+
 export interface RecipeTaxonomyItem {
-  key: string;
-  label: string;
+  key: GeneratedRecipe['category']['key'];
+  label: GeneratedRecipe['category']['label'];
 }
 
 export interface RecipeMetadataOption {
@@ -8,22 +15,19 @@ export interface RecipeMetadataOption {
   label: string;
 }
 
-export interface RecipeIngredient {
-  localId: string;
-  name: string;
-  quantity: number;
-  unit: string;
+export type RecipeIngredient = Omit<
+  GeneratedRecipeIngredient,
+  'isOptional' | 'note'
+> & {
   isOptional?: boolean;
   note?: string;
-}
+};
 
 export type RecipeIngredientId = RecipeIngredient['localId'];
 
-export interface RecipePreparationStep {
+export type RecipePreparationStep = GeneratedRecipePreparationStep & {
   localId: string;
-  description: string;
-  order: number;
-}
+};
 
 export interface RecipeBase {
   id: string;
@@ -65,20 +69,12 @@ export interface RecipeBase {
   socialImage?: string | null;
 
   // Author details (populated optionally)
-  author?: {
-    id: string;
-    userName: string;
-    firstName: string;
-    lastName: string;
-  } | null;
+  author?: GeneratedRecipe['author'] | null;
 }
 
-export interface RecipeDetail extends RecipeBase {
-  averageRating: number;
-  ratingsCount: number;
-  userRating?: number | null;
-  isFavorite?: boolean | null;
-}
+export type RecipeDetail = RecipeBase &
+  Pick<GeneratedRecipe, 'averageRating' | 'ratingsCount'> &
+  Partial<Pick<GeneratedRecipe, 'userRating' | 'isFavorite'>>;
 
 export type RecipeFormSource = Pick<
   RecipeBase,

@@ -1,5 +1,9 @@
 import type { PrismaClient } from '@prisma/client';
 import DataLoader from 'dataloader';
+import type {
+  RecipeResolverParent,
+  UserResolverParent,
+} from '@/lib/graphql/resolvers/types';
 
 /**
  * Aggregated rating data for a single recipe — returned by the ratings loader.
@@ -94,15 +98,22 @@ export const createUserRatingLoader = (prisma: PrismaClient, userId: string) =>
  * Batches the author lookup for a set of recipes into a single user query.
  */
 export const createRecipeAuthorLoader = (prisma: PrismaClient) =>
-  new DataLoader<
-    string,
-    { id: string; firstName: string; lastName: string; userName: string } | null
-  >(async (authorIds) => {
+  new DataLoader<string, UserResolverParent | null>(async (authorIds) => {
     const ids = [...authorIds];
 
     const users = await prisma.user.findMany({
       where: { id: { in: ids } },
-      select: { id: true, firstName: true, lastName: true, userName: true },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        userName: true,
+        email: true,
+        role: true,
+        locale: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
 
     const userMap = new Map(users.map((user) => [user.id, user]));
@@ -114,7 +125,7 @@ export const createRecipeAuthorLoader = (prisma: PrismaClient) =>
  * Batches user recipe lists for a set of user IDs into a single query.
  */
 export const createUserRecipesLoader = (prisma: PrismaClient) =>
-  new DataLoader<string, Array<Record<string, unknown>>>(async (userIds) => {
+  new DataLoader<string, RecipeResolverParent[]>(async (userIds) => {
     const ids = [...userIds];
 
     const users = await prisma.user.findMany({
@@ -128,12 +139,9 @@ export const createUserRecipesLoader = (prisma: PrismaClient) =>
       },
     });
 
-    const userRecipeMap = new Map<string, Array<Record<string, unknown>>>();
+    const userRecipeMap = new Map<string, RecipeResolverParent[]>();
     for (const user of users) {
-      userRecipeMap.set(
-        user.id,
-        user.recipes as Array<Record<string, unknown>>,
-      );
+      userRecipeMap.set(user.id, user.recipes as RecipeResolverParent[]);
     }
 
     return ids.map((id) => userRecipeMap.get(id) ?? []);
@@ -143,7 +151,7 @@ export const createUserRecipesLoader = (prisma: PrismaClient) =>
  * Batches favorite recipe lists for a set of user IDs into a single query.
  */
 export const createUserFavoriteRecipesLoader = (prisma: PrismaClient) =>
-  new DataLoader<string, Array<Record<string, unknown>>>(async (userIds) => {
+  new DataLoader<string, RecipeResolverParent[]>(async (userIds) => {
     const ids = [...userIds];
 
     const users = await prisma.user.findMany({
@@ -157,11 +165,11 @@ export const createUserFavoriteRecipesLoader = (prisma: PrismaClient) =>
       },
     });
 
-    const favoriteRecipeMap = new Map<string, Array<Record<string, unknown>>>();
+    const favoriteRecipeMap = new Map<string, RecipeResolverParent[]>();
     for (const user of users) {
       favoriteRecipeMap.set(
         user.id,
-        user.favoriteRecipes as Array<Record<string, unknown>>,
+        user.favoriteRecipes as RecipeResolverParent[],
       );
     }
 

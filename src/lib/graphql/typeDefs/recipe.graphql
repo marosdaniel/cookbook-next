@@ -87,10 +87,10 @@ type Recipe {
   title: String!
   description: String
   author: User!
-  ingredients: [Ingredient]!
+  ingredients: [Ingredient!]!
   category: Category!
-  labels: [Label]!
-  preparationSteps: [PreparationStep]!
+  labels: [Label!]!
+  preparationSteps: [PreparationStep!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   createdBy: String!
@@ -113,9 +113,9 @@ type Recipe {
   # New metadata fields
   servingUnit: MetadataItem
   cuisine: MetadataItem
-  dietaryFlags: [MetadataItem]
-  allergens: [MetadataItem]
-  equipment: [MetadataItem]
+  dietaryFlags: [MetadataItem!]
+  allergens: [MetadataItem!]
+  equipment: [MetadataItem!]
   costLevel: MetadataItem
 
   # Text fields
@@ -204,7 +204,7 @@ input RecipeEditInput {
 }
 
 type RecipeData {
-  recipes: [Recipe]!
+  recipes: [Recipe!]!
   totalRecipes: Int!
   pageInfo: PageInfo!
 }
