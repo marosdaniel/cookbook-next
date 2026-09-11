@@ -207,16 +207,16 @@ importers:
         version: 16.3.4(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.63.0)(@types/node@26.5.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       next-auth:
         specifier: 5.0.0-beta.32
-        version: 5.0.0-beta.32(next@16.3.4(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.63.0)(@types/node@26.5.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(nodemailer@10.0.3)(react@19.3.0)
+        version: 5.0.0-beta.32(next@16.3.4(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.63.0)(@types/node@26.5.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(nodemailer@10.0.6)(react@19.3.0)
       next-intl:
-        specifier: ^4.14.3
-        version: 4.14.3(@swc/helpers@0.5.23)(next@16.3.4(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.63.0)(@types/node@26.5.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+        specifier: ^4.14.4
+        version: 4.14.4(@swc/helpers@0.5.23)(next@16.3.4(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.63.0)(@types/node@26.5.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
       nextjs-toploader:
         specifier: ^3.9.17
         version: 3.9.17(next@16.3.4(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.63.0)(@types/node@26.5.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       nodemailer:
-        specifier: ^10.0.3
-        version: 10.0.3
+        specifier: ^10.0.6
+        version: 10.0.6
       react:
         specifier: 19.3.0
         version: 19.3.0
@@ -2562,11 +2562,6 @@ packages:
     resolution: {integrity: sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==}
     engines: {node: 18 || 20 || >=22}
 
-  baseline-browser-mapping@2.11.21:
-    resolution: {integrity: sha512-uh8vpY/1/YyFkunIDFH/12p7/7VdPKA1hejMVEbdkEaWnUz0Hesvx5EbiU6XxjyHZIOju+ZMbQJkRh+es3/spQ==}
-    engines: {node: '>=6.0.0'}
-    hasBin: true
-
   baseline-browser-mapping@2.11.22:
     resolution: {integrity: sha512-pWc4w51fBFd7mav43/zKRC+RI6f4yfzQoVlfvE8dECePyfkn1bzLp01Fj0QACcyCZyFhiEMyD2qScfKRWgWibA==}
     engines: {node: '>=6.0.0'}
@@ -3448,8 +3443,8 @@ packages:
     resolution: {integrity: sha512-IKXpvIzjnC9XTAUbVBcMfGS0EPaIXtW6v+zr+RRp+hqULEpo0owZax6wyRwPOJbWbzjYspQwusTsfVr0ifh4uQ==}
     engines: {node: '>=0.10.0'}
 
-  icu-minify@4.14.3:
-    resolution: {integrity: sha512-xaZca1l+2G8x/nktE0gymGF0ym6onbopJA1onU7LaoZB+HDiP2cB+H7o+ricsEWE0fUcwABhEmGTff1xpTWYmA==}
+  icu-minify@4.14.4:
+    resolution: {integrity: sha512-pjDoO7XstE5obIDsMeDEpsSm7tdi/azbsGotEc9ktxMrGAugM7aISXyvVzdMOpdNSybX0SIMpOmpMmD/87UWOQ==}
 
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
@@ -3973,11 +3968,11 @@ packages:
       nodemailer:
         optional: true
 
-  next-intl-swc-plugin-extractor@4.14.3:
-    resolution: {integrity: sha512-aRbTpgeTF8nkTvKWWvh/IXwcQ1BJbLUpYmuk7T4CMXdfPpskiNGTJQ0snwF+yFkrHXcH9hyBz0eRKbV+4fGNIA==}
+  next-intl-swc-plugin-extractor@4.14.4:
+    resolution: {integrity: sha512-VjbyHQuo0Cq6NRfyHjBoMFvD4ltqvpY/JJcqQ+SBBp9DB1OXhUEUQU3aMJeJb0YJ4LwzTu4Xx2Rk5LYZcvkFEA==}
 
-  next-intl@4.14.3:
-    resolution: {integrity: sha512-xTIIpavNSwXzPOSsRqmgyZq5E//6dQEpZIf79ybj8GCA9sX5HjFb6Jvt1+1ugPROk9znw7xGRNMiE/wn5UUQ/w==}
+  next-intl@4.14.4:
+    resolution: {integrity: sha512-4tbronSt16UPbDyOPFFqpUA2Clg1Ie8x+GuhgEt02HW/HrqseaXPp15XlqqEcYpYL4D8zVdvdHyIbS/pDe3L/w==}
     peerDependencies:
       next: ^12.0.0 || ^13.0.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || >=19.0.0-rc <19.0.0 || ^19.0.0
@@ -4038,8 +4033,8 @@ packages:
     resolution: {integrity: sha512-wRNIrw4DmVLKQlbgOMdkMx27Wrpzes2hh5Jtbi2bjPd+4wJstWIqP5A+lscnqbm0xxmT5Bpg8Lec5ItEBwx6BQ==}
     engines: {node: '>=18'}
 
-  nodemailer@10.0.3:
-    resolution: {integrity: sha512-h5c8ypcMoOIh44bIcVROvTDbjRdOJX8AXTkxMht2C92HlSjkG+/8kjoqmNPypfjQaVNaUHWyZ3tqs5I3K91F3g==}
+  nodemailer@10.0.6:
+    resolution: {integrity: sha512-2u7OHvEQVVGvPo9Yhw/eN3xMO2Gnj2U2fGDP0BDpnRwJR//65AfGRQDiJqxix28gFRBvMqi2USA13x6RrfWuGg==}
     engines: {node: '>=20.0.0'}
 
   normalize-package-data@6.0.2:
@@ -5033,8 +5028,8 @@ packages:
       '@types/react':
         optional: true
 
-  use-intl@4.14.3:
-    resolution: {integrity: sha512-wmhzO9o5RaBTLCzGTyN+BlxSTM4xhPGvb57/8JShW59V2eYzScswDb0pmz/PalDSb5a9Wn3Ne2exnKN/QZkfdA==}
+  use-intl@4.14.4:
+    resolution: {integrity: sha512-V5hyjHe9q/lB1FrTc8s/9P+OiE1R0WS3G2BPTyMOVx4m2MsJd5ORoGtfwe8ciMXxxs676SfbP3agRngBQcn02w==}
     peerDependencies:
       react: ^17.0.0 || ^18.0.0 || >=19.0.0-rc <19.0.0 || ^19.0.0
 
@@ -5416,7 +5411,7 @@ snapshots:
       '@apollo/server': 5.5.1(graphql@17.0.2)(supports-color@7.2.0)
       next: 16.3.4(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.63.0)(@types/node@26.5.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
 
-  '@auth/core@0.41.3(nodemailer@10.0.3)':
+  '@auth/core@0.41.3(nodemailer@10.0.6)':
     dependencies:
       '@panva/hkdf': 1.2.1
       jose: 6.2.10
@@ -5424,7 +5419,7 @@ snapshots:
       preact: 10.24.3
       preact-render-to-string: 6.5.11(preact@10.24.3)
     optionalDependencies:
-      nodemailer: 10.0.3
+      nodemailer: 10.0.6
 
   '@babel/code-frame@7.29.7':
     dependencies:
@@ -7501,8 +7496,6 @@ snapshots:
 
   balanced-match@4.0.4: {}
 
-  baseline-browser-mapping@2.11.21: {}
-
   baseline-browser-mapping@2.11.22: {}
 
   bcryptjs@3.0.3: {}
@@ -7537,7 +7530,7 @@ snapshots:
 
   browserslist@4.28.7:
     dependencies:
-      baseline-browser-mapping: 2.11.21
+      baseline-browser-mapping: 2.11.22
       caniuse-lite: 1.0.30001809
       electron-to-chromium: 1.5.395
       node-releases: 2.0.51
@@ -8392,7 +8385,7 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
-  icu-minify@4.14.3:
+  icu-minify@4.14.4:
     dependencies:
       '@formatjs/icu-messageformat-parser': 3.5.17
 
@@ -8802,17 +8795,17 @@ snapshots:
 
   nerf-dart@1.0.0: {}
 
-  next-auth@5.0.0-beta.32(next@16.3.4(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.63.0)(@types/node@26.5.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(nodemailer@10.0.3)(react@19.3.0):
+  next-auth@5.0.0-beta.32(next@16.3.4(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.63.0)(@types/node@26.5.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(nodemailer@10.0.6)(react@19.3.0):
     dependencies:
-      '@auth/core': 0.41.3(nodemailer@10.0.3)
+      '@auth/core': 0.41.3(nodemailer@10.0.6)
       next: 16.3.4(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.63.0)(@types/node@26.5.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       react: 19.3.0
     optionalDependencies:
-      nodemailer: 10.0.3
+      nodemailer: 10.0.6
 
-  next-intl-swc-plugin-extractor@4.14.3: {}
+  next-intl-swc-plugin-extractor@4.14.4: {}
 
-  next-intl@4.14.3(@swc/helpers@0.5.23)(next@16.3.4(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.63.0)(@types/node@26.5.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0):
+  next-intl@4.14.4(@swc/helpers@0.5.23)(next@16.3.4(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.63.0)(@types/node@26.5.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0):
     dependencies:
       '@eloqnt/config': 0.1.0
       '@eloqnt/format-json': 0.1.0
@@ -8820,12 +8813,12 @@ snapshots:
       '@formatjs/intl-localematcher': 0.8.13
       '@parcel/watcher': 2.6.0
       '@swc/core': 1.16.1(@swc/helpers@0.5.23)
-      icu-minify: 4.14.3
+      icu-minify: 4.14.4
       negotiator: 1.1.0
       next: 16.3.4(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.63.0)(@types/node@26.5.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      next-intl-swc-plugin-extractor: 4.14.3
+      next-intl-swc-plugin-extractor: 4.14.4
       react: 19.3.0
-      use-intl: 4.14.3(react@19.3.0)
+      use-intl: 4.14.4(react@19.3.0)
     transitivePeerDependencies:
       - '@swc/helpers'
 
@@ -8886,7 +8879,7 @@ snapshots:
 
   node-releases@2.0.51: {}
 
-  nodemailer@10.0.3: {}
+  nodemailer@10.0.6: {}
 
   normalize-package-data@6.0.2:
     dependencies:
@@ -9811,11 +9804,11 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.3.0
 
-  use-intl@4.14.3(react@19.3.0):
+  use-intl@4.14.4(react@19.3.0):
     dependencies:
       '@formatjs/fast-memoize': 3.1.7
       '@schummar/icu-type-parser': 1.21.5
-      icu-minify: 4.14.3
+      icu-minify: 4.14.4
       intl-messageformat: 11.2.14
       react: 19.3.0
 
