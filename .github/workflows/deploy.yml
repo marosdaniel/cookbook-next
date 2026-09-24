@@ -107,6 +107,7 @@ jobs:
 
       - name: Run Playwright tests
         run: pnpm test:e2e
+        timeout-minutes: 15
 
       - name: Generate E2E Summary
         if: always()
