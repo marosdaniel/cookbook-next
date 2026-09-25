@@ -45,5 +45,8 @@ export default defineConfig({
     url: `http://${HOSTNAME}:${PORT}`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
+    // Bound teardown: try a clean SIGTERM shutdown, then force-kill after 5s
+    // so a stuck dev-server process can't hang the whole CI step.
+    gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },
   },
 });
