@@ -101,7 +101,7 @@
     "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^6.1.1",
     "@vitest/coverage-v8": "5.0.1",
-    "baseline-browser-mapping": "^2.11.25",
+    "baseline-browser-mapping": "^2.11.26",
     "dotenv": "^18.0.3",
     "fast-uri": "^4.2.1",
     "find-my-way": "9.9.0",
