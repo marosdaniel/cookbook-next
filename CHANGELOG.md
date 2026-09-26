@@ -1,3 +1,10 @@
+## [2.93.1](https://github.com/marosdaniel/cookbook-next/compare/v2.93.0...v2.93.1) (2026-09-26)
+
+
+### Bug Fixes
+
+* update minimumReleaseAgeExclude to include @types/node@26.6.3 ([e83a408](https://github.com/marosdaniel/cookbook-next/commit/e83a408511246503d24b6ad892b5b03583356da7))
+
 # [2.93.0](https://github.com/marosdaniel/cookbook-next/compare/v2.92.0...v2.93.0) (2026-09-10)
 
 
