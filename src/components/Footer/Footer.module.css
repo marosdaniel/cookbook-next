@@ -1,0 +1,58 @@
+.footer {
+  --footer-heading-color: var(--mantine-color-gray-8);
+
+  border-top: 1px solid var(--mantine-color-default-border);
+}
+
+:global([data-mantine-color-scheme="dark"]) .footer {
+  --footer-heading-color: var(--mantine-color-dark-0);
+}
+
+.ctaBand {
+  background: linear-gradient(
+    45deg,
+    var(--mantine-color-pink-0),
+    var(--mantine-color-violet-0)
+  );
+}
+
+:global([data-mantine-color-scheme="dark"]) .ctaBand {
+  background: linear-gradient(
+    45deg,
+    color-mix(in srgb, var(--mantine-color-pink-9) 35%, transparent),
+    color-mix(in srgb, var(--mantine-color-violet-9) 35%, transparent)
+  );
+}
+
+/* Theme's Text defaultProps set an inline color, so the Anchor reads it from this variable */
+.footer .link {
+  --footer-link-color: var(--mantine-color-dimmed);
+
+  display: inline-block;
+  padding-block: 4px;
+  transition:
+    color 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+.footer .link:focus-visible {
+  --footer-link-color: var(--mantine-color-anchor);
+}
+
+@media (hover: hover) {
+  .footer .link:hover {
+    --footer-link-color: var(--mantine-color-anchor);
+
+    transform: translateX(2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer .link {
+    transition: none;
+  }
+
+  .footer .link:hover {
+    transform: none;
+  }
+}

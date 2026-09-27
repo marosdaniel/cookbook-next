@@ -90,7 +90,7 @@ A Vercel Hobby csomag számos ingyenes, kódmódosítást nem igénylő feature-
 
 1. **Sprint 1 — „lezárás és láthatóság" (csupa S/M)**: N-P0-1, N-P0-3, N-P0-4, N-P1-6, N-P1-7, N-P1-8, N-P1-11, N-P1-14, N-P1-15, **V-P1-6** (Cron Config alapok)
 2. **Sprint 2 — „adat és típusréteg"**: N-P1-2, N-P1-3 (indítás), N-P1-4, N-P1-5, N-P0-2 (verifikáció), **V-P1-1** (Vercel Flags/Edge Config setup)
-3. **Sprint 3 — „UX-hullám + monitoring"**: N-P1-1, N-P1-10, N-P1-12, N-P2-1, N-P2-2 + **V-P1-2** (Web Analytics) + **V-P1-3** (Draft Mode) + [ux-motion-upgrade-plan](ux-motion-upgrade-plan-2026-08-30.md) 1. üteme + [footer-redesign](footer-redesign-2026-08-30.md)
+3. **Sprint 3 — „UX-hullám + monitoring"**: N-P1-1, N-P1-10, N-P1-12, N-P2-1, N-P2-2 + **V-P1-2** (Web Analytics) + **V-P1-3** (Draft Mode) + [ux-motion-upgrade-plan](ux-motion-upgrade-plan-2026-08-30.md) 1. üteme + [footer-redesign](footer-redesign-2026-08-30.md) (C variáns ✅)
 4. **Sprint 4–6 — „admin + storage"**: N-P1-13 (MVP az admin terv szerint), N-P2-5 vele közös sémamunkában, **V-P1-4** (Cron Jobs implementáció), **V-P1-5** (Blob Storage + kép-upload)
 5. **Utána**: N-P1-9, N-P2-3, N-P2-4, N-P2-6…N-P2-13 érték/erőfeszítés arány szerint
 

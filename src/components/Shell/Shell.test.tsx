@@ -82,6 +82,29 @@ describe('Shell', () => {
     expect(screen.getByTestId('auth-button')).toBeInTheDocument();
   });
 
+  it('keeps the footer after a flex-growing main in normal document flow', () => {
+    mockUseSession.mockReturnValue({ data: null, status: 'unauthenticated' });
+    mockUsePathname.mockReturnValue('/recipes');
+
+    render(
+      <Shell>
+        <div>content</div>
+      </Shell>,
+    );
+
+    const shell = screen.getByTestId('shell');
+    const main = screen.getByTestId('shell-main');
+    const footer = screen.getByTestId('shell-footer');
+
+    expect(shell).toHaveStyle({
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100dvh',
+    });
+    expect(main).toHaveStyle({ flex: '1 0 auto', minHeight: 'auto' });
+    expect(main.nextElementSibling).toBe(footer);
+    expect(footer).not.toHaveStyle({ position: 'fixed' });
+  });
   it('hides the shell chrome on immersive create route', () => {
     mockUseSession.mockReturnValue({ data: null, status: 'unauthenticated' });
     mockUsePathname.mockReturnValue('/recipes/create');

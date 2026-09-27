@@ -74,7 +74,20 @@
   "footer": {
     "copyright": "© {year} Cookbook. Alle Rechte vorbehalten.",
     "privacy": "Datenschutzrichtlinie",
-    "cookies": "Cookie-Richtlinie"
+    "cookies": "Cookie-Richtlinie",
+    "tagline": "Entdecke, koche und teile Rezepte, die du liebst.",
+    "explore": "Entdecken",
+    "legal": "Rechtliches",
+    "links": {
+      "recipes": "Rezepte durchsuchen",
+      "createRecipe": "Rezept erstellen",
+      "signup": "Cookbook beitreten"
+    },
+    "madeWith": "Mit ❤ und Next.js gemacht",
+    "cta": {
+      "title": "Lust, etwas Neues zu kochen?",
+      "button": "Teile dein erstes Rezept"
+    }
   },
   "user": {
     "editProfilePageTitle": "Ihr Profil bearbeiten",

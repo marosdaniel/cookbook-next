@@ -37,7 +37,7 @@ export const BackToTop = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 12 }}
           transition={MOTION_TRANSITION.standard}
-          style={{ position: 'fixed', right: 20, bottom: 84, zIndex: 100 }}
+          style={{ position: 'fixed', right: 20, bottom: 24, zIndex: 100 }}
           data-testid="back-to-top"
         >
           <ActionIcon

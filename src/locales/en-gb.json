@@ -696,7 +696,20 @@
   "footer": {
     "copyright": "© {year} Cookbook. All rights reserved.",
     "privacy": "Privacy Policy",
-    "cookies": "Cookie Policy"
+    "cookies": "Cookie Policy",
+    "tagline": "Discover, cook and share recipes you love.",
+    "explore": "Explore",
+    "legal": "Legal",
+    "links": {
+      "recipes": "Browse recipes",
+      "createRecipe": "Create a recipe",
+      "signup": "Join Cookbook"
+    },
+    "madeWith": "Made with ❤ and Next.js",
+    "cta": {
+      "title": "Ready to cook something new?",
+      "button": "Share your first recipe"
+    }
   },
   "favorites": {
     "add": "Add to favourites",

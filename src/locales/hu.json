@@ -695,7 +695,20 @@
   "footer": {
     "copyright": "© {year} Cookbook. Minden jog fenntartva.",
     "privacy": "Adatvédelmi szabályzat",
-    "cookies": "Süti szabályzat"
+    "cookies": "Süti szabályzat",
+    "tagline": "Fedezd fel, főzd meg és oszd meg a kedvenc receptjeidet.",
+    "explore": "Felfedezés",
+    "legal": "Jogi információk",
+    "links": {
+      "recipes": "Receptek böngészése",
+      "createRecipe": "Recept létrehozása",
+      "signup": "Csatlakozz a Cookbookhoz"
+    },
+    "madeWith": "Készült ❤-vel és Next.js-szel",
+    "cta": {
+      "title": "Főznél valami újat?",
+      "button": "Oszd meg az első receptedet"
+    }
   },
   "favorites": {
     "add": "Hozzáadás a kedvencekhez",

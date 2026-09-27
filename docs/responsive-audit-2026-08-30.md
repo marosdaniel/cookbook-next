@@ -13,7 +13,7 @@
 | R1 | Recept-detail — sticky hozzávaló-kártya | `top: 80px` sticky + `md`-nél túl korán vált két hasábra → tablet sávban összenyomott tartalom | Közepes | P1 |
 | R2 | Recept-detail — hero kép | Fix `420px` magasság minden viewporton → mobilon a fold nagy részét elviszi | Alacsony/közepes | P1 |
 | R3 | Touch targetek | Több `ActionIcon`/ikongomb < 44×44px (favorite gomb kártyán, step fel/le nyilak, composer ikonok) | Közepes (a11y) | P1 |
-| R4 | Footer (mobil) | `gap={4}` zsúfolt; linkek `size="xs"` → kis tap-felület | Alacsony | P1 (a footer-redesign része) |
+| R4 | Footer (mobil) | ✅ Egyetlen responsive, oszlopos layout; `size="sm"` linkek és 4px függőleges padding | Alacsony | Kész (2026-09-27) |
 | R5 | Header — nagyon keskeny viewport (<360px) | Logo + search + auth gomb + burger egy sorban törhet | Alacsony | P2 |
 | R6 | RecipesPage szűrősáv | A szűrők mobilon egymás alá esnek, de a collapse abrupt; a szűrő-controlok nem `size="md"`-k mobilon | Alacsony | P2 |
 | R7 | RecipeComposer mobilon | A szekcióváltó sidebar Draweren keresztül érhető el, a submit a tartalom alján — sok interakció (07-06 R9 óta nyitott) | Közepes | P1 |
@@ -96,9 +96,9 @@ Mivel az `ActionIcon size` nem fogad responsive objektumot, a mintát CSS-szel �
 
 Érintett helyek: RecipeCard `FavoriteButton`, Steps/Ingredients sor-akciók (fel/le/törlés), ThemeSwitcher, Burger (a Mantine Burger 34px — `size="lg"`-re állítandó mobilon), RecipeRating csillagai (a Mantine `Rating` `size="lg"` mobilon).
 
-### R4 — Footer mobil spacing
+### R4 — Footer mobil spacing — kész
 
-A [footer-redesign-2026-08-30.md](footer-redesign-2026-08-30.md) mindhárom variánsa javítja (`gap` 4→6/xs, linkek `size="sm"`, `paddingBlock: 4`).
+A footer egyetlen responsive `SimpleGrid` elrendezést használ, a desktop/mobil blokkok nem duplikálódnak. A linkek `size="sm"` méretűek, 4px függőleges paddinget kapnak; a 390px-es mobil viewporton nincs horizontális törés. A működés részletei a [footer redesign dokumentumban](footer-redesign-2026-08-30.md) találhatók.
 
 ### R5 — Header keskeny viewporton
 

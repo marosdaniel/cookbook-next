@@ -4,8 +4,8 @@
 
 **A modern recipe sharing platform built with Next.js, Apollo Server, and Neon (Serverless Postgres)**
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.3.4-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.2.8-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.3.6-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.3.0-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7.0.2-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
@@ -40,10 +40,11 @@
 - 🔍 **GraphQL API** - Apollo Server 5 with a modular schema, DataLoader batching, and graphql-armor hardening
 - 🗄️ **Database** - Neon serverless Postgres with Prisma 7, connection pooling, and migrations
 - 🧑‍🍳 **Recipe management** - Multi-step recipe composer with local draft saving, slug-based SEO routes, favorites, ratings, and follow relationships
+- 🧭 **Responsive footer** - Recipe-sharing CTA, Explore and Legal links, localized content, and normal-flow placement after page content
 - ⚡ **Caching & rate limiting** - Upstash Redis caching with fallback behavior and sliding-window rate limiting on sensitive operations
 - 🛡️ **Security hardening** - Zod validation, HTML sanitization, and strict security headers
 - 🔎 **SEO** - Dynamic recipe metadata with Open Graph, Twitter cards, canonical URLs, and localized fallbacks
-- ✅ **Type safety** - Full TypeScript coverage across app, API, and validation layers
+- ✅ **Type safety** - TypeScript across application, API, and validation code, with Zod schemas for validated inputs
 - 🧪 **Testing** - Unit/integration tests with Vitest and end-to-end coverage with Playwright
 - 📊 **State management** - Redux Toolkit for metadata and global app state
 - 🎯 **Developer experience** - Biome, Turbopack, pnpm, and GitHub Actions automation
@@ -53,31 +54,31 @@
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework:** Next.js 16.3.4 (App Router, Turbopack)
+- **Framework:** Next.js 16.3.6 (App Router, Turbopack)
 - **Language:** TypeScript 7.0.2
-- **UI Library:** Mantine 9.6.0 (core, form, hooks, notifications, modals, spotlight, carousel)
-- **Animation:** Motion 13.2.0 for page and card transitions
-- **State Management:** Redux Toolkit 2.12.0
+- **UI Library:** Mantine 9.6.3 (core, form, hooks, notifications, modals, spotlight, carousel)
+- **Animation:** Motion ^13.4.4 for page, list, and interaction animations
+- **State Management:** Redux Toolkit ^2.12.0
 - **Forms:** Mantine Form + `mantine-form-zod-resolver` (Zod validation)
-- **Data fetching:** Apollo Client 4.2.12 (custom error-handling link with localized notifications)
+- **Data fetching:** Apollo Client ^4.3.1 (custom error-handling link with localized notifications)
 - **Icons:** Tabler Icons React
-- **i18n:** next-intl 4.14.2 (English, Hungarian, German)
+- **i18n:** next-intl ^4.14.7 (English, Hungarian, German)
 
 ### Backend
-- **API:** Apollo Server 5.5.1 + GraphQL (`@as-integrations/next`), modular schema (user/recipe/metadata), `graphql-armor` hardening, DataLoader batching
+- **API:** Apollo Server ^5.5.1 + GraphQL 17.0.2 (`@as-integrations/next`), modular schema (user/recipe/metadata), `graphql-armor` hardening, DataLoader batching
 - **Database:** Serverless Postgres via Neon (`@neondatabase/serverless` + `@prisma/adapter-neon`, connection pooling)
-- **ORM:** Prisma 7.10.0
+- **ORM:** Prisma 7.10.0 (`@prisma/client` and Neon adapter)
 - **Authentication:** NextAuth 5.0.0-beta.32 with JWT session strategy
 - **Password hashing:** Argon2id (primary) with legacy bcryptjs fallback
-- **Caching:** Upstash Redis 1.38.4 (TTL-based query caching with fallback behavior)
-- **Rate limiting:** Upstash Ratelimit 2.0.8 (sliding window) on auth & mutation-heavy operations
-- **Validation & sanitization:** Zod 4.5.4 + sanitize-html 2.17.7
+- **Caching:** Upstash Redis ^1.39.0 (TTL-based query caching with fallback behavior)
+- **Rate limiting:** Upstash Ratelimit ^2.2.0 (sliding window) on auth & mutation-heavy operations
+- **Validation & sanitization:** Zod ^4.6.5 + sanitize-html ^2.17.7
 
 ### DevOps & Tools
 - **Build Tool:** Turbopack
-- **Testing:** Vitest 5.0.0 + Testing Library + Happy DOM (unit/integration), Playwright 1.63.0 (E2E)
-- **Code Quality:** Biome 2.5.12
-- **Package Manager:** pnpm 12.3.4
+- **Testing:** Vitest ^5.0.2 + Testing Library + Happy DOM (unit/integration), Playwright ^1.63.0 (E2E)
+- **Code Quality:** Biome 2.5.14
+- **Package Manager:** pnpm 12.6.0
 - **Deployment:** Vercel
 - **CI/CD:** GitHub Actions + Semantic Release
 
@@ -88,7 +89,7 @@
 ### Prerequisites
 
 - **Node.js** 24.x
-- **pnpm** 12.3.4
+- **pnpm** 12.6.0
 - **Postgres / Neon** (Postgres-compatible, e.g. Neon serverless)
 
 ### Installation
@@ -160,7 +161,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 
 ### GraphQL Code Generation
 
-This project uses **GraphQL Code Generator** (`@graphql-codegen/client-preset`) to automatically generate TypeScript types from the GraphQL schema. This ensures **100% type safety** between client operations and server definitions—no manual type duplication.
+This project uses **GraphQL Code Generator** (`@graphql-codegen/client-preset`) to generate TypeScript artifacts from the GraphQL schema and client documents. `pnpm codegen:check` verifies those generated files remain synchronized. Current Apollo operations still use hand-maintained interfaces and typed-document casts in `src/lib/graphql/queries.ts`; generated operation types are not yet the runtime source of truth.
 
 #### Quick Start
 
@@ -179,7 +180,7 @@ pnpm codegen --watch
 
 - **Input types** – `RecipeCreateInput`, `IngredientInput`, `PasswordEditInput`, etc.
 - **Operation result types** – `GetRecipeByIdQuery`, `CreateRecipeMutation`, etc.
-- **Document registry** – Type-safe Apollo Client operations with no manual annotations
+- **Typed operation artifacts** – generated operation result and variable types; existing Apollo operation documents still have separately maintained client interfaces
 
 #### Adding a Query or Mutation
 

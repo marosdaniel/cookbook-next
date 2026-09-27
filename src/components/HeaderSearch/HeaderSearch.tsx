@@ -38,10 +38,7 @@ export const HeaderSearch = () => {
     skip: !shouldSearch,
   });
 
-  const recipes = useMemo(
-    () => data?.getRecipes?.recipes ?? [],
-    [data],
-  );
+  const recipes = useMemo(() => data?.getRecipes?.recipes ?? [], [data]);
 
   const hasNoResults =
     shouldSearch && !loading && !error && recipes.length === 0;

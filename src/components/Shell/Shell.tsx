@@ -1,6 +1,6 @@
 'use client';
 
-import { AppShell, Burger, Group, Skeleton } from '@mantine/core';
+import { AppShell, Box, Burger, Group, Skeleton } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { AnimatePresence, motion } from 'motion/react';
 import { usePathname } from 'next/navigation';
@@ -77,6 +77,11 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
         },
       }}
       withBorder={!isImmersive}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100dvh',
+      }}
       data-testid="shell"
     >
       {showShellChrome && (
@@ -145,25 +150,25 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
         </AppShell.Navbar>
       )}
 
+      {/* Main grows to fill the viewport; footer sits in normal flow below the content */}
       <AppShell.Main
-        pb={isImmersive ? 0 : { base: 100, md: 60 }}
+        style={{ flex: '1 0 auto', minHeight: 'auto' }}
         data-testid="shell-main"
       >
         {children}
       </AppShell.Main>
 
       {showShellChrome && (
-        <AppShell.Footer
-          h={{ base: 100, md: 60 }}
-          ml={{
-            base: 0,
-            sm: isAuthPage ? 0 : NAVBAR_WIDTH,
-            md: isAuthPage ? 0 : NAVBAR_WIDTH_DESKTOP,
+        <Box
+          style={{
+            marginInlineStart: 'var(--app-shell-navbar-offset, 0rem)',
+            transition:
+              'margin-inline-start var(--app-shell-transition-duration) var(--app-shell-transition-timing-function)',
           }}
           data-testid="shell-footer"
         >
           <Footer />
-        </AppShell.Footer>
+        </Box>
       )}
 
       {showShellChrome && <BackToTop />}

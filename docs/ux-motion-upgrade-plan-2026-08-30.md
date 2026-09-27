@@ -23,7 +23,7 @@ A terv P1-es motion-feladatai és a P2-es polish-elemek lefejlesztésre kerülte
 
 - A Mantine modal/drawer transitionök megmaradtak Mantine-komponensként.
 - A carousel-slide-ok nem kaptak külön scroll-reveal animációt.
-- A Footer külön redesign-terv szerint kezelendő; a jelenlegi motion-bevezetés nem módosította a footer információs struktúráját.
+- A Footer a [külön redesign-terv](footer-redesign-2026-08-30.md) C variánsa szerint elkészült: CTA reveal, staggerelt oszlopok, CSS-es hover-mozgás.
 
 ### Ellenőrzés
 
@@ -57,7 +57,7 @@ A terv P1-es motion-feladatai és a P2-es polish-elemek lefejlesztésre kerülte
 | M2 | RecipesPage szűrősáv | ✅ `AnimatePresence` height-collapse + opacity | Az `AnimatePresence` height-collapse jelzi, hogy a tartalom *ugyanaz maradt*, csak a szűrő nyílt/záródott |
 | M3 | Skeleton → tartalom | ✅ Crossfade a `RecipeGrid`-ben | Crossfade csökkenti az észlelt betöltési időt (perceived performance) |
 | M4 | HomePage carousel + szekciók | ✅ Szekciónkénti `Reveal` | Scroll-reveal irányítja a figyelmet a fold alatti tartalomra |
-| M5 | Footer | Statikus | Lásd [footer-redesign-2026-08-30.md](footer-redesign-2026-08-30.md) |
+| M5 | Footer | ✅ CTA reveal, staggerelt oszlopok, hover-mozgás | Lásd [footer-redesign-2026-08-30.md](footer-redesign-2026-08-30.md) |
 | M6 | Back-to-top gomb | ✅ Scroll-küszöb, entry/exit motion, reduced-motion guard | Hosszú listáknál (RecipesPage) navigációs alapfunkció |
 | M7 | Üres állapotok | ✅ Közös, animált `EmptyState` CTA-támogatással | Az üres lista ma „hibának” tűnhet; animált empty state megnyugtat + akciót ajánl |
 | M8 | Modal/Drawer | Mantine beépített transition | **Nem bántjuk** — a Mantine transitionök konzisztensek és CSP-safe-ek; motionre cserélni öncélú lenne |

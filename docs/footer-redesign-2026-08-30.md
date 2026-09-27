@@ -1,11 +1,11 @@
 # 🦶 Cookbook-Next — Footer redesign koncepciók
 
 > **Dátum**: 2026-08-30
-> **Jelenlegi állapot**: [Footer.tsx](../src/components/Footer/Footer.tsx) — kétágú (mobile `Stack` / desktop `Group`) minimál footer: Logo + copyright + Privacy/Cookie link. Fix magasság az AppShell-ben (mobil 100px / desktop 60px). Nincs animáció, nincs vizuális elválasztás, a mobil `gap={4}` zsúfolt.
+> **Megvalósítási státusz (2026-09-27)**: a **C — Showcase** variáns elkészült. A footer egyetlen responsive blokk: brand-sáv CTA-val, három oszlop és copyright sor; a dokumentumfolyam végén jelenik meg. Részletek a 7. szekcióban.
 > **Kötöttségek**:
 > - Az e2e tesztek ([footer.cases.ts](../../e2e/test-cases/footer.cases.ts)) a `footer-copyright`, `footer-privacy`, `footer-cookie` `data-testid`-kre támaszkodnak — **mindhárom variáns megőrzi őket**.
-> - i18n: `footer.*` namespace (next-intl), route-ok a [routes.ts](../src/types/routes.ts) `PUBLIC_ROUTES`-ából.
-> - Az AppShell `footer={{ height }}` fix — a nagyobb variánsokhoz a footert az AppShell-ből a main tartalom aljára érdemes költöztetni (lásd 4. szekció).
+> - i18n: `footer.*` namespace (next-intl), route-ok a [routes.ts](../src/types/routes.ts) route-konstansaiból.
+> - A shell testid-k (`shell-main`, `shell-footer`) és a footer e2e testid-k megmaradnak; a footer tesztcélpontok egyszer szerepelnek, nincs mobil/desktop duplikáció.
 
 Minden variánshoz szükséges új fordítási kulcsok a 5. szekcióban.
 
@@ -106,7 +106,7 @@ export default Footer;
 
 ---
 
-## 2. Variáns B — „Structured” (3 oszlopos, bővíthető) — ajánlott
+## 2. Variáns B — „Structured” (3 oszlopos, bővíthető)
 
 **Struktúra**: brand-oszlop (logo + tagline) · navigáció (Explore: Recipes, Create) · jogi linkek; alul vékony copyright-sor. Egyetlen responsive `SimpleGrid` — nincs mobil/desktop duplikáció. Magasabb (~200px mobil / ~140px desktop) → az AppShell-ből kiköltöztetve (4. szekció).
 
@@ -261,8 +261,9 @@ export default Footer;
 ```
 
 - Motion: a CTA-gomb `whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}` (AuthButton-minta); a brand-sáv a `Reveal`-lel úszik be.
-- **Back-to-top**: a [ux-motion-upgrade-plan](ux-motion-upgrade-plan-2026-08-30.md) 3.5 `BackToTop` komponense ehhez a variánshoz kötelező elem (a magasabb footer + hosszú listák miatt).
-- Dark módban a gradiens `pink-9/violet-9` árnyalatra vált (`light-dark()` CSS fn vagy CSS module).
+- **Back-to-top**: a meglévő [BackToTop](../src/components/BackToTop/BackToTop.tsx) komponens globálisan a shell része; a magasabb footerhez igazítva `bottom: 24px` pozíciót használ.
+- Dark módban a CTA-sáv áttetsző pink/violet árnyalatokat kap. A címszínek explicit színséma-szelektorral váltanak, a linkek dimmed színűek és hover/fókusz állapotban téma-színt használnak.
+- A „Join Cookbook” link csak kijelentkezett látogatóknak látható.
 
 **Mikor ezt válaszd**: ha a footer aktivációs felület is legyen (signup/create funnel), nem csak jogi lábléc.
 
@@ -270,17 +271,19 @@ export default Footer;
 
 ## 4. AppShell-integráció (B és C variánshoz)
 
-A fix magasságú `AppShell.Footer` a nagyobb footerhez nem ideális (mobilon változó magasság). Javasolt átállás:
+A nagyobb footer nem fér el az `AppShell.Footer` fix magasságú, viewporthoz rögzített régiójában. A tényleges megoldás a `Shell.tsx`-ben az AppShell flex oszlopként kezelése, a Main növesztése és egy normál flow-ban következő footer-wrapper:
 
 ```tsx
-// src/app/layout.tsx — AppShell footer prop ELHAGYÁSA, a footer a main végére kerül:
-<AppShell.Main>
+// src/components/Shell/Shell.tsx
+<AppShell style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}>
+  <AppShell.Main style={{ flex: '1 0 auto', minHeight: 'auto' }}>
   {children}
-  <Footer /> {/* normál flow-ban, az oldal tartalma után */}
-</AppShell.Main>
+  </AppShell.Main>
+  <Box data-testid="shell-footer"><Footer /></Box>
+</AppShell>
 ```
 
-Előnyök: nincs fix magasság-kényszer, a footer nem „lebeg” rövid oldalakon a viewport aljára ragasztva — ha ez mégis kell, `main`-re `min-height: calc(100dvh - headerHeight)` a CSS-ben. Az e2e footer-tesztek szelektorai változatlanok maradnak.
+Rövid oldalakon a flex-grow a footert a viewport aljára tolja. Hosszú oldalakon a Main a tartalommal együtt nő, ezért a footer a tartalom után görgethető, nem rögzül a képernyő aljára. A wrapper a `--app-shell-navbar-offset` változóval veszi figyelembe a desktop navbart. Immersive create/edit útvonalakon továbbra sincs shell footer.
 
 ## 5. Új i18n kulcsok (mindhárom locale-ba)
 
@@ -308,7 +311,7 @@ Előnyök: nincs fix magasság-kényszer, a footer nem „lebeg” rövid oldala
 
 (`hu.json`, `de.json`: megfelelő fordításokkal — a kulcsstruktúra azonos.)
 
-## 6. Összehasonlítás és javaslat
+## 6. Összehasonlítás és döntés
 
 | Szempont | A — Refined minimal | B — Structured | C — Showcase |
 |---|---|---|---|
@@ -316,7 +319,17 @@ Előnyök: nincs fix magasság-kényszer, a footer nem „lebeg” rövid oldala
 | Layout-változás | Nincs | AppShell-átalakítás | AppShell-átalakítás |
 | SEO belső linkek | — | ✅ | ✅ |
 | Konverziós elem | — | — | ✅ CTA |
-| E2E teszt-hatás | Minimális | Minimális (testid-k maradnak) | Minimális + új CTA-teszt |
+| E2E teszt-hatás | Minimális | Minimális (testid-k maradnak) | Testid-k megmaradnak, egyediségük ellenőrzött |
 | Kockázat | Minimális | Alacsony | Közepes (gradiens dark módban tesztelendő) |
 
-**Javaslat**: **B variáns** alapnak (strukturált, bővíthető, mérsékelt költség), a C brand-sáv később egy sorban hozzáadható, ha a create-funnel erősítése cél. Az A akkor jó, ha a Sprint 3 előtt gyors vizuális javítás kell.
+**Döntés**: a **C variáns** valósult meg. Az A és B változat a korábbi alternatív koncepciók dokumentációjaként marad itt; nem a jelenlegi komponens leírásai.
+
+## 7. Megvalósított C variáns
+
+- A [Footer.tsx](../src/components/Footer/Footer.tsx) egy szemantikus `footer` landmarkot renderel, benne CTA-sávval, `SimpleGrid`-del, Explore/Legal navigációval és copyright sorral.
+- Az animáció a közös `Reveal`, `listVariants` / `listItemVariants` és `MOTION_TRANSITION` megoldásokat használja. A scroll-reveal `useInView` alapú, nem `whileInView`.
+- A CTA a `/recipes/create` route-ra vezet; a signup link csak kijelentkezett session esetén jelenik meg.
+- A footer útvonalak a `PUBLIC_ROUTES`, `PROTECTED_ROUTES` és `AUTH_ROUTES` konstansokból származnak. Az új fordítási kulcsok mindhárom locale-ban megvannak.
+- Tesztek: Footer unit tesztek ellenőrzik a CTA/tartalmat, az egyedi e2e testid-kat, a session szerinti signup linket és a navigation landmarkokat. A Shell unit teszt ellenőrzi a flex-növesztést, a normál flow-t és az immersive kivételt.
+- E2E: a footer tesztesetek közvetlenül a testid-kat használják, és ellenőrzik, hogy egyszer szerepelnek.
+- Ellenőrzött viewportok: desktop, 390px mobil; hosszú oldal görgethető footerrel, rövid oldal aljára igazított footerrel; világos és sötét színséma.

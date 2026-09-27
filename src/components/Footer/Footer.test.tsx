@@ -1,380 +1,134 @@
 import '@testing-library/jest-dom';
-import type { ReactNode } from 'react';
-import { describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@/utils/test-utils';
+import type { ComponentProps, ReactNode } from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { render, screen, within } from '@/utils/test-utils';
 import Footer from './Footer';
 
-// Mock Next.js Link component
+const { mockUseSession } = vi.hoisted(() => ({ mockUseSession: vi.fn() }));
+
 vi.mock('next/link', () => ({
-  default: ({ children, href }: { children: ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
+  default: ({ children, ...props }: ComponentProps<'a'>) => (
+    <a {...props}>{children}</a>
   ),
 }));
 
-// Mock Logo component
-vi.mock('../Logo', () => ({
-  Logo: ({
-    variant,
-    width,
-    height,
-    withText,
-    href,
-  }: {
-    variant: string;
-    width: number;
-    height: number;
-    withText: boolean;
-    href: string;
-  }) => (
-    <a
-      href={href}
-      data-testid="logo"
-      data-variant={variant}
-      data-width={width}
-      data-height={height}
-      data-with-text={withText}
-    >
-      Logo
-    </a>
-  ),
+vi.mock('next-auth/react', () => ({
+  useSession: () => mockUseSession(),
 }));
 
-// Mock next-intl
 vi.mock('next-intl', () => ({
-  useTranslations:
-    (ns: string) => (key: string, values?: Record<string, unknown>) => {
-      const fullKey = `${ns}.${key}`;
-      const translations: Record<string, string> = {
-        'footer.privacy': 'Privacy Policy',
-        'footer.cookies': 'Cookie Policy',
-      };
-      if (fullKey === 'footer.copyright') {
-        const year = (values?.year as number | string) ?? '';
-        return `© ${year} Cookbook. All rights reserved.`;
-      }
-      return translations[fullKey] || key;
-    },
-}));
+  useTranslations: () => (key: string, values?: Record<string, unknown>) => {
+    const translations: Record<string, string> = {
+      'cta.title': 'Ready to cook something new?',
+      'cta.button': 'Share your first recipe',
+      tagline: 'Discover, cook and share recipes you love.',
+      explore: 'Explore',
+      legal: 'Legal',
+      'links.recipes': 'Browse recipes',
+      'links.createRecipe': 'Create a recipe',
+      'links.signup': 'Join Cookbook',
+      privacy: 'Privacy Policy',
+      cookies: 'Cookie Policy',
+      madeWith: 'Made with love and Next.js',
+    };
 
-// Mock PUBLIC_ROUTES
-vi.mock('../../types/routes', () => ({
-  PUBLIC_ROUTES: {
-    HOME: '/',
-    PRIVACY_POLICY: '/privacy-policy',
-    COOKIE_POLICY: '/cookie-policy',
+    if (key === 'copyright') {
+      return `© ${values?.year} Cookbook. All rights reserved.`;
+    }
+
+    return translations[key] ?? key;
   },
 }));
 
+vi.mock('../Logo', () => ({
+  Logo: ({ href }: { href: string }) => <a href={href}>Cookbook</a>,
+}));
+
+vi.mock('@/lib/motion/Reveal', () => ({
+  Reveal: ({ children }: { children: ReactNode }) => <div>{children}</div>,
+}));
+
+vi.mock('motion/react', () => ({
+  motion: {
+    div: ({ children, ...props }: ComponentProps<'div'>) => (
+      <div {...props}>{children}</div>
+    ),
+    nav: ({ children, ...props }: ComponentProps<'nav'>) => (
+      <nav {...props}>{children}</nav>
+    ),
+  },
+  useInView: () => true,
+}));
+
 describe('Footer', () => {
-  describe('Basic rendering', () => {
-    it('renders the footer component', () => {
-      const { container } = render(<Footer />);
-      expect(container).toBeInTheDocument();
-    });
-
-    it('renders both mobile and desktop versions', () => {
-      const { container } = render(<Footer />);
-      const stacks = container.querySelectorAll('.mantine-Stack-root');
-      const groups = container.querySelectorAll('.mantine-Group-root');
-      expect(stacks).not.toHaveLength(0);
-      expect(groups).not.toHaveLength(0);
-    });
+  beforeEach(() => {
+    mockUseSession.mockReset();
+    mockUseSession.mockReturnValue({ status: 'unauthenticated' });
   });
 
-  describe('Logo rendering', () => {
-    it.each([
-      {
-        name: 'mobile footer',
-        expectedCount: 2,
-        assertions: (logo: HTMLElement) => {
-          expect(logo).toHaveAttribute('href', '/');
-        },
-      },
-      {
-        name: 'desktop footer',
-        expectedCount: 2,
-        assertions: (logo: HTMLElement) => {
-          expect(logo).toHaveAttribute('href', '/');
-        },
-      },
-      {
-        name: 'variant metadata',
-        expectedCount: 2,
-        assertions: (logo: HTMLElement) => {
-          expect(logo).toHaveAttribute('data-variant', 'icon');
-          expect(logo).toHaveAttribute('data-width', '36');
-          expect(logo).toHaveAttribute('data-height', '36');
-          expect(logo).toHaveAttribute('data-with-text', 'true');
-        },
-      },
-    ])('renders logos correctly for $name', ({ expectedCount, assertions }) => {
-      render(<Footer />);
-      const logos = screen.getAllByTestId('logo');
-      expect(logos).toHaveLength(expectedCount);
-      for (const logo of logos) {
-        assertions(logo);
-      }
-    });
+  it('renders the CTA, brand, explore, legal, and copyright content once', () => {
+    render(<Footer />);
+
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
+    expect(
+      screen.getByText('Ready to cook something new?'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Share your first recipe' }),
+    ).toHaveAttribute('href', '/recipes/create');
+    expect(
+      screen.getByText('Discover, cook and share recipes you love.'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Explore')).toBeInTheDocument();
+    expect(screen.getByText('Legal')).toBeInTheDocument();
+    expect(screen.getByTestId('footer-copyright')).toHaveTextContent(
+      `© ${new Date().getFullYear()} Cookbook. All rights reserved.`,
+    );
   });
 
-  describe('Copyright text', () => {
-    it('renders copyright symbol', () => {
-      render(<Footer />);
-      const copyrightTexts = screen.getAllByTestId('footer-copyright');
-      expect(copyrightTexts).not.toHaveLength(0);
-    });
+  it('renders each policy link and test id only once', () => {
+    render(<Footer />);
 
-    it('renders current year in copyright', () => {
-      const currentYear = new Date().getFullYear();
-      render(<Footer />);
-      const copyrightTexts = screen.getAllByTestId('footer-copyright');
-      expect(
-        copyrightTexts.some((el) =>
-          el.textContent?.includes(`© ${currentYear}`),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('renders "Cookbook" in copyright text', () => {
-      render(<Footer />);
-      const copyrightTexts = screen.getAllByTestId('footer-copyright');
-      expect(
-        copyrightTexts.some((el) => el.textContent?.includes('Cookbook')),
-      ).toBeTruthy();
-    });
-
-    it('renders "All rights reserved" text', () => {
-      render(<Footer />);
-      const copyrightTexts = screen.getAllByTestId('footer-copyright');
-      expect(
-        copyrightTexts.some((el) =>
-          el.textContent?.includes('All rights reserved'),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('renders full copyright text correctly', () => {
-      const currentYear = new Date().getFullYear();
-      render(<Footer />);
-      const copyrightTexts = screen.getAllByTestId('footer-copyright');
-      expect(
-        copyrightTexts.filter(
-          (el) =>
-            el.textContent ===
-            `© ${currentYear} Cookbook. All rights reserved.`,
-        ),
-      ).toHaveLength(2);
-    });
+    expect(screen.getByTestId('footer-privacy')).toHaveAttribute(
+      'href',
+      '/privacy-policy',
+    );
+    expect(screen.getByTestId('footer-cookie')).toHaveAttribute(
+      'href',
+      '/cookie-policy',
+    );
+    expect(screen.getAllByTestId('footer-privacy')).toHaveLength(1);
+    expect(screen.getAllByTestId('footer-cookie')).toHaveLength(1);
+    expect(screen.getAllByTestId('footer-copyright')).toHaveLength(1);
   });
 
-  describe('Privacy Policy link', () => {
-    it('renders Privacy Policy links', () => {
-      const { container } = render(<Footer />);
-      const privacyLinks = container.querySelectorAll(
-        'a[href="/privacy-policy"]',
-      );
-      expect(privacyLinks).toHaveLength(2); // Mobile and desktop
-    });
+  it('shows the signup link to signed-out visitors', () => {
+    render(<Footer />);
 
-    it('has correct href for Privacy Policy', () => {
-      const { container } = render(<Footer />);
-      const privacyLinks = container.querySelectorAll(
-        'a[href="/privacy-policy"]',
-      );
-      privacyLinks.forEach((link) => {
-        expect((link as HTMLAnchorElement).getAttribute('href')).toBe(
-          '/privacy-policy',
-        );
-      });
-    });
+    expect(screen.getByRole('link', { name: 'Join Cookbook' })).toHaveAttribute(
+      'href',
+      '/signup',
+    );
   });
 
-  describe('Cookie Policy link', () => {
-    it('renders Cookie Policy links', () => {
-      const { container } = render(<Footer />);
-      const cookieLinks = container.querySelectorAll(
-        'a[href="/cookie-policy"]',
-      );
-      expect(cookieLinks).toHaveLength(2); // Mobile and desktop
-    });
+  it('hides the signup link for authenticated visitors', () => {
+    mockUseSession.mockReturnValue({ status: 'authenticated' });
+    render(<Footer />);
 
-    it('has correct href for Cookie Policy', () => {
-      const { container } = render(<Footer />);
-      const cookieLinks = container.querySelectorAll(
-        'a[href="/cookie-policy"]',
-      );
-      cookieLinks.forEach((link) => {
-        expect((link as HTMLAnchorElement).getAttribute('href')).toBe(
-          '/cookie-policy',
-        );
-      });
-    });
+    expect(
+      screen.queryByRole('link', { name: 'Join Cookbook' }),
+    ).not.toBeInTheDocument();
   });
 
-  describe('Mobile footer layout', () => {
-    it('renders mobile footer stack', () => {
-      render(<Footer />);
-      // Check for Stack component by finding copyright text (which is in both mobile and desktop)
-      const copyrightTexts = screen.getAllByText(
-        /© .* Cookbook. All rights reserved./,
-      );
-      expect(copyrightTexts).not.toHaveLength(0);
-    });
+  it('uses labelled navigation landmarks for both link groups', () => {
+    render(<Footer />);
 
-    it('mobile footer has correct structure', () => {
-      render(<Footer />);
-      const logos = screen.getAllByTestId('logo');
-      expect(logos[0]).toBeInTheDocument();
-    });
-  });
-
-  describe('Desktop footer layout', () => {
-    it('renders desktop footer group', () => {
-      render(<Footer />);
-      // Check for Group component by finding logos
-      const logos = screen.getAllByTestId('logo');
-      expect(logos).toHaveLength(2);
-    });
-
-    it('desktop footer has correct structure', () => {
-      render(<Footer />);
-      const logos = screen.getAllByTestId('logo');
-      expect(logos[1]).toBeInTheDocument();
-    });
-  });
-
-  describe('All links together', () => {
-    it('renders all navigation links', () => {
-      render(<Footer />);
-      const privacyLinks = screen.getAllByText('Privacy Policy');
-      const cookieLinks = screen.getAllByText('Cookie Policy');
-      expect(privacyLinks).toHaveLength(2);
-      expect(cookieLinks).toHaveLength(2);
-    });
-
-    it('all links are clickable', () => {
-      render(<Footer />);
-      const allLinks = screen.getAllByRole('link');
-      expect(allLinks).not.toHaveLength(0);
-      allLinks.forEach((link) => {
-        expect(link).toHaveAttribute('href');
-      });
-    });
-  });
-
-  describe('Responsive behavior', () => {
-    it('has mobile layout elements', () => {
-      const { container } = render(<Footer />);
-      const stacks = container.querySelectorAll('.mantine-Stack-root');
-      expect(stacks).not.toHaveLength(0);
-    });
-
-    it('has desktop layout elements', () => {
-      const { container } = render(<Footer />);
-      const groups = container.querySelectorAll('.mantine-Group-root');
-      expect(groups).not.toHaveLength(0);
-    });
-  });
-
-  describe('Anchor component properties', () => {
-    it('renders anchor links', () => {
-      render(<Footer />);
-      // Check for actual link elements
-      const privacyLinks = screen.getAllByText('Privacy Policy');
-      const cookieLinks = screen.getAllByText('Cookie Policy');
-      expect(privacyLinks).toHaveLength(2);
-      expect(cookieLinks).toHaveLength(2);
-    });
-
-    it('policy links have correct text content', () => {
-      render(<Footer />);
-      expect(screen.getAllByText('Privacy Policy')).toHaveLength(2);
-      expect(screen.getAllByText('Cookie Policy')).toHaveLength(2);
-    });
-  });
-
-  describe('Text component properties', () => {
-    it('copyright text uses Mantine Text component', () => {
-      const { container } = render(<Footer />);
-      const textElements = container.querySelectorAll('.mantine-Text-root');
-      expect(textElements).not.toHaveLength(0);
-    });
-  });
-
-  describe('Fragment wrapper', () => {
-    it('uses React Fragment as root element', () => {
-      const { container } = render(<Footer />);
-      // Fragment doesn't create a DOM element, so check for direct children
-      expect(container.firstChild).toBeInTheDocument();
-    });
-
-    it('renders both mobile and desktop sections within fragment', () => {
-      const { container } = render(<Footer />);
-      const stack = container.querySelector('.mantine-Stack-root');
-      const group = container.querySelector('.mantine-Group-root');
-      expect(stack).toBeInTheDocument();
-      expect(group).toBeInTheDocument();
-    });
-  });
-
-  describe('Dynamic year calculation', () => {
-    it('calculates year dynamically', () => {
-      const currentYear = new Date().getFullYear();
-      render(<Footer />);
-      const yearTexts = screen.getAllByText(new RegExp(currentYear.toString()));
-      expect(yearTexts).not.toHaveLength(0);
-    });
-
-    it('year in copyright matches current year', () => {
-      const currentYear = new Date().getFullYear();
-      render(<Footer />);
-      const copyrightText = screen.getAllByText(new RegExp(`© ${currentYear}`));
-      expect(copyrightText).toHaveLength(2);
-    });
-  });
-
-  describe('Complete footer content', () => {
-    it('renders all required elements', () => {
-      render(<Footer />);
-
-      // Check logos
-      const logos = screen.getAllByTestId('logo');
-      expect(logos).toHaveLength(2);
-
-      // Check copyright
-      const currentYear = new Date().getFullYear();
-      const copyright = screen.getAllByText(
-        `© ${currentYear} Cookbook. All rights reserved.`,
-      );
-      expect(copyright).toHaveLength(2);
-
-      // Check policy links
-      expect(screen.getAllByText('Privacy Policy')).toHaveLength(2);
-      expect(screen.getAllByText('Cookie Policy')).toHaveLength(2);
-    });
-
-    it('maintains proper structure hierarchy', () => {
-      const { container } = render(<Footer />);
-      const groups = container.querySelectorAll('.mantine-Group-root');
-      const stacks = container.querySelectorAll('.mantine-Stack-root');
-
-      expect(groups.length + stacks.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe('Accessibility', () => {
-    it('all links are accessible', () => {
-      render(<Footer />);
-      const links = screen.getAllByRole('link');
-      links.forEach((link) => {
-        expect(link).toBeInTheDocument();
-      });
-    });
-
-    it('logo links have proper text content', () => {
-      render(<Footer />);
-      const logoLinks = screen.getAllByText('Logo');
-      expect(logoLinks).toHaveLength(2);
-    });
+    const footer = screen.getByRole('contentinfo');
+    expect(
+      within(footer).getByRole('navigation', { name: 'Explore' }),
+    ).toBeInTheDocument();
+    expect(
+      within(footer).getByRole('navigation', { name: 'Legal' }),
+    ).toBeInTheDocument();
   });
 });
