@@ -1,3 +1,10 @@
+# [2.94.0](https://github.com/marosdaniel/cookbook-next/compare/v2.93.1...v2.94.0) (2026-09-27)
+
+
+### Features
+
+* Revamp footer component with new design and functionality ([bcc646b](https://github.com/marosdaniel/cookbook-next/commit/bcc646bbe6582857928db5774f2fef2069aa8b00))
+
 ## [2.93.1](https://github.com/marosdaniel/cookbook-next/compare/v2.93.0...v2.93.1) (2026-09-26)
 
 
