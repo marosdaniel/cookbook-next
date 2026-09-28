@@ -68,7 +68,7 @@
     "next-auth": "5.0.0-beta.32",
     "next-intl": "^4.14.7",
     "nextjs-toploader": "^3.9.17",
-    "nodemailer": "^10.0.11",
+    "nodemailer": "^10.0.12",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-redux": "^9.3.0",
