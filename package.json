@@ -81,7 +81,7 @@
     "@graphql-codegen/cli": "^7.4.3",
     "@graphql-codegen/client-preset": "^6.2.0",
     "@graphql-codegen/typescript": "^6.1.0",
-    "@graphql-codegen/typescript-operations": "^6.1.8",
+    "@graphql-codegen/typescript-operations": "^6.1.9",
     "@graphql-codegen/typescript-resolvers": "^6.1.0",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@playwright/test": "^1.63.0",
@@ -100,7 +100,7 @@
     "@types/sanitize-html": "^2.16.2",
     "@types/ws": "^8.18.2",
     "@vitejs/plugin-react": "^6.1.1",
-    "@vitest/coverage-v8": "5.0.2",
+    "@vitest/coverage-v8": "5.0.3",
     "baseline-browser-mapping": "^2.11.26",
     "dotenv": "^18.0.4",
     "fast-uri": "^4.2.1",
@@ -111,7 +111,7 @@
     "sharp": "^0.35.5",
     "typescript": "7.0.2",
     "vite": "^8.3.1",
-    "vitest": "^5.0.2"
+    "vitest": "^5.0.3"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
