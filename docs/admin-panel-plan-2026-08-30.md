@@ -3,6 +3,8 @@
 > **Dátum**: 2026-08-30
 > **Előzmény-terv**: [cookbook_next_audit_2026-07-06.md](cookbook_next_audit_2026-07-06.md) 3. szekció („Admin felület terve”) — **létezik korábbi terv**, ez a dokumentum annak kritikai felülvizsgálata és kibővítése.
 
+> **Megvalósítási frissítés (2026-10-10):** az admin MVP elkészült. Elérhető a védett `/admin` felület és az AdminShell, a metadata CRUD (listázás, létrehozás, szerkesztés, aktiválás és rendezés), valamint az admin műveletek auditnaplózása. A route-guardhoz E2E-teszt is tartozik. A felhasználó- és receptmoderáció, a statisztikai dashboard és az auditnapló UI-ja továbbra is a későbbi fázisok része. Az alábbi állapotfelmérés a 2026-08-30-i kiindulópontot rögzíti.
+
 ---
 
 ## 1. A korábbi terv felülvizsgálata — mi változott és miért
@@ -22,11 +24,11 @@ A 07-06-os terv négy pillére: (a) kétrétegű route-védelem, (b) `MetadataEn
 
 | Entitás | Admin képességek | Fázis |
 |---|---|---|
-| **Metadata (taxonómia)** | Listázás típusonként, létrehozás, szerkesztés (label/sortOrder), aktiválás/deaktiválás (soft delete), átrendezés | **MVP** |
-| **Felhasználók** | Keresés/listázás, szerep-váltás (USER/BLOGGER/ADMIN), felfüggesztés (`SUSPENDED`), törlés (GDPR-kaszkáddal) | **MVP** (törlés: 2. fázis) |
+| **Metadata (taxonómia)** | Listázás típusonként, létrehozás, szerkesztés (label/sortOrder), aktiválás/deaktiválás (soft delete), átrendezés | **MVP — kész (2026-10-10)** |
+| **Felhasználók** | Keresés/listázás, szerep-váltás (USER/BLOGGER/ADMIN), felfüggesztés (`SUSPENDED`), törlés (GDPR-kaszkáddal) | **2. fázis** |
 | **Receptek** | Keresés/listázás, moderációs elrejtés (`HIDDEN`), megtekintés, végleges törlés | 2. fázis |
 | **Dashboard** | Aggregált statisztikák (user/recept/rating számok, trendek) | 2. fázis |
-| **Audit log** | Minden admin-akció megtekinthető naplója | **MVP** (írás) / 2. fázis (UI) |
+| **Audit log** | Minden admin-akció megtekinthető naplója | **MVP — írás kész (2026-10-10)** / 2. fázis (UI) |
 | **Riportok/moderációs kérelmek** | Felhasználói bejelentések kezelése | 3. fázis (a komment-rendszerrel együtt) |
 
 ## 3. Jogosultsági modell — illeszkedés a meglévő rendszerhez
@@ -234,7 +236,7 @@ Szabály: admin nem módosíthatja/fokozhatja le **saját magát** (`actorId ===
 Minden admin-mutáció a **strict limiterbe** (5 req/10 min) kerül a meglévő `rateLimit.ts` listabővítéssel; a read query-k a globális limit alatt maradnak.
 
 ### 7.2 CSRF / CSP
-- A GraphQL-en át futó admin-mutációk a meglévő same-origin + persisted-allowlist + operation-gating hármassal védettek; új felület nem vezet be új CSRF-felületet (nincs form-POST endpoint).
+- A GraphQL-en át futó admin-mutációkat a same-origin kérés, a role-alapú operation-gating és a strict rate limit védi; a persisted-query registry nincs bekötve a kérésvalidálásba, ezért nem tekinthető védelmi rétegnek. Új felület nem vezet be külön form-POST endpointot.
 - A nonce-alapú CSP-vel az admin UI kompatibilis, amíg csak Mantine/motion inline style-okat használ (style-attribútum, nem `<style>` tag) és nem ágyaz be inline scriptet. Chart-librarynél (ha később kell) ellenőrizendő.
 
 ### 7.3 Action confirmation + audit trail
@@ -249,7 +251,7 @@ Szerep-váltás után a cél-user `sessionVersion`-jét inkrementálni kell → 
 
 | Fázis | Tartalom | Becslés |
 |---|---|---|
-| **MVP (Sprint A)** | `/admin` layout guard + AdminShell + Metadata CRUD (a meglévő Metadata modellre) + AuditLog modell/írás + operationsConfig/persisted-registry bővítés + e2e guard-teszt | L |
+| **MVP (Sprint A)** ✅ **Kész (2026-10-10)** | `/admin` layout guard + AdminShell + Metadata CRUD + AuditLog modell/írás + operation-gating és strict rate limit + E2E guard-teszt | — |
 | **Fázis 2 (Sprint B)** | Users lista + role/status műveletek + `UserStatus` migráció + Dashboard (`adminStats` aggregátumok) + Audit log UI | L |
 | **Fázis 3 (Sprint C)** | `RecipeStatus` migráció + publikus read-path szűrés + recept-moderáció UI + server-side draft (a felhasználói draft-igénnyel közös munka) | L |
 | **Fázis 4** | Riportok/bejelentések — csak a komment-rendszerrel együtt | — |

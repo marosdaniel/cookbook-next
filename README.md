@@ -40,6 +40,7 @@
 - 🔍 **GraphQL API** - Apollo Server 5 with a modular schema, DataLoader batching, and graphql-armor hardening
 - 🗄️ **Database** - Neon serverless Postgres with Prisma 7, connection pooling, and migrations
 - 🧑‍🍳 **Recipe management** - Multi-step recipe composer with local draft saving, slug-based SEO routes, favorites, ratings, and follow relationships
+- 🛠️ **Admin panel** - Role-protected metadata management with create, edit, activation, ordering, and audit logging
 - 🧭 **Responsive footer** - Recipe-sharing CTA, Explore and Legal links, localized content, and normal-flow placement after page content
 - ⚡ **Caching & rate limiting** - Upstash Redis caching with fallback behavior and sliding-window rate limiting on sensitive operations
 - 🛡️ **Security hardening** - Zod validation, HTML sanitization, and strict security headers
@@ -318,14 +319,14 @@ POST /api/graphql
 - `rateRecipe`, `deleteRating` - recipe rating flows
 
 **Metadata queries:**
-- `getAllMetadata`, `getMetadataByType`, `getMetadataByKey` - static reference data for categories, labels, units, difficulty, cuisines, dietary flags, allergens, and equipment
+- `getAllMetadata`, `getMetadataByType`, `getMetadataByKey` - database-backed reference data for categories, labels, units, difficulty, cuisines, dietary flags, allergens, and equipment; admins manage entries in the protected admin panel
 
 ### Authentication & Protection
 
 GraphQL operations are protected based on user roles (public / authenticated user / blogger / admin) via an operation-permission plugin, and additionally hardened with:
 - **graphql-armor** (depth/complexity/amount limiting)
-- **Persisted query validation** (SHA-256 hash)
-- **Rate limiting** (sliding window via Upstash) on sensitive mutations (create/edit/delete recipe, rate recipe, reset password)
+- **Role-based operation authorization** and field-level access checks
+- **Rate limiting** (sliding window via Upstash) on sensitive recipe, password, and admin metadata operations
 - **Query result limits** (max 100 items per request)
 
 ---
@@ -552,4 +553,3 @@ Made with ❤️ by Daniel Maros
 ⭐ Star this repo if you find it useful!
 
 </div>
-

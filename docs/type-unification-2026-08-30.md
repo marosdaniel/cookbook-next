@@ -167,7 +167,7 @@ Ez elkészült: a `CreateUserArgs` és társai törölve lettek a [types/user.ts
 |---|---|---|
 | `SessionUser.email?` vs. `User.email` | A session-payload minimalizált | Kézi típus marad, kommenttel |
 | `RecipeIngredient.localId` | Kliens-oldali list-key, nem megy a szerverre | UI-típusban marad; a szerver-séma `localId`-t optional-ként tűri (már így van) |
-| Prisma `JsonValue` vs. `RecipeTaxonomyItem` | A taxonómia JSON-snapshot a DB-ben | A konverzió a GraphQL-határon történik; hosszú távon a [admin-panel-plan](admin-panel-plan-2026-08-30.md) 5.2 metadata-rendezése csökkenti a bizonytalanságot |
+| Prisma `JsonValue` vs. `RecipeTaxonomyItem` | A taxonómia JSON-snapshot a DB-ben | Az admin metadata CRUD és rendezés elkészült; a recept JSON-snapshot kompatibilitása megmaradt, ezért a GraphQL-határ típuskonverziója továbbra is fontos |
 | `DateTime` scalar `string`-ként | A wire-formátum ISO-string | codegen scalar-config (már beállítva) |
 
 ## Validációs eredmények

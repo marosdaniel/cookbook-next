@@ -91,9 +91,11 @@
 
 ## 3. Admin felület terve
 
-### 3.1 Jelenlegi állapot
+> **Aktuális státusz (2026-10-10):** az itt tervezett admin MVP elkészült: védett `/admin` felület, AdminShell, metadata CRUD, AuditLog modell/írás és E2E route-guard teszt. A felhasználó-/receptmoderáció és az `adminStats` dashboard továbbra is nyitott. Az alábbi 3.1-es leírás és roadmap a 2026-07-06-i audit állapotát őrzi.
 
-- **Nincs admin UI.** Az `ADMIN` role kizárólag a GraphQL [operationsConfig.ts](../src/lib/graphql/operationsConfig.ts) operation-gatingben és a `User.email` field-auth-ban él.
+### 3.1 Jelenlegi állapot (2026-07-06)
+
+- **Az audit idején nem volt admin UI.** Az `ADMIN` role akkor a GraphQL [operationsConfig.ts](../src/lib/graphql/operationsConfig.ts) operation-gatingben és a `User.email` field-auth-ban élt.
 - A [proxy.ts](../src/proxy.ts) middleware csak a `/me` útvonalakat védi.
 - **Master data**: a units/labels/categories/cuisines/allergens/equipment/costLevels **statikus TS tömb** a [metadata.ts](../src/lib/data/metadata.ts)-ben (~600 sor, `{ id, key, label, type, name }`), amit egy GraphQL passthrough query (`GET_ALL_METADATA`) → Redux slice → `useRecipeMetadata` hook juttat a formba. A recept a kiválasztott értéket **JSON snapshotként** tárolja (`category: Json?` stb.).
 
@@ -633,10 +635,10 @@ Az app **egyetlen, közepes méretű monolit**: 1 fejlesztő(?), 1 deployable un
 | 10 | ~~Slug-alapú recept URL-ek + redirect~~ ✅ **Kész (2026-07-06)** | SEO | **P1** | M | 5.2(e) |
 | 11 | ISR/`revalidate` a recept-oldalakra | Tech | **P1** | M | 1/#22, 5.2(f) |
 | 12 | Full-text keresés (Postgres `tsvector` + GIN, Neon free) | Feature | **P1** | L | 1/#14 |
-| 13 | Admin: RBAC guard + AppShell + Users/Recipes moderáció | Feature | **P1** | L | 3.2, 3.4 |
-| 14 | Admin: Master data DB-modell + seed + CRUD UI | Feature | **P1** | L | 3.3 — statikus metadata.ts kiváltása |
-| 15 | Admin: AuditLog modell + service wrapper | Feature | **P1** | M | 3.4 |
-| 16 | Admin: Dashboard statisztikák (`adminStats`) | Feature | **P1** | M | 3.5 |
+| 13 | Admin: RBAC guard + AppShell ✅ (2026-10-10); Users/Recipes moderáció nyitott | Feature | **P1** | L | 3.2, 3.4 |
+| 14 | ~~Admin: Master data DB-modell + seed + CRUD UI~~ ✅ **Kész (2026-10-10)** | Feature | **P1** | L | 3.3 — statikus metadata.ts kiváltása |
+| 15 | ~~Admin: AuditLog modell + service wrapper~~ ✅ **Kész (2026-10-10)** | Feature | **P1** | M | 3.4 |
+| 16 | Admin: Dashboard statisztikák (`adminStats`) — nyitott | Feature | **P1** | M | 3.5 |
 | 17 | `darkTheme` bekötése (`SchemeAwareTheme`) | Tech/Design | **P1** | S | 4.3 — az új theme-ek már a repóban vannak |
 | 18 | Recently viewed — Fázis 1 (localStorage + `getRecipesByIds`) | Feature | **P1** | S/M | 6.1, kiváltja a mockot |
 | 19 | Valódi APQ vagy query-allowlist a kliensben | Security | **P1** | M | 1/#13 — a mostani hash-check önmagában nem véd |

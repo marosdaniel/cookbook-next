@@ -2,6 +2,8 @@
 
 Audit date: 2026-07-24
 
+> **Aktuális admin-státusz (2026-10-10):** a külön admin-tervben szereplő metadata-kezelő MVP azóta elkészült (védett admin UI, CRUD, auditnaplózás). Az audit alábbi tételei és javasolt sorrendje a 2026-07-24-i állapotot rögzítik; a receptmoderáció és lifecycle státuszok továbbra is fejlesztendők.
+
 Scope: Next.js App Router, SSR and caching, application architecture, GraphQL
 route and schema, cookies and auth, security, data access, DX, and product
 features.
@@ -111,7 +113,7 @@ Items marked `Decision` need a product or deployment decision before coding.
 3. Decide URL-based locale routing. This decision controls ISR, public caching, canonical URLs, and `hreflang`.
 4. Add cursor pagination, list projections, cache-key invalidation, and full-text search.
 5. Add GraphQL route integration tests, structured observability, and CI security/migration gates.
-6. Introduce admin/moderation and recipe lifecycle states before comments, collections, or large content features.
+6. Extend the delivered admin MVP with recipe moderation and lifecycle states before comments, collections, or large content features.
 
 ## Notes
 

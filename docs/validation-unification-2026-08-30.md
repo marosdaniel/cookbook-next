@@ -29,7 +29,7 @@ A jelszó-policy (`STRONG_PASSWORD_REGEX`: min 8, kis-/nagybetű, szám, speciá
 | Kliens | `recipeFormValidationSchema` (teljes: hosszak, URL-formátum, pozitív számok, YouTube-regex, slug-regex, SEO-limitek) | [useRecipeForm.tsx](../src/components/Recipe/Create/hooks/useRecipeForm.tsx), [useRecipeEditForm.tsx](../src/components/Recipe/Create/hooks/useRecipeEditForm.tsx) |
 | Szerver | Csak kézi jelenlét-ellenőrzés (`validateRequiredFields`: 7 mező truthy-check) + sanitizálás | [resolvers/recipe/utils.ts](../src/lib/graphql/resolvers/recipe/utils.ts#L43) |
 
-Következmény: egy közvetlen GraphQL-hívás (a persisted-allowlist a saját kliensünket védi, de a mutation-t jogosult user bármilyen értékkel hívhatja a regisztrált dokumentumon keresztül) átvihet:
+Következmény: egy közvetlen GraphQL-hívás (az operation authorization a művelet jogosultságát ellenőrzi, de nem korlátozza a paraméterértékeket) átvihet:
 - negatív/0 `cookingTime`/`servings`/`quantity` értéket,
 - érvénytelen `imgSrc`/`socialImage` URL-t (nem-URL string),
 - 60+ karakteres `seoTitle`-t, formátum-sértő `slug`-ot,

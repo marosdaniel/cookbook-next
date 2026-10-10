@@ -35,7 +35,7 @@ Kapcsolódó résztervek (külön dokumentumban, ide csak hivatkozva):
 | **N-P1-10** | UX | Rating: nincs optimista update (refetch-alapú), nincs értékelés-törlés UI, pedig a `DELETE_RATING` operáció létezik és rate-limitelt. | `optimisticResponse` + normalized cache merge (refetch elhagyása); „Remove my rating” gomb; hibánál rollback + notification. 07-06 7.2 terv szerint. | **M** | Csak kód |
 | **N-P1-11** | Dependency-trim | `react-icons`, `@mantine/nprogress` továbbra is dependency (3 audit óta); react-icons még importban is. | Ikonok migrálása `@tabler/icons-react`-re (~9 fájl), `@mantine/nprogress` törlése (a `nextjs-toploader` a használt). | **S** | Csomagtörlés |
 | **N-P1-12** ✅ | SEO | Nincs dinamikus OG-image → a receptek social-megosztása generikus kártyát kap. | **Kész (2026-08-30)**: [src/app/recipes/[id]/opengraph-image.tsx](../src/app/recipes/%5Bid%5D/opengraph-image.tsx) `ImageResponse`-szal, brand-színekkel, fallback branded kártyával. | **S/M** | `next/og` a Next.js része |
-| **N-P1-13** | Admin | Nincs admin felület, miközben minden előfeltétel (RBAC, route family, Metadata modell) kész. | MVP az [admin-panel-plan-2026-08-30.md](admin-panel-plan-2026-08-30.md) szerint. | **L** | Meglévő stack |
+| **N-P1-13** ✅ | Admin | Admin felület / metadata-karbantartás hiánya. | **Kész (2026-10-10):** az admin MVP, a metadata CRUD, a route guard és az auditnaplózás elkészült; részletek az [admin-panel-plan-2026-08-30.md](admin-panel-plan-2026-08-30.md) dokumentumban. A felhasználó-/receptmoderáció és a dashboard külön, későbbi fázis. | **L** | Meglévő stack |
 | **N-P1-14** ✅ | Biztonság | Cookie-attribútumok (HttpOnly/Secure/SameSite) nincsenek integrációs teszttel rögzítve (07-24 C-3). | **Kész (2026-08-30)**: `getSessionCookieConfig()` explicit kontraktja ([auth.config.ts](../src/lib/auth/auth.config.ts)) + `setStoredLocale` Secure-attribútuma, mindkettő kontraktteszttel lefedve (élő Playwright cookie-header check továbbra sem készült). | **S** | Playwright már bevezetett |
 | **N-P1-15** | i18n | Locale cookie írása/olvasása szétszórt, attribútumok nem egy helyen (07-24 C-1). | Egy `setLocaleCookie()` helper (`path`, `max-age`, `SameSite=Lax`, prod-ban `Secure`), kliens+szerver közös konstansokkal + tesztek. | **S** | Csak kód |
 
@@ -91,7 +91,7 @@ A Vercel Hobby csomag számos ingyenes, kódmódosítást nem igénylő feature-
 1. **Sprint 1 — „lezárás és láthatóság" (csupa S/M)**: N-P0-1, N-P0-3, N-P0-4, N-P1-6, N-P1-7, N-P1-8, N-P1-11, N-P1-14, N-P1-15, **V-P1-6** (Cron Config alapok)
 2. **Sprint 2 — „adat és típusréteg"**: N-P1-2, N-P1-3 (indítás), N-P1-4, N-P1-5, N-P0-2 (verifikáció), **V-P1-1** (Vercel Flags/Edge Config setup)
 3. **Sprint 3 — „UX-hullám + monitoring"**: N-P1-1, N-P1-10, N-P1-12, N-P2-1, N-P2-2 + **V-P1-2** (Web Analytics) + **V-P1-3** (Draft Mode) + [ux-motion-upgrade-plan](ux-motion-upgrade-plan-2026-08-30.md) 1. üteme + [footer-redesign](footer-redesign-2026-08-30.md) (C variáns ✅)
-4. **Sprint 4–6 — „admin + storage"**: N-P1-13 (MVP az admin terv szerint), N-P2-5 vele közös sémamunkában, **V-P1-4** (Cron Jobs implementáció), **V-P1-5** (Blob Storage + kép-upload)
+4. **Sprint 4–6 — „admin + storage"**: N-P1-13 admin MVP ✅ kész (2026-10-10); a későbbi admin-moderáció és N-P2-5 (`RecipeStatus`) marad nyitott. **V-P1-4** (Cron Jobs implementáció), **V-P1-5** (Blob Storage + kép-upload)
 5. **Utána**: N-P1-9, N-P2-3, N-P2-4, N-P2-6…N-P2-13 érték/erőfeszítés arány szerint
 
 ## Megjegyzések

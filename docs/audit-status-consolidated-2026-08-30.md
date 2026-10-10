@@ -8,6 +8,8 @@
 >
 > **Módszertan**: minden állítás a 2026-08-30-i kódbázis tényleges fájljain ellenőrizve (nem a doksik önbevallásán). A három forrás átfedő tételei össze vannak vonva; a forrás-oszlop jelzi az eredetet.
 
+> **Aktuális admin-státusz (2026-10-10):** az audit idején hiányzó admin MVP azóta elkészült: védett `/admin` felület, metadata CRUD, AuditLog modell/írás és E2E route-guard teszt. A régi táblázat többi státusza továbbra is a 2026-08-30-i kódbázist írja le; a felhasználó-/receptmoderáció, dashboard és auditnapló UI még nyitott.
+
 **Jelmagyarázat**: ✅ megvalósult · 🟡 részben · ❌ nem valósult meg · 🚫 elvetve/okafogyott (tudatos döntés)
 
 ---
@@ -53,12 +55,12 @@
 | A1 | 07-04 #5, 07-06 #6, 07-24 P1-9 | Cursor-alapú pagináció + Load More | ✅ | Opaque `(createdAt,id)` cursor + `pageInfo` + lokalizált Load More — RecipeService, RecipesPage | |
 | A2 | 07-04 #14, 07-06 #12, 07-24 P1-10 | **Full-text keresés** | ✅ **eltérő megoldás** | A javasolt `tsvector` helyett **`pg_trgm` trigram GIN indexek** (title, description, tips, substitutions, **ingredient name**) — migráció: `20260724000100_add_recipe_trigram_search` | Egyenértékű/jobb ehhez a méretez­­hez: typo-toleráns, nyelvfüggetlen (magyar toldalékokkal a tsvector English stemmer rosszabb lenne) |
 | A3 | 07-24 P1-11 | Cache-kulcs centralizálás + invalidáció | ✅ | [cacheKeys.ts](../src/lib/cache/cacheKeys.ts) + Redis namespace-verzió, mutációk bump-olják | |
-| A4 | 07-24 P1-13, 07-06 3.3 | **Metadata: statikus tömb → DB** | ✅ **eltérő megoldás** | `Metadata` modell (`MetadataType` enum, `isActive`, `sortOrder`) — migráció `20260726000000_add_metadata_model`; **seed-alapú feltöltés** a [prisma/seed.ts](../prisma/seed.ts)-ből (`METADATA_DEFINITIONS`); a recept JSON-snapshot tárolás megmaradt | A 07-06 terv `MetadataEntry` + admin CRUD-ot javasolt; a megvalósítás a modell + seed. Az admin CRUD UI még hiányzik → az [admin-panel-plan-2026-08-30.md](admin-panel-plan-2026-08-30.md) erre épít |
+| A4 | 07-24 P1-13, 07-06 3.3 | **Metadata: statikus tömb → DB** | ✅ **eltérő megoldás** | `Metadata` modell (`MetadataType` enum, `isActive`, `sortOrder`) — migráció `20260726000000_add_metadata_model`; **seed-alapú feltöltés** a [prisma/seed.ts](../prisma/seed.ts)-ből (`METADATA_DEFINITIONS`); a recept JSON-snapshot tárolás megmaradt | 2026-08-30-án az admin CRUD UI még hiányzott; **2026-10-10-re elkészült** az admin metadata-kezelő MVP (lásd F13 és az [admin terv](admin-panel-plan-2026-08-30.md)). |
 | A5 | 07-24 P1-12 | Lista- vs. detail-projekciók szétválasztása | ✅ **(2026-08-30 lezárva)** | `getRecipes`/`getRecipesByUserId` mostantól `select: RECIPE_LIST_SELECT`-tel (minden skalár mező, `ingredients`/`preparationSteps` nélkül) fut `include` helyett — [RecipeService.ts](../src/lib/services/RecipeService.ts) | A kliens list-query-k (`GET_LATEST_RECIPES`, `GET_RECIPES_BY_USER_ID`) amúgy sem kértek ingredients/steps mezőt; a detail lekérdezések (`getRecipeById`, `getRecipeBySlugOrId`) változatlanul `include`-osak |
 | A6 | 07-24 P1-14 | Prisma/Redis timeout observability | 🟡 | `createPrismaTimeoutProxy(prisma, 10000)` a GraphQL route-on + unit tesztek; **de** nincs metrika/per-op budget, cache-miss vs. backend-hiba nem megkülönböztetett | Részben releváns; alacsony prioritás monitoring nélkül |
 | A7 | 07-24 P1-8 | Strukturált GraphQL metrikák + request ID | ✅ | `X-Request-Id` propagálás, structured JSON log (op, duration, status, userClass) | |
 | A8 | 07-24 P1-3 | GraphQL `no-store` + `Vary` | ✅ | Minden válaszon `Cache-Control: no-store`, `Vary: Cookie, Authorization` | |
-| A9 | 07-24 P2-8 | GraphQL domain-modulokra bontás | 🟡 | Resolvers domain-mappákban (recipe/user/metadata), operationsConfig + fieldPolicies + authorization külön modul | A jelenlegi méretnél elegendő; admin bevezetésekor bővítendő |
+| A9 | 07-24 P2-8 | GraphQL domain-modulokra bontás | 🟡 | Resolvers domain-mappákban (recipe/user/metadata), operationsConfig + fieldPolicies + authorization külön modul | Az admin metadata-műveletek is a metadata domainben vannak; további admin-domain bővítés a felhasználó-/receptmoderációval várható |
 | A10 | 07-04 #20 | Apollo Client cache (typePolicies) | ✅ | keyFields, merge policy-k, errorPolicy `'all'` + ErrorLink + lokalizált notification | 07-06-ban zárult |
 | A11 | 07-06 #17 (4.3) | **darkTheme bekötése** | 🟡 | A [darkTheme.ts](../src/providers/mantine/darkTheme.ts) és a hozzá tartozó teszt elkészült, de a [mantine.tsx](../src/providers/mantine/mantine.tsx) továbbra is **csak** a `lightTheme`-et adja át; a dark mode wiring ezért még nincs élesben bekötve | **Részben megvalósult**: a sötét paletta és override-ok kész, a production integráció hiányzik |
 | A12 | 07-06 #42, 10. szekció | Microfrontend / monorepo | 🚫 | Elemzés alapján elvetve (0/5 feltétel) | Helyes döntés; admin Multi-Zones csak ha kinövi |
@@ -85,7 +87,7 @@
 | F2 | 07-06 #9 (7.2) | Rating UI: optimista update + törlés gomb | 🟡 | Átlag és saját értékelés megjelenítése szétvált ✅, motion-visszajelzés van; **de** továbbra is `refetchQueries`, nincs `optimisticResponse`, nincs Remove gomb (a `DELETE_RATING` mutation-t egyetlen komponens sem hívja) | Releváns, M |
 | F3 | 07-06 #25 (8.2) | Create flow: slug-gen, szekció-hibajelzés, autosave-jelző, DnD | 🟡 | Slug-gen ✅ (`slugify.ts` + ↻ gomb), szekció-hibabadge ✅; DnD ❌ (nincs dnd lib), autosave-indikátor ❌ | Maradék: R1, R8 |
 | F4 | 07-06 #26, 07-24 P2-7 | Server-side draft (`RecipeStatus`) | 🚫 | Csak localStorage draft | Elvetett: a funkció nem lesz lefejlesztve; a mai roadmap szerint a localStorage-based draft/autosave és az admin-moderáció kölcsönösen elégnek tűnik |
-| F5 | 07-04 #15, 07-06 #22, 07-24 döntésfüggő | Komment rendszer | ❌ | Nincs Comment modell | Döntésfüggő (moderáció!) — admin panel után |
+| F5 | 07-04 #15, 07-06 #22, 07-24 döntésfüggő | Komment rendszer | ❌ | Nincs Comment modell | Döntésfüggő (moderáció!); az admin MVP elkészült, de a kommentek report/moderációs folyamata még nincs meg |
 | F6 | 07-04 #16, 07-06 #23, 07-24 P2-9 | Kép-feltöltés (managed media) | ❌ | `imgSrc` külső URL | Releváns (Vercel Blob free) |
 | F7 | 07-04 #23, 07-24 P2-12 | Összetevő-alapú keresés | 🟡 | A trigram keresés **lefedi az ingredient name-eket** (index + SQL) ✅; de nincs „mi van a hűtőmben” chips-UI és hiányzó-összetevő rangsor | A backend-alap kész, a UI-réteg hiányzik |
 | F8 | 07-04 #24, #31, 07-24 P2-13 | Bevásárlólista + gyűjtemények | ❌ | Nincs | P2 marad |
@@ -93,7 +95,7 @@
 | F10 | 07-06 #32 | Adagszám-skálázás + tört mennyiségek | ❌ | Nincs servings-szorzó a detail oldalon | S, releváns |
 | F11 | 07-04 #33, 07-24 döntésfüggő | PWA / Service Worker | ❌ | Csak `site.webmanifest` | P2 |
 | F12 | 07-04 #32, #37, #38, 07-06 #34, #38 | Tápérték, AI, menütervező, pgvector, badge-ek | ❌ | Nincs | Döntésfüggő P2 — nem sürgős |
-| F13 | 07-04 #35, 07-06 #13–16, 07-24 P2-6 | **Admin dashboard** | ❌ (alapok 🟡) | Nincs `/admin` UI; **de** az infrastruktúra jelentős része kész: `admin` route family a [routePolicies.ts](../src/lib/auth/routePolicies.ts)-ben, 5 admin GraphQL művelet az operationsConfig-ban, ADMIN field-policy, Metadata DB-modell | → [admin-panel-plan-2026-08-30.md](admin-panel-plan-2026-08-30.md) |
+| F13 | 07-04 #35, 07-06 #13–16, 07-24 P2-6 | **Admin felület és dashboard** | ❌ (alapok 🟡, 2026-08-30) → ✅ admin MVP (2026-10-10); a teljes dashboard nyitott | Az MVP: védett `/admin`, AdminShell, metadata CRUD, AuditLog modell/írás és E2E guard-teszt. Felhasználó-/receptmoderáció, statisztikák és auditnapló UI még nincs | → [admin-panel-plan-2026-08-30.md](admin-panel-plan-2026-08-30.md) |
 
 ## 6. Ahol az implementáció eltér az eredeti javaslattól (explicit összevetés)
 
@@ -103,7 +105,7 @@
 | **Typed routes** | Nem szerepelt explicit javaslatként | `typedRoutes: true` + saját [routes.ts](../src/types/routes.ts) konvenció (PUBLIC/AUTH/PROTECTED + helper fn-ek + type guardok) | **Jobb** mint a nyers string route-ok; minden új route-nak (admin!) ezt kell követnie |
 | **Metadata kezelés** | 07-06: `MetadataEntry` modell + azonnali admin CRUD | `Metadata` modell + **seed-alapú** feltöltés (`METADATA_DEFINITIONS` marad a source of truth), admin CRUD elhalasztva | **Egyenértékű** átmeneti állapotként: a DB-modell megvan, a seed determinisztikus. Hátrány: két igazságforrás (definitions fájl + DB) — az admin CRUD bevezetésekor a definitions fájl szerepét seed-only-ra kell szűkíteni |
 | **Full-text keresés** | `tsvector` + GIN | `pg_trgm` trigram GIN 5 mezőn | **Jobb** többnyelvű tartalomhoz (nincs stemmer-függés), typo-toleráns; nagy korpusznál a tsvector olcsóbb lenne — később hibrid lehet |
-| **APQ** | Apollo APQ (dinamikus hash-regisztráció) | **Statikus allowlist-registry** exportált kliens-dokumentumokból | **Jobb** biztonságilag: zárt allowlist, nem „first-write-wins” APQ |
+| **APQ** | Apollo APQ (dinamikus hash-regisztráció) | A kliens teljes GraphQL dokumentumot küld; a statikus hash-registry nincs bekötve a route validálásába | APQ/allowlist alapú kéréskorlátozás jelenleg nincs bekapcsolva; a regiszter nem biztonsági határ |
 | **Session revoke** | DB session modell VAGY sessionVersion | `sessionVersion` (minimál változat) | **Egyenértékű** a jelenlegi igényhez; eszköz-lista nélkül |
 | **Error handling kliensen** | `errorPolicy: 'all'` | `errorPolicy: 'all'` + központi ErrorLink + lokalizált Mantine notification | A javasoltnál teljesebb |
 
@@ -130,4 +132,3 @@ A 2026. júliusi auditok óta a projekt **a P0 biztonsági réteget teljesen lez
 4. **Codegen-típusok nem használtak** (D1) + kézi típusduplikáció — lásd típusegységesítési terv.
 5. **darkTheme részben megvalósult, de még nincs bekötve** (A11) — a sötét paletta elkészült, a production integráció hiányzik.
 6. **Admin UI hiánya** (F13) — az összes előfeltétel (RBAC, route family, DB-modell) kész, csak a felület hiányzik.
-

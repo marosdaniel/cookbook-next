@@ -322,7 +322,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
 ### 3.8 Admin felület
 
-Az admin táblák/statkártyák motion-mintái az [admin-panel-plan-2026-08-30.md](admin-panel-plan-2026-08-30.md) 6. szekciójában — ugyanezekre az építőelemekre (Reveal, listVariants, AnimatePresence) épülnek.
+Az admin MVP 2026-10-10-én elkészült; a részleteket az [admin-panel-plan-2026-08-30.md](admin-panel-plan-2026-08-30.md) tartalmazza. Az itt javasolt táblasor- és statkártya-animációk (Reveal, listVariants, AnimatePresence) külön motion-feladatok: ezek megvalósítása nincs az admin MVP teljesüléséhez kötve.
 
 ---
 

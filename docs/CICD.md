@@ -268,8 +268,14 @@ quality-checks + e2e
 |---------------|-------------|
 | `fix:` | Patch (`1.0.0` → `1.0.1`) |
 | `feat:` | Minor (`1.0.0` → `1.1.0`) |
-| `BREAKING CHANGE:` | Major (`1.0.0` → `2.0.0`) |
+| `feat!:` / `feat(scope)!:` | Major (`1.0.0` → `2.0.0`) |
+| `BREAKING CHANGE:` footer | Major (`1.0.0` → `2.0.0`) |
 | `chore:`, `docs:`, `style:` | No release |
+
+The commit analyzer is configured to recognize the Conventional Commits `!`
+marker, both with and without a scope. Without this parser configuration,
+semantic-release's default Angular parser does not treat `feat(scope)!:` as a
+breaking `feat`, and may report that no release is needed.
 
 **Why this job matters**: Manual versioning is error-prone and easy to forget. With semantic-release, the git history itself becomes the source of truth for versioning. Every release is traceable, reproducible, and consistently formatted.
 
