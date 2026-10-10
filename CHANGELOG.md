@@ -1,3 +1,5 @@
+# [3.0.0](https://github.com/marosdaniel/cookbook-next/compare/v2.94.0...v3.0.0) (2026-10-10)
+
 # [2.94.0](https://github.com/marosdaniel/cookbook-next/compare/v2.93.1...v2.94.0) (2026-09-27)
 
 
