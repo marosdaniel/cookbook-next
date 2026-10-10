@@ -1,12 +1,13 @@
 import { UserRole } from '@prisma/client';
+import { MetadataType } from '@prisma/client';
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { RecipeResolverParent, UserResolverParent } from '@/lib/graphql/resolvers/types';
 import { GraphQLContext } from '@/types/graphql/context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 export type EnumResolverSignature<T, AllowedValues = any> = { [key in keyof T]?: AllowedValues };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -15,6 +16,16 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   DateTime: { input: string; output: Date; }
+};
+
+export type AdminMetadataItem = {
+  __typename?: 'AdminMetadataItem';
+  id: Scalars['ID']['output'];
+  isActive: Scalars['Boolean']['output'];
+  key: Scalars['String']['output'];
+  sortOrder: Scalars['Int']['output'];
+  translationKey: Scalars['String']['output'];
+  type: MetadataType;
 };
 
 export type BaseResponse = {
@@ -92,6 +103,12 @@ export type MetaInputPartial = {
   value: Scalars['String']['input'];
 };
 
+export type MetadataCreateInput = {
+  key: Scalars['String']['input'];
+  translationKey: Scalars['String']['input'];
+  type: MetadataType;
+};
+
 export type MetadataItem = {
   __typename?: 'MetadataItem';
   id?: Maybe<Scalars['ID']['output']>;
@@ -101,11 +118,18 @@ export type MetadataItem = {
   type: Scalars['String']['output'];
 };
 
+export { MetadataType };
+
+export type MetadataUpdateInput = {
+  translationKey: Scalars['String']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addToFavoriteRecipes: OperationResponse;
   changePassword: BaseResponse;
   cleanUserRecipes: Scalars['Boolean']['output'];
+  createMetadata: AdminMetadataItem;
   createRecipe: Recipe;
   createUser: UserOperationResponse;
   deleteAllRecipes: Scalars['Int']['output'];
@@ -117,9 +141,12 @@ export type Mutation = {
   followUser: OperationResponse;
   rateRecipe: Recipe;
   removeFromFavoriteRecipes: OperationResponse;
+  reorderMetadata: Array<AdminMetadataItem>;
   resetPassword: BaseResponse;
+  setMetadataActive: AdminMetadataItem;
   setNewPassword: BaseResponse;
   unfollowUser: OperationResponse;
+  updateMetadata: AdminMetadataItem;
   updateUser: UserUpdateResponse;
 };
 
@@ -137,6 +164,11 @@ export type MutationChangePasswordArgs = {
 
 export type MutationCleanUserRecipesArgs = {
   userId: Scalars['ID']['input'];
+};
+
+
+export type MutationCreateMetadataArgs = {
+  metadataCreateInput: MetadataCreateInput;
 };
 
 
@@ -197,8 +229,20 @@ export type MutationRemoveFromFavoriteRecipesArgs = {
 };
 
 
+export type MutationReorderMetadataArgs = {
+  orderedIds: Array<Scalars['ID']['input']>;
+  type: MetadataType;
+};
+
+
 export type MutationResetPasswordArgs = {
   email: Scalars['String']['input'];
+};
+
+
+export type MutationSetMetadataActiveArgs = {
+  id: Scalars['ID']['input'];
+  isActive: Scalars['Boolean']['input'];
 };
 
 
@@ -210,6 +254,12 @@ export type MutationSetNewPasswordArgs = {
 
 export type MutationUnfollowUserArgs = {
   targetUserId: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateMetadataArgs = {
+  id: Scalars['ID']['input'];
+  metadataUpdateInput: MetadataUpdateInput;
 };
 
 
@@ -251,6 +301,7 @@ export type PreparationStepInput = {
 
 export type Query = {
   __typename?: 'Query';
+  getAdminMetadata: Array<AdminMetadataItem>;
   getAllMetadata: Array<MetadataItem>;
   getAllUser: Array<User>;
   getFavoriteRecipes: Array<Recipe>;
@@ -264,6 +315,11 @@ export type Query = {
   getRecipesByUserName: RecipeData;
   getUserById: User;
   getUserByUserName: User;
+};
+
+
+export type QueryGetAdminMetadataArgs = {
+  type?: InputMaybe<MetadataType>;
 };
 
 
@@ -590,6 +646,7 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
+  AdminMetadataItem: ResolverTypeWrapper<AdminMetadataItem>;
   BaseResponse: ResolverTypeWrapper<BaseResponse>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Category: ResolverTypeWrapper<Category>;
@@ -604,7 +661,10 @@ export type ResolversTypes = ResolversObject<{
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Label: ResolverTypeWrapper<Label>;
   MetaInputPartial: MetaInputPartial;
+  MetadataCreateInput: MetadataCreateInput;
   MetadataItem: ResolverTypeWrapper<MetadataItem>;
+  MetadataType: MetadataType;
+  MetadataUpdateInput: MetadataUpdateInput;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   OperationResponse: ResolverTypeWrapper<OperationResponse>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
@@ -631,6 +691,7 @@ export type ResolversTypes = ResolversObject<{
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
+  AdminMetadataItem: AdminMetadataItem;
   BaseResponse: BaseResponse;
   Boolean: Scalars['Boolean']['output'];
   Category: Category;
@@ -645,7 +706,9 @@ export type ResolversParentTypes = ResolversObject<{
   Int: Scalars['Int']['output'];
   Label: Label;
   MetaInputPartial: MetaInputPartial;
+  MetadataCreateInput: MetadataCreateInput;
   MetadataItem: MetadataItem;
+  MetadataUpdateInput: MetadataUpdateInput;
   Mutation: Record<PropertyKey, never>;
   OperationResponse: OperationResponse;
   PageInfo: PageInfo;
@@ -667,6 +730,15 @@ export type ResolversParentTypes = ResolversObject<{
   UserRegisterInput: UserRegisterInput;
   UserUpdateInput: UserUpdateInput;
   UserUpdateResponse: Omit<UserUpdateResponse, 'user'> & { user?: Maybe<ResolversParentTypes['User']> };
+}>;
+
+export type AdminMetadataItemResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['AdminMetadataItem'] = ResolversParentTypes['AdminMetadataItem']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  isActive?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  key?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  sortOrder?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  translationKey?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['MetadataType'], ParentType, ContextType>;
 }>;
 
 export type BaseResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['BaseResponse'] = ResolversParentTypes['BaseResponse']> = ResolversObject<{
@@ -735,10 +807,13 @@ export type MetadataItemResolvers<ContextType = GraphQLContext, ParentType exten
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 }>;
 
+export type MetadataTypeResolvers = EnumResolverSignature<{ ALLERGEN?: any, CATEGORY?: any, COST_LEVEL?: any, CUISINE?: any, DIET?: any, DIFFICULTY_LEVEL?: any, EQUIPMENT?: any, LABEL?: any, SERVING_UNIT?: any, UNIT?: any }, ResolversTypes['MetadataType']>;
+
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   addToFavoriteRecipes?: Resolver<ResolversTypes['OperationResponse'], ParentType, ContextType, RequireFields<MutationAddToFavoriteRecipesArgs, 'recipeId' | 'userId'>>;
   changePassword?: Resolver<ResolversTypes['BaseResponse'], ParentType, ContextType, RequireFields<MutationChangePasswordArgs, 'passwordEditInput'>>;
   cleanUserRecipes?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationCleanUserRecipesArgs, 'userId'>>;
+  createMetadata?: Resolver<ResolversTypes['AdminMetadataItem'], ParentType, ContextType, RequireFields<MutationCreateMetadataArgs, 'metadataCreateInput'>>;
   createRecipe?: Resolver<ResolversTypes['Recipe'], ParentType, ContextType, Partial<MutationCreateRecipeArgs>>;
   createUser?: Resolver<ResolversTypes['UserOperationResponse'], ParentType, ContextType, Partial<MutationCreateUserArgs>>;
   deleteAllRecipes?: Resolver<ResolversTypes['Int'], ParentType, ContextType, RequireFields<MutationDeleteAllRecipesArgs, 'confirmation'>>;
@@ -750,9 +825,12 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   followUser?: Resolver<ResolversTypes['OperationResponse'], ParentType, ContextType, RequireFields<MutationFollowUserArgs, 'targetUserId'>>;
   rateRecipe?: Resolver<ResolversTypes['Recipe'], ParentType, ContextType, RequireFields<MutationRateRecipeArgs, 'ratingInput'>>;
   removeFromFavoriteRecipes?: Resolver<ResolversTypes['OperationResponse'], ParentType, ContextType, RequireFields<MutationRemoveFromFavoriteRecipesArgs, 'recipeId' | 'userId'>>;
+  reorderMetadata?: Resolver<Array<ResolversTypes['AdminMetadataItem']>, ParentType, ContextType, RequireFields<MutationReorderMetadataArgs, 'orderedIds' | 'type'>>;
   resetPassword?: Resolver<ResolversTypes['BaseResponse'], ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'email'>>;
+  setMetadataActive?: Resolver<ResolversTypes['AdminMetadataItem'], ParentType, ContextType, RequireFields<MutationSetMetadataActiveArgs, 'id' | 'isActive'>>;
   setNewPassword?: Resolver<ResolversTypes['BaseResponse'], ParentType, ContextType, RequireFields<MutationSetNewPasswordArgs, 'newPassword' | 'token'>>;
   unfollowUser?: Resolver<ResolversTypes['OperationResponse'], ParentType, ContextType, RequireFields<MutationUnfollowUserArgs, 'targetUserId'>>;
+  updateMetadata?: Resolver<ResolversTypes['AdminMetadataItem'], ParentType, ContextType, RequireFields<MutationUpdateMetadataArgs, 'id' | 'metadataUpdateInput'>>;
   updateUser?: Resolver<ResolversTypes['UserUpdateResponse'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'userUpdateInput'>>;
 }>;
 
@@ -775,6 +853,7 @@ export type PreparationStepResolvers<ContextType = GraphQLContext, ParentType ex
 }>;
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  getAdminMetadata?: Resolver<Array<ResolversTypes['AdminMetadataItem']>, ParentType, ContextType, Partial<QueryGetAdminMetadataArgs>>;
   getAllMetadata?: Resolver<Array<ResolversTypes['MetadataItem']>, ParentType, ContextType>;
   getAllUser?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   getFavoriteRecipes?: Resolver<Array<ResolversTypes['Recipe']>, ParentType, ContextType, Partial<QueryGetFavoriteRecipesArgs>>;
@@ -881,6 +960,7 @@ export type UserUpdateResponseResolvers<ContextType = GraphQLContext, ParentType
 }>;
 
 export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
+  AdminMetadataItem?: AdminMetadataItemResolvers<ContextType>;
   BaseResponse?: BaseResponseResolvers<ContextType>;
   Category?: CategoryResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
@@ -890,6 +970,7 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   Ingredient?: IngredientResolvers<ContextType>;
   Label?: LabelResolvers<ContextType>;
   MetadataItem?: MetadataItemResolvers<ContextType>;
+  MetadataType?: MetadataTypeResolvers;
   Mutation?: MutationResolvers<ContextType>;
   OperationResponse?: OperationResponseResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;

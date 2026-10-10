@@ -6,6 +6,7 @@ async function main() {
   console.log('Start seeding metadata...');
 
   for (const item of METADATA_DEFINITIONS) {
+    // Existing rows may have been edited in the admin panel, so seeding only fills in missing items.
     await prisma.metadata.upsert({
       where: {
         type_key: {
@@ -13,11 +14,7 @@ async function main() {
           key: item.key,
         },
       },
-      update: {
-        translationKey: item.translationKey,
-        sortOrder: item.sortOrder,
-        isActive: item.isActive,
-      },
+      update: {},
       create: {
         type: item.type,
         key: item.key,

@@ -1,4 +1,5 @@
 import {
+  GetAdminMetadataDocument,
   GetAllMetadataDocument,
   GetFavoriteRecipesDocument,
   GetFollowingDocument,
@@ -11,6 +12,7 @@ import {
 
 export const GET_USER_BY_ID = GetUserByIdDocument;
 export const GET_ALL_METADATA = GetAllMetadataDocument;
+export const GET_ADMIN_METADATA = GetAdminMetadataDocument;
 export const GET_METADATA_BY_TYPE = GetMetadataByTypeDocument;
 export const GET_RECIPE_BY_ID = GetRecipeByIdDocument;
 export const GET_FAVORITE_RECIPES = GetFavoriteRecipesDocument;

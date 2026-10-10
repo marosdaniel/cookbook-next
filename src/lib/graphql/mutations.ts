@@ -1,6 +1,7 @@
 import {
   AddToFavoriteRecipesDocument,
   ChangePasswordDocument,
+  CreateMetadataDocument,
   CreateRecipeDocument,
   CreateUserDocument,
   DeleteRatingDocument,
@@ -8,13 +9,20 @@ import {
   FollowUserDocument,
   RateRecipeDocument,
   RemoveFromFavoriteRecipesDocument,
+  ReorderMetadataDocument,
   ResetPasswordDocument,
+  SetMetadataActiveDocument,
   SetNewPasswordDocument,
   UnfollowUserDocument,
+  UpdateMetadataDocument,
   UpdateUserDocument,
 } from '@/lib/graphql/generated/graphql';
 
 export const CREATE_USER = CreateUserDocument;
+export const CREATE_METADATA = CreateMetadataDocument;
+export const UPDATE_METADATA = UpdateMetadataDocument;
+export const SET_METADATA_ACTIVE = SetMetadataActiveDocument;
+export const REORDER_METADATA = ReorderMetadataDocument;
 export const RESET_PASSWORD = ResetPasswordDocument;
 export const SET_NEW_PASSWORD = SetNewPasswordDocument;
 export const CHANGE_PASSWORD = ChangePasswordDocument;

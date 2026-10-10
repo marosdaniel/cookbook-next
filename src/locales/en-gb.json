@@ -222,6 +222,8 @@
     "seoDescriptionTooLong": "Max 160 characters"
   },
   "seo": {
+    "adminTitle": "Admin",
+    "adminDescription": "Administration area",
     "appTitle": "Cookbook - Share your recipes",
     "appDescription": "The best place to find and share recipes.",
     "homeTitle": "Home",
@@ -351,6 +353,67 @@
     "cost-level-low": "Low",
     "cost-level-medium": "Medium",
     "cost-level-high": "High"
+  },
+  "admin": {
+    "navTitle": "Administration",
+    "navToggle": "Toggle navigation",
+    "navMetadata": "Metadata",
+    "breadcrumbRoot": "Admin",
+    "backToSite": "Back to site",
+    "metadata": {
+      "title": "Metadata",
+      "description": "Taxonomy used by recipe forms and filters. Inactive items are hidden from users but kept for existing recipes.",
+      "createButton": "New item",
+      "createTitle": "New item",
+      "editTitle": "Edit label",
+      "columns": {
+        "order": "Order",
+        "label": "Label",
+        "translationKey": "Translation key",
+        "active": "Active",
+        "actions": "Actions"
+      },
+      "fields": {
+        "key": "Key",
+        "keyHint": "Lowercase letters, digits and single hyphens. Cannot be changed later.",
+        "translationKey": "Label",
+        "translationKeyHint": "Only translations available in every language are listed."
+      },
+      "actions": {
+        "moveUp": "Move up",
+        "moveDown": "Move down",
+        "edit": "Edit",
+        "toggleActive": "Toggle active"
+      },
+      "types": {
+        "CATEGORY": "Categories",
+        "LABEL": "Labels",
+        "DIFFICULTY_LEVEL": "Difficulty",
+        "UNIT": "Units",
+        "CUISINE": "Cuisines",
+        "SERVING_UNIT": "Serving units",
+        "DIET": "Diets",
+        "ALLERGEN": "Allergens",
+        "EQUIPMENT": "Equipment",
+        "COST_LEVEL": "Cost levels"
+      },
+      "emptyTitle": "No items for this type yet",
+      "emptyDescription": "Add the first item to make it available in recipe forms.",
+      "noTranslationKeys": "No translations available for this type",
+      "validation": {
+        "keyRequired": "Key is required",
+        "keyFormat": "Use lowercase letters, digits and single hyphens (max 64 characters)",
+        "translationKeyRequired": "Label is required"
+      },
+      "notifications": {
+        "createdTitle": "Item created",
+        "createdMessage": "The item is now available in recipe forms.",
+        "updatedTitle": "Label updated",
+        "updatedMessage": "Recipes saved from now on will use the new label.",
+        "keyTakenTitle": "Key already in use",
+        "keyTakenMessage": "Choose a different key for this type."
+      }
+    }
   },
   "underConstruction": {
     "title": "This page is still in the oven!",

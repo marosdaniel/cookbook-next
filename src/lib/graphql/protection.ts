@@ -17,8 +17,8 @@ export const resolveQueryLimit = (limit?: number) => {
 };
 
 /**
- * Normalize and hash a GraphQL document (already parsed AST).
- * Used to match hashes computed by the client-side persistedQueryLink.
+ * Normalize and hash a GraphQL document (already parsed AST) for the persisted
+ * query registry.
  */
 export const getPersistedQueryHashFromDocument = (
   document: DocumentNode | string,
@@ -37,15 +37,4 @@ export const getPersistedQueryHashFromDocument = (
 
   const normalizedQuery = print(normalizedDocument);
   return crypto.createHash('sha256').update(normalizedQuery).digest('hex');
-};
-
-export const validatePersistedQuery = (
-  query: string,
-  persistedHash?: string,
-) => {
-  if (!persistedHash) {
-    return false;
-  }
-
-  return getPersistedQueryHashFromDocument(query) === persistedHash;
 };

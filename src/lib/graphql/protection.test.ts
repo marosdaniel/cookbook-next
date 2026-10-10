@@ -3,7 +3,6 @@ import {
   DEFAULT_GRAPHQL_MAX_LIMIT,
   getPersistedQueryHashFromDocument,
   resolveQueryLimit,
-  validatePersistedQuery,
 } from './protection';
 
 describe('resolveQueryLimit', () => {
@@ -27,26 +26,7 @@ describe('resolveQueryLimit', () => {
   });
 });
 
-describe('validatePersistedQuery', () => {
-  it('accepts a matching persisted query hash', () => {
-    const query = 'query GetRecipes { getRecipes(limit: 10) { id } }';
-    const hash = getPersistedQueryHashFromDocument(query);
-
-    expect(validatePersistedQuery(query, hash)).toBe(true);
-  });
-
-  it('rejects a mismatched persisted query hash', () => {
-    const query = 'query GetRecipes { getRecipes(limit: 10) { id } }';
-
-    expect(validatePersistedQuery(query, 'invalid-hash')).toBe(false);
-  });
-
-  it('rejects when no persisted hash is provided', () => {
-    const query = 'query GetRecipes { getRecipes(limit: 10) { id } }';
-
-    expect(validatePersistedQuery(query)).toBe(false);
-  });
-
+describe('getPersistedQueryHashFromDocument', () => {
   it('treats queries with and without __typename as the same persisted query', () => {
     const queryWithoutTypename =
       'query GetRecipes { getRecipes(limit: 10) { id } }';

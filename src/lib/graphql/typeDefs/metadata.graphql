@@ -1,0 +1,50 @@
+# Admin-managed metadata (taxonomy) definitions
+
+enum MetadataType {
+  CATEGORY
+  LABEL
+  DIFFICULTY_LEVEL
+  UNIT
+  CUISINE
+  SERVING_UNIT
+  DIET
+  ALLERGEN
+  EQUIPMENT
+  COST_LEVEL
+}
+
+type AdminMetadataItem {
+  id: ID!
+  type: MetadataType!
+  key: String!
+  translationKey: String!
+  sortOrder: Int!
+  isActive: Boolean!
+}
+
+input MetadataCreateInput {
+  type: MetadataType!
+  key: String!
+  translationKey: String!
+}
+
+input MetadataUpdateInput {
+  translationKey: String!
+}
+
+type Query {
+  getAdminMetadata(type: MetadataType): [AdminMetadataItem!]!
+}
+
+type Mutation {
+  createMetadata(metadataCreateInput: MetadataCreateInput!): AdminMetadataItem!
+  updateMetadata(
+    id: ID!
+    metadataUpdateInput: MetadataUpdateInput!
+  ): AdminMetadataItem!
+  setMetadataActive(id: ID!, isActive: Boolean!): AdminMetadataItem!
+  reorderMetadata(
+    type: MetadataType!
+    orderedIds: [ID!]!
+  ): [AdminMetadataItem!]!
+}

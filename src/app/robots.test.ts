@@ -12,6 +12,7 @@ describe('robots', () => {
         disallow: [
           '/api/',
           '/me/',
+          '/admin',
           '/login',
           '/signup',
           '/reset-password',

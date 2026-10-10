@@ -140,6 +140,61 @@ query getMetadataByType($type: String!) {
   }
 }
 
+query getAdminMetadata($type: MetadataType) {
+  getAdminMetadata(type: $type) {
+    id
+    type
+    key
+    translationKey
+    sortOrder
+    isActive
+  }
+}
+
+mutation createMetadata($metadataCreateInput: MetadataCreateInput!) {
+  createMetadata(metadataCreateInput: $metadataCreateInput) {
+    id
+    type
+    key
+    translationKey
+    sortOrder
+    isActive
+  }
+}
+
+mutation updateMetadata($id: ID!, $metadataUpdateInput: MetadataUpdateInput!) {
+  updateMetadata(id: $id, metadataUpdateInput: $metadataUpdateInput) {
+    id
+    type
+    key
+    translationKey
+    sortOrder
+    isActive
+  }
+}
+
+mutation setMetadataActive($id: ID!, $isActive: Boolean!) {
+  setMetadataActive(id: $id, isActive: $isActive) {
+    id
+    type
+    key
+    translationKey
+    sortOrder
+    isActive
+  }
+}
+
+mutation reorderMetadata($type: MetadataType!, $orderedIds: [ID!]!) {
+  reorderMetadata(type: $type, orderedIds: $orderedIds) {
+    id
+    type
+    key
+    translationKey
+    sortOrder
+    isActive
+  }
+}
+
 query getRecipeById($id: ID!) {
   getRecipeById(id: $id) {
     id

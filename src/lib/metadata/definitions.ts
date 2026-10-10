@@ -1,3 +1,4 @@
+// Seed input only (prisma/seed.ts); runtime code must read metadata from the database.
 import type { MetadataType } from '@prisma/client';
 
 export type MetadataDefinition = {

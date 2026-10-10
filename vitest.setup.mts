@@ -91,6 +91,17 @@ vi.mock('motion/react', () => ({
       createElement('article', props, children),
     h1: ({ children, ...props }: ComponentProps<'h1'>) =>
       createElement('h1', props, children),
+    tr: ({
+      children,
+      initial: _initial,
+      animate: _animate,
+      transition: _transition,
+      ...props
+    }: ComponentProps<'tr'> & {
+      initial?: unknown;
+      animate?: unknown;
+      transition?: unknown;
+    }) => createElement('tr', props, children),
     iframe: ({ children, src, title, ...props }: ComponentProps<'iframe'>) =>
       createElement(
         'div',

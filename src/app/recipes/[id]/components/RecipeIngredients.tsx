@@ -13,7 +13,7 @@ import {
 import { IconMinus, IconPlus } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
-import { METADATA_DEFINITIONS } from '../../../../lib/metadata/definitions';
+import { useRecipeMetadata } from '@/components/Recipe/Create/hooks/useRecipeMetadata';
 import { MOTION_TRANSITION } from '../../../../lib/motion/transitions';
 import classes from '../RecipeDetail.module.css';
 import type { RecipeIngredientsProps } from '../types';
@@ -33,7 +33,7 @@ export const RecipeIngredients = ({
 }: Readonly<RecipeIngredientsProps>) => {
   const translate = useTranslations('recipeDetail');
   const translateIngredients = useTranslations('recipeIngredients');
-  const translateMisc = useTranslations('misc');
+  const { unitOptions } = useRecipeMetadata();
 
   return (
     <Paper
@@ -129,12 +129,11 @@ export const RecipeIngredients = ({
             ingredient.quantity,
             servingMultiplier,
           );
-          const unitDefinition = METADATA_DEFINITIONS.find(
-            (definition) =>
-              definition.type === 'UNIT' && definition.key === ingredient.unit,
+          const unitOption = unitOptions.find(
+            (option) => option.value === ingredient.unit,
           );
-          const translatedUnit = unitDefinition
-            ? translateMisc(unitDefinition.translationKey)
+          const translatedUnit = unitOption
+            ? unitOption.label
             : ingredient.unit;
 
           return (

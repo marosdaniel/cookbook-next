@@ -41,6 +41,13 @@ vi.mock('@/lib/redis/redis', () => ({
   redis: mockRedis,
 }));
 
+vi.mock('@/lib/services/MetadataService', () => ({
+  MetadataService: {
+    getTranslationKeyLookup: vi.fn(async () => new Map<string, string>()),
+  },
+  metadataLookupKey: (type: string, key: string) => `${type}:${key}`,
+}));
+
 vi.mock('@/lib/validation/throwCustomError', () => ({
   throwCustomError: vi.fn(
     (message: string, errorType: { errorCode: string }) => {

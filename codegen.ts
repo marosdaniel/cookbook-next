@@ -25,6 +25,7 @@ const config: CodegenConfig = {
         },
         enumValues: {
           UserRole: '@prisma/client#UserRole',
+          MetadataType: '@prisma/client#MetadataType',
         },
         mappers: {
           Recipe: '@/lib/graphql/resolvers/types#RecipeResolverParent',

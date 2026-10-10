@@ -1,5 +1,16 @@
 import type { Resolvers } from './generated/resolvers-types';
 import {
+  createMetadata,
+  reorderMetadata,
+  setMetadataActive,
+  updateMetadata,
+} from './resolvers/metadata/mutations';
+import {
+  getAdminMetadata,
+  getAllMetadata,
+  getMetadataByType,
+} from './resolvers/metadata/queries';
+import {
   createRecipe,
   deleteRating,
   deleteRecipe,
@@ -32,14 +43,6 @@ import {
   getUserById,
 } from './resolvers/user/queries';
 
-const getAllMetadata = async () => {
-  return [];
-};
-
-const getMetadataByType = async (_parent: unknown, _args: { type: string }) => {
-  return [];
-};
-
 export const resolvers: Resolvers = {
   Query: {
     getUserById,
@@ -50,6 +53,7 @@ export const resolvers: Resolvers = {
     getFollowing,
     getAllMetadata,
     getMetadataByType,
+    getAdminMetadata,
   },
   Mutation: {
     addToFavoriteRecipes,
@@ -70,6 +74,10 @@ export const resolvers: Resolvers = {
     deleteRecipe,
     rateRecipe,
     deleteRating,
+    createMetadata,
+    updateMetadata,
+    setMetadataActive,
+    reorderMetadata,
   },
   Recipe: {
     author: async (

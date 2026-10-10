@@ -6,7 +6,12 @@ import { AnimatePresence, motion } from 'motion/react';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import type { FC, PropsWithChildren } from 'react';
-import { isAuthRoute, isImmersiveRoute, PUBLIC_ROUTES } from '@/types/routes';
+import {
+  isAdminRoute,
+  isAuthRoute,
+  isImmersiveRoute,
+  PUBLIC_ROUTES,
+} from '@/types/routes';
 import BackToTop from '../BackToTop';
 import AuthButton from '../buttons/AuthButton';
 import Footer from '../Footer';
@@ -24,6 +29,11 @@ const Shell: FC<PropsWithChildren> = ({ children }) => {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const pathname = usePathname() ?? '';
   const { data: session, status } = useSession();
+
+  // Admin pages render their own AppShell (src/app/admin/AdminShell.tsx).
+  if (isAdminRoute(pathname)) {
+    return <>{children}</>;
+  }
 
   const isSessionLoading = status === 'loading';
   const isAuthPage = isAuthRoute(pathname);

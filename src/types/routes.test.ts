@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  ADMIN_ROUTES,
   AUTH_ROUTES,
+  isAdminRoute,
   isAuthRoute,
   isImmersiveRoute,
   isProtectedRoute,
@@ -40,6 +42,13 @@ describe('routes helpers', () => {
     expect(isImmersiveRoute('/recipes/123/edit')).toBe(true);
     expect(isImmersiveRoute('/recipes/123')).toBe(false);
     expect(isImmersiveRoute('/recipes')).toBe(false);
+  });
+
+  it('detects admin routes and nested admin paths', () => {
+    expect(isAdminRoute(ADMIN_ROUTES.DASHBOARD)).toBe(true);
+    expect(isAdminRoute(ADMIN_ROUTES.METADATA)).toBe(true);
+    expect(isAdminRoute('/administration')).toBe(false);
+    expect(isAdminRoute(PUBLIC_ROUTES.HOME)).toBe(false);
   });
 
   it('exposes the route constants used by the app', () => {

@@ -221,6 +221,8 @@
     "seoDescriptionTooLong": "Maximum 160 karakter lehet"
   },
   "seo": {
+    "adminTitle": "Admin",
+    "adminDescription": "Adminisztrációs felület",
     "appTitle": "Cookbook - Oszd meg receptjeidet",
     "appDescription": "A legjobb hely receptek keresésére és megosztására.",
     "homeTitle": "Főoldal",
@@ -350,6 +352,67 @@
     "cost-level-low": "Olcsó",
     "cost-level-medium": "Közepes",
     "cost-level-high": "Drága"
+  },
+  "admin": {
+    "navTitle": "Adminisztráció",
+    "navToggle": "Navigáció megnyitása",
+    "navMetadata": "Metaadatok",
+    "breadcrumbRoot": "Admin",
+    "backToSite": "Vissza a webhelyre",
+    "metadata": {
+      "title": "Metaadatok",
+      "description": "A receptűrlapokon és szűrőkben használt besorolások. Az inaktív elemek a felhasználók elől rejtve maradnak, a meglévő receptek azonban megtartják őket.",
+      "createButton": "Új elem",
+      "createTitle": "Új elem",
+      "editTitle": "Címke szerkesztése",
+      "columns": {
+        "order": "Sorrend",
+        "label": "Címke",
+        "translationKey": "Fordítási kulcs",
+        "active": "Aktív",
+        "actions": "Műveletek"
+      },
+      "fields": {
+        "key": "Kulcs",
+        "keyHint": "Kisbetűk, számjegyek és kötőjelek. Később nem módosítható.",
+        "translationKey": "Címke",
+        "translationKeyHint": "Csak minden nyelven elérhető fordítások jelennek meg."
+      },
+      "actions": {
+        "moveUp": "Feljebb",
+        "moveDown": "Lejjebb",
+        "edit": "Szerkesztés",
+        "toggleActive": "Aktív állapot váltása"
+      },
+      "types": {
+        "CATEGORY": "Kategóriák",
+        "LABEL": "Címkék",
+        "DIFFICULTY_LEVEL": "Nehézség",
+        "UNIT": "Mértékegységek",
+        "CUISINE": "Konyhák",
+        "SERVING_UNIT": "Adagolási egységek",
+        "DIET": "Diéták",
+        "ALLERGEN": "Allergének",
+        "EQUIPMENT": "Eszközök",
+        "COST_LEVEL": "Költségszintek"
+      },
+      "emptyTitle": "Ehhez a típushoz még nincs elem",
+      "emptyDescription": "Adj hozzá az első elemet, hogy megjelenjen a receptűrlapokon.",
+      "noTranslationKeys": "Ehhez a típushoz nincs elérhető fordítás",
+      "validation": {
+        "keyRequired": "A kulcs megadása kötelező",
+        "keyFormat": "Használj kisbetűket, számjegyeket és egyszeri kötőjeleket (legfeljebb 64 karakter)",
+        "translationKeyRequired": "A címke megadása kötelező"
+      },
+      "notifications": {
+        "createdTitle": "Elem létrehozva",
+        "createdMessage": "Az elem mostantól elérhető a receptűrlapokon.",
+        "updatedTitle": "Címke frissítve",
+        "updatedMessage": "A mostantól mentett receptek az új címkét használják.",
+        "keyTakenTitle": "A kulcs már foglalt",
+        "keyTakenMessage": "Válassz másik kulcsot ehhez a típushoz."
+      }
+    }
   },
   "underConstruction": {
     "title": "Ez az oldal még a sütőben van!",

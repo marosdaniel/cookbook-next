@@ -185,63 +185,20 @@ This ensures the SDL and client documents stay synchronized. Failures indicate:
 
 ## Security Architecture
 
-### 1. Persisted Queries (SHA-256 Allowlist)
+### 1. Operation Authorization and Query Protections
 
-**File:** [`src/lib/graphql/persistedQueryRegistry.ts`](../src/lib/graphql/persistedQueryRegistry.ts)
+The GraphQL route authorizes the parsed operation name using
+[`operationsConfig.ts`](../src/lib/graphql/operationsConfig.ts) and applies
+GraphQL Armor validation limits for depth, cost, aliases, directives, and tokens.
 
-**Purpose:** Only allow GraphQL operations that the frontend explicitly knows about.
+[`persistedQueryRegistry.ts`](../src/lib/graphql/persistedQueryRegistry.ts)
+maintains hashes for client documents, but the route does not currently enforce
+that registry. It is not a query allowlist or a security boundary.
 
-**How it works:**
-1. All 21 client documents (`queries.ts` + `mutations.ts`) are imported
-2. Each document is hashed with SHA-256
-3. The allowlist is built at server startup
-
-```typescript
-const clientDocuments: DocumentNode[] = [
-  GET_USER_BY_ID,
-  GET_FAVORITE_RECIPES,
-  CREATE_RECIPE,
-  // ... all 21 client operations
-];
-
-export const persistedQueryHashes = new Set(
-  clientDocuments.map(doc => getPersistedQueryHash(print(doc)))
-);
-
-export const isPersistedQueryAllowed = (query: string, persistedHash: string) =>
-  persistedQueryHashes.has(persistedHash) &&
-  getPersistedQueryHash(query) === persistedHash;
-```
-
-**Client side:** Apollo Client automatically computes the SHA-256 hash via `persistedQueryLink`:
-
-```typescript
-// src/lib/apollo/client.ts
-const persistedQueryLink = new ApolloLink((operation, forward) => {
-  operation.extensions.persistedQuery = {
-    sha256Hash: await getBrowserPersistedQueryHash(operation.query),
-    version: 1,
-  };
-  return forward(operation);
-});
-```
-
-**Server validation:** In the GraphQL route handler:
-
-```typescript
-if (body.extensions?.persistedQuery?.sha256Hash) {
-  const isAllowed = isPersistedQueryAllowed(
-    query,
-    body.extensions.persistedQuery.sha256Hash
-  );
-  if (!isAllowed) return new Response('Persisted query not found', { status: 400 });
-}
-```
-
-**Benefits:**
-- ✅ Prevents injection attacks (no arbitrary queries)
-- ✅ Enables Automatic Persisted Queries (APQ) for smaller payloads
-- ✅ Audit trail of which operations are being used
+The Apollo client sends complete GraphQL documents; Automatic Persisted Queries
+(APQ) are disabled. Do not rely on the persisted-query registry to block
+requests. Enabling APQ requires wiring both client transport and server-side
+validation, with matching hash normalization.
 
 ### 2. Field-Level Authorization
 
@@ -496,9 +453,10 @@ The generated files are at `src/lib/graphql/generated/`. You can inspect:
 - `gql.ts` – Operation result types and document registry
 - `fragment-masking.ts` – Fragment utilities
 
-### Check Persisted Query Allowlist
+### Inspect the Persisted Query Registry
 
-The allowlist is built automatically on server startup. To verify which operations are allowed:
+The registry contains hashes of client documents, but is not currently enforced
+by the GraphQL route:
 
 ```typescript
 import { persistedQueryHashes } from '@/lib/graphql/persistedQueryRegistry';
@@ -532,7 +490,7 @@ export const userFieldPolicies: Record<string, FieldPolicy> = {
 3. **Use context for auth** – never accept user IDs as query parameters
 4. **Declare field policies** – don't hardcode auth checks in resolver logic
 5. **Test with generated types** – import from `generated/graphql.ts` and `generated/gql.ts`
-6. **Verify persisted queries** in production – check `isPersistedQueryAllowed` logs to audit which queries are being used
+6. **Treat the persisted-query registry as an inventory only** until it is wired into request validation
 
 ---
 

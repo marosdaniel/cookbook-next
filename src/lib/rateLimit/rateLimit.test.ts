@@ -92,6 +92,9 @@ describe('rate limit setup', () => {
     expect(getRateLimiterForOperation('deleteRating')).toBe(
       configuredStrictRateLimiter,
     );
+    expect(getRateLimiterForOperation('setMetadataActive')).toBe(
+      configuredStrictRateLimiter,
+    );
     expect(getRateLimiterForOperation('getRecipes')).toBe(
       configuredRateLimiter,
     );

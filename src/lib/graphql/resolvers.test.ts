@@ -1,16 +1,23 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { mockGetAllMetadata, mockGetMetadataByKey, mockGetMetadataByType } =
+const { mockGetAllMetadata, mockGetAdminMetadata, mockGetMetadataByType } =
   vi.hoisted(() => ({
     mockGetAllMetadata: vi.fn(),
-    mockGetMetadataByKey: vi.fn(),
+    mockGetAdminMetadata: vi.fn(),
     mockGetMetadataByType: vi.fn(),
   }));
 
 vi.mock('./resolvers/metadata/queries', () => ({
   getAllMetadata: mockGetAllMetadata,
-  getMetadataByKey: mockGetMetadataByKey,
+  getAdminMetadata: mockGetAdminMetadata,
   getMetadataByType: mockGetMetadataByType,
+}));
+
+vi.mock('./resolvers/metadata/mutations', () => ({
+  createMetadata: vi.fn(),
+  reorderMetadata: vi.fn(),
+  setMetadataActive: vi.fn(),
+  updateMetadata: vi.fn(),
 }));
 
 vi.mock('./resolvers/recipe/mutations', () => ({
@@ -66,5 +73,13 @@ describe('graphql resolvers registry', () => {
   it('exposes metadata query resolvers', () => {
     expect(resolvers.Query?.getAllMetadata).toBeDefined();
     expect(resolvers.Query?.getMetadataByType).toBeDefined();
+    expect(resolvers.Query?.getAdminMetadata).toBeDefined();
+  });
+
+  it('exposes admin metadata mutation resolvers', () => {
+    expect(resolvers.Mutation?.createMetadata).toBeDefined();
+    expect(resolvers.Mutation?.updateMetadata).toBeDefined();
+    expect(resolvers.Mutation?.setMetadataActive).toBeDefined();
+    expect(resolvers.Mutation?.reorderMetadata).toBeDefined();
   });
 });

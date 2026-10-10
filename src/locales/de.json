@@ -250,6 +250,8 @@
     "seoDescriptionTooLong": "Max. 160 Zeichen"
   },
   "seo": {
+    "adminTitle": "Administration",
+    "adminDescription": "Verwaltungsbereich",
     "appTitle": "Cookbook - Teilen Sie Ihre Rezepte",
     "appDescription": "Der beste Ort, um Rezepte zu finden und zu teilen.",
     "homeTitle": "Startseite",
@@ -379,6 +381,67 @@
     "cost-level-low": "Günstig",
     "cost-level-medium": "Mittel",
     "cost-level-high": "Teuer"
+  },
+  "admin": {
+    "navTitle": "Administration",
+    "navToggle": "Navigation umschalten",
+    "navMetadata": "Metadaten",
+    "breadcrumbRoot": "Admin",
+    "backToSite": "Zurück zur Website",
+    "metadata": {
+      "title": "Metadaten",
+      "description": "Die Auswahlmöglichkeiten in Rezeptformularen und Filtern. Inaktive Einträge sind für Nutzer ausgeblendet, bleiben aber für bestehende Rezepte erhalten.",
+      "createButton": "Neuer Eintrag",
+      "createTitle": "Neuer Eintrag",
+      "editTitle": "Bezeichnung bearbeiten",
+      "columns": {
+        "order": "Reihenfolge",
+        "label": "Bezeichnung",
+        "translationKey": "Übersetzungsschlüssel",
+        "active": "Aktiv",
+        "actions": "Aktionen"
+      },
+      "fields": {
+        "key": "Schlüssel",
+        "keyHint": "Kleinbuchstaben, Ziffern und einzelne Bindestriche. Kann später nicht geändert werden.",
+        "translationKey": "Bezeichnung",
+        "translationKeyHint": "Nur Übersetzungen, die in allen Sprachen verfügbar sind, werden angezeigt."
+      },
+      "actions": {
+        "moveUp": "Nach oben",
+        "moveDown": "Nach unten",
+        "edit": "Bearbeiten",
+        "toggleActive": "Aktiv umschalten"
+      },
+      "types": {
+        "CATEGORY": "Kategorien",
+        "LABEL": "Labels",
+        "DIFFICULTY_LEVEL": "Schwierigkeit",
+        "UNIT": "Einheiten",
+        "CUISINE": "Küchen",
+        "SERVING_UNIT": "Portionseinheiten",
+        "DIET": "Ernährungsformen",
+        "ALLERGEN": "Allergene",
+        "EQUIPMENT": "Geräte",
+        "COST_LEVEL": "Kostenstufen"
+      },
+      "emptyTitle": "Für diesen Typ gibt es noch keine Einträge",
+      "emptyDescription": "Lege den ersten Eintrag an, damit er in den Rezeptformularen erscheint.",
+      "noTranslationKeys": "Für diesen Typ sind keine Übersetzungen verfügbar",
+      "validation": {
+        "keyRequired": "Schlüssel ist erforderlich",
+        "keyFormat": "Verwende Kleinbuchstaben, Ziffern und einzelne Bindestriche (max. 64 Zeichen)",
+        "translationKeyRequired": "Bezeichnung ist erforderlich"
+      },
+      "notifications": {
+        "createdTitle": "Eintrag erstellt",
+        "createdMessage": "Der Eintrag ist jetzt in den Rezeptformularen verfügbar.",
+        "updatedTitle": "Bezeichnung aktualisiert",
+        "updatedMessage": "Ab jetzt gespeicherte Rezepte verwenden die neue Bezeichnung.",
+        "keyTakenTitle": "Schlüssel bereits vergeben",
+        "keyTakenMessage": "Wähle für diesen Typ einen anderen Schlüssel."
+      }
+    }
   },
   "underConstruction": {
     "title": "Diese Seite ist noch im Ofen!",

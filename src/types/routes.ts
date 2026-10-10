@@ -51,6 +51,12 @@ export const PROTECTED_ROUTES = {
   // SETTINGS: '/settings',
 } as const;
 
+// Admin routes; add an entry only together with its page.
+export const ADMIN_ROUTES = {
+  DASHBOARD: '/admin',
+  METADATA: '/admin/metadata',
+} as const satisfies Record<string, Route>;
+
 type StaticPublicRoute = Exclude<
   (typeof PUBLIC_ROUTES)[keyof typeof PUBLIC_ROUTES],
   (idOrSlug: string) => Route
@@ -116,3 +122,10 @@ export const isProtectedRoute = (path: string): boolean =>
   path === PROTECTED_ROUTES.RECIPES_FAVORITES ||
   path === PROTECTED_ROUTES.FOLLOWING ||
   isRecipeEditRoute(path);
+
+/**
+ * Checks whether a pathname belongs to the admin area.
+ */
+export const isAdminRoute = (path: string): boolean =>
+  path === ADMIN_ROUTES.DASHBOARD ||
+  path.startsWith(`${ADMIN_ROUTES.DASHBOARD}/`);

@@ -19,6 +19,15 @@ vi.mock('next-intl', () => ({
   },
 }));
 
+vi.mock('@/components/Recipe/Create/hooks/useRecipeMetadata', () => ({
+  useRecipeMetadata: () => ({
+    unitOptions: [
+      { value: 'g', label: 'g' },
+      { value: 'ml', label: 'ml' },
+    ],
+  }),
+}));
+
 describe('RecipeIngredients', () => {
   const baseProps = {
     ingredients: [

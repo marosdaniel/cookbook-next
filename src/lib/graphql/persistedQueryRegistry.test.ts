@@ -12,7 +12,7 @@ describe('persisted query registry', () => {
     const query = print(GET_LATEST_RECIPES);
     const hash = getPersistedQueryHashFromDocument(query);
 
-    expect(persistedQueryHashes.size).toBe(21);
+    expect(persistedQueryHashes.size).toBe(26);
     expect(isPersistedQueryAllowed(query, hash)).toBe(true);
   });
 

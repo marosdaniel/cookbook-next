@@ -1,113 +1,62 @@
+import { useQuery } from '@apollo/client/react';
 import { useTranslations } from 'next-intl';
 import { useMemo } from 'react';
-import { METADATA_DEFINITIONS } from '@/lib/metadata/definitions';
+import { GET_ALL_METADATA } from '@/lib/graphql/queries';
+import {
+  METADATA_TYPES,
+  type MetadataTypeName,
+} from '@/lib/metadata/metadataTypes';
 import { toCleanedOptions } from '../utils';
 
+type MetadataListItem = { key: string; label: string; type: string };
+
+const NO_METADATA_ITEMS: readonly MetadataListItem[] = [];
+
+/**
+ * Select options for every metadata type, loaded from the database through
+ * `getAllMetadata`. `metadataLoaded` stays true after a failed load so forms
+ * render with empty lists instead of waiting forever.
+ */
 export const useRecipeMetadata = () => {
   const translateMisc = useTranslations('misc');
 
-  const categories = useMemo(
+  const { data, loading } = useQuery(GET_ALL_METADATA, {
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const items: readonly MetadataListItem[] =
+    data?.getAllMetadata ?? NO_METADATA_ITEMS;
+
+  const optionsByType = useMemo(
     () =>
-      toCleanedOptions(
-        METADATA_DEFINITIONS.filter((m) => m.type === 'CATEGORY'),
-        translateMisc,
-      ),
-    [translateMisc],
+      Object.fromEntries(
+        METADATA_TYPES.map((type) => [
+          type,
+          toCleanedOptions(
+            items
+              .filter((item) => item.type === type)
+              .map((item) => ({ key: item.key, translationKey: item.label })),
+            translateMisc,
+          ),
+        ]),
+      ) as Record<MetadataTypeName, ReturnType<typeof toCleanedOptions>>,
+    [items, translateMisc],
   );
 
-  const levels = useMemo(
-    () =>
-      toCleanedOptions(
-        METADATA_DEFINITIONS.filter((m) => m.type === 'DIFFICULTY_LEVEL'),
-        translateMisc,
-      ),
-    [translateMisc],
-  );
-
-  const labels = useMemo(
-    () =>
-      toCleanedOptions(
-        METADATA_DEFINITIONS.filter((m) => m.type === 'LABEL'),
-        translateMisc,
-      ),
-    [translateMisc],
-  );
-
-  const unitOptions = useMemo(
-    () =>
-      toCleanedOptions(
-        METADATA_DEFINITIONS.filter((m) => m.type === 'UNIT'),
-        translateMisc,
-      ),
-    [translateMisc],
-  );
-
-  const cuisines = useMemo(
-    () =>
-      toCleanedOptions(
-        METADATA_DEFINITIONS.filter((m) => m.type === 'CUISINE'),
-        translateMisc,
-      ),
-    [translateMisc],
-  );
-
-  const servingUnits = useMemo(
-    () =>
-      toCleanedOptions(
-        METADATA_DEFINITIONS.filter((m) => m.type === 'SERVING_UNIT'),
-        translateMisc,
-      ),
-    [translateMisc],
-  );
-
-  const dietaryFlags = useMemo(
-    () =>
-      toCleanedOptions(
-        METADATA_DEFINITIONS.filter((m) => m.type === 'DIET'),
-        translateMisc,
-      ),
-    [translateMisc],
-  );
-
-  const allergens = useMemo(
-    () =>
-      toCleanedOptions(
-        METADATA_DEFINITIONS.filter((m) => m.type === 'ALLERGEN'),
-        translateMisc,
-      ),
-    [translateMisc],
-  );
-
-  const equipment = useMemo(
-    () =>
-      toCleanedOptions(
-        METADATA_DEFINITIONS.filter((m) => m.type === 'EQUIPMENT'),
-        translateMisc,
-      ),
-    [translateMisc],
-  );
-
-  const costLevels = useMemo(
-    () =>
-      toCleanedOptions(
-        METADATA_DEFINITIONS.filter((m) => m.type === 'COST_LEVEL'),
-        translateMisc,
-      ),
-    [translateMisc],
-  );
+  const hasData = data !== undefined;
 
   return {
-    categories,
-    levels,
-    labels,
-    unitOptions,
-    cuisines,
-    servingUnits,
-    dietaryFlags,
-    allergens,
-    equipment,
-    costLevels,
-    metadataLoading: false,
-    metadataLoaded: true,
+    categories: optionsByType.CATEGORY,
+    levels: optionsByType.DIFFICULTY_LEVEL,
+    labels: optionsByType.LABEL,
+    unitOptions: optionsByType.UNIT,
+    cuisines: optionsByType.CUISINE,
+    servingUnits: optionsByType.SERVING_UNIT,
+    dietaryFlags: optionsByType.DIET,
+    allergens: optionsByType.ALLERGEN,
+    equipment: optionsByType.EQUIPMENT,
+    costLevels: optionsByType.COST_LEVEL,
+    metadataLoading: loading && !hasData,
+    metadataLoaded: hasData || !loading,
   };
 };

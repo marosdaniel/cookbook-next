@@ -64,6 +64,22 @@ describe('Shell', () => {
     mockUsePathname.mockReset();
   });
 
+  it('renders only the page content on admin routes', () => {
+    mockUseSession.mockReturnValue({ data: null, status: 'unauthenticated' });
+    mockUsePathname.mockReturnValue('/admin/metadata');
+
+    render(
+      <Shell>
+        <div>admin content</div>
+      </Shell>,
+    );
+
+    expect(screen.getByText('admin content')).toBeInTheDocument();
+    expect(screen.queryByTestId('shell')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('shell-header')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('shell-footer')).not.toBeInTheDocument();
+  });
+
   it('renders shell chrome for a regular page', () => {
     mockUseSession.mockReturnValue({ data: null, status: 'unauthenticated' });
     mockUsePathname.mockReturnValue('/recipes');

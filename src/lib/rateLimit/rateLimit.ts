@@ -15,6 +15,10 @@ export type RateLimitOperation = Extract<
   | typeof OPERATION_NAMES.RATE_RECIPE
   | typeof OPERATION_NAMES.DELETE_RATING
   | typeof OPERATION_NAMES.GET_RECIPES
+  | typeof OPERATION_NAMES.CREATE_METADATA
+  | typeof OPERATION_NAMES.UPDATE_METADATA
+  | typeof OPERATION_NAMES.SET_METADATA_ACTIVE
+  | typeof OPERATION_NAMES.REORDER_METADATA
 >;
 
 const createLimiter = (prefix: string, window: Duration, requests: number) => {
@@ -35,18 +39,26 @@ const createLimiter = (prefix: string, window: Duration, requests: number) => {
   }
 };
 
-const shouldUseLimiter = Boolean(rawRedisClient);
-
 // Default global rate limiter: 100 requests per 60 seconds per IP
-export const rateLimiter = shouldUseLimiter
-  ? createLimiter('ratelimit:graphql', '60 s', 100)
-  : null;
+export const rateLimiter = createLimiter('ratelimit:graphql', '60 s', 100);
 
 // More strict rate limiter for sensitive operations (e.g., reset password)
 // 5 requests per 10 minutes
-export const strictRateLimiter = shouldUseLimiter
-  ? createLimiter('ratelimit:graphql:strict', '10 m', 5)
-  : null;
+export const strictRateLimiter = createLimiter(
+  'ratelimit:graphql:strict',
+  '10 m',
+  5,
+);
+
+const ADMIN_METADATA_MUTATIONS: ReadonlySet<string> = new Set([
+  OPERATION_NAMES.CREATE_METADATA,
+  OPERATION_NAMES.UPDATE_METADATA,
+  OPERATION_NAMES.SET_METADATA_ACTIVE,
+  OPERATION_NAMES.REORDER_METADATA,
+]);
+
+const isAdminMetadataMutation = (operationName: string | undefined): boolean =>
+  operationName !== undefined && ADMIN_METADATA_MUTATIONS.has(operationName);
 
 export const isRateLimitOperation = (
   operationName: string | undefined,
@@ -60,7 +72,8 @@ export const isRateLimitOperation = (
     normalizedOperationName === OPERATION_NAMES.DELETE_RECIPE ||
     normalizedOperationName === OPERATION_NAMES.RATE_RECIPE ||
     normalizedOperationName === OPERATION_NAMES.DELETE_RATING ||
-    normalizedOperationName === OPERATION_NAMES.GET_RECIPES
+    normalizedOperationName === OPERATION_NAMES.GET_RECIPES ||
+    isAdminMetadataMutation(normalizedOperationName)
   );
 };
 
@@ -78,7 +91,8 @@ export const isStrictRateLimitOperation = (
     normalizedOperationName === OPERATION_NAMES.EDIT_RECIPE ||
     normalizedOperationName === OPERATION_NAMES.DELETE_RECIPE ||
     normalizedOperationName === OPERATION_NAMES.RATE_RECIPE ||
-    normalizedOperationName === OPERATION_NAMES.DELETE_RATING
+    normalizedOperationName === OPERATION_NAMES.DELETE_RATING ||
+    isAdminMetadataMutation(normalizedOperationName)
   );
 };
 

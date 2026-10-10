@@ -18,6 +18,19 @@ vi.mock('@/lib/prisma/prisma', () => ({
   },
 }));
 
+vi.mock('@/lib/services/MetadataService', () => ({
+  MetadataService: {
+    getTranslationKeyLookup: vi.fn(
+      async () =>
+        new Map([
+          ['CATEGORY:main', 'category-main-course'],
+          ['DIFFICULTY_LEVEL:easy', 'difficulty-easy'],
+        ]),
+    ),
+  },
+  metadataLookupKey: (type: string, key: string) => `${type}:${key}`,
+}));
+
 vi.mock('@/lib/validation/throwCustomError', () => ({
   throwCustomError: vi.fn((message: string, errorType: string) => {
     throw new Error(`${message}:${errorType}`);
@@ -93,13 +106,21 @@ describe('recipe resolver utils', () => {
       {
         categoryFromInput: { value: 'main', label: 'Main' },
         difficultyLevelFromInput: { value: 'easy', label: 'Easy' },
-        labelsFromInput: [],
+        labelsFromInput: [
+          { value: 'vegan', label: 'Vegan' },
+          { value: 'custom', label: 'Custom label' },
+        ],
         cuisineFromInput: undefined,
         servingUnitFromInput: undefined,
         dietaryFlagsFromInput: [],
         allergensFromInput: [],
         equipmentFromInput: [],
         costLevelFromInput: undefined,
+        translationKeys: new Map([
+          ['CATEGORY:main', 'category-main-course'],
+          ['DIFFICULTY_LEVEL:easy', 'difficulty-easy'],
+          ['LABEL:vegan', 'label-vegan'],
+        ]),
       },
     );
 
@@ -111,12 +132,28 @@ describe('recipe resolver utils', () => {
     expect(data.substitutions).toBe('alt');
     expect(data.seoTitle).toBe('Nice title');
     expect(data.seoDescription).toBe('Nice description');
+    expect(data.category).toEqual({
+      key: 'main',
+      label: 'category-main-course',
+      type: 'CATEGORY',
+    });
+    expect(data.difficultyLevel).toEqual({
+      key: 'easy',
+      label: 'difficulty-easy',
+      type: 'DIFFICULTY_LEVEL',
+    });
+    expect(data.labels).toEqual([
+      { key: 'vegan', label: 'label-vegan', type: 'LABEL' },
+      { key: 'custom', label: 'Custom label', type: 'LABEL' },
+    ]);
   });
 
   it('resolveAuthenticatedUser throws when context user is missing', async () => {
     await expect(
       resolveAuthenticatedUser({ userId: undefined } as never),
-    ).rejects.toThrow('Unauthenticated');
+    ).rejects.toMatchObject({
+      message: expect.stringContaining('Unauthenticated'),
+    });
   });
 
   it('resolveAuthenticatedUser returns the user when found', async () => {

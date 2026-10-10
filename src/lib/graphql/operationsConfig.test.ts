@@ -11,7 +11,6 @@ import {
 describe('operationsConfig', () => {
   it('treats public operations as available to everyone', () => {
     expect(canUserPerformOperation('getRecipes')).toBe(true);
-    expect(canUserPerformOperation('getRecipes')).toBe(true);
   });
 
   it('blocks protected operations when there is no user role', () => {
@@ -21,6 +20,14 @@ describe('operationsConfig', () => {
   it('allows admins to perform any operation', () => {
     expect(canUserPerformOperation('deleteAllUser', 'ADMIN')).toBe(true);
     expect(canUserPerformOperation('createMetadata', 'ADMIN')).toBe(true);
+  });
+
+  it('restricts admin metadata operations to admins', () => {
+    expect(canUserPerformOperation('getAdminMetadata', 'ADMIN')).toBe(true);
+    expect(canUserPerformOperation('setMetadataActive', 'ADMIN')).toBe(true);
+    expect(canUserPerformOperation('reorderMetadata', 'BLOGGER')).toBe(false);
+    expect(canUserPerformOperation('updateMetadata', 'USER')).toBe(false);
+    expect(getRequiredRolesForOperation('reorderMetadata')).toEqual(['ADMIN']);
   });
 
   it('allows bloggers to perform user and blogger operations', () => {

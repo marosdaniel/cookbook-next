@@ -2,6 +2,7 @@ import type { DocumentNode } from 'graphql';
 import {
   ADD_TO_FAVORITE_RECIPES,
   CHANGE_PASSWORD,
+  CREATE_METADATA,
   CREATE_RECIPE,
   CREATE_USER,
   DELETE_RATING,
@@ -9,13 +10,17 @@ import {
   FOLLOW_USER,
   RATE_RECIPE,
   REMOVE_FROM_FAVORITE_RECIPES,
+  REORDER_METADATA,
   RESET_PASSWORD,
+  SET_METADATA_ACTIVE,
   SET_NEW_PASSWORD,
   UNFOLLOW_USER,
+  UPDATE_METADATA,
   UPDATE_USER,
 } from './mutations';
 import { getPersistedQueryHashFromDocument } from './protection';
 import {
+  GET_ADMIN_METADATA,
   GET_ALL_METADATA,
   GET_FAVORITE_RECIPES,
   GET_FOLLOWING,
@@ -48,6 +53,11 @@ const clientDocuments: DocumentNode[] = [
   REMOVE_FROM_FAVORITE_RECIPES,
   FOLLOW_USER,
   UNFOLLOW_USER,
+  GET_ADMIN_METADATA,
+  CREATE_METADATA,
+  UPDATE_METADATA,
+  SET_METADATA_ACTIVE,
+  REORDER_METADATA,
 ];
 
 export const persistedQueryHashes = new Set(

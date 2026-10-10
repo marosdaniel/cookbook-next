@@ -12,6 +12,7 @@ export const OPERATION_NAMES = {
   SET_NEW_PASSWORD: 'setNewPassword', // NOSONAR
   GET_METADATA_BY_TYPE: 'getMetadataByType',
   GET_ALL_METADATA: 'getAllMetadata',
+  GET_ADMIN_METADATA: 'getAdminMetadata',
   GET_RATINGS_BY_RECIPE: 'getRatingsByRecipe',
   CREATE_RECIPE: 'createRecipe',
   EDIT_RECIPE: 'editRecipe',
@@ -32,7 +33,9 @@ export const OPERATION_NAMES = {
   CLEAN_USER_RECIPES: 'cleanUserRecipes',
   DELETE_ALL_RECIPES: 'deleteAllRecipes',
   CREATE_METADATA: 'createMetadata',
-  DELETE_METADATA: 'deleteMetadata',
+  UPDATE_METADATA: 'updateMetadata',
+  SET_METADATA_ACTIVE: 'setMetadataActive',
+  REORDER_METADATA: 'reorderMetadata',
 } as const;
 
 export type GraphQLOperationName =

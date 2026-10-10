@@ -22,7 +22,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { type FC, useCallback, useMemo } from 'react';
 import { EmptyState } from '@/components/EmptyState';
-import { toCleanedOptions } from '@/components/Recipe/Create/utils';
+import { useRecipeMetadata } from '@/components/Recipe/Create/hooks/useRecipeMetadata';
 import type { RecipeCardData } from '@/components/Recipe/RecipeCard';
 import { RecipeGrid } from '@/components/Recipe/RecipeCard';
 import { RecipeCarousel } from '@/components/Recipe/RecipeCarousel';
@@ -34,7 +34,6 @@ import RecipeSearch, {
   searchParamsToFilters,
 } from '@/components/Recipe/RecipeSearch';
 import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
-import { METADATA_DEFINITIONS } from '@/lib/metadata/definitions';
 import { MOTION_TRANSITION } from '@/lib/motion/transitions';
 import { recipeSearchRoute } from '../../types/routes';
 import classes from '../HomePage.module.css';
@@ -42,7 +41,6 @@ import classes from '../HomePage.module.css';
 const RecipesPage: FC = () => {
   const translateSidebar = useTranslations('sidebar');
   const translateRecipeSearch = useTranslations('recipeSearch');
-  const translateMisc = useTranslations('misc');
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -56,30 +54,11 @@ const RecipesPage: FC = () => {
   const searching = isSearchActive(filtersFromUrl);
 
   // --- Metadata → select options ---
-  const categoryOptions = useMemo(
-    () =>
-      toCleanedOptions(
-        METADATA_DEFINITIONS.filter((m) => m.type === 'CATEGORY'),
-        translateMisc,
-      ),
-    [translateMisc],
-  );
-  const difficultyOptions = useMemo(
-    () =>
-      toCleanedOptions(
-        METADATA_DEFINITIONS.filter((m) => m.type === 'DIFFICULTY_LEVEL'),
-        translateMisc,
-      ),
-    [translateMisc],
-  );
-  const labelOptions = useMemo(
-    () =>
-      toCleanedOptions(
-        METADATA_DEFINITIONS.filter((m) => m.type === 'LABEL'),
-        translateMisc,
-      ),
-    [translateMisc],
-  );
+  const {
+    categories: categoryOptions,
+    levels: difficultyOptions,
+    labels: labelOptions,
+  } = useRecipeMetadata();
 
   // --- GraphQL query driven by URL filters ---
   const { data, loading, fetchMore } = useQuery(GET_LATEST_RECIPES, {

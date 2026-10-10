@@ -4,9 +4,12 @@ import type {
   RecipeEditInput as GeneratedRecipeEditInput,
   MetaInputPartial,
 } from '@/lib/graphql/generated/resolvers-types';
-import { METADATA_DEFINITIONS } from '@/lib/metadata/definitions';
 import { prisma } from '@/lib/prisma/prisma';
 import { sanitizeOptional, sanitizeText } from '@/lib/sanitize/sanitize';
+import {
+  MetadataService,
+  metadataLookupKey,
+} from '@/lib/services/MetadataService';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
 import type { GraphQLContext } from '@/types/graphql/context';
@@ -181,22 +184,21 @@ export const resolveRecipeMetadata = async (input: NormalizedRecipeInput) => {
     allergensFromInput: allergens,
     equipmentFromInput: equipment,
     costLevelFromInput: costLevel,
+    translationKeys: await MetadataService.getTranslationKeyLookup(),
   };
 };
 
 /* ─── Data Mapping ───────────────────────────── */
 
-const mapMetadataToJson = (m: MetaInputPartial, type: string) => {
-  const existing = METADATA_DEFINITIONS.find(
-    (entry) => entry.type === type && entry.key === m.value,
-  );
-
-  return {
-    key: existing?.key || m.value,
-    label: existing?.translationKey || m.label,
-    type,
-  };
-};
+const mapMetadataToJson = (
+  m: MetaInputPartial,
+  type: string,
+  translationKeys: ReadonlyMap<string, string>,
+) => ({
+  key: m.value,
+  label: translationKeys.get(metadataLookupKey(type, m.value)) ?? m.label,
+  type,
+});
 
 export const sanitizeRecipeInput = (input: NormalizedRecipeInput) => {
   return {
@@ -228,6 +230,7 @@ export const buildRecipeData = (
     allergensFromInput,
     equipmentFromInput,
     costLevelFromInput,
+    translationKeys,
   } = metadata;
 
   // Compute totalTimeMinutes from time breakdown
@@ -243,12 +246,15 @@ export const buildRecipeData = (
   return {
     title: sanitizeText(input.title),
     description: sanitizeOptional(input.description),
-    category: mapMetadataToJson(categoryFromInput, 'CATEGORY'),
+    category: mapMetadataToJson(categoryFromInput, 'CATEGORY', translationKeys),
     difficultyLevel: mapMetadataToJson(
       difficultyLevelFromInput,
       'DIFFICULTY_LEVEL',
+      translationKeys,
     ),
-    labels: labelsFromInput.map((l) => mapMetadataToJson(l, 'LABEL')),
+    labels: labelsFromInput.map((l) =>
+      mapMetadataToJson(l, 'LABEL', translationKeys),
+    ),
     imgSrc: input.imgSrc,
     cookingTime: input.cookingTime,
     servings: input.servings,
@@ -262,18 +268,22 @@ export const buildRecipeData = (
 
     // Metadata fields
     servingUnit: servingUnitFromInput
-      ? mapMetadataToJson(servingUnitFromInput, 'SERVING_UNIT')
+      ? mapMetadataToJson(servingUnitFromInput, 'SERVING_UNIT', translationKeys)
       : Prisma.DbNull,
     cuisine: cuisineFromInput
-      ? mapMetadataToJson(cuisineFromInput, 'CUISINE')
+      ? mapMetadataToJson(cuisineFromInput, 'CUISINE', translationKeys)
       : Prisma.DbNull,
     dietaryFlags: dietaryFlagsFromInput.map((d) =>
-      mapMetadataToJson(d, 'DIET'),
+      mapMetadataToJson(d, 'DIET', translationKeys),
     ),
-    allergens: allergensFromInput.map((a) => mapMetadataToJson(a, 'ALLERGEN')),
-    equipment: equipmentFromInput.map((e) => mapMetadataToJson(e, 'EQUIPMENT')),
+    allergens: allergensFromInput.map((a) =>
+      mapMetadataToJson(a, 'ALLERGEN', translationKeys),
+    ),
+    equipment: equipmentFromInput.map((e) =>
+      mapMetadataToJson(e, 'EQUIPMENT', translationKeys),
+    ),
     costLevel: costLevelFromInput
-      ? mapMetadataToJson(costLevelFromInput, 'COST_LEVEL')
+      ? mapMetadataToJson(costLevelFromInput, 'COST_LEVEL', translationKeys)
       : Prisma.DbNull,
 
     // Text fields (sanitized to prevent XSS)

@@ -8,8 +8,6 @@ import {
   Observable,
 } from '@apollo/client';
 import { ErrorLink } from '@apollo/client/link/error';
-import type { DocumentNode } from 'graphql';
-import { print, visit } from 'graphql';
 import { store } from '@/lib/store';
 import deMessages from '@/locales/de.json';
 import enGbMessages from '@/locales/en-gb.json';
@@ -57,7 +55,8 @@ const errorLink = new ErrorLink(({ error, operation }) => {
     if (
       codes.has('BAD_USER_INPUT') ||
       codes.has('UNAUTHENTICATED') ||
-      codes.has('FORBIDDEN')
+      codes.has('FORBIDDEN') ||
+      codes.has('CONFLICT')
     ) {
       return;
     }
@@ -110,51 +109,8 @@ const httpLink = new HttpLink({
   credentials: 'same-origin',
 });
 
-/**
- * Normalize a GraphQL document for persistent query hashing.
- * Must match the server-side normalization in protection.ts.
- */
-const normalizeGraphQLDocument = (document: DocumentNode): string => {
-  const normalizedDocument = visit(document, {
-    Field: (node) => {
-      if (node.name.value === '__typename') {
-        return null;
-      }
-
-      return undefined;
-    },
-  });
-
-  return print(normalizedDocument);
-};
-
-/**
- * Compute SHA-256 hash of a normalized GraphQL query.
- * Matches the server-side getPersistedQueryHashFromDocument implementation.
- */
-const _getBrowserPersistedQueryHash = async (document: DocumentNode) => {
-  const normalizedQuery = normalizeGraphQLDocument(document);
-
-  // Convert to bytes using UTF-8 encoding (same as Node.js crypto.update default)
-  const encodedQuery = new TextEncoder().encode(normalizedQuery);
-  const digest = await globalThis.crypto.subtle.digest('SHA-256', encodedQuery);
-
-  return Array.from(new Uint8Array(digest), (byte) =>
-    byte.toString(16).padStart(2, '0'),
-  ).join('');
-};
-
-// DISABLED: APQ hash mismatches due to normalization differences between client/server.
-// The print() function or visit() behavior differs between versions/environments.
-// Use full query strings instead for now.
-const persistedQueryLink = new ApolloLink((operation, forward) => {
-  return forward(operation);
-});
-
 export const apolloClient = new ApolloClient({
-  link: isServer
-    ? ssrServerLink
-    : ApolloLink.from([errorLink, persistedQueryLink, httpLink]),
+  link: isServer ? ssrServerLink : ApolloLink.from([errorLink, httpLink]),
   ssrMode: isServer,
   cache: new InMemoryCache({
     typePolicies: {
