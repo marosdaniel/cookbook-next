@@ -1,3 +1,10 @@
+# [3.8.0](https://github.com/marosdaniel/cookbook-next/compare/v3.7.0...v3.8.0) (2026-10-12)
+
+
+### Features
+
+* add German translations for recipe creation and editing; enhance locale key tests for completeness ([7ded9be](https://github.com/marosdaniel/cookbook-next/commit/7ded9be3889d00f704ecc91a4d95453a4fb90121))
+
 # [3.7.0](https://github.com/marosdaniel/cookbook-next/compare/v3.6.0...v3.7.0) (2026-10-12)
 
 
