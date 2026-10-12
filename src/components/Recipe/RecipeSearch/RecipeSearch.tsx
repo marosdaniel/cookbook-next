@@ -10,6 +10,7 @@ import {
   Stack,
   Text,
   TextInput,
+  UnstyledButton,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
@@ -115,6 +116,49 @@ const RecipeSearch = ({
           </Button>
         </Group>
 
+        <Box>
+          <Text component="h2" fw={500} size="sm" mb="xs">
+            {translate('category')}
+          </Text>
+          <Group
+            gap="xs"
+            role="group"
+            aria-label={translate('category')}
+            className={classes.categoryOptions}
+          >
+            {[
+              { value: null, label: translate('allCategories') },
+              ...categoryOptions,
+            ].map((option) => {
+              const active = form.values.categoryKey === option.value;
+
+              return (
+                <UnstyledButton
+                  key={option.value ?? 'all'}
+                  type="button"
+                  aria-pressed={active}
+                  className={classes.categoryOption}
+                  onClick={() =>
+                    form.setFieldValue('categoryKey', option.value)
+                  }
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="recipe-search-category-pill"
+                      className={classes.categoryPill}
+                      transition={MOTION_TRANSITION.interactive}
+                      aria-hidden="true"
+                    />
+                  )}
+                  <span className={classes.categoryOptionLabel}>
+                    {option.label}
+                  </span>
+                </UnstyledButton>
+              );
+            })}
+          </Group>
+        </Box>
+
         <AnimatePresence initial={false}>
           {opened && (
             <motion.div
@@ -143,15 +187,6 @@ const RecipeSearch = ({
                   </Button>
                 </Group>
                 <Group grow align="flex-start" className={classes.filterRow}>
-                  <Select
-                    label={translate('category')}
-                    placeholder={translate('categoryPlaceholder')}
-                    data={categoryOptions}
-                    clearable
-                    key={form.key('categoryKey')}
-                    data-testid="recipe-search-category-select"
-                    {...form.getInputProps('categoryKey')}
-                  />
                   <Select
                     label={translate('difficulty')}
                     placeholder={translate('difficultyPlaceholder')}

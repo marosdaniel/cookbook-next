@@ -2,6 +2,46 @@
   background-color: var(--mantine-color-body);
 }
 
+.categoryOptions {
+  flex-wrap: wrap;
+}
+
+.categoryOption {
+  position: relative;
+  isolation: isolate;
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
+  border-radius: var(--mantine-radius-xl);
+  color: var(--mantine-color-text);
+  font-size: var(--mantine-font-size-sm);
+  white-space: nowrap;
+  transition: color 150ms ease;
+}
+
+.categoryOption:hover {
+  color: var(--mantine-color-blue-7);
+}
+
+.categoryOption[aria-pressed="true"] {
+  color: var(--mantine-color-blue-7);
+}
+
+.categoryOption:focus-visible {
+  outline: 2px solid var(--mantine-color-blue-6);
+  outline-offset: 2px;
+}
+
+.categoryPill {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--mantine-color-blue-1);
+}
+
+.categoryOptionLabel {
+  position: relative;
+}
+
 /* Mobile-first: show apply button, hide inline search */
 .searchBtn {
   display: none;
