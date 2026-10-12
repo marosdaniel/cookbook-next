@@ -1,3 +1,10 @@
+# [3.7.0](https://github.com/marosdaniel/cookbook-next/compare/v3.6.0...v3.7.0) (2026-10-12)
+
+
+### Features
+
+* implement step progress tracking in RecipeSteps; enhance styles for steps timeline and markers; update translations for step progress ([824108c](https://github.com/marosdaniel/cookbook-next/commit/824108c6c414c798e8187c6e20557bcc0f698f13))
+
 # [3.6.0](https://github.com/marosdaniel/cookbook-next/compare/v3.5.0...v3.6.0) (2026-10-12)
 
 
