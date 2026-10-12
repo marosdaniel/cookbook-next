@@ -25,7 +25,6 @@ import { normalizeGraphQLOperationName } from '@/lib/graphql/operations';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
-import { createPrismaTimeoutProxy } from '@/lib/prisma/prismaTimeout';
 import { getRateLimitClientKey } from '@/lib/rateLimit/clientIp';
 import {
   getRateLimiterForOperation,
@@ -36,7 +35,6 @@ import {
 import { withTimeout } from '@/lib/redis/redis';
 import type { GraphQLContext } from '../../../types/graphql/context';
 
-const prismaWithTimeout = createPrismaTimeoutProxy(prisma, 10000);
 const MAX_GRAPHQL_BODY_BYTES = 1_048_576;
 
 const requestStorage = new AsyncLocalStorage<{
@@ -206,21 +204,16 @@ const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(
         role: session?.user?.role,
         operationName: null,
         requestId: requestStorage.getStore()?.requestId ?? 'unknown',
-        prisma: prismaWithTimeout,
+        prisma,
         // DataLoaders are instantiated fresh per request so their internal
         // cache is scoped to a single request and never leaks between users.
         loaders: {
-          ratings: createRatingsLoader(prismaWithTimeout),
-          isFavorite: userId
-            ? createIsFavoriteLoader(prismaWithTimeout, userId)
-            : null,
-          userRating: userId
-            ? createUserRatingLoader(prismaWithTimeout, userId)
-            : null,
-          recipeAuthor: createRecipeAuthorLoader(prismaWithTimeout),
-          userRecipes: createUserRecipesLoader(prismaWithTimeout),
-          userFavoriteRecipes:
-            createUserFavoriteRecipesLoader(prismaWithTimeout),
+          ratings: createRatingsLoader(prisma),
+          isFavorite: userId ? createIsFavoriteLoader(prisma, userId) : null,
+          userRating: userId ? createUserRatingLoader(prisma, userId) : null,
+          recipeAuthor: createRecipeAuthorLoader(prisma),
+          userRecipes: createUserRecipesLoader(prisma),
+          userFavoriteRecipes: createUserFavoriteRecipesLoader(prisma),
         },
       };
     },

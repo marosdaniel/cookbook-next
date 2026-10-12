@@ -41,9 +41,6 @@ vi.mock('@/lib/dataloader/loaders', () => ({
   createUserRecipesLoader: vi.fn(),
 }));
 vi.mock('@/lib/prisma/prisma', () => ({ prisma: {} }));
-vi.mock('@/lib/prisma/prismaTimeout', () => ({
-  createPrismaTimeoutProxy: (value: unknown) => value,
-}));
 vi.mock('@/lib/rateLimit/clientIp', () => ({
   getRateLimitClientKey: vi.fn(() => '127.0.0.1'),
 }));

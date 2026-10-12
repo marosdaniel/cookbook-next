@@ -1,3 +1,5 @@
+import { env } from '@/env';
+
 const isValidIp = (value: string | null): value is string => {
   if (!value) {
     return false;
@@ -7,7 +9,7 @@ const isValidIp = (value: string | null): value is string => {
 };
 
 const isTrustedProxyMode = () =>
-  process.env.VERCEL === '1' || process.env.TRUSTED_PROXY_MODE === 'vercel';
+  env.VERCEL === '1' || env.TRUSTED_PROXY_MODE === 'vercel';
 
 export const getRateLimitClientKey = (request: Request): string => {
   if (isTrustedProxyMode()) {

@@ -1,7 +1,23 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { createPrismaTimeoutProxy } from './prismaTimeout';
 
-describe('createPrismaTimeoutProxy', () => {
+vi.mock('@prisma/client', () => ({
+  Prisma: { defineExtension: (extension: unknown) => extension },
+}));
+
+type AllOperations = (params: {
+  args: unknown;
+  query: (args: unknown) => Promise<unknown>;
+}) => Promise<unknown>;
+
+const loadAllOperations = async (timeoutMs: number): Promise<AllOperations> => {
+  const { prismaTimeoutExtension } = await import('./prismaTimeout');
+  const extension = prismaTimeoutExtension(timeoutMs) as unknown as {
+    query: { $allOperations: AllOperations };
+  };
+  return extension.query.$allOperations;
+};
+
+describe('prismaTimeoutExtension', () => {
   beforeEach(() => {
     vi.useFakeTimers();
   });
@@ -10,80 +26,35 @@ describe('createPrismaTimeoutProxy', () => {
     vi.useRealTimers();
   });
 
-  it('wraps nested delegate methods so they also receive timeout protection', async () => {
-    const slowOperation = new Promise<string>((resolve) => {
-      setTimeout(() => resolve('done'), 100);
-    });
+  it('forwards the original args and resolves fast operations', async () => {
+    const $allOperations = await loadAllOperations(10);
+    const query = vi.fn(async () => 'done');
 
-    const target = {
-      recipe: {
-        findMany: vi.fn(() => slowOperation),
-      },
-    };
-
-    const wrapped = createPrismaTimeoutProxy(target, 10);
-    const promise = wrapped.recipe.findMany();
-
-    vi.advanceTimersByTime(10);
-
-    await expect(promise).rejects.toThrow('timed out');
+    await expect(
+      $allOperations({ args: { where: { id: 1 } }, query }),
+    ).resolves.toBe('done');
+    expect(query).toHaveBeenCalledWith({ where: { id: 1 } });
   });
 
-  it('forwards the original arguments to delegated methods while preserving timeout protection', async () => {
-    const findMany = vi.fn((_options?: { where?: { id: number } }) => {
-      return new Promise<string>((resolve) =>
-        setTimeout(() => resolve('done'), 100),
-      );
-    });
+  it('rejects operations that exceed the timeout', async () => {
+    const $allOperations = await loadAllOperations(10);
+    const query = vi.fn(
+      () => new Promise<string>((resolve) => setTimeout(resolve, 100, 'done')),
+    );
 
-    const target = {
-      recipe: {
-        findMany,
-      },
-    };
+    const promise = $allOperations({ args: {}, query });
+    const assertion = expect(promise).rejects.toThrow('timed out');
 
-    const wrapped = createPrismaTimeoutProxy(target, 10);
-    const promise = wrapped.recipe.findMany({ where: { id: 1 } });
-
-    vi.advanceTimersByTime(10);
-
-    await expect(promise).rejects.toThrow('timed out');
-    expect(findMany).toHaveBeenCalledWith({ where: { id: 1 } });
+    await vi.advanceTimersByTimeAsync(10);
+    await assertion;
   });
 
-  it('wraps transaction callbacks so nested delegate calls are protected', async () => {
-    const tx = {
-      recipe: {
-        findMany: vi.fn(
-          () =>
-            new Promise<string>((resolve) =>
-              setTimeout(() => resolve('done'), 100),
-            ),
-        ),
-      },
-    };
-
-    const target = {
-      $transaction: vi.fn(
-        async (callback: (innerTx: unknown) => Promise<string>) => callback(tx),
-      ),
-    };
-
-    const wrapped = createPrismaTimeoutProxy(target, 10);
-    const promise = wrapped.$transaction((innerTx: unknown) => {
-      if (
-        typeof innerTx !== 'object' ||
-        innerTx === null ||
-        !('recipe' in innerTx)
-      ) {
-        return Promise.reject(new Error('invalid transaction context'));
-      }
-
-      return (innerTx as typeof tx).recipe.findMany();
+  it('propagates errors thrown by the operation', async () => {
+    const $allOperations = await loadAllOperations(10);
+    const query = vi.fn(async () => {
+      throw new Error('boom');
     });
 
-    vi.advanceTimersByTime(10);
-
-    await expect(promise).rejects.toThrow('timed out');
+    await expect($allOperations({ args: {}, query })).rejects.toThrow('boom');
   });
 });

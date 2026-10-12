@@ -1,5 +1,7 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
+// Validates environment variables at build/dev start-up.
+import './src/env';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 const cspValue = [

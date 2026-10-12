@@ -1,3 +1,4 @@
+import { env } from '@/env';
 import {
   emailButton,
   emailContent,
@@ -29,7 +30,7 @@ export const welcomeEmailTemplate = (userName: string) => {
       ${emailParagraph('Start exploring delicious recipes now!', '30px')}
       
       <div style="text-align: center;">
-        ${emailButton('Explore Recipes', process.env.NEXTAUTH_URL || 'http://localhost:3000')}
+        ${emailButton('Explore Recipes', env.NEXTAUTH_URL || 'http://localhost:3000')}
       </div>
     `)}
     
@@ -53,7 +54,7 @@ You can now:
 
 Start exploring delicious recipes now!
 
-Visit: ${process.env.NEXTAUTH_URL || 'http://localhost:3000'}
+Visit: ${env.NEXTAUTH_URL || 'http://localhost:3000'}
 
 Happy cooking! 👨‍🍳👩‍🍳
 

@@ -1,9 +1,9 @@
-import type { PrismaClient } from '@prisma/client';
 import DataLoader from 'dataloader';
 import type {
   RecipeResolverParent,
   UserResolverParent,
 } from '@/lib/graphql/resolvers/types';
+import type { AppPrismaClient } from '@/lib/prisma/prisma';
 
 /**
  * Aggregated rating data for a single recipe — returned by the ratings loader.
@@ -19,7 +19,7 @@ export interface RecipeRatingData {
  *
  * Instead of N queries for N recipes, we do 1 query for all recipes at once.
  */
-export const createRatingsLoader = (prisma: PrismaClient) =>
+export const createRatingsLoader = (prisma: AppPrismaClient) =>
   new DataLoader<string, RecipeRatingData>(async (recipeIds) => {
     const ids = [...recipeIds]; // readonly → mutable
 
@@ -53,7 +53,10 @@ export const createRatingsLoader = (prisma: PrismaClient) =>
  * Since `isFavorite` depends on the current user, a new loader instance is
  * created per request (see route.ts context factory).
  */
-export const createIsFavoriteLoader = (prisma: PrismaClient, userId: string) =>
+export const createIsFavoriteLoader = (
+  prisma: AppPrismaClient,
+  userId: string,
+) =>
   new DataLoader<string, boolean>(async (recipeIds) => {
     const ids = [...recipeIds];
 
@@ -74,7 +77,10 @@ export const createIsFavoriteLoader = (prisma: PrismaClient, userId: string) =>
 /**
  * Batches `userRating` lookups for a specific user across multiple recipe IDs.
  */
-export const createUserRatingLoader = (prisma: PrismaClient, userId: string) =>
+export const createUserRatingLoader = (
+  prisma: AppPrismaClient,
+  userId: string,
+) =>
   new DataLoader<string, number | null>(async (recipeIds) => {
     const ids = [...recipeIds];
 
@@ -97,7 +103,7 @@ export const createUserRatingLoader = (prisma: PrismaClient, userId: string) =>
 /**
  * Batches the author lookup for a set of recipes into a single user query.
  */
-export const createRecipeAuthorLoader = (prisma: PrismaClient) =>
+export const createRecipeAuthorLoader = (prisma: AppPrismaClient) =>
   new DataLoader<string, UserResolverParent | null>(async (authorIds) => {
     const ids = [...authorIds];
 
@@ -124,7 +130,7 @@ export const createRecipeAuthorLoader = (prisma: PrismaClient) =>
 /**
  * Batches user recipe lists for a set of user IDs into a single query.
  */
-export const createUserRecipesLoader = (prisma: PrismaClient) =>
+export const createUserRecipesLoader = (prisma: AppPrismaClient) =>
   new DataLoader<string, RecipeResolverParent[]>(async (userIds) => {
     const ids = [...userIds];
 
@@ -150,7 +156,7 @@ export const createUserRecipesLoader = (prisma: PrismaClient) =>
 /**
  * Batches favorite recipe lists for a set of user IDs into a single query.
  */
-export const createUserFavoriteRecipesLoader = (prisma: PrismaClient) =>
+export const createUserFavoriteRecipesLoader = (prisma: AppPrismaClient) =>
   new DataLoader<string, RecipeResolverParent[]>(async (userIds) => {
     const ids = [...userIds];
 

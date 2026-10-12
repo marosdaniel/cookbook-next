@@ -6,6 +6,11 @@ vi.mock('@neondatabase/serverless', () => ({
   neonConfig: {},
 }));
 
+vi.mock('./prismaTimeout', () => ({
+  PRISMA_OPERATION_TIMEOUT_MS: 10_000,
+  prismaTimeoutExtension: () => ({ name: 'operation-timeout' }),
+}));
+
 vi.mock('ws', () => ({
   default: class {},
 }));
@@ -23,6 +28,7 @@ vi.mock('@prisma/client', () => {
     PrismaClient: class {
       $connect = vi.fn();
       public isMock = true;
+      $extends = vi.fn(() => this);
     },
   };
 });
@@ -87,6 +93,7 @@ describe('prisma', () => {
       connectionString: dbUrl,
       max: 10,
       maxUses: 1,
+      statement_timeout: 10_000,
     });
   });
 

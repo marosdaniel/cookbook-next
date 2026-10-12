@@ -1,22 +1,21 @@
 import nodemailer from 'nodemailer';
+import { env } from '@/env';
 import { AUTH_ROUTES } from '../../types/routes';
 import { resetPasswordEmailTemplate } from './templates/resetPasswordEmailTemplate';
 import { welcomeEmailTemplate } from './templates/welcomeEmailTemplate';
 
 // Check if email is configured
 const isEmailConfigured =
-  process.env.EMAIL_HOST &&
-  process.env.EMAIL_USER &&
-  process.env.EMAIL_PASSWORD;
+  env.EMAIL_HOST && env.EMAIL_USER && env.EMAIL_PASSWORD;
 
 const transporter = isEmailConfigured
   ? nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT) || 587,
-      secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
+      host: env.EMAIL_HOST,
+      port: Number(env.EMAIL_PORT) || 587,
+      secure: env.EMAIL_SECURE === 'true', // true for 465, false for other ports
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
+        user: env.EMAIL_USER,
+        pass: env.EMAIL_PASSWORD,
       },
     })
   : null;
@@ -28,11 +27,11 @@ export const sendPasswordResetEmail = async (
   email: string,
   resetToken: string,
 ) => {
-  const resetUrl = `${process.env.NEXTAUTH_URL}${AUTH_ROUTES.RESET_PASSWORD}/${resetToken}`;
+  const resetUrl = `${env.NEXTAUTH_URL}${AUTH_ROUTES.RESET_PASSWORD}/${resetToken}`;
   const { html, text } = resetPasswordEmailTemplate(resetUrl);
 
   const mailOptions = {
-    from: `"${process.env.EMAIL_FROM_NAME}" <${process.env.EMAIL_FROM}>`,
+    from: `"${env.EMAIL_FROM_NAME}" <${env.EMAIL_FROM}>`,
     to: email,
     subject: 'Password Reset Request',
     html,
@@ -65,7 +64,7 @@ export const sendWelcomeEmail = async (email: string, userName: string) => {
   const { html, text } = welcomeEmailTemplate(userName);
 
   const mailOptions = {
-    from: `"${process.env.EMAIL_FROM_NAME}" <${process.env.EMAIL_FROM}>`,
+    from: `"${env.EMAIL_FROM_NAME}" <${env.EMAIL_FROM}>`,
     to: email,
     subject: 'Welcome to Cookbook!',
     html,

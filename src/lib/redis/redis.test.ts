@@ -36,6 +36,39 @@ describe('redis client fallback', () => {
     expect(redisGetMock).toHaveBeenCalledTimes(1);
   });
 
+  it('retries Redis after the cool-down period and closes the circuit on success', async () => {
+    vi.useFakeTimers();
+    redisGetMock
+      .mockRejectedValueOnce(new Error('dns failure'))
+      .mockResolvedValue('cached');
+
+    const { redis } = await import('./redis');
+
+    expect(await redis?.get('key')).toBeNull();
+    expect(await redis?.get('key')).toBeNull();
+    expect(redisGetMock).toHaveBeenCalledTimes(1);
+
+    vi.advanceTimersByTime(5_000);
+
+    expect(await redis?.get('key')).toBe('cached');
+    expect(await redis?.get('key')).toBe('cached');
+    expect(redisGetMock).toHaveBeenCalledTimes(3);
+  });
+
+  it('opens the circuit when a Redis operation exceeds the timeout', async () => {
+    vi.useFakeTimers();
+    redisGetMock.mockImplementation(() => new Promise(() => {}));
+
+    const { redis } = await import('./redis');
+
+    const pending = redis?.get('key');
+    await vi.advanceTimersByTimeAsync(1_000);
+
+    expect(await pending).toBeNull();
+    expect(await redis?.get('key')).toBeNull();
+    expect(redisGetMock).toHaveBeenCalledTimes(1);
+  });
+
   it('does not initialize Redis when the URL is invalid', async () => {
     process.env.UPSTASH_REDIS_REST_URL = '[SENSITIVE]';
 
@@ -57,7 +90,7 @@ describe('redis client fallback', () => {
     vi.advanceTimersByTime(250);
 
     await expect(pendingOperation).rejects.toThrow(
-      'Redis operation timed out after 250ms',
+      'Operation timed out after 250ms',
     );
   });
 });

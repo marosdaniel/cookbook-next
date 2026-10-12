@@ -49,10 +49,6 @@ vi.mock('@/lib/redis/redis', () => ({
   withTimeout: mockWithTimeout,
 }));
 
-vi.mock('@/lib/prisma/prismaTimeout', () => ({
-  createPrismaTimeoutProxy: vi.fn(() => ({})),
-}));
-
 vi.mock('@apollo/server', () => ({
   ApolloServer: class {
     constructor(options: Record<string, unknown>) {

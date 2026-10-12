@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
+import { env } from '@/env';
 import { AUTH_ROUTES } from '../../types/routes';
 import { createIssuedAt, createTokenId } from './password';
 
@@ -6,7 +7,7 @@ import { createIssuedAt, createTokenId } from './password';
 // implicit per-request "useSecureCookies" default. Mirrors that default
 // (secure cookies + `__Secure-` prefix only when served over https).
 export const isSecureCookieDeployment = (): boolean =>
-  (process.env.NEXTAUTH_URL ?? '').startsWith('https://');
+  (env.NEXTAUTH_URL ?? '').startsWith('https://');
 
 export const getSessionCookieConfig = () => {
   const secure = isSecureCookieDeployment();
@@ -92,5 +93,5 @@ export const authConfig = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: env.NEXTAUTH_SECRET,
 } satisfies NextAuthConfig;
