@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/marosdaniel/cookbook-next/compare/v3.1.0...v3.2.0) (2026-10-12)
+
+
+### Features
+
+* add static desktop grid option to RecipeCarousel and update related tests and styles ([4bd4a27](https://github.com/marosdaniel/cookbook-next/commit/4bd4a27373c5747b9d69c8bfa09a0d54a3a308a5))
+
 # [3.1.0](https://github.com/marosdaniel/cookbook-next/compare/v3.0.0...v3.1.0) (2026-10-12)
 
 
