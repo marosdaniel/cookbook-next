@@ -118,7 +118,7 @@ export const apolloClient = new ApolloClient({
         fields: {
           getFavoriteRecipes: {
             keyArgs: ['limit'],
-            merge(incoming, existing, options) {
+            merge(existing, incoming, options) {
               // If we have an 'after' cursor, we're paginating - append data
               // Otherwise, replace with fresh data
               if (!existing || !options?.args?.after) {
@@ -129,7 +129,7 @@ export const apolloClient = new ApolloClient({
           },
           getRecipes: {
             keyArgs: ['limit', 'filter'],
-            merge(incoming, existing, options) {
+            merge(existing, incoming, options) {
               // If we have an 'after' cursor, we're paginating - append data
               // Otherwise, replace with fresh data
               if (!existing || !options?.args?.after) {
@@ -149,7 +149,7 @@ export const apolloClient = new ApolloClient({
           },
           getRecipesByUserId: {
             keyArgs: ['userId', 'limit'],
-            merge(incoming, existing, options) {
+            merge(existing, incoming, options) {
               // If we have an 'after' cursor, we're paginating - append data
               // Otherwise, replace with fresh data
               if (!existing || !options?.args?.after) {
@@ -169,7 +169,7 @@ export const apolloClient = new ApolloClient({
           },
           getFollowing: {
             keyArgs: ['limit'],
-            merge(incoming, existing, options) {
+            merge(existing, incoming, options) {
               // If we have an 'after' cursor, we're paginating - append data
               // Otherwise, replace with fresh data
               if (!existing || !options?.args?.after) {

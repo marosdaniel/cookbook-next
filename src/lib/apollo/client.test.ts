@@ -14,6 +14,7 @@ vi.mock('@/lib/store', () => ({
   },
 }));
 
+import { GET_LATEST_RECIPES } from '@/lib/graphql/queries';
 import { apolloClient } from './client';
 
 describe('apollo client cache configuration', () => {
@@ -58,17 +59,20 @@ describe('apollo client cache configuration', () => {
     expect(getFollowingMerge).toBeTypeOf('function');
 
     // getFavoriteRecipes: fresh fetch without pagination
-    expect(getFavoriteRecipesMerge?.(['one'], [])).toEqual(['one']);
+    expect(getFavoriteRecipesMerge?.([], ['one'])).toEqual(['one']);
 
     // getFavoriteRecipes: pagination with 'after' cursor should append
     expect(
-      getFavoriteRecipesMerge?.(['two'], ['one'], {
+      getFavoriteRecipesMerge?.(['one'], ['two'], {
         args: { after: 'cursor123' },
       }),
     ).toEqual(['one', 'two']);
 
     expect(
-      getRecipesMerge?.({ recipes: [{ id: 'b' }], totalRecipes: 2 }, undefined),
+      getRecipesMerge?.(undefined, {
+        recipes: [{ id: 'b' }],
+        totalRecipes: 2,
+      }),
     ).toEqual({
       recipes: [{ id: 'b' }],
       totalRecipes: 2,
@@ -77,8 +81,8 @@ describe('apollo client cache configuration', () => {
     // Fresh fetch (no pagination) - should replace existing data
     expect(
       getRecipesMerge?.(
-        { recipes: [{ id: 'b' }], totalRecipes: 2 },
         { recipes: [{ id: 'a' }], totalRecipes: 1 },
+        { recipes: [{ id: 'b' }], totalRecipes: 2 },
         undefined, // no 'after' cursor means fresh fetch
       ),
     ).toEqual({
@@ -89,8 +93,8 @@ describe('apollo client cache configuration', () => {
     // Pagination (with 'after' cursor) - should append new data to existing
     expect(
       getRecipesMerge?.(
-        { recipes: [{ id: 'b' }], totalRecipes: 2 },
         { recipes: [{ id: 'a' }], totalRecipes: 1 },
+        { recipes: [{ id: 'b' }], totalRecipes: 2 },
         { args: { after: 'cursor123' } }, // 'after' cursor means pagination
       ),
     ).toEqual({
@@ -101,14 +105,104 @@ describe('apollo client cache configuration', () => {
     // Following pagination - should append new data
     expect(
       getFollowingMerge?.(
-        { users: [{ id: 'u2' }], totalFollowing: 2 },
         { users: [{ id: 'u1' }], totalFollowing: 1 },
+        { users: [{ id: 'u2' }], totalFollowing: 2 },
         { args: { after: 'cursor123' } }, // pagination
       ),
     ).toEqual({
       users: [{ id: 'u1' }, { id: 'u2' }],
       totalFollowing: 2,
     });
+  });
+
+  it('writes and reads getRecipes responses through the cache policy', () => {
+    const cache = apolloClient.cache;
+    const originalCache = cache.extract();
+    cache.restore({});
+
+    const data = {
+      getRecipes: {
+        __typename: 'RecipeData',
+        pageInfo: {
+          __typename: 'PageInfo',
+          endCursor: 'cursor',
+          hasNextPage: false,
+        },
+        recipes: [
+          {
+            __typename: 'Recipe',
+            id: 'recipe-1',
+            title: 'Recipe',
+            description: 'Description',
+            imgSrc: 'https://example.com/recipe.jpg',
+            cookingTime: 45,
+            servings: 4,
+            createdBy: 'user-1',
+            category: {
+              __typename: 'Category',
+              key: 'bakery',
+              label: 'category-bakery',
+            },
+            difficultyLevel: {
+              __typename: 'DifficultyLevel',
+              key: 'hard',
+              label: 'difficulty-hard',
+            },
+            averageRating: 0,
+            ratingsCount: 0,
+            isFavorite: false,
+            slug: 'recipe',
+          },
+        ],
+        totalRecipes: 1,
+      },
+    };
+
+    try {
+      cache.writeQuery({
+        query: GET_LATEST_RECIPES,
+        variables: { limit: 10 },
+        data,
+      });
+      expect(
+        cache.readQuery({
+          query: GET_LATEST_RECIPES,
+          variables: { limit: 10 },
+        }),
+      ).toEqual(data);
+
+      const nextPage = {
+        ...data,
+        getRecipes: {
+          ...data.getRecipes,
+          recipes: [
+            {
+              ...data.getRecipes.recipes[0],
+              id: 'recipe-2',
+              title: 'Another recipe',
+              slug: 'another-recipe',
+            },
+          ],
+        },
+      };
+
+      cache.writeQuery({
+        query: GET_LATEST_RECIPES,
+        variables: { limit: 10, after: 'cursor' },
+        data: nextPage,
+      });
+
+      expect(
+        cache
+          .readQuery({
+            query: GET_LATEST_RECIPES,
+            variables: { limit: 10 },
+          })
+          ?.getRecipes?.recipes.map((recipe) => recipe.id),
+      ).toEqual(['recipe-1', 'recipe-2']);
+    } finally {
+      cache.restore(originalCache);
+    }
   });
 
   it('falls back to the default locale message bundle when locale is missing', async () => {
