@@ -67,6 +67,7 @@ vi.mock('motion/react', () => ({
       onChange: () => undefined,
     },
   }),
+  useTransform: () => 0,
   useInView: () => true,
   useAnimationControls: () => ({
     start: () => undefined,

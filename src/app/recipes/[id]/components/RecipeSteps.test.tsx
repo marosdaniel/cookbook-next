@@ -26,6 +26,7 @@ describe('RecipeSteps', () => {
     expect(screen.getByTestId('recipe-steps-title')).toHaveTextContent(
       'Preparation steps',
     );
+    expect(screen.getByTestId('recipe-steps-progress')).toBeInTheDocument();
     expect(screen.getByText('First step')).toBeInTheDocument();
     expect(screen.getByText('Second step')).toBeInTheDocument();
 

@@ -1,9 +1,15 @@
 'use client';
 
 import { Box, Group, Paper, Stack, Text, Title } from '@mantine/core';
-import { LayoutGroup, motion } from 'motion/react';
+import {
+  LayoutGroup,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'motion/react';
 import { useTranslations } from 'next-intl';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { MOTION_TRANSITION } from '../../../../lib/motion/transitions';
 import classes from '../RecipeDetail.module.css';
 import type { RecipeStepsProps } from '../types';
@@ -11,6 +17,13 @@ import type { RecipeStepsProps } from '../types';
 export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
   const translate = useTranslations('recipeDetail');
   const [activeStepIndex, setActiveStepIndex] = useState<number | null>(null);
+  const stepsRef = useRef<HTMLDivElement>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: stepsRef,
+    offset: ['start end', 'end end'],
+  });
+  const progress = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   const sortedSteps = useMemo(
     () =>
@@ -34,8 +47,21 @@ export const RecipeSteps = ({ steps }: Readonly<RecipeStepsProps>) => {
         </Title>
       </Group>
 
+      {!shouldReduceMotion && (
+        <Box
+          className={classes.stepsProgressTrack}
+          aria-hidden="true"
+          data-testid="recipe-steps-progress"
+        >
+          <motion.div
+            className={classes.stepsProgress}
+            style={{ scaleX: progress }}
+          />
+        </Box>
+      )}
+
       <LayoutGroup id="recipe-detail-steps">
-        <Stack gap="lg">
+        <Stack ref={stepsRef} gap="lg">
           {sortedSteps.map((step, index) => {
             const isActive = activeStepIndex === index;
 

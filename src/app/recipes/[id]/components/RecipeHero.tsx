@@ -17,10 +17,16 @@ import {
   IconUser,
   IconUsers,
 } from '@tabler/icons-react';
-import { motion } from 'motion/react';
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'motion/react';
 import type { Route } from 'next';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { useRef, ViewTransition } from 'react';
 import { FavoriteButton } from '@/components/buttons/FavoriteButton';
 import { PUBLIC_ROUTES } from '@/types/routes';
 import { MOTION_TRANSITION } from '../../../../lib/motion/transitions';
@@ -31,19 +37,46 @@ import { getDifficultyColor } from '../utils';
 export const RecipeHero = ({ recipe, isOwner }: Readonly<RecipeHeroProps>) => {
   const translate = useTranslations('recipeDetail');
   const translateMisc = useTranslations('misc');
+  const shouldReduceMotion = useReducedMotion();
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start end', 'end start'],
+  });
+  const imageY = useTransform(scrollYProgress, [0, 1], [-24, 24]);
 
   const editHref =
     `${PUBLIC_ROUTES.RECIPES}/${recipe.slug || recipe.id}/edit` as Route;
+  const transitionNames = {
+    image: `recipe-${recipe.id}-image`,
+    title: `recipe-${recipe.id}-title`,
+  };
 
   return (
-    <Box className={classes.hero} data-testid="recipe-hero">
+    <Box ref={heroRef} className={classes.hero} data-testid="recipe-hero">
       {recipe.imgSrc ? (
-        <Image
-          src={recipe.imgSrc}
-          alt={recipe.title}
-          className={classes.heroImage}
-          data-testid="recipe-hero-image"
-        />
+        <motion.div
+          className={classes.heroImageParallax}
+          style={{ y: shouldReduceMotion ? 0 : imageY }}
+        >
+          {shouldReduceMotion ? (
+            <Image
+              src={recipe.imgSrc}
+              alt={recipe.title}
+              className={classes.heroImage}
+              data-testid="recipe-hero-image"
+            />
+          ) : (
+            <ViewTransition name={transitionNames.image}>
+              <Image
+                src={recipe.imgSrc}
+                alt={recipe.title}
+                className={classes.heroImage}
+                data-testid="recipe-hero-image"
+              />
+            </ViewTransition>
+          )}
+        </motion.div>
       ) : (
         <Box
           className={classes.heroPlaceholder}
@@ -96,13 +129,25 @@ export const RecipeHero = ({ recipe, isOwner }: Readonly<RecipeHeroProps>) => {
         animate={{ opacity: 1, y: 0 }}
         transition={MOTION_TRANSITION.slow}
       >
-        <Title
-          order={1}
-          className={classes.heroTitle}
-          data-testid="recipe-hero-title"
-        >
-          {recipe.title}
-        </Title>
+        {shouldReduceMotion ? (
+          <Title
+            order={1}
+            className={classes.heroTitle}
+            data-testid="recipe-hero-title"
+          >
+            {recipe.title}
+          </Title>
+        ) : (
+          <ViewTransition name={transitionNames.title}>
+            <Title
+              order={1}
+              className={classes.heroTitle}
+              data-testid="recipe-hero-title"
+            >
+              {recipe.title}
+            </Title>
+          </ViewTransition>
+        )}
 
         {recipe.description && (
           <Text

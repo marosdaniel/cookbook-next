@@ -7,8 +7,10 @@ import {
   IconStar,
   IconUsers,
 } from '@tabler/icons-react';
+import { useReducedMotion } from 'motion/react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { ViewTransition } from 'react';
 import { getDifficultyColor } from '@/app/recipes/[id]/utils';
 import { FavoriteButton } from '@/components/buttons/FavoriteButton';
 import { PUBLIC_ROUTES } from '@/types/routes';
@@ -18,6 +20,7 @@ import type { RecipeCardProps } from './types';
 const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
   const translate = useTranslations('misc');
   const tCommon = useTranslations();
+  const shouldReduceMotion = useReducedMotion();
 
   const {
     id,
@@ -36,6 +39,17 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
 
   const difficultyColor = getDifficultyColor(difficultyLevel.key);
   const recipeHref = PUBLIC_ROUTES.RECIPE_DETAIL(slug || id);
+  const transitionNames = {
+    image: `recipe-${id}-image`,
+    title: `recipe-${id}-title`,
+  };
+  const image = imgSrc ? (
+    <Image src={imgSrc} height={180} alt={title} fit="cover" />
+  ) : (
+    <Box className={classes.placeholderImage}>
+      <IconChefHat size={48} color="var(--mantine-color-pink-4)" />
+    </Box>
+  );
 
   return (
     <Card
@@ -52,12 +66,10 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
         className={classes.imageSection}
         data-testid="recipe-card-image"
       >
-        {imgSrc ? (
-          <Image src={imgSrc} height={180} alt={title} fit="cover" />
+        {shouldReduceMotion ? (
+          image
         ) : (
-          <Box className={classes.placeholderImage}>
-            <IconChefHat size={48} color="var(--mantine-color-pink-4)" />
-          </Box>
+          <ViewTransition name={transitionNames.image}>{image}</ViewTransition>
         )}
         {withFavorite && (
           <Box
@@ -88,15 +100,29 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
           </Badge>
         </Group>
 
-        <Text
-          fw={600}
-          size="md"
-          mt={4}
-          className={classes.title}
-          data-testid="recipe-card-title"
-        >
-          {title}
-        </Text>
+        {shouldReduceMotion ? (
+          <Text
+            fw={600}
+            size="md"
+            mt={4}
+            className={classes.title}
+            data-testid="recipe-card-title"
+          >
+            {title}
+          </Text>
+        ) : (
+          <ViewTransition name={transitionNames.title}>
+            <Text
+              fw={600}
+              size="md"
+              mt={4}
+              className={classes.title}
+              data-testid="recipe-card-title"
+            >
+              {title}
+            </Text>
+          </ViewTransition>
+        )}
 
         <Text
           size="xs"
