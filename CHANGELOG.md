@@ -1,3 +1,10 @@
+# [3.6.0](https://github.com/marosdaniel/cookbook-next/compare/v3.5.0...v3.6.0) (2026-10-12)
+
+
+### Features
+
+* enhance RecipeCard with glow effect for mouse interactions; add animated quantity display in RecipeIngredients; update tests accordingly ([3f2f6d2](https://github.com/marosdaniel/cookbook-next/commit/3f2f6d284c1c12bbd56992b118b8d4f756cc12e0))
+
 # [3.5.0](https://github.com/marosdaniel/cookbook-next/compare/v3.4.0...v3.5.0) (2026-10-12)
 
 
