@@ -147,6 +147,7 @@
     "cookingTime": "{time} perc",
     "servingsCount": "{count} adag",
     "stepNumber": "{number}. lépés",
+    "stepProgress": "Receptlépések állapota",
     "rateThisRecipe": "Értékeld a receptet",
     "editRecipe": "Recept szerkesztése",
     "shareRecipe": "Megosztás",

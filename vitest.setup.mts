@@ -61,6 +61,7 @@ vi.mock('motion/react', () => ({
   MotionConfig: ({ children }: { children?: ReactNode }) =>
     createElement(Fragment, null, children),
   useMotionTemplate: () => '',
+  useMotionValueEvent: () => undefined,
   useReducedMotion: () => false,
   useScroll: () => ({
     scrollYProgress: {

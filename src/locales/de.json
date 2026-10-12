@@ -179,6 +179,7 @@
     "cookingTime": "{time} Min.",
     "servingsCount": "{count} Portionen",
     "stepNumber": "Schritt {number}",
+    "stepProgress": "Fortschritt der Rezeptschritte",
     "rateThisRecipe": "Rezept bewerten",
     "editRecipe": "Rezept bearbeiten",
     "shareRecipe": "Teilen",

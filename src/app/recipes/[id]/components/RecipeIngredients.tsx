@@ -28,6 +28,32 @@ const QUANTITY_SPRING = {
   mass: 0.45,
 };
 
+const UNIT_TRANSLATION_KEYS: Record<string, string> = {
+  g: 'unit-g',
+  gram: 'unit-gram',
+  kilogram: 'unit-kg',
+  kg: 'unit-kg',
+  milliliter: 'unit-ml',
+  ml: 'unit-ml',
+  liter: 'unit-l',
+  l: 'unit-l',
+  piece: 'unit-piece',
+  pcs: 'unit-pcs',
+  teaspoon: 'unit-tsp',
+  tsp: 'unit-tsp',
+  tablespoon: 'unit-tbsp',
+  tbsp: 'unit-tbsp',
+  cup: 'unit-cup',
+  pinch: 'unit-pinch',
+  clove: 'unit-clove',
+  slice: 'unit-slice',
+  can: 'unit-can',
+  pound: 'unit-lb',
+  lb: 'unit-lb',
+  ounce: 'unit-oz',
+  oz: 'unit-oz',
+};
+
 const AnimatedQuantity = ({ value }: { value: number }) => {
   const quantity = useSpring(value, QUANTITY_SPRING);
   const displayQuantity = useTransform(
@@ -58,6 +84,7 @@ export const RecipeIngredients = ({
 }: Readonly<RecipeIngredientsProps>) => {
   const translate = useTranslations('recipeDetail');
   const translateIngredients = useTranslations('recipeIngredients');
+  const translateMisc = useTranslations('misc');
   const { unitOptions } = useRecipeMetadata();
 
   return (
@@ -157,9 +184,11 @@ export const RecipeIngredients = ({
           const unitOption = unitOptions.find(
             (option) => option.value === ingredient.unit,
           );
-          const translatedUnit = unitOption
-            ? unitOption.label
-            : ingredient.unit;
+          const unitTranslationKey =
+            UNIT_TRANSLATION_KEYS[ingredient.unit.toLowerCase()];
+          const translatedUnit = unitTranslationKey
+            ? translateMisc(unitTranslationKey)
+            : (unitOption?.label ?? ingredient.unit);
 
           return (
             <motion.div

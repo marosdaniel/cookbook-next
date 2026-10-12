@@ -151,6 +151,7 @@
     "cookingTime": "{time} min",
     "servingsCount": "{count} servings",
     "stepNumber": "Step {number}",
+    "stepProgress": "Recipe step progress",
     "rateThisRecipe": "Rate this recipe",
     "editRecipe": "Edit recipe",
     "shareRecipe": "Share",

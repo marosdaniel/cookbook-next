@@ -13,6 +13,9 @@ vi.mock('next-intl', () => ({
       increaseServings: 'Increase servings',
       'unit-g': 'g',
       'unit-ml': 'ml',
+      'unit-gram': 'gram',
+      'unit-tsp': 'teaspoon localized',
+      'unit-clove': 'clove localized',
     };
 
     return translations[key] || key;
@@ -21,10 +24,7 @@ vi.mock('next-intl', () => ({
 
 vi.mock('@/components/Recipe/Create/hooks/useRecipeMetadata', () => ({
   useRecipeMetadata: () => ({
-    unitOptions: [
-      { value: 'g', label: 'g' },
-      { value: 'ml', label: 'ml' },
-    ],
+    unitOptions: [{ value: 'custom-unit', label: 'custom localized' }],
   }),
 }));
 
@@ -101,5 +101,40 @@ describe('RecipeIngredients', () => {
 
     expect(screen.getByText('4')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
+  });
+
+  it('translates built-in units without waiting for metadata options', () => {
+    render(
+      <RecipeIngredients
+        {...baseProps}
+        ingredients={[
+          { localId: 'ing-ml', quantity: 3, unit: 'milliliter', name: 'Oil' },
+          { localId: 'ing-tsp', quantity: 3, unit: 'teaspoon', name: 'Salt' },
+          { localId: 'ing-clove', quantity: 2, unit: 'clove', name: 'Garlic' },
+        ]}
+      />,
+    );
+
+    expect(screen.getByText('ml')).toBeInTheDocument();
+    expect(screen.getByText('teaspoon localized')).toBeInTheDocument();
+    expect(screen.getByText('clove localized')).toBeInTheDocument();
+  });
+
+  it('uses metadata translations for custom units', () => {
+    render(
+      <RecipeIngredients
+        {...baseProps}
+        ingredients={[
+          {
+            localId: 'ing-custom',
+            quantity: 1,
+            unit: 'custom-unit',
+            name: 'Special ingredient',
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByText('custom localized')).toBeInTheDocument();
   });
 });

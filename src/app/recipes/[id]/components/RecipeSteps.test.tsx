@@ -7,6 +7,7 @@ vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => {
     const translations: Record<string, string> = {
       preparationSteps: 'Preparation steps',
+      stepProgress: 'Step progress',
     };
 
     return translations[key] || key;
@@ -27,6 +28,16 @@ describe('RecipeSteps', () => {
       'Preparation steps',
     );
     expect(screen.getByTestId('recipe-steps-progress')).toBeInTheDocument();
+    expect(
+      screen.getByRole('list', { name: 'Step progress' }),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('recipe-step-marker-step-1')).toHaveAttribute(
+      'aria-current',
+      'step',
+    );
+    expect(screen.getByTestId('recipe-step-marker-step-2')).not.toHaveAttribute(
+      'aria-current',
+    );
     expect(screen.getByText('First step')).toBeInTheDocument();
     expect(screen.getByText('Second step')).toBeInTheDocument();
 
