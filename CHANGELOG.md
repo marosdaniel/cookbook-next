@@ -1,3 +1,15 @@
+# [3.1.0](https://github.com/marosdaniel/cookbook-next/compare/v3.0.0...v3.1.0) (2026-10-12)
+
+
+### Bug Fixes
+
+* correct merge function parameters for pagination in Apollo client cache ([8073833](https://github.com/marosdaniel/cookbook-next/commit/80738336cc33e6c3fead15fcfc3f200268a1b889))
+
+
+### Features
+
+* integrate environment variable validation using @t3-oss/env-nextjs and refactor code to utilize env variables ([4fd45b8](https://github.com/marosdaniel/cookbook-next/commit/4fd45b85276f4abdf8ebe413232f05e8546d3109))
+
 # [3.0.0](https://github.com/marosdaniel/cookbook-next/compare/v2.94.0...v3.0.0) (2026-10-10)
 
 # [2.94.0](https://github.com/marosdaniel/cookbook-next/compare/v2.93.1...v2.94.0) (2026-09-27)
