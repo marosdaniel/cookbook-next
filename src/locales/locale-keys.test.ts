@@ -13,6 +13,17 @@ const getValue = (source: Record<string, unknown>, key: string) =>
     return undefined;
   }, source);
 
+const getLeafKeys = (source: Record<string, unknown>, prefix = '') =>
+  Object.entries(source).flatMap(([key, value]) => {
+    const path = prefix ? `${prefix}.${key}` : key;
+
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      return getLeafKeys(value as Record<string, unknown>, path);
+    }
+
+    return [path];
+  });
+
 describe('locale translations', () => {
   it.each([
     ['de', de, 'recipeCreate.headerTitle'],
@@ -31,5 +42,14 @@ describe('locale translations', () => {
   ])('keeps the %s translation key %s available', (_locale, source, key) => {
     expect(getValue(source as Record<string, unknown>, key)).toBeDefined();
     expect(getValue(source as Record<string, unknown>, key)).not.toBe('');
+  });
+
+  it('provides German translations for every key in the other supported locales', () => {
+    const germanKeys = new Set(getLeafKeys(de));
+    const referenceKeys = new Set([...getLeafKeys(enGb), ...getLeafKeys(hu)]);
+
+    expect([...referenceKeys].filter((key) => !germanKeys.has(key))).toEqual(
+      [],
+    );
   });
 });

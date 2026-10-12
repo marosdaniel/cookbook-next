@@ -90,6 +90,9 @@
     }
   },
   "user": {
+    "headerTitle": "Rezept erstellen",
+    "submitLabel": "Veröffentlichen",
+    "resetLabel": "Entwurf löschen",
     "editProfilePageTitle": "Ihr Profil bearbeiten",
     "recipes": "Rezepte",
     "favoriteRecipes": "Favoriten",
@@ -143,6 +146,7 @@
     "latestRecipes": "Neueste Kreationen"
   },
   "sidebar": {
+    "optional": "(optional)",
     "recipes": "Rezepte",
     "blogs": "Blogs",
     "tipsAndTricks": "Tipps & Tricks",
@@ -173,6 +177,9 @@
     "empty": "Keine Rezepte gefunden."
   },
   "recipeDetail": {
+    "headerTitle": "Rezept erstellen",
+    "submitLabel": "Veröffentlichen",
+    "resetLabel": "Entwurf löschen",
     "ingredients": "Zutaten",
     "servings": "Portionen",
     "preparationSteps": "Zubereitung",
@@ -416,7 +423,7 @@
       },
       "types": {
         "CATEGORY": "Kategorien",
-        "LABEL": "Labels",
+        "LABEL": "Schlagwörter",
         "DIFFICULTY_LEVEL": "Schwierigkeit",
         "UNIT": "Einheiten",
         "CUISINE": "Küchen",
@@ -563,8 +570,8 @@
     "categoryPlaceholder": "Kategorie wählen",
     "difficulty": "Schwierigkeit",
     "difficultyPlaceholder": "Schwierigkeit wählen",
-    "labels": "Labels",
-    "labelsPlaceholder": "Labels wählen",
+    "labels": "Schlagwörter",
+    "labelsPlaceholder": "Schlagwörter auswählen",
     "maxCookingTime": "Max. Kochzeit (Min)",
     "maxCookingTimePlaceholder": "z.B. 30",
     "applyFilters": "Filter anwenden",
@@ -613,6 +620,78 @@
   "units": {
     "minuteShort": "Min."
   },
+  "recipeIngredients": {
+    "decreaseServings": "Portionen verringern",
+    "increaseServings": "Portionen erhöhen"
+  },
+  "recipePreview": {
+    "imageAlt": "Rezept-Titelbild",
+    "noCover": "Noch kein Titelbild",
+    "title": {
+      "untitled": "Rezept ohne Titel",
+      "addHint": "Füge einen Titel hinzu, damit er hier angezeigt wird"
+    },
+    "totalTime": {
+      "label": "Gesamtzeit"
+    },
+    "servings": {
+      "label": "Portionen",
+      "fallbackUnit": "Port."
+    },
+    "time": {
+      "prep": "Vorbereitung",
+      "cook": "Kochen",
+      "rest": "Ruhezeit"
+    },
+    "description": {
+      "placeholder": "Schreibe eine ansprechende Beschreibung, die neugierig macht..."
+    },
+    "equipment": {
+      "label": "Benötigte Ausstattung"
+    },
+    "ingredients": {
+      "title": "Zutaten",
+      "noIngredients": "Noch keine Zutaten aufgeführt."
+    },
+    "preparation": {
+      "title": "Zubereitung",
+      "noSteps": "Noch keine Schritte hinzugefügt."
+    },
+    "step": {
+      "describePlaceholder": "Beschreibe diesen Schritt..."
+    },
+    "tips": {
+      "title": "Tipps"
+    },
+    "substitutions": {
+      "title": "Ersatzzutaten"
+    },
+    "optional": "Optional"
+  },
+  "composerHeader": {
+    "saveDraft": {
+      "tooltip": "Entwurf speichern"
+    },
+    "save": {
+      "button": "Speichern"
+    },
+    "preview": {
+      "button": "Vorschau"
+    }
+  },
+  "recipeEdit": {
+    "failedToLoad": "Rezept konnte nicht geladen werden",
+    "notAuthorizedTitle": "Keine Berechtigung",
+    "notAuthorizedMessage": "Du kannst nur deine eigenen Rezepte bearbeiten.",
+    "lastSavedLabel": "Wird bearbeitet",
+    "headerTitle": "Rezept bearbeiten",
+    "submitLabel": "Änderungen speichern",
+    "resetLabel": "Änderungen zurücksetzen"
+  },
+  "favorites": {
+    "add": "Zu Favoriten hinzufügen",
+    "remove": "Aus Favoriten entfernen"
+  },
   "recipeComposer": {
     "sections": {
       "basics": {
@@ -627,8 +706,8 @@
         "category": "Kategorie",
         "select": "Auswählen...",
         "difficulty": "Schwierigkeit",
-        "tags": "Tags",
-        "tagsPlaceholder": "Suchbare Tags hinzufügen...",
+        "tags": "Schlagwörter",
+        "tagsPlaceholder": "Suchbare Schlagwörter hinzufügen...",
         "timeBreakdown": "Zeitaufteilung",
         "prepTime": "Vorbereitung (Min)",
         "prepTimePlaceholder": "z.B. 15",
@@ -661,9 +740,9 @@
         "coverPreview": "Vorschau Titelbild",
         "invalidImageUrl": "Ungültige Bild-URL",
         "clearCoverImage": "Titelbild löschen",
-        "youtubeVideo": "YouTube Video (Optional)",
+        "youtubeVideo": "YouTube-Video (optional)",
         "youtubeUrlPlaceholder": "https://youtube.com/watch?v=...",
-        "seoSection": "SEO & Social",
+        "seoSection": "SEO & soziale Medien",
         "slug": "URL-Slug",
         "slugPlaceholder": "mein-leckeres-rezept",
         "regenerateSlugFromTitle": "Aus dem Titel generieren",
