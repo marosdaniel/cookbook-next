@@ -6,6 +6,59 @@
   display: none;
 }
 
+.carouselWrapper {
+  position: relative;
+}
+
+.carouselArrow {
+  position: absolute;
+  z-index: 2;
+  top: 90px;
+  transform: translateY(-50%);
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 80%);
+  border-radius: 50%;
+  background: rgb(255 255 255 / 92%);
+  color: var(--mantine-color-pink-7);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 16%);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.previousArrow {
+  left: var(--mantine-spacing-sm);
+}
+
+.nextArrow {
+  right: var(--mantine-spacing-sm);
+}
+
+.carouselArrow:hover {
+  transform: translateY(-50%) scale(1.04);
+  border-color: var(--mantine-color-pink-2);
+  background: var(--mantine-color-white);
+  color: var(--mantine-color-pink-7);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
+}
+
+.carouselArrow:focus-visible {
+  outline: 3px solid var(--mantine-color-pink-2);
+  outline-offset: 3px;
+}
+
+.carouselArrow:active {
+  transform: translateY(-50%) scale(0.98);
+}
+
 .emptyCarousel {
   display: flex;
   align-items: center;

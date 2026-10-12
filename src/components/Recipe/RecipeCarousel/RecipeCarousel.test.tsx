@@ -1,22 +1,53 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import type { ComponentProps, ReactNode } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { useEffect } from 'react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Box, Skeleton, Text } from '../../../../__mocks__/@mantine/core';
 import RecipeCarousel from './RecipeCarousel';
 import type { RecipeCarouselProps } from './types';
 
-const { mockUseTranslations } = vi.hoisted(() => ({
+const { mockUseTranslations, mockEmblaApi } = vi.hoisted(() => ({
   mockUseTranslations: vi.fn(() => (key: string) => key),
+  mockEmblaApi: {
+    selectedScrollSnap: vi.fn(() => 1),
+    scrollTo: vi.fn(),
+    scrollSnapList: vi.fn(() => [0, 1]),
+  },
 }));
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  mockEmblaApi.selectedScrollSnap.mockReturnValue(1);
+  mockEmblaApi.scrollSnapList.mockReturnValue([0, 1]);
+});
 
 vi.mock('next-intl', () => ({
   useTranslations: () => mockUseTranslations(),
 }));
 
 vi.mock('@mantine/carousel', () => {
-  const MockCarousel = ({ children, ...props }: ComponentProps<'div'>) => (
-    <div {...props}>{children}</div>
+  const MockCarousel = ({
+    children,
+    emblaOptions,
+    getEmblaApi,
+    slideSize,
+    ...props
+  }: ComponentProps<'div'> & {
+    emblaOptions?: { loop?: boolean };
+    getEmblaApi?: (api: never) => void;
+    slideSize?: { lg?: string };
+  }) => (
+    <>
+      <div
+        {...props}
+        data-loop={emblaOptions?.loop}
+        data-slide-size-lg={slideSize?.lg}
+      >
+        {children}
+      </div>
+      {getEmblaApi && <EmblaApiSetter getEmblaApi={getEmblaApi} />}
+    </>
   );
   MockCarousel.Slide = ({ children, ...props }: ComponentProps<'div'>) => (
     <div {...props}>{children}</div>
@@ -24,6 +55,18 @@ vi.mock('@mantine/carousel', () => {
 
   return { Carousel: MockCarousel };
 });
+
+const EmblaApiSetter = ({
+  getEmblaApi,
+}: {
+  getEmblaApi: (api: never) => void;
+}) => {
+  useEffect(() => {
+    getEmblaApi(mockEmblaApi as never);
+  }, [getEmblaApi]);
+
+  return null;
+};
 
 vi.mock('@mantine/core', () => ({
   Box: Box,
@@ -77,6 +120,48 @@ describe('RecipeCarousel', () => {
     expect(screen.getAllByTestId('recipe-carousel-slide')).toHaveLength(2);
     expect(screen.getByText('Recipe one')).toBeInTheDocument();
     expect(screen.getByText('Recipe two')).toBeInTheDocument();
+    expect(screen.getByTestId('recipe-carousel')).toHaveAttribute(
+      'data-loop',
+      'true',
+    );
+    expect(screen.getByTestId('recipe-carousel')).toHaveAttribute(
+      'data-slide-size-lg',
+      '60%',
+    );
+    expect(
+      screen.getByRole('button', { name: 'nextRecipe' }),
+    ).toBeInTheDocument();
+  });
+
+  it('wraps to the first snap when the next control is clicked at the end', () => {
+    const recipes: NonNullable<RecipeCarouselProps['recipes']> = [
+      { id: 'recipe-1', title: 'Recipe one' } as never,
+      { id: 'recipe-2', title: 'Recipe two' } as never,
+    ];
+
+    render(<RecipeCarousel recipes={recipes} />);
+
+    const nextControl = screen.getByRole('button', { name: 'nextRecipe' });
+    expect(nextControl).toBeEnabled();
+
+    fireEvent.click(nextControl);
+
+    expect(mockEmblaApi.scrollTo).toHaveBeenCalledWith(0);
+  });
+
+  it('keeps smaller carousels wide enough to have scroll snaps', () => {
+    const recipes: NonNullable<RecipeCarouselProps['recipes']> = [
+      { id: 'recipe-1', title: 'Recipe one' } as never,
+      { id: 'recipe-2', title: 'Recipe two' } as never,
+      { id: 'recipe-3', title: 'Recipe three' } as never,
+    ];
+
+    render(<RecipeCarousel recipes={recipes} />);
+
+    expect(screen.getByTestId('recipe-carousel')).toHaveAttribute(
+      'data-slide-size-lg',
+      '45%',
+    );
   });
 
   it('renders a static desktop grid when enabled for two recipes', () => {

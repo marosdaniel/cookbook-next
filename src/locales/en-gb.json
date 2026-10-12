@@ -746,6 +746,8 @@
   },
   "home": {
     "carouselEmpty": "No recipes yet. Be the first to share one!",
+    "nextRecipe": "Show next recipe",
+    "previousRecipe": "Show previous recipe",
     "recentlyViewed": "Recently Viewed",
     "recentlyViewedHint": "* Recently viewed recipes — coming soon"
   },

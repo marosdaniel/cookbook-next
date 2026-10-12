@@ -2,7 +2,9 @@
 
 import { Carousel } from '@mantine/carousel';
 import { Box, Skeleton, Text } from '@mantine/core';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { useTranslations } from 'next-intl';
+import { useState } from 'react';
 import { RecipeCard } from '../RecipeCard';
 import { CAROUSEL_PROPS, SKELETON_IDS } from './consts';
 import classes from './RecipeCarousel.module.css';
@@ -17,16 +19,54 @@ const RecipeCarousel = ({
   skeletonCount = 4,
   staticOnDesktop = false,
 }: RecipeCarouselProps) => {
+  type EmblaApi = Parameters<NonNullable<Carousel.Props['getEmblaApi']>>[0];
+
   const t = useTranslations('recipe');
+  const translateHome = useTranslations('home');
+  const [emblaApi, setEmblaApi] = useState<EmblaApi | null>(null);
   const empty = emptyMessage ?? t('empty');
   const state = getCarouselState(loading, recipes);
-  const shouldLoop = recipes.length > 4;
+  const shouldLoop = recipes.length > 1;
+  const slideSize =
+    recipes.length <= 2
+      ? { base: '90%', sm: '60%', md: '60%', lg: '60%' }
+      : recipes.length < 5
+        ? { base: '90%', sm: '45%', md: '45%', lg: '45%' }
+        : CAROUSEL_PROPS.slideSize;
   const skeletonIds = SKELETON_IDS.slice(0, skeletonCount);
   const useStaticDesktopGrid =
     staticOnDesktop && recipes.length <= 2 && state === 'content';
 
+  const handleNextControlClick = () => {
+    if (!emblaApi) {
+      return;
+    }
+
+    const snapCount = emblaApi.scrollSnapList().length;
+    if (snapCount > 1) {
+      emblaApi.scrollTo((emblaApi.selectedScrollSnap() + 1) % snapCount);
+    }
+  };
+
+  const handlePreviousControlClick = () => {
+    if (!emblaApi) {
+      return;
+    }
+
+    const snapCount = emblaApi.scrollSnapList().length;
+    if (snapCount > 1) {
+      emblaApi.scrollTo(
+        (emblaApi.selectedScrollSnap() - 1 + snapCount) % snapCount,
+      );
+    }
+  };
+
   const renderLoadingState = () => (
-    <Carousel {...CAROUSEL_PROPS} data-testid="recipe-carousel">
+    <Carousel
+      {...CAROUSEL_PROPS}
+      withControls={false}
+      data-testid="recipe-carousel"
+    >
       {skeletonIds.map((skeletonId) => (
         <Carousel.Slide
           key={skeletonId}
@@ -63,25 +103,53 @@ const RecipeCarousel = ({
           ))}
         </Box>
       )}
-      <Carousel
-        {...CAROUSEL_PROPS}
+      <Box
         className={useStaticDesktopGrid ? classes.mobileCarousel : undefined}
-        emblaOptions={{
-          ...CAROUSEL_PROPS.emblaOptions,
-          loop: shouldLoop,
-        }}
-        data-testid="recipe-carousel"
       >
-        {recipes.map((recipe) => (
-          <Carousel.Slide
-            key={recipe.id}
-            className={classes.carouselSlide}
-            data-testid="recipe-carousel-slide"
+        <Box className={classes.carouselWrapper}>
+          <Carousel
+            {...CAROUSEL_PROPS}
+            slideSize={slideSize}
+            withControls={false}
+            getEmblaApi={setEmblaApi}
+            emblaOptions={{
+              ...CAROUSEL_PROPS.emblaOptions,
+              loop: shouldLoop,
+            }}
+            data-testid="recipe-carousel"
           >
-            <RecipeCard recipe={recipe} withFavorite={withFavorite} />
-          </Carousel.Slide>
-        ))}
-      </Carousel>
+            {recipes.map((recipe) => (
+              <Carousel.Slide
+                key={recipe.id}
+                className={classes.carouselSlide}
+                data-testid="recipe-carousel-slide"
+              >
+                <RecipeCard recipe={recipe} withFavorite={withFavorite} />
+              </Carousel.Slide>
+            ))}
+          </Carousel>
+          {shouldLoop && (
+            <>
+              <button
+                aria-label={translateHome('previousRecipe')}
+                className={`${classes.carouselArrow} ${classes.previousArrow}`}
+                onClick={handlePreviousControlClick}
+                type="button"
+              >
+                <IconChevronLeft size={18} stroke={2} />
+              </button>
+              <button
+                aria-label={translateHome('nextRecipe')}
+                className={`${classes.carouselArrow} ${classes.nextArrow}`}
+                onClick={handleNextControlClick}
+                type="button"
+              >
+                <IconChevronRight size={18} stroke={2} />
+              </button>
+            </>
+          )}
+        </Box>
+      </Box>
     </>
   );
 

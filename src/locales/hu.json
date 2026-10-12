@@ -745,6 +745,8 @@
   },
   "home": {
     "carouselEmpty": "Még nincsenek receptek. Légy te az első, aki megoszt egyet!",
+    "nextRecipe": "Következő recept megjelenítése",
+    "previousRecipe": "Előző recept megjelenítése",
     "recentlyViewed": "Nemrég megtekintett",
     "recentlyViewedHint": "* Nemrég megtekintett receptek — hamarosan"
   },

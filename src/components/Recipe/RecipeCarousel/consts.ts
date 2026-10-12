@@ -2,6 +2,8 @@ export const CAROUSEL_PROPS = {
   slideSize: { base: '90%', sm: '45%', md: '30%', lg: '23%' },
   slideGap: 'md' as const,
   withControls: true,
+  controlSize: 38,
+  controlsOffset: 'sm' as const,
   emblaOptions: { containScroll: 'trimSnaps' as const },
 };
 

@@ -603,6 +603,8 @@
   },
   "home": {
     "carouselEmpty": "Noch keine Rezepte. Sei der Erste, der eines teilt!",
+    "nextRecipe": "Nächstes Rezept anzeigen",
+    "previousRecipe": "Vorheriges Rezept anzeigen",
     "recentlyViewed": "Zuletzt angesehen",
     "recentlyViewedHint": "* Zuletzt angesehene Rezepte – bald verfügbar"
   },
