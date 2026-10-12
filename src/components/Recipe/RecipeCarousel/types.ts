@@ -6,6 +6,7 @@ export interface RecipeCarouselProps {
   withFavorite?: boolean;
   emptyMessage?: string;
   skeletonCount?: number;
+  staticOnDesktop?: boolean;
 }
 
 export type CarouselState = 'loading' | 'empty' | 'content';

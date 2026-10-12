@@ -78,4 +78,18 @@ describe('RecipeCarousel', () => {
     expect(screen.getByText('Recipe one')).toBeInTheDocument();
     expect(screen.getByText('Recipe two')).toBeInTheDocument();
   });
+
+  it('renders a static desktop grid when enabled for two recipes', () => {
+    const recipes: NonNullable<RecipeCarouselProps['recipes']> = [
+      { id: 'recipe-1', title: 'Recipe one' } as never,
+      { id: 'recipe-2', title: 'Recipe two' } as never,
+    ];
+
+    render(<RecipeCarousel recipes={recipes} staticOnDesktop />);
+
+    expect(
+      screen.getByTestId('recipe-carousel-static-grid'),
+    ).toBeInTheDocument();
+    expect(screen.getAllByTestId('recipe-carousel-slide')).toHaveLength(2);
+  });
 });

@@ -15,12 +15,15 @@ const RecipeCarousel = ({
   withFavorite = true,
   emptyMessage,
   skeletonCount = 4,
+  staticOnDesktop = false,
 }: RecipeCarouselProps) => {
   const t = useTranslations('recipe');
   const empty = emptyMessage ?? t('empty');
   const state = getCarouselState(loading, recipes);
   const shouldLoop = recipes.length > 4;
   const skeletonIds = SKELETON_IDS.slice(0, skeletonCount);
+  const useStaticDesktopGrid =
+    staticOnDesktop && recipes.length <= 2 && state === 'content';
 
   const renderLoadingState = () => (
     <Carousel {...CAROUSEL_PROPS} data-testid="recipe-carousel">
@@ -45,24 +48,41 @@ const RecipeCarousel = ({
   );
 
   const renderContentState = () => (
-    <Carousel
-      {...CAROUSEL_PROPS}
-      emblaOptions={{
-        ...CAROUSEL_PROPS.emblaOptions,
-        loop: shouldLoop,
-      }}
-      data-testid="recipe-carousel"
-    >
-      {recipes.map((recipe) => (
-        <Carousel.Slide
-          key={recipe.id}
-          className={classes.carouselSlide}
-          data-testid="recipe-carousel-slide"
+    <>
+      {useStaticDesktopGrid && (
+        <Box
+          className={classes.desktopRecipeGrid}
+          data-testid="recipe-carousel-static-grid"
         >
-          <RecipeCard recipe={recipe} withFavorite={withFavorite} />
-        </Carousel.Slide>
-      ))}
-    </Carousel>
+          {recipes.map((recipe) => (
+            <RecipeCard
+              key={recipe.id}
+              recipe={recipe}
+              withFavorite={withFavorite}
+            />
+          ))}
+        </Box>
+      )}
+      <Carousel
+        {...CAROUSEL_PROPS}
+        className={useStaticDesktopGrid ? classes.mobileCarousel : undefined}
+        emblaOptions={{
+          ...CAROUSEL_PROPS.emblaOptions,
+          loop: shouldLoop,
+        }}
+        data-testid="recipe-carousel"
+      >
+        {recipes.map((recipe) => (
+          <Carousel.Slide
+            key={recipe.id}
+            className={classes.carouselSlide}
+            data-testid="recipe-carousel-slide"
+          >
+            <RecipeCard recipe={recipe} withFavorite={withFavorite} />
+          </Carousel.Slide>
+        ))}
+      </Carousel>
+    </>
   );
 
   const renderCarouselState = () => {

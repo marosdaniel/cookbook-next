@@ -25,10 +25,12 @@ vi.mock('@/components/Recipe/RecipeCarousel', () => ({
     loading,
     recipes,
     emptyMessage,
+    staticOnDesktop,
   }: {
     loading?: boolean;
     recipes?: unknown[];
     emptyMessage?: string;
+    staticOnDesktop?: boolean;
   }) => (
     <div data-testid="recipe-carousel">
       <span data-testid="recipe-carousel-loading">
@@ -37,6 +39,9 @@ vi.mock('@/components/Recipe/RecipeCarousel', () => ({
       <span data-testid="recipe-carousel-count">{recipes?.length ?? 0}</span>
       <span data-testid="recipe-carousel-empty">
         {emptyMessage ?? 'no-message'}
+      </span>
+      <span data-testid="recipe-carousel-static-desktop">
+        {staticOnDesktop ? 'enabled' : 'disabled'}
       </span>
     </div>
   ),
@@ -69,6 +74,11 @@ describe('HomePage', () => {
     expect(
       within(latestRecipeCarousel).getByTestId('recipe-carousel-loading'),
     ).toHaveTextContent('loaded');
+    expect(
+      within(latestRecipeCarousel).getByTestId(
+        'recipe-carousel-static-desktop',
+      ),
+    ).toHaveTextContent('enabled');
   });
 
   it('renders the loading state for the latest recipes carousel', () => {

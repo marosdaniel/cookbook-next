@@ -1,8 +1,16 @@
 .card {
+  display: flex;
+  flex-direction: column;
+  height: 385px;
   transition:
     transform 150ms ease,
     box-shadow 150ms ease;
   cursor: pointer;
+}
+
+.cardBody {
+  height: 205px;
+  overflow: hidden;
 }
 
 .card:hover {
@@ -12,6 +20,7 @@
 
 .imageSection {
   position: relative;
+  flex: 0 0 180px;
   overflow: hidden;
 }
 
@@ -47,6 +56,7 @@
 
 .title {
   display: -webkit-box;
+  height: 3.1em;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -54,6 +64,7 @@
 
 .description {
   display: -webkit-box;
+  height: 3.2em;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;

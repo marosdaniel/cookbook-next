@@ -73,7 +73,7 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
         )}
       </Card.Section>
 
-      <Box p="sm" pb="md">
+      <Box p="sm" pb="md" className={classes.cardBody}>
         <Group justify="space-between" mb={4}>
           <Badge variant="light" size="sm" className={classes.badge}>
             {translate(`category-${category.key}`)}
@@ -98,17 +98,15 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
           {title}
         </Text>
 
-        {description && (
-          <Text
-            size="xs"
-            c="dimmed"
-            mt={4}
-            className={classes.description}
-            data-testid="recipe-card-description"
-          >
-            {description}
-          </Text>
-        )}
+        <Text
+          size="xs"
+          c="dimmed"
+          mt={4}
+          className={classes.description}
+          data-testid="recipe-card-description"
+        >
+          {description}
+        </Text>
 
         <Group mt="sm" gap="md" data-testid="recipe-card-meta">
           <Group gap={4} className={classes.metaRow}>
@@ -125,17 +123,19 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
           </Group>
         </Group>
 
-        {ratingsCount > 0 && (
-          <Group mt="xs" gap="xs" data-testid="recipe-card-rating">
-            <Rating value={averageRating} readOnly fractions={2} size="xs" />
-            <Group gap={2}>
-              <IconStar size={12} color="var(--mantine-color-dimmed)" />
-              <Text size="xs" c="dimmed">
-                ({ratingsCount})
-              </Text>
-            </Group>
-          </Group>
-        )}
+        <Group mt="xs" gap="xs" data-testid="recipe-card-rating">
+          {ratingsCount > 0 && (
+            <>
+              <Rating value={averageRating} readOnly fractions={2} size="xs" />
+              <Group gap={2}>
+                <IconStar size={12} color="var(--mantine-color-dimmed)" />
+                <Text size="xs" c="dimmed">
+                  ({ratingsCount})
+                </Text>
+              </Group>
+            </>
+          )}
+        </Group>
       </Box>
     </Card>
   );

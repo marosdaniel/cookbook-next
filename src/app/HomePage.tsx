@@ -40,6 +40,7 @@ const HomePage = () => {
             recipes={latestRecipes}
             emptyMessage={translateHome('carouselEmpty')}
             withFavorite
+            staticOnDesktop
           />
         </Box>
       </Reveal>
