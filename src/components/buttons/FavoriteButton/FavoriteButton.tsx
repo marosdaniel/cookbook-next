@@ -17,8 +17,10 @@ import { sizeMap } from '../consts';
 import type { FavoriteButtonProps } from './types';
 
 const FAVORITE_TRANSITION = {
-  duration: 0.24,
-  ease: 'easeOut',
+  type: 'spring',
+  stiffness: 420,
+  damping: 16,
+  mass: 0.5,
 } as const;
 
 const FavoriteButton = ({
@@ -170,59 +172,65 @@ const FavoriteButton = ({
       label={optimisticFavorite ? tFav('remove') : tFav('add')}
       withArrow
     >
-      <ActionIcon
-        variant="subtle"
-        color={optimisticFavorite ? 'red' : 'gray'}
-        onClick={handleToggle}
-        loading={loading}
-        aria-label={optimisticFavorite ? tFav('remove') : tFav('add')}
-        aria-pressed={optimisticFavorite}
-        size={size}
-        data-testid="favorite-button"
+      <motion.span
+        whileTap={{ scale: 0.78, rotate: -6 }}
+        transition={FAVORITE_TRANSITION}
+        style={{ display: 'inline-flex' }}
       >
-        <span
-          style={{
-            position: 'relative',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: iconSize,
-            height: iconSize,
-          }}
+        <ActionIcon
+          variant="subtle"
+          color={optimisticFavorite ? 'red' : 'gray'}
+          onClick={handleToggle}
+          loading={loading}
+          aria-label={optimisticFavorite ? tFav('remove') : tFav('add')}
+          aria-pressed={optimisticFavorite}
+          size={size}
+          data-testid="favorite-button"
         >
-          <motion.span
-            aria-hidden="true"
-            animate={burstControls}
-            initial={{ opacity: 0, scale: 0.65 }}
+          <span
             style={{
-              position: 'absolute',
-              inset: -4,
-              border: '1.5px solid var(--mantine-color-red-5)',
-              borderRadius: '50%',
-              pointerEvents: 'none',
-            }}
-          />
-
-          <motion.span
-            animate={iconControls}
-            initial={false}
-            style={{
+              position: 'relative',
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
+              width: iconSize,
+              height: iconSize,
             }}
           >
-            <HeartIcon
-              size={iconSize}
+            <motion.span
+              aria-hidden="true"
+              animate={burstControls}
+              initial={{ opacity: 0, scale: 0.65 }}
               style={{
-                color: optimisticFavorite
-                  ? 'var(--mantine-color-red-6)'
-                  : undefined,
+                position: 'absolute',
+                inset: -4,
+                border: '1.5px solid var(--mantine-color-red-5)',
+                borderRadius: '50%',
+                pointerEvents: 'none',
               }}
             />
-          </motion.span>
-        </span>
-      </ActionIcon>
+
+            <motion.span
+              animate={iconControls}
+              initial={false}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <HeartIcon
+                size={iconSize}
+                style={{
+                  color: optimisticFavorite
+                    ? 'var(--mantine-color-red-6)'
+                    : undefined,
+                }}
+              />
+            </motion.span>
+          </span>
+        </ActionIcon>
+      </motion.span>
     </Tooltip>
   );
 };

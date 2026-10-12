@@ -11,7 +11,7 @@ import {
   Title,
 } from '@mantine/core';
 import { IconMinus, IconPlus } from '@tabler/icons-react';
-import { AnimatePresence, motion } from 'motion/react';
+import { motion, useSpring, useTransform } from 'motion/react';
 import { useTranslations } from 'next-intl';
 import { useRecipeMetadata } from '@/components/Recipe/Create/hooks/useRecipeMetadata';
 import { MOTION_TRANSITION } from '../../../../lib/motion/transitions';
@@ -21,6 +21,31 @@ import { scaleQuantity } from '../utils';
 
 const SERVING_MIN = 1;
 const SERVING_MAX = 20;
+
+const QUANTITY_SPRING = {
+  stiffness: 240,
+  damping: 28,
+  mass: 0.45,
+};
+
+const AnimatedQuantity = ({ value }: { value: number }) => {
+  const quantity = useSpring(value, QUANTITY_SPRING);
+  const displayQuantity = useTransform(
+    quantity,
+    (current) => `${Number(current.toFixed(2))}`,
+  );
+
+  return (
+    <motion.span
+      style={{
+        display: 'inline-block',
+        fontWeight: 700,
+      }}
+    >
+      {displayQuantity}
+    </motion.span>
+  );
+};
 
 export const RecipeIngredients = ({
   ingredients,
@@ -160,21 +185,7 @@ export const RecipeIngredients = ({
                       isChecked ? classes.ingredientTextChecked : ''
                     }`}
                   >
-                    <AnimatePresence initial={false} mode="popLayout">
-                      <motion.span
-                        key={String(scaledQuantity)}
-                        initial={{ opacity: 0, y: 4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                        transition={MOTION_TRANSITION.fast}
-                        style={{
-                          display: 'inline-block',
-                          fontWeight: 700,
-                        }}
-                      >
-                        {scaledQuantity}
-                      </motion.span>
-                    </AnimatePresence>
+                    <AnimatedQuantity value={scaledQuantity} />
                     <Text component="span" fw={700} ml={4}>
                       {translatedUnit}
                     </Text>{' '}

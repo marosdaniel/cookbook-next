@@ -7,20 +7,35 @@ import {
   IconStar,
   IconUsers,
 } from '@tabler/icons-react';
-import { useReducedMotion } from 'motion/react';
+import {
+  motion,
+  useMotionTemplate,
+  useReducedMotion,
+  useSpring,
+} from 'motion/react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { ViewTransition } from 'react';
+import { type PointerEvent, useState, ViewTransition } from 'react';
 import { getDifficultyColor } from '@/app/recipes/[id]/utils';
 import { FavoriteButton } from '@/components/buttons/FavoriteButton';
 import { PUBLIC_ROUTES } from '@/types/routes';
 import classes from './RecipeCard.module.css';
 import type { RecipeCardProps } from './types';
 
+const GLOW_SPRING = {
+  stiffness: 180,
+  damping: 26,
+  mass: 0.35,
+};
+
 const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
   const translate = useTranslations('misc');
   const tCommon = useTranslations();
   const shouldReduceMotion = useReducedMotion();
+  const [glowVisible, setGlowVisible] = useState(false);
+  const glowX = useSpring(0, GLOW_SPRING);
+  const glowY = useSpring(0, GLOW_SPRING);
+  const glowBackground = useMotionTemplate`radial-gradient(420px circle at ${glowX}px ${glowY}px, rgb(245 65 126 / 16%), transparent 80%)`;
 
   const {
     id,
@@ -51,6 +66,14 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
     </Box>
   );
 
+  const updateGlowPosition = (event: PointerEvent<HTMLAnchorElement>) => {
+    if (shouldReduceMotion || event.pointerType !== 'mouse') return;
+
+    const bounds = event.currentTarget.getBoundingClientRect();
+    glowX.set(event.clientX - bounds.left);
+    glowY.set(event.clientY - bounds.top);
+  };
+
   return (
     <Card
       component={Link}
@@ -61,7 +84,23 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
       className={classes.card}
       padding={0}
       data-testid="recipe-card"
+      onPointerEnter={(event) => {
+        if (event.pointerType === 'mouse' && !shouldReduceMotion) {
+          setGlowVisible(true);
+          updateGlowPosition(event);
+        }
+      }}
+      onPointerMove={updateGlowPosition}
+      onPointerLeave={() => setGlowVisible(false)}
     >
+      <motion.div
+        aria-hidden="true"
+        className={`${classes.cardGlow} ${
+          glowVisible ? classes.cardGlowVisible : ''
+        }`}
+        style={{ backgroundImage: glowBackground }}
+        data-testid="recipe-card-glow"
+      />
       <Card.Section
         className={classes.imageSection}
         data-testid="recipe-card-image"

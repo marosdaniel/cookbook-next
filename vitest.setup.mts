@@ -60,6 +60,7 @@ vi.mock('motion/react', () => ({
     createElement(Fragment, null, children),
   MotionConfig: ({ children }: { children?: ReactNode }) =>
     createElement(Fragment, null, children),
+  useMotionTemplate: () => '',
   useReducedMotion: () => false,
   useScroll: () => ({
     scrollYProgress: {
@@ -67,7 +68,20 @@ vi.mock('motion/react', () => ({
       onChange: () => undefined,
     },
   }),
-  useTransform: () => 0,
+  useTransform: (
+    value: number | { get: () => number },
+    transform: ((value: number) => string) | number[],
+  ) => {
+    if (typeof transform === 'function') {
+      return transform(typeof value === 'number' ? value : value.get());
+    }
+
+    return 0;
+  },
+  useSpring: (value: number) => ({
+    get: () => value,
+    set: () => undefined,
+  }),
   useInView: () => true,
   useAnimationControls: () => ({
     start: () => undefined,

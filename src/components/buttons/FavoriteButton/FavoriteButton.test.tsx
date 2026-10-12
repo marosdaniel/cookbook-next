@@ -28,8 +28,14 @@ vi.mock('@/utils/notifications', () => ({
 }));
 vi.mock('motion/react', () => ({
   motion: {
-    span: ({ children, ...props }: React.ComponentProps<'span'>) => (
-      <span {...props}>{children}</span>
+    span: ({
+      children,
+      whileTap,
+      ...props
+    }: React.ComponentProps<'span'> & { whileTap?: unknown }) => (
+      <span data-motion-tap={whileTap ? 'enabled' : undefined} {...props}>
+        {children}
+      </span>
     ),
   },
   useAnimationControls: () => ({ start: mockStart }),
@@ -101,6 +107,7 @@ describe('FavoriteButton', () => {
 
     const button = screen.getByTestId('favorite-button');
     expect(button).toHaveAttribute('aria-pressed', 'false');
+    expect(button.parentElement).toHaveAttribute('data-motion-tap', 'enabled');
     fireEvent.click(button);
 
     await waitFor(() =>

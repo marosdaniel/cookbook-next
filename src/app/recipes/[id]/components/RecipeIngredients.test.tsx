@@ -82,4 +82,24 @@ describe('RecipeIngredients', () => {
 
     expect(baseProps.onToggleIngredient).toHaveBeenCalledWith('ing-1');
   });
+
+  it('updates ingredient quantities when the serving multiplier changes', () => {
+    const { rerender } = render(
+      <RecipeIngredients {...baseProps} servingMultiplier={1} />,
+    );
+
+    expect(screen.getByText('2')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeInTheDocument();
+
+    rerender(
+      <RecipeIngredients
+        {...baseProps}
+        servingMultiplier={2}
+        adjustedServings={8}
+      />,
+    );
+
+    expect(screen.getByText('4')).toBeInTheDocument();
+    expect(screen.getByText('2')).toBeInTheDocument();
+  });
 });
