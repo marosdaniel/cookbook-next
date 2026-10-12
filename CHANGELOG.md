@@ -1,3 +1,10 @@
+# [3.4.0](https://github.com/marosdaniel/cookbook-next/compare/v3.3.0...v3.4.0) (2026-10-12)
+
+
+### Features
+
+* implement parallax effect in RecipeHero and add progress tracking in RecipeSteps; enhance RecipeCard with transition effects ([61e5404](https://github.com/marosdaniel/cookbook-next/commit/61e5404c04e8249bb51a07ea62566b2c888fcd99))
+
 # [3.3.0](https://github.com/marosdaniel/cookbook-next/compare/v3.2.0...v3.3.0) (2026-10-12)
 
 
