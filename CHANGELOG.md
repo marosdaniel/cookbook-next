@@ -1,3 +1,10 @@
+# [3.5.0](https://github.com/marosdaniel/cookbook-next/compare/v3.4.0...v3.5.0) (2026-10-12)
+
+
+### Features
+
+* add category selection with animations in RecipeSearch; update translations for all categories ([22f421e](https://github.com/marosdaniel/cookbook-next/commit/22f421ec4fc2b8de229d1da04f2b58ef782564ee))
+
 # [3.4.0](https://github.com/marosdaniel/cookbook-next/compare/v3.3.0...v3.4.0) (2026-10-12)
 
 
