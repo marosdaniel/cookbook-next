@@ -1,3 +1,10 @@
+# [3.3.0](https://github.com/marosdaniel/cookbook-next/compare/v3.2.0...v3.3.0) (2026-10-12)
+
+
+### Features
+
+* enhance RecipeCarousel with navigation controls and responsive slide sizes; update translations ([17344a0](https://github.com/marosdaniel/cookbook-next/commit/17344a08181fd50b189a814e80b842a97d4a2f6d))
+
 # [3.2.0](https://github.com/marosdaniel/cookbook-next/compare/v3.1.0...v3.2.0) (2026-10-12)
 
 
