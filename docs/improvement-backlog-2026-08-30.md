@@ -5,6 +5,15 @@ Előzmény: [improvement-backlog-2026-07-24.md](improvement-backlog-2026-07-24.m
 
 Scope: friss mélyaudit — biztonság, architektúra, teljesítmény, kódminőség, tesztlefedettség, DX, SEO, a11y. **Minden javaslat ingyenes / free-tier megoldásra épül**; ahol fizetős eszköz lenne az ideális, azt jelezzük, de az elsődleges javaslat mindig ingyenes.
 
+### Elkészült fejlesztések az audit óta (2026-10-12)
+
+| Státusz | Terület | Elkészült fejlesztés |
+|---|---|---|
+| ✅ | Konfiguráció | Központi, típusos környezeti változó-validáció a [`src/env.ts`](../src/env.ts) fájlban `@t3-oss/env-nextjs` és Zod használatával. A `DATABASE_URL` és `NEXTAUTH_SECRET` kötelező; az opcionális Redis-, e-mail- és Vercel-beállítások is sémázva vannak. A Next config betölti a validációt, a releváns runtime-fogyasztók pedig a típusos `env` modult használják. |
+| ✅ | Redis megbízhatóság | A [`redis.ts`](../src/lib/redis/redis.ts) kézi timeout/circuit-breaker állapotkezelését a Cockatiel timeout és circuit-breaker policy váltotta fel. Redis-hiba esetén a cache továbbra is best-effort módon működik; a breaker 5 másodperc után próbahívást enged. |
+| ✅ | Prisma megbízhatóság | A [`prismaTimeout.ts`](../src/lib/prisma/prismaTimeout.ts) Prisma Client Extensionje 10 másodpercnél az alkalmazásoldali Promise-t utasítja el; önmagában nem szakítja meg a futó SQL-lekérdezést. Az interaktív tranzakcióknak 5 másodperces `maxWait` és 10 másodperces Prisma `timeout` kerete van. A Neon PgBouncer pooler figyelmen kívül hagyja a `statement_timeout` startup paramétert, ezért az nem tekinthető adatbázis-oldali védelemnek pooled kapcsolaton. |
+| ✅ | Apollo cache | Javítva a mező-`merge` argumentumainak felcserélt sorrendje (`existing, incoming`) a `getRecipes`, `getRecipesByUserId`, `getFollowing` és `getFavoriteRecipes` policy-kban. A `getRecipes` cache round-trip és lapozás regressziós tesztet kapott a [`client.test.ts`](../src/lib/apollo/client.test.ts) fájlban. |
+
 Kapcsolódó résztervek (külön dokumentumban, ide csak hivatkozva):
 [admin-panel-plan-2026-08-30.md](admin-panel-plan-2026-08-30.md) · [ux-motion-upgrade-plan-2026-08-30.md](ux-motion-upgrade-plan-2026-08-30.md) · [footer-redesign-2026-08-30.md](footer-redesign-2026-08-30.md) · [responsive-audit-2026-08-30.md](responsive-audit-2026-08-30.md) · [validation-unification-2026-08-30.md](validation-unification-2026-08-30.md) · [type-unification-2026-08-30.md](type-unification-2026-08-30.md)
 
