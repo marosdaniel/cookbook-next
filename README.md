@@ -308,7 +308,7 @@ SonarCloud analyzes this project in CI after the coverage report is generated. T
 
 ### Fetch issues locally
 
-The `sonar:issues` script reads existing issue data from SonarCloud; it does **not** start a new analysis. It fetches all unresolved issues for project key `marosdaniel_cookbook-next`, follows the API pagination, and returns the issue records with their available details as JSON.
+The `sonar:issues` script reads existing issue data from SonarCloud; it does **not** start a new analysis. It fetches all unresolved issues for project key `marosdaniel_cookbook-next`, follows the API pagination, and prints a table with the issue key, severity, type, status, rule, file, line, and message.
 
 1. Create a token in SonarCloud under **My Account → Access Tokens**. The account associated with the token must be able to browse this project.
 2. Add it to the project-root `.env.local` file:
@@ -317,19 +317,19 @@ The `sonar:issues` script reads existing issue data from SonarCloud; it does **n
    SONAR_TOKEN=your-sonarcloud-token
    ```
 
-3. Run the script to print the JSON results in the terminal:
+3. Run the script to print the issue table in the terminal:
 
    ```bash
    pnpm sonar:issues
    ```
 
-   To save the results to a JSON file instead:
+   To also save the full issue records and metadata as JSON:
 
    ```bash
    pnpm sonar:issues --output sonar-issues.json
    ```
 
-The script reads `.env.local` directly; this file is excluded from Git. Keep the token private and do not share it in logs. The JSON output contains issue details and is written to the current directory when `--output` is used.
+The script reads `.env.local` directly; this file is excluded from Git. Keep the token private and do not share it in logs. The JSON file is written to the current directory when `--output` is used.
 
 ---
 
@@ -460,7 +460,7 @@ enum UserRole {
 | `pnpm audit:fix` | Apply available pnpm audit fixes |
 | `pnpm codegen` | Generate TypeScript types from the GraphQL schema |
 | `pnpm codegen:check` | Verify generated GraphQL types are up to date |
-| `pnpm sonar:issues` | Fetch unresolved SonarCloud issues as JSON (optional `--output <file>`) |
+| `pnpm sonar:issues` | Display unresolved SonarCloud issues in a table (optional full JSON output with `--output <file>`) |
 
 ---
 
