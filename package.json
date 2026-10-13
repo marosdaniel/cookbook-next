@@ -27,6 +27,7 @@
     "test:integration": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "sonar:issues": "node scripts/fetch-sonar-issues.mjs",
     "format": "biome format",
     "format:fix": "biome format --write",
     "lint": "biome lint .",

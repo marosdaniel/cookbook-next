@@ -4,14 +4,14 @@
 
 **A modern recipe sharing platform built with Next.js, Apollo Server, and Neon (Serverless Postgres)**
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.3.6-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.4.0-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.3.0-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-7.0.2-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 [🚀 Live Demo](https://cookbook-next.vercel.app) • [📊 Coverage Report](https://marosdaniel.github.io/cookbook-next/) • [📝 Changelog](./CHANGELOG.md)
 
-### SonarQube Quality
+### SonarCloud Quality
 
 | Metric | Badge |
 | --- | --- |
@@ -55,15 +55,15 @@
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework:** Next.js 16.3.6 (App Router, Turbopack)
+- **Framework:** Next.js 16.4.0 (App Router, Turbopack)
 - **Language:** TypeScript 7.0.2
-- **UI Library:** Mantine 9.6.3 (core, form, hooks, notifications, modals, spotlight, carousel)
-- **Animation:** Motion ^13.4.4 for page, list, and interaction animations
-- **State Management:** Redux Toolkit ^2.12.0
+- **UI Library:** Mantine 9.7.2 (core, form, hooks, notifications, modals, spotlight, carousel)
+- **Animation:** Motion ^14.1.0 for page, list, and interaction animations
+- **State Management:** Redux Toolkit ^2.13.0
 - **Forms:** Mantine Form + `mantine-form-zod-resolver` (Zod validation)
-- **Data fetching:** Apollo Client ^4.3.1 (custom error-handling link with localized notifications)
+- **Data fetching:** Apollo Client ^4.3.3 (custom error-handling link with localized notifications)
 - **Icons:** Tabler Icons React
-- **i18n:** next-intl ^4.14.7 (English, Hungarian, German)
+- **i18n:** next-intl ^4.14.9 (English, Hungarian, German)
 
 ### Backend
 - **API:** Apollo Server ^5.5.1 + GraphQL 17.0.2 (`@as-integrations/next`), modular schema (user/recipe/metadata), `graphql-armor` hardening, DataLoader batching
@@ -73,13 +73,13 @@
 - **Password hashing:** Argon2id (primary) with legacy bcryptjs fallback
 - **Caching:** Upstash Redis ^1.39.0 (TTL-based query caching with fallback behavior)
 - **Rate limiting:** Upstash Ratelimit ^2.2.0 (sliding window) on auth & mutation-heavy operations
-- **Validation & sanitization:** Zod ^4.6.5 + sanitize-html ^2.17.7
+- **Validation & sanitization:** Zod ^4.6.7 + sanitize-html ^2.18.0
 
 ### DevOps & Tools
 - **Build Tool:** Turbopack
-- **Testing:** Vitest ^5.0.2 + Testing Library + Happy DOM (unit/integration), Playwright ^1.63.0 (E2E)
-- **Code Quality:** Biome 2.5.14
-- **Package Manager:** pnpm 12.6.0
+- **Testing:** Vitest ^5.0.4 + Testing Library + Happy DOM (unit/integration), Playwright ^1.64.0 (E2E)
+- **Code Quality:** Biome 2.5.15
+- **Package Manager:** pnpm 12.11.2
 - **Deployment:** Vercel
 - **CI/CD:** GitHub Actions + Semantic Release
 
@@ -90,7 +90,7 @@
 ### Prerequisites
 
 - **Node.js** 24.x
-- **pnpm** 12.6.0
+- **pnpm** 12.11.2
 - **Postgres / Neon** (Postgres-compatible, e.g. Neon serverless)
 
 ### Installation
@@ -110,6 +110,7 @@ cp .env.example .env.local
 # - DATABASE_URL
 # - NEXTAUTH_SECRET
 # - NEXTAUTH_URL
+# - SONAR_TOKEN (optional; only needed to fetch SonarCloud issues)
 ```
 
 ### Environment Variables
@@ -142,6 +143,9 @@ UPSTASH_REDIS_REST_TOKEN=your-upstash-token
 
 # Node Environment
 NODE_ENV=development
+
+# Optional: SonarCloud issue retrieval (see the SonarCloud section)
+SONAR_TOKEN=your-sonarcloud-token
 ```
 
 ### Development
@@ -243,6 +247,7 @@ cookbook-next/
 │   └── types/                 # Shared TypeScript types
 ├── prisma/
 │   └── schema.prisma          # Database schema and models
+├── scripts/                   # Project utility scripts
 ├── public/                    # Static assets and manifest files
 ├── e2e/                       # Playwright end-to-end tests
 ├── docs/                      # Project documentation
@@ -294,6 +299,37 @@ Where reports and artifacts are written:
 - `playwright-report/` — HTML report (local)
 - `test-results/` — raw results and traces/videos (CI artifact)
 - On CI the reports are uploaded and published to GitHub Pages under the project (see `.github/workflows/deploy.yml`).
+
+---
+
+## 🔎 SonarCloud
+
+SonarCloud analyzes this project in CI after the coverage report is generated. The workflow uploads the analysis using the `SONAR_TOKEN` GitHub Actions secret; the badges above show selected project metrics, and the [SonarCloud project dashboard](https://sonarcloud.io/project/overview?id=marosdaniel_cookbook-next) shows the analysis results.
+
+### Fetch issues locally
+
+The `sonar:issues` script reads existing issue data from SonarCloud; it does **not** start a new analysis. It fetches all unresolved issues for project key `marosdaniel_cookbook-next`, follows the API pagination, and returns the issue records with their available details as JSON.
+
+1. Create a token in SonarCloud under **My Account → Access Tokens**. The account associated with the token must be able to browse this project.
+2. Add it to the project-root `.env.local` file:
+
+   ```env
+   SONAR_TOKEN=your-sonarcloud-token
+   ```
+
+3. Run the script to print the JSON results in the terminal:
+
+   ```bash
+   pnpm sonar:issues
+   ```
+
+   To save the results to a JSON file instead:
+
+   ```bash
+   pnpm sonar:issues --output sonar-issues.json
+   ```
+
+The script reads `.env.local` directly; this file is excluded from Git. Keep the token private and do not share it in logs. The JSON output contains issue details and is written to the current directory when `--output` is used.
 
 ---
 
@@ -424,6 +460,7 @@ enum UserRole {
 | `pnpm audit:fix` | Apply available pnpm audit fixes |
 | `pnpm codegen` | Generate TypeScript types from the GraphQL schema |
 | `pnpm codegen:check` | Verify generated GraphQL types are up to date |
+| `pnpm sonar:issues` | Fetch unresolved SonarCloud issues as JSON (optional `--output <file>`) |
 
 ---
 
@@ -441,10 +478,15 @@ vercel --prod
 ```
 
 ### Environment Variables for Deployment
-Set these in your Vercel project settings and GitHub Actions secrets:
+
+Set application runtime variables in Vercel project settings:
 - `DATABASE_URL`
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL`
+
+Set these as GitHub Actions secrets for CI and deployment:
+- `DATABASE_URL`
+- `DIRECT_URL` (optional; defaults to `DATABASE_URL`)
 - `VERCEL_TOKEN`
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID`
@@ -456,9 +498,9 @@ The workflow in [.github/workflows/deploy.yml](.github/workflows/deploy.yml) run
 
 1. **Quality checks**
    - Biome linting
+   - GraphQL generated type verification
    - TypeScript type checking
-   - Unit tests
-   - Integration tests
+   - Vitest test suite
 
 2. **E2E tests**
    - Playwright browser install and test execution
@@ -467,8 +509,8 @@ The workflow in [.github/workflows/deploy.yml](.github/workflows/deploy.yml) run
    - Vitest coverage generation
    - GitHub Pages publication for coverage and Playwright reports
 
-4. **SonarQube analysis**
-   - Code quality and coverage upload to SonarCloud
+4. **SonarCloud analysis**
+   - Code quality and coverage analysis after the coverage report is generated
 
 5. **Deployment**
    - Vercel production deploy from `main`
