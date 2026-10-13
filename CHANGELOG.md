@@ -1,3 +1,10 @@
+# [3.9.0](https://github.com/marosdaniel/cookbook-next/compare/v3.8.0...v3.9.0) (2026-10-13)
+
+
+### Features
+
+* enhance fetch-sonar-issues script with new functions and tests; update vitest config to include script tests ([e64c2d8](https://github.com/marosdaniel/cookbook-next/commit/e64c2d8899527935a8131ca3cb8121299396daba))
+
 # [3.8.0](https://github.com/marosdaniel/cookbook-next/compare/v3.7.0...v3.8.0) (2026-10-12)
 
 
