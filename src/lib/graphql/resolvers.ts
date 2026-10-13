@@ -107,32 +107,32 @@ export const resolvers: Resolvers = {
       const data = await context.loaders.ratings.load(parent.id);
       return data.ratingsCount;
     },
-    userRating: async (
+    userRating: (
       parent: { id: string },
       _: unknown,
       context: import('@/types/graphql/context').GraphQLContext,
     ) => {
-      if (!context.loaders.userRating) return null;
+      if (!context.loaders.userRating) return Promise.resolve(null);
       return context.loaders.userRating.load(parent.id);
     },
-    isFavorite: async (
+    isFavorite: (
       parent: { id: string },
       _: unknown,
       context: import('@/types/graphql/context').GraphQLContext,
     ) => {
-      if (!context.loaders.isFavorite) return false;
+      if (!context.loaders.isFavorite) return Promise.resolve(false);
       return context.loaders.isFavorite.load(parent.id);
     },
   },
   User: {
-    recipes: async (
+    recipes: (
       parent: { id: string },
       _: unknown,
       context: import('@/types/graphql/context').GraphQLContext,
     ) => {
       return context.loaders.userRecipes.load(parent.id);
     },
-    favoriteRecipes: async (
+    favoriteRecipes: (
       parent: { id: string },
       _: unknown,
       context: import('@/types/graphql/context').GraphQLContext,

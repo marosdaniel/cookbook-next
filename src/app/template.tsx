@@ -4,7 +4,9 @@ import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { MOTION_TRANSITION } from '@/lib/motion/transitions';
 
-export default function Template({ children }: { children: ReactNode }) {
+export default function Template({
+  children,
+}: Readonly<{ children: ReactNode }>) {
   return (
     <motion.div
       initial={{ opacity: 0 }}

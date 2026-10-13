@@ -28,20 +28,12 @@ describe('locale', () => {
 
   describe('getLocaleMessages', () => {
     describe('successful loading', () => {
-      it('should load messages for a valid locale', async () => {
-        const messages = await getLocaleMessages('en-gb');
-        expect(messages).toBeDefined();
-        expect(typeof messages).toBe('object');
-      });
-
-      it('should load Hungarian messages', async () => {
-        const messages = await getLocaleMessages('hu');
-        expect(messages).toBeDefined();
-        expect(typeof messages).toBe('object');
-      });
-
-      it('should load German messages', async () => {
-        const messages = await getLocaleMessages('de');
+      it.each([
+        ['English', 'en-gb'],
+        ['Hungarian', 'hu'],
+        ['German', 'de'],
+      ])('should load %s messages', async (_name, locale) => {
+        const messages = await getLocaleMessages(locale);
         expect(messages).toBeDefined();
         expect(typeof messages).toBe('object');
       });

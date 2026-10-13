@@ -64,10 +64,10 @@ export const authConfig = {
     error: AUTH_ROUTES.LOGIN,
   },
   callbacks: {
-    async redirect({ url, baseUrl }) {
+    redirect({ url, baseUrl }) {
       return getSafeCallbackUrl(url, baseUrl);
     },
-    async jwt({ token, user }) {
+    jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
@@ -80,7 +80,7 @@ export const authConfig = {
       }
       return token;
     },
-    async session({ session, token }) {
+    session({ session, token }) {
       // Add user data from token to session
       if (token && session.user) {
         session.user.id = token.id ?? '';

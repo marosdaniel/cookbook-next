@@ -192,22 +192,14 @@ describe('UnderConstruction', () => {
       expect(title).toHaveTextContent('Under Construction');
     });
 
-    it('title is rendered as StyledText with title component type', () => {
+    it.each([
+      ['component type', 'data-component-type', 'title'],
+      ['gradient applied', 'data-gradient', 'true'],
+      ['correct order', 'data-order', '1'],
+    ])('title has %s', (_label, attribute, value) => {
       render(<UnderConstruction />);
       const styled = screen.getByTestId('styled-text');
-      expect(styled).toHaveAttribute('data-component-type', 'title');
-    });
-
-    it('title has gradient applied', () => {
-      render(<UnderConstruction />);
-      const styled = screen.getByTestId('styled-text');
-      expect(styled).toHaveAttribute('data-gradient', 'true');
-    });
-
-    it('title has correct order', () => {
-      render(<UnderConstruction />);
-      const styled = screen.getByTestId('styled-text');
-      expect(styled).toHaveAttribute('data-order', '1');
+      expect(styled).toHaveAttribute(attribute, value);
     });
 
     it('title has custom class', () => {

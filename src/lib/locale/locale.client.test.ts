@@ -106,19 +106,13 @@ describe('locale.client', () => {
       expect(document.cookie).toContain(`${LOCALE_STORAGE_KEY}=en-gb`);
     });
 
-    it('should set cookie with path=/', () => {
+    it.each([
+      ['path=/', 'path=/'],
+      ['max-age for 1 year', 'max-age='],
+      ['SameSite=Lax', 'samesite=lax'],
+    ])('should set cookie with %s', (_label, expected) => {
       setStoredLocale('de');
-      expect(document.cookie).toContain('path=/');
-    });
-
-    it('should set cookie with max-age for 1 year', () => {
-      setStoredLocale('de');
-      expect(document.cookie).toContain('max-age=');
-    });
-
-    it('should set cookie with SameSite=Lax', () => {
-      setStoredLocale('de');
-      expect(document.cookie).toContain('samesite=lax');
+      expect(document.cookie).toContain(expected);
     });
 
     it('should not set the Secure attribute over http (e.g. local dev)', () => {

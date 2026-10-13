@@ -1,37 +1,19 @@
-import {
-  AddToFavoriteRecipesDocument,
-  ChangePasswordDocument,
-  CreateMetadataDocument,
-  CreateRecipeDocument,
-  CreateUserDocument,
-  DeleteRatingDocument,
-  EditRecipeDocument,
-  FollowUserDocument,
-  RateRecipeDocument,
-  RemoveFromFavoriteRecipesDocument,
-  ReorderMetadataDocument,
-  ResetPasswordDocument,
-  SetMetadataActiveDocument,
-  SetNewPasswordDocument,
-  UnfollowUserDocument,
-  UpdateMetadataDocument,
-  UpdateUserDocument,
+export {
+  AddToFavoriteRecipesDocument as ADD_TO_FAVORITE_RECIPES,
+  ChangePasswordDocument as CHANGE_PASSWORD,
+  CreateMetadataDocument as CREATE_METADATA,
+  CreateRecipeDocument as CREATE_RECIPE,
+  CreateUserDocument as CREATE_USER,
+  DeleteRatingDocument as DELETE_RATING,
+  EditRecipeDocument as EDIT_RECIPE,
+  FollowUserDocument as FOLLOW_USER,
+  RateRecipeDocument as RATE_RECIPE,
+  RemoveFromFavoriteRecipesDocument as REMOVE_FROM_FAVORITE_RECIPES,
+  ReorderMetadataDocument as REORDER_METADATA,
+  ResetPasswordDocument as RESET_PASSWORD,
+  SetMetadataActiveDocument as SET_METADATA_ACTIVE,
+  SetNewPasswordDocument as SET_NEW_PASSWORD,
+  UnfollowUserDocument as UNFOLLOW_USER,
+  UpdateMetadataDocument as UPDATE_METADATA,
+  UpdateUserDocument as UPDATE_USER,
 } from '@/lib/graphql/generated/graphql';
-
-export const CREATE_USER = CreateUserDocument;
-export const CREATE_METADATA = CreateMetadataDocument;
-export const UPDATE_METADATA = UpdateMetadataDocument;
-export const SET_METADATA_ACTIVE = SetMetadataActiveDocument;
-export const REORDER_METADATA = ReorderMetadataDocument;
-export const RESET_PASSWORD = ResetPasswordDocument;
-export const SET_NEW_PASSWORD = SetNewPasswordDocument;
-export const CHANGE_PASSWORD = ChangePasswordDocument;
-export const UPDATE_USER = UpdateUserDocument;
-export const CREATE_RECIPE = CreateRecipeDocument;
-export const EDIT_RECIPE = EditRecipeDocument;
-export const RATE_RECIPE = RateRecipeDocument;
-export const DELETE_RATING = DeleteRatingDocument;
-export const ADD_TO_FAVORITE_RECIPES = AddToFavoriteRecipesDocument;
-export const REMOVE_FROM_FAVORITE_RECIPES = RemoveFromFavoriteRecipesDocument;
-export const FOLLOW_USER = FollowUserDocument;
-export const UNFOLLOW_USER = UnfollowUserDocument;

@@ -46,20 +46,22 @@ const requestStorage = new AsyncLocalStorage<{
  * Plugin to emit structured GraphQL request logs for monitoring and audit purposes.
  */
 const loggingPlugin: ApolloServerPlugin<GraphQLContext> = {
-  async requestDidStart(
+  requestDidStart(
     requestContext,
   ): Promise<GraphQLRequestListener<GraphQLContext>> {
     const startedAt = performance.now();
     let errorCode: string | undefined;
-    return {
-      async didResolveOperation(requestContext) {
+    return Promise.resolve({
+      didResolveOperation(requestContext) {
         const { operationName } = requestContext;
         requestContext.contextValue.operationName = operationName;
+        return Promise.resolve();
       },
-      async didEncounterErrors({ errors }) {
+      didEncounterErrors({ errors }) {
         errorCode = errors[0]?.extensions?.code?.toString();
+        return Promise.resolve();
       },
-      async willSendResponse({ contextValue, response }) {
+      willSendResponse({ contextValue, response }) {
         const status = response.http?.status ?? (errorCode ? 500 : 200);
         console.info(
           JSON.stringify({
@@ -73,8 +75,9 @@ const loggingPlugin: ApolloServerPlugin<GraphQLContext> = {
             ...(errorCode ? { errorCode } : {}),
           }),
         );
+        return Promise.resolve();
       },
-    };
+    });
   },
 };
 
@@ -82,9 +85,9 @@ const loggingPlugin: ApolloServerPlugin<GraphQLContext> = {
  * Plugin to validate operation permissions
  */
 const authPlugin: ApolloServerPlugin<GraphQLContext> = {
-  async requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
-    return {
-      async didResolveOperation(requestContext) {
+  requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
+    return Promise.resolve({
+      didResolveOperation(requestContext) {
         const operationName = requestContext.operationName;
         const { role } = requestContext.contextValue;
 
@@ -93,8 +96,9 @@ const authPlugin: ApolloServerPlugin<GraphQLContext> = {
         // Authorize the operation selected by Apollo after parsing the document.
         // The client-supplied HTTP operationName is not trusted for this check.
         requestContext.contextValue.operationName = operationName;
+        return Promise.resolve();
       },
-    };
+    });
   },
 };
 
@@ -125,10 +129,10 @@ const armor = new ApolloArmor({
 const protection = armor.protect();
 
 const fieldAuthPlugin: ApolloServerPlugin<GraphQLContext> = {
-  async requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
-    return {
-      async executionDidStart() {
-        return {
+  requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
+    return Promise.resolve({
+      executionDidStart() {
+        return Promise.resolve({
           willResolveField({ contextValue, info, source }) {
             if (info.parentType.name !== 'User') {
               return;
@@ -145,9 +149,9 @@ const fieldAuthPlugin: ApolloServerPlugin<GraphQLContext> = {
               },
             });
           },
-        };
+        });
       },
-    };
+    });
   },
 };
 

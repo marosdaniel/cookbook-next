@@ -26,7 +26,7 @@ const filterKeysForType = (
     .filter(
       (key) => key.startsWith(prefix) && rest.every((set) => set.has(key)),
     )
-    .sort();
+    .sort((a, b) => a.localeCompare(b));
 };
 
 /**

@@ -87,7 +87,7 @@ export const AdminService = {
   async listMetadata(actorRole: string | undefined, type?: MetadataType) {
     assertAdminRole(actorRole);
 
-    return prisma.metadata.findMany({
+    return await prisma.metadata.findMany({
       where: type ? { type } : undefined,
       orderBy: [{ type: 'asc' }, { sortOrder: 'asc' }],
     });

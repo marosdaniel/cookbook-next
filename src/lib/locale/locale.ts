@@ -81,9 +81,9 @@ export const normalizeLocale = (locale: string | null | undefined): string => {
   return DEFAULT_LOCALE;
 };
 
-export const getLocaleMessages = async (
-  locale: string,
-): Promise<LocaleMessages> => {
+export const getLocaleMessages = (locale: string): Promise<LocaleMessages> => {
   const normalizedLocale = normalizeLocale(locale);
-  return MESSAGES_MAP[normalizedLocale] ?? MESSAGES_MAP['en-gb'] ?? {};
+  return Promise.resolve(
+    MESSAGES_MAP[normalizedLocale] ?? MESSAGES_MAP['en-gb'] ?? {},
+  );
 };

@@ -36,12 +36,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return token;
     },
-    async session(context) {
+    session(context) {
       if (context.token.revoked) {
-        throw new Error('Session has been revoked');
+        return Promise.reject(new Error('Session has been revoked'));
       }
 
-      return configuredSession ? configuredSession(context) : context.session;
+      return Promise.resolve(
+        configuredSession ? configuredSession(context) : context.session,
+      );
     },
   },
   providers: [

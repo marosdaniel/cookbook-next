@@ -13,13 +13,16 @@ const ARGON2_OPTIONS = {
   hashLength: 32,
 } as const;
 
-export async function hashPassword(password: string): Promise<string> {
+export function hashPassword(password: string): Promise<string> {
   return argon2.hash(password, ARGON2_OPTIONS);
 }
 
-export async function verifyPassword(password: string, hashedPassword: string) {
+export function verifyPassword(
+  password: string,
+  hashedPassword: string,
+): Promise<boolean> {
   if (!hashedPassword) {
-    return false;
+    return Promise.resolve(false);
   }
 
   if (hashedPassword.startsWith('$argon2')) {
@@ -30,7 +33,7 @@ export async function verifyPassword(password: string, hashedPassword: string) {
     return bcrypt.compare(password, hashedPassword);
   }
 
-  return false;
+  return Promise.resolve(false);
 }
 
 export function createTokenId(): string {

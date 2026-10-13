@@ -9,7 +9,7 @@ import { RecipeCard } from '../RecipeCard';
 import { CAROUSEL_PROPS, SKELETON_IDS } from './consts';
 import classes from './RecipeCarousel.module.css';
 import type { RecipeCarouselProps } from './types';
-import { getCarouselState } from './utils';
+import { getCarouselState, getSlideSize } from './utils';
 
 const RecipeCarousel = ({
   recipes,
@@ -27,12 +27,7 @@ const RecipeCarousel = ({
   const empty = emptyMessage ?? t('empty');
   const state = getCarouselState(loading, recipes);
   const shouldLoop = recipes.length > 1;
-  const slideSize =
-    recipes.length <= 2
-      ? { base: '90%', sm: '60%', md: '60%', lg: '60%' }
-      : recipes.length < 5
-        ? { base: '90%', sm: '45%', md: '45%', lg: '45%' }
-        : CAROUSEL_PROPS.slideSize;
+  const slideSize = getSlideSize(recipes.length);
   const skeletonIds = SKELETON_IDS.slice(0, skeletonCount);
   const useStaticDesktopGrid =
     staticOnDesktop && recipes.length <= 2 && state === 'content';
