@@ -13,7 +13,7 @@ export default defineConfig({
     environment: 'happy-dom',
     setupFiles: ['./vitest.setup.mts'],
     globals: true,
-    include: ['src/**/*.test.{ts,tsx}'],
+    include: ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.mjs'],
     exclude: ['node_modules/**', 'e2e/**', 'playwright.config.ts'],
     coverage: {
       reporter: ['text', 'html', 'json-summary', 'lcov'],

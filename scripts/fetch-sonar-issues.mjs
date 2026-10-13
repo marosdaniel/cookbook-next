@@ -1,27 +1,28 @@
 import { writeFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { stripVTControlCharacters } from 'node:util';
 import { config } from 'dotenv';
 
-const projectRoot = fileURLToPath(new URL('../', import.meta.url));
-config({ path: resolve(projectRoot, '.env.local') });
+const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
-const sonarUrl = 'https://sonarcloud.io';
-const projectKey = 'marosdaniel_cookbook-next';
-const pageSize = 500;
-const maxSearchResults = 10_000;
+export const sonarUrl = 'https://sonarcloud.io';
+export const projectKey = 'marosdaniel_cookbook-next';
+export const pageSize = 500;
+export const maxSearchResults = 10_000;
 
 /* ───────────────────────── Színek / stílus ───────────────────────── */
 
-const useColor =
-  Boolean(process.env.FORCE_COLOR) ||
-  (process.stdout.isTTY && !process.env.NO_COLOR);
+export function isColorEnabled() {
+  const force = process.env.FORCE_COLOR;
+  if (force) return force !== '0';
+  return Boolean(process.stdout.isTTY) && !process.env.NO_COLOR;
+}
 
 const ansi =
   (open, close = 0) =>
   (text) =>
-    useColor ? `\x1b[${open}m${text}\x1b[${close}m` : String(text);
+    isColorEnabled() ? `\x1b[${open}m${text}\x1b[${close}m` : String(text);
 
 const identity = (text) => String(text);
 
@@ -68,7 +69,7 @@ const getType = (type) =>
 const visibleLength = (text) =>
   [...stripVTControlCharacters(String(text))].length;
 
-function wrapText(text, width) {
+export function wrapText(text, width) {
   const value = String(text ?? '');
   if (width <= 0) return [value];
   const lines = [];
@@ -103,7 +104,7 @@ function wrapText(text, width) {
 
 const border = (text) => c.gray(text);
 
-function horizontal(widths, left, mid, right, fill = '─') {
+export function horizontal(widths, left, mid, right, fill = '─') {
   return border(left + widths.map((w) => fill.repeat(w + 2)).join(mid) + right);
 }
 
@@ -115,7 +116,7 @@ function padLine(text, width) {
  * columns: [{ header, width }]
  * rows:    [[{ text, style? }, ...], ...]
  */
-function renderTable(columns, rows) {
+export function renderTable(columns, rows) {
   const widths = columns.map((col) => col.width);
   const out = [];
 
@@ -158,7 +159,7 @@ function renderTable(columns, rows) {
   return out.join('\n');
 }
 
-function renderCards(issues, width) {
+export function renderCards(issues, width) {
   const inner = width - 4;
   const out = [];
 
@@ -195,7 +196,7 @@ function countBy(items, selector) {
   return map;
 }
 
-function renderSummary(issues) {
+export function renderSummary(issues) {
   const bySeverity = countBy(issues, (i) => i.severity);
   const byType = countBy(issues, (i) => i.type);
 
@@ -224,7 +225,7 @@ function renderSummary(issues) {
   ].join('\n');
 }
 
-function renderIssues(issues, termWidth) {
+export function renderIssues(issues, termWidth) {
   if (termWidth < 80) return renderCards(issues, Math.max(30, termWidth));
 
   const wide = termWidth >= 120;
@@ -276,7 +277,7 @@ function renderIssues(issues, termWidth) {
 
 /* ───────────────────────── Argumentumok / API ───────────────────────── */
 
-function getOutputPath(args) {
+export function getOutputPath(args) {
   let outputPath;
 
   for (let index = 0; index < args.length; index += 1) {
@@ -301,7 +302,7 @@ function getOutputPath(args) {
   return outputPath;
 }
 
-async function fetchPage(token, page) {
+export async function fetchPage(token, page) {
   const searchParams = new URLSearchParams({
     componentKeys: projectKey,
     resolved: 'false',
@@ -327,44 +328,8 @@ async function fetchPage(token, page) {
 
   return data;
 }
-
-async function main() {
-  const token = process.env.SONAR_TOKEN;
-  if (!token) {
-    throw new Error(
-      'SONAR_TOKEN is missing. Set it in the project-root .env.local as SONAR_TOKEN=your_token.',
-    );
-  }
-
-  const outputPath = getOutputPath(process.argv.slice(2));
-  const firstPage = await fetchPage(token, 1);
-  const totalIssues = firstPage.paging?.total ?? firstPage.total;
-
-  if (!Number.isInteger(totalIssues)) {
-    throw new Error(
-      'SonarCloud response did not include the total issue count.',
-    );
-  }
-
-  const fetchableIssues = Math.min(totalIssues, maxSearchResults);
-  const issues = [...firstPage.issues];
-  const totalPages = Math.ceil(fetchableIssues / pageSize);
-
-  for (let page = 2; page <= totalPages; page += 1) {
-    const nextPage = await fetchPage(token, page);
-    issues.push(...nextPage.issues);
-  }
-
-  const result = {
-    projectKey,
-    sonarUrl,
-    fetchedAt: new Date().toISOString(),
-    total: issues.length,
-    issues,
-  };
-  const json = `${JSON.stringify(result, null, 2)}\n`;
-
-  const rows = issues
+export function normalizeIssues(issues) {
+  return issues
     .map((issue) => ({
       key: issue.key ?? '',
       severity: issue.severity ?? '',
@@ -386,6 +351,51 @@ async function main() {
         (Number(a.line) || 0) - (Number(b.line) || 0)
       );
     });
+}
+
+export async function fetchAllIssues(token) {
+  const firstPage = await fetchPage(token, 1);
+  const total = firstPage.paging?.total ?? firstPage.total;
+
+  if (!Number.isInteger(total)) {
+    throw new Error(
+      'SonarCloud response did not include the total issue count.',
+    );
+  }
+
+  const issues = [...firstPage.issues];
+  const totalPages = Math.ceil(Math.min(total, maxSearchResults) / pageSize);
+
+  for (let page = 2; page <= totalPages; page += 1) {
+    const nextPage = await fetchPage(token, page);
+    issues.push(...nextPage.issues);
+  }
+
+  return { issues, total };
+}
+
+export async function main(argv = process.argv.slice(2)) {
+  config({ path: resolve(projectRoot, '.env.local'), quiet: true });
+
+  const token = process.env.SONAR_TOKEN;
+  if (!token) {
+    throw new Error(
+      'SONAR_TOKEN is missing. Set it in the project-root .env.local as SONAR_TOKEN=your_token.',
+    );
+  }
+
+  const outputPath = getOutputPath(argv);
+  const { issues, total } = await fetchAllIssues(token);
+
+  const result = {
+    projectKey,
+    sonarUrl,
+    fetchedAt: new Date().toISOString(),
+    total: issues.length,
+    issues,
+  };
+  const json = `${JSON.stringify(result, null, 2)}\n`;
+  const rows = normalizeIssues(issues);
 
   if (outputPath) {
     const destination = resolve(process.cwd(), outputPath);
@@ -402,9 +412,9 @@ async function main() {
       : c.bold(c.green('✔ No unresolved SonarCloud issues found.'));
   console.log(`${title}  ${c.dim(projectKey)}\n`);
 
-  if (totalIssues > maxSearchResults) {
+  if (total > maxSearchResults) {
     console.log(
-      `${c.yellow('⚠')} SonarCloud total is ${totalIssues}, but the search API returns at most ${maxSearchResults}. Narrow the query to see the rest.\n`,
+      `${c.yellow('⚠')} SonarCloud total is ${total}, but the search API returns at most ${maxSearchResults}. Narrow the query to see the rest.\n`,
     );
   }
 
@@ -414,7 +424,20 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(c.red(`✖ ${error.message}`));
-  process.exitCode = 1;
-});
+export async function runCli(argv = process.argv.slice(2)) {
+  try {
+    await main(argv);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(c.red(`✖ ${message}`));
+    process.exitCode = 1;
+  }
+}
+
+const isEntrypoint =
+  Boolean(process.argv[1]) &&
+  resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isEntrypoint) {
+  runCli();
+}
