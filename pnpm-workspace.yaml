@@ -169,7 +169,7 @@ minimumReleaseAgeExclude:
   - '@img/sharp-win32-arm64@0.35.4'
   - '@img/sharp-win32-ia32@0.35.4'
   - '@img/sharp-win32-x64@0.35.4'
-  - zod@4.5.4 || 4.6.2 || 4.6.4 || 4.6.5 || 4.6.6
+  - zod@4.5.4 || 4.6.2 || 4.6.4 || 4.6.5 || 4.6.6 || 4.6.7
   - '@eloqnt/config@0.1.0 || 0.1.1'
   - '@eloqnt/format-json@0.1.0'
   - '@eloqnt/format-po@0.1.0 || 0.1.1'
