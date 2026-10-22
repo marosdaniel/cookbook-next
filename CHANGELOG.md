@@ -1,3 +1,10 @@
+# [3.10.0](https://github.com/marosdaniel/cookbook-next/compare/v3.9.0...v3.10.0) (2026-10-22)
+
+
+### Features
+
+* update favicon documentation and generation process ([c3a62fb](https://github.com/marosdaniel/cookbook-next/commit/c3a62fb769e8d6bf4b6613d30e4da363dc5467df))
+
 # [3.9.0](https://github.com/marosdaniel/cookbook-next/compare/v3.8.0...v3.9.0) (2026-10-13)
 
 ### Features
