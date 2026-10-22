@@ -207,7 +207,7 @@ settings:
 overrides:
   "@hono/node-server@<1.19.13": ^1.19.13
   "@prisma/dev>find-my-way": ^9.7.0
-  find-my-way: ^9.7.0
+  find-my-way: ^9.10.0
   fast-uri: ^4.1.3
   graphql: 17.0.2
   next>sharp: ^0.35.3
@@ -422,8 +422,8 @@ importers:
         specifier: ^4.1.3
         version: 4.2.1
       find-my-way:
-        specifier: ^9.7.0
-        version: 9.9.0
+        specifier: ^9.10.0
+        version: 9.10.0
       happy-dom:
         specifier: ^21.0.4
         version: 21.0.4
@@ -5134,10 +5134,10 @@ packages:
       }
     engines: { node: ">= 18.0.0" }
 
-  find-my-way@9.9.0:
+  find-my-way@9.10.0:
     resolution:
       {
-        integrity: sha512-sJsgZ1sQH2UDuowPuMKg8az7Qc8F0jnj+SKkFWU/+T0xcFlgV5skgXOGUqmQzOdmW6ALA7AhJINWx3qFBkbLHA==,
+        integrity: sha512-eru+uCPQ2g+nLBkf84MHP/KyNNMar0BDy0j+i8Fb72GF9/YHBZ58q7FODUtfVV7XU9nfRUHXSmaM8NmZcIbZ4Q==,
       }
     engines: { node: ">=20" }
 
@@ -10046,7 +10046,7 @@ snapshots:
       "@prisma/get-platform": 7.2.0
       "@prisma/query-plan-executor": 7.2.0
       "@prisma/streams-local": 0.1.11
-      find-my-way: 9.9.0
+      find-my-way: 9.10.0
       foreground-child: 3.3.1
       get-port-please: 3.2.0
       pathe: 2.0.3
@@ -11484,7 +11484,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  find-my-way@9.9.0:
+  find-my-way@9.10.0:
     dependencies:
       fast-deep-equal: 3.1.3
       fast-querystring: 1.1.2
