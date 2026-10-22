@@ -154,7 +154,13 @@ export const AnimatedLogo = ({ size = 64 }: { size?: number }) => {
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <svg width={size} height={size} viewBox="0 0 64 64" role="img" aria-label="Cookbook">
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 64 64"
+      role="img"
+      aria-label="Cookbook"
+    >
       <motion.path
         d="M50 15A22 22 0 1 0 50 49"
         fill="none"
@@ -166,11 +172,19 @@ export const AnimatedLogo = ({ size = 64 }: { size?: number }) => {
         transition={{ duration: 0.7, ease: 'easeInOut' }}
       />
       <motion.ellipse
-        cx="42" cy="32" rx="6" ry="7.5"
+        cx="42"
+        cy="32"
+        rx="6"
+        ry="7.5"
         fill="#E00890"
         initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.55, type: 'spring', stiffness: 380, damping: 30 }}
+        transition={{
+          delay: 0.55,
+          type: 'spring',
+          stiffness: 380,
+          damping: 30,
+        }}
       />
     </svg>
   );
@@ -184,15 +198,15 @@ export const AnimatedLogo = ({ size = 64 }: { size?: number }) => {
 
 ## Összehasonlító táblázat
 
-| # | Stílus | Favicon | Header | Social/OG | Skálázhatóság | Megvalósítási költség |
-|---|---|---|---|---|---|---|
-| 1 | Monogram | ✅✅ | ✅ | ✅ | Kiváló | S |
-| 2 | Ikonikus könyv-tányér | ✅ | ✅✅ | ✅ | Jó | S |
-| 3 | Geometrikus hexa | ✅✅ | ✅ | 🟡 | Kiváló | S |
-| 4 | Organikus habverő-szív | 🟡 | 🟡 | ✅ | Közepes | S |
-| 5 | Badge/embléma | ❌ | 🟡 | ✅✅ | Nagy méretben jó | S |
-| 6 | Wordmark | ❌ | ✅✅ (desktop) | ✅ | Szélességfüggő | S |
-| 7 | Light/dark pár | ✅✅ | ✅✅ | ✅ | Kiváló | S (drop-in csere) |
-| 8 | Animált (motion) | — | ❌ | — | — | S/M |
+| #   | Stílus                 | Favicon | Header         | Social/OG | Skálázhatóság    | Megvalósítási költség |
+| --- | ---------------------- | ------- | -------------- | --------- | ---------------- | --------------------- |
+| 1   | Monogram               | ✅✅    | ✅             | ✅        | Kiváló           | S                     |
+| 2   | Ikonikus könyv-tányér  | ✅      | ✅✅           | ✅        | Jó               | S                     |
+| 3   | Geometrikus hexa       | ✅✅    | ✅             | 🟡        | Kiváló           | S                     |
+| 4   | Organikus habverő-szív | 🟡      | 🟡             | ✅        | Közepes          | S                     |
+| 5   | Badge/embléma          | ❌      | 🟡             | ✅✅      | Nagy méretben jó | S                     |
+| 6   | Wordmark               | ❌      | ✅✅ (desktop) | ✅        | Szélességfüggő   | S                     |
+| 7   | Light/dark pár         | ✅✅    | ✅✅           | ✅        | Kiváló           | S (drop-in csere)     |
+| 8   | Animált (motion)       | —       | ❌             | —         | —                | S/M                   |
 
 **Ajánlott kombináció**: **#1 vagy #7** ikonként (favicon+header) + **#6 wordmark** desktopon + **#8** a login/404 oldalra. A #2 és #4 empty-state illusztrációként hasznosulhat akkor is, ha nem lesz fő logó.

@@ -8,18 +8,18 @@
 
 ## 1. Összefoglaló táblázat
 
-| # | Komponens/oldal | Probléma | Súlyosság | Prio |
-|---|---|---|---|---|
-| R1 | Recept-detail — sticky hozzávaló-kártya | `top: 80px` sticky + `md`-nél túl korán vált két hasábra → tablet sávban összenyomott tartalom | Közepes | P1 |
-| R2 | Recept-detail — hero kép | Fix `420px` magasság minden viewporton → mobilon a fold nagy részét elviszi | Alacsony/közepes | P1 |
-| R3 | Touch targetek | Több `ActionIcon`/ikongomb < 44×44px (favorite gomb kártyán, step fel/le nyilak, composer ikonok) | Közepes (a11y) | P1 |
-| R4 | Footer (mobil) | ✅ Egyetlen responsive, oszlopos layout; `size="sm"` linkek és 4px függőleges padding | Alacsony | Kész (2026-09-27) |
-| R5 | Header — nagyon keskeny viewport (<360px) | Logo + search + auth gomb + burger egy sorban törhet | Alacsony | P2 |
-| R6 | RecipesPage szűrősáv | A szűrők mobilon egymás alá esnek, de a collapse abrupt; a szűrő-controlok nem `size="md"`-k mobilon | Alacsony | P2 |
-| R7 | RecipeComposer mobilon | A szekcióváltó sidebar Draweren keresztül érhető el, a submit a tartalom alján — sok interakció (07-06 R9 óta nyitott) | Közepes | P1 |
-| R8 | NavBar linkek | Hardcode-olt 16px margin; a nav-linkek magassága rendben, de az aktív állapot jelzése keskeny | Alacsony | P2 |
-| R9 | Horizontális scroll-veszély | Hosszú, törésmentes stringek (recept-cím, URL-ek) `Text` truncation nélkül néhol (detail meta-sor, HeaderSearch találatok) | Alacsony | P2 |
-| R10 | Motion mobilon | A tervezett `layout` grid-animáció 30+ kártyánál low-end eszközön jank-veszély | Közepes | P1 (megelőző szabály) |
+| #   | Komponens/oldal                           | Probléma                                                                                                                   | Súlyosság        | Prio                  |
+| --- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------- | --------------------- |
+| R1  | Recept-detail — sticky hozzávaló-kártya   | `top: 80px` sticky + `md`-nél túl korán vált két hasábra → tablet sávban összenyomott tartalom                             | Közepes          | P1                    |
+| R2  | Recept-detail — hero kép                  | Fix `420px` magasság minden viewporton → mobilon a fold nagy részét elviszi                                                | Alacsony/közepes | P1                    |
+| R3  | Touch targetek                            | Több `ActionIcon`/ikongomb < 44×44px (favorite gomb kártyán, step fel/le nyilak, composer ikonok)                          | Közepes (a11y)   | P1                    |
+| R4  | Footer (mobil)                            | ✅ Egyetlen responsive, oszlopos layout; `size="sm"` linkek és 4px függőleges padding                                      | Alacsony         | Kész (2026-09-27)     |
+| R5  | Header — nagyon keskeny viewport (<360px) | Logo + search + auth gomb + burger egy sorban törhet                                                                       | Alacsony         | P2                    |
+| R6  | RecipesPage szűrősáv                      | A szűrők mobilon egymás alá esnek, de a collapse abrupt; a szűrő-controlok nem `size="md"`-k mobilon                       | Alacsony         | P2                    |
+| R7  | RecipeComposer mobilon                    | A szekcióváltó sidebar Draweren keresztül érhető el, a submit a tartalom alján — sok interakció (07-06 R9 óta nyitott)     | Közepes          | P1                    |
+| R8  | NavBar linkek                             | Hardcode-olt 16px margin; a nav-linkek magassága rendben, de az aktív állapot jelzése keskeny                              | Alacsony         | P2                    |
+| R9  | Horizontális scroll-veszély               | Hosszú, törésmentes stringek (recept-cím, URL-ek) `Text` truncation nélkül néhol (detail meta-sor, HeaderSearch találatok) | Alacsony         | P2                    |
+| R10 | Motion mobilon                            | A tervezett `layout` grid-animáció 30+ kártyánál low-end eszközön jank-veszély                                             | Közepes          | P1 (megelőző szabály) |
 
 ---
 
@@ -34,14 +34,20 @@
   <Grid.Col span={{ base: 12, lg: 7 }}>{/* leírás, lépések */}</Grid.Col>
   <Grid.Col span={{ base: 12, lg: 5 }}>
     {/* sticky csak lg-től — tablet/mobil: normál flow */}
-    <Box style={{ position: 'sticky', top: 'calc(60px + var(--mantine-spacing-md))' }} visibleFrom="lg">
+    <Box
+      style={{
+        position: 'sticky',
+        top: 'calc(60px + var(--mantine-spacing-md))',
+      }}
+      visibleFrom="lg"
+    >
       <IngredientsCard /* ... */ />
     </Box>
     <Box hiddenFrom="lg">
       <IngredientsCard /* ... */ />
     </Box>
   </Grid.Col>
-</Grid>
+</Grid>;
 ```
 
 Indok: 62–75em között (kis laptop/tablet fekvő) a 7/5-ös osztás mindkét hasábot összenyomja; `lg`-ig az egyhasábos elrendezés olvashatóbb, és a sticky sem ütközik a headerrel.
@@ -56,7 +62,7 @@ Indok: 62–75em között (kis laptop/tablet fekvő) a 7/5-ös osztás mindkét 
   h={{ base: 220, sm: 300, lg: 420 }}
   fit="cover"
   radius="lg"
-/>
+/>;
 ```
 
 ### R3 — Touch targetek: minimum 44px mobilon
@@ -91,7 +97,7 @@ Mivel az `ActionIcon size` nem fogad responsive objektumot, a mintát CSS-szel �
 ```
 
 ```tsx
-<ActionIcon className="touch-target" size="md" /* ... */ />
+<ActionIcon className="touch-target" size="md" /* ... */ />;
 ```
 
 Érintett helyek: RecipeCard `FavoriteButton`, Steps/Ingredients sor-akciók (fel/le/törlés), ThemeSwitcher, Burger (a Mantine Burger 34px — `size="lg"`-re állítandó mobilon), RecipeRating csillagai (a Mantine `Rating` `size="lg"` mobilon).
@@ -110,12 +116,17 @@ A footer egyetlen responsive `SimpleGrid` elrendezést használ, a desktop/mobil
     <Box visibleFrom="sm" w={{ sm: 220, md: 280 }}>
       <HeaderSearch />
     </Box>
-    <ActionIcon hiddenFrom="sm" className="touch-target" variant="subtle" aria-label={t('search.open')}>
+    <ActionIcon
+      hiddenFrom="sm"
+      className="touch-target"
+      variant="subtle"
+      aria-label={t('search.open')}
+    >
       <IconSearch size={20} />
     </ActionIcon>
     {/* auth gomb, theme switcher, burger */}
   </Group>
-</Group>
+</Group>;
 ```
 
 Indok: <360px-en a szabad szélesség nem elég a beágyazott search inputnak; az ikon→spotlight minta megszünteti a törést és nagyobb keresőfelületet is ad.
@@ -123,6 +134,7 @@ Indok: <360px-en a szabad szélesség nem elég a beágyazott search inputnak; a
 ### R6 — Szűrősáv mobilon
 
 - A szűrő-controlok mobilon `size="md"` (magasabb input = jobb tap):
+
   ```tsx
   const isMobile = useMediaQuery('(max-width: 48em)');
   <Select size={isMobile ? 'md' : 'sm'} /* ... */ />
@@ -143,11 +155,17 @@ Indok: <360px-en a szabad szélesség nem elég a beágyazott search inputnak; a
     zIndex: 50,
     background: 'var(--mantine-color-body)',
     borderTop: '1px solid var(--mantine-color-default-border)',
-    paddingBottom: 'calc(var(--mantine-spacing-sm) + env(safe-area-inset-bottom))',
+    paddingBottom:
+      'calc(var(--mantine-spacing-sm) + env(safe-area-inset-bottom))',
   }}
 >
   <Group justify="space-between" wrap="nowrap">
-    <Button variant="default" onClick={goToPrevSection} disabled={isFirstSection} className="touch-target">
+    <Button
+      variant="default"
+      onClick={goToPrevSection}
+      disabled={isFirstSection}
+      className="touch-target"
+    >
       {t('composer.back')}
     </Button>
     {isLastSection ? (
@@ -160,7 +178,7 @@ Indok: <360px-en a szabad szélesség nem elég a beágyazott search inputnak; a
       </Button>
     )}
   </Group>
-</Box>
+</Box>;
 ```
 
 Indok: ma a szekcióváltás Drawer-nyitást igényel; a sticky sáv 1 tapre csökkenti, és a `env(safe-area-inset-bottom)` az iOS home-indikátor alá csúszást kezeli.
@@ -171,16 +189,22 @@ Indok: ma a szekcióváltás Drawer-nyitást igényel; a sticky sáv 1 tapre cs�
 // hardcode-olt margin helyett:
 <Stack gap={4} p="md">
   {links.map((link) => (
-    <NavLink key={link.href} /* Mantine NavLink: teljes szélességű, 40px+ magas tap-felület */ />
+    <NavLink
+      key={
+        link.href
+      } /* Mantine NavLink: teljes szélességű, 40px+ magas tap-felület */
+    />
   ))}
-</Stack>
+</Stack>;
 ```
 
 ### R9 — Truncation védőháló
 
 ```tsx
 // bárhol, ahol user-generált cím jelenik meg egy sorban:
-<Text truncate="end" /* vagy lineClamp={2} kártya-kontextusban */>{title}</Text>
+<Text truncate="end" /* vagy lineClamp={2} kártya-kontextusban */>
+  {title}
+</Text>;
 ```
 
 Érintett: detail meta-sor (kategória • idő • adag), HeaderSearch dropdown találat-címei.
@@ -191,14 +215,14 @@ Indok: ma a szekcióváltás Drawer-nyitást igényel; a sticky sáv 1 tapre cs�
 
 A [ux-motion-upgrade-plan-2026-08-30.md](ux-motion-upgrade-plan-2026-08-30.md) animációira vonatkozó kötelező korlátok:
 
-| Szabály | Indok |
-|---|---|
-| `layout` animáció (grid-átrendezés) csak `md+` viewporton; mobilon opacity-only belépés | A layout-animáció minden érintett elemre transform-mérést + animációt futtat — 20-30 kártyánál low-end Androidon jank |
-| Stagger elemszám-korlát: max 12 elem kap delay-t, a többi delay nélkül | A késleltetett animációk hosszan „mozgó” képernyőt adnak mobilon, ami zavaró görgetés közben |
-| Egyszerre max 1 scroll-kötött animáció fusson viewportonként (ReadingProgress VAGY parallax, nem mindkettő) | A scroll-driven update minden frame-ben fut — több példány mobilon main-thread terhelés |
-| `whileHover` mobilon hatástalan (nincs hover) → minden hover-mikrointerakciónak legyen `whileTap` párja vagy legyen tisztán dekoratív | A csak-hover visszajelzés mobilon elveszik |
-| Repeat/infinite animációk (EmptyState ikon) `useReducedMotion()` guarddal ÉS `viewport`-on kívül állítva (`useInView`-val pause) | Végtelen animáció akkumulátor-fogyasztó, ha képernyőn kívül is fut |
-| Minden animáció transform/opacity — soha `width/height/top/left` (kivéve az egyszeri height-collapse-ot) | Compositor-only animáció = 60fps mobilon is |
+| Szabály                                                                                                                               | Indok                                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `layout` animáció (grid-átrendezés) csak `md+` viewporton; mobilon opacity-only belépés                                               | A layout-animáció minden érintett elemre transform-mérést + animációt futtat — 20-30 kártyánál low-end Androidon jank |
+| Stagger elemszám-korlát: max 12 elem kap delay-t, a többi delay nélkül                                                                | A késleltetett animációk hosszan „mozgó” képernyőt adnak mobilon, ami zavaró görgetés közben                          |
+| Egyszerre max 1 scroll-kötött animáció fusson viewportonként (ReadingProgress VAGY parallax, nem mindkettő)                           | A scroll-driven update minden frame-ben fut — több példány mobilon main-thread terhelés                               |
+| `whileHover` mobilon hatástalan (nincs hover) → minden hover-mikrointerakciónak legyen `whileTap` párja vagy legyen tisztán dekoratív | A csak-hover visszajelzés mobilon elveszik                                                                            |
+| Repeat/infinite animációk (EmptyState ikon) `useReducedMotion()` guarddal ÉS `viewport`-on kívül állítva (`useInView`-val pause)      | Végtelen animáció akkumulátor-fogyasztó, ha képernyőn kívül is fut                                                    |
+| Minden animáció transform/opacity — soha `width/height/top/left` (kivéve az egyszeri height-collapse-ot)                              | Compositor-only animáció = 60fps mobilon is                                                                           |
 
 Ellenőrzés: Chrome DevTools → Performance, 4× CPU throttling + „Lighthouse mobile” futtatás a listaoldalon az animációk bevezetése után (ingyenes, lásd backlog N-P2-8 LHCI).
 

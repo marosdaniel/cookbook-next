@@ -10,30 +10,30 @@ Jelmagyarázat: **P0** = kritikus/biztonsági, **P1** = fontos, **P2** = nice-to
 
 ## 0. Gyors áttekintés (prioritás szerint)
 
-| ID | Téma | Prioritás | Munka |
-|---|---|---|---|
-| B1 | Operation-name alapú jogosultság és rate limit kijátszható | P0 | M |
-| B2 | Persisted-query allowlist nincs bekötve | P0 | M |
-| B3 | Belépés (login) rate limit/zárolás hiánya | P0 | S |
-| B4 | Közös "strict" rate limit vödör (5/10 perc) túl szűk | P1 | S |
-| B5 | `Recipe.author` `onDelete` hiánya, `deleteUser` hibája | P1 | S |
-| B6 | Jelszó-visszaállítás: felhasználó-felderítés, email szerinti limit | P1 | S |
-| B7 | Visszavont session 500-as hibát okozhat | P1 | S |
-| B8 | Keresés: lapozás, rendezés, indexek | P1 | M |
-| B9 | Login: email kisbetűsítés, időzítés-kiegyenlítés | P1 | S |
-| B10 | Versenyhelyzetek ("check-then-write") | P1 | S |
-| B11 | Redis cache: Date-típushiba, következetlen invalidálás | P1 | M |
-| B12 | `cleanUserRecipes` no-op resolver törlése | P1 | S |
-| B13 | Hibakezelés egységesítése (`Result`) | P2 | M |
-| B14 | Audit tranzakcióba, `deleteAll*` műveletek naplózása | P1 | S |
-| B15 | Megfigyelhetőség (OTel, pino) | P2 | M |
-| B16 | `after()` az email és audit műveletekhez | P2 | S |
-| B17 | Adatmodell: JSON mezők, státusz, soft delete | P2 | L |
-| B18 | DataLoaderek lapozása, lista-lekérdezések | P2 | M |
-| B19 | Prisma 7 `prisma-client` generator | P2 | M |
-| B20 | Jelszó-hash frissítés (bcrypt → argon2) | P2 | S |
-| B21 | Integrációs tesztek valódi Postgresszel | P2 | M |
-| B22 | CSP reporting, Trusted Types | P2 | S |
+| ID  | Téma                                                               | Prioritás | Munka |
+| --- | ------------------------------------------------------------------ | --------- | ----- |
+| B1  | Operation-name alapú jogosultság és rate limit kijátszható         | P0        | M     |
+| B2  | Persisted-query allowlist nincs bekötve                            | P0        | M     |
+| B3  | Belépés (login) rate limit/zárolás hiánya                          | P0        | S     |
+| B4  | Közös "strict" rate limit vödör (5/10 perc) túl szűk               | P1        | S     |
+| B5  | `Recipe.author` `onDelete` hiánya, `deleteUser` hibája             | P1        | S     |
+| B6  | Jelszó-visszaállítás: felhasználó-felderítés, email szerinti limit | P1        | S     |
+| B7  | Visszavont session 500-as hibát okozhat                            | P1        | S     |
+| B8  | Keresés: lapozás, rendezés, indexek                                | P1        | M     |
+| B9  | Login: email kisbetűsítés, időzítés-kiegyenlítés                   | P1        | S     |
+| B10 | Versenyhelyzetek ("check-then-write")                              | P1        | S     |
+| B11 | Redis cache: Date-típushiba, következetlen invalidálás             | P1        | M     |
+| B12 | `cleanUserRecipes` no-op resolver törlése                          | P1        | S     |
+| B13 | Hibakezelés egységesítése (`Result`)                               | P2        | M     |
+| B14 | Audit tranzakcióba, `deleteAll*` műveletek naplózása               | P1        | S     |
+| B15 | Megfigyelhetőség (OTel, pino)                                      | P2        | M     |
+| B16 | `after()` az email és audit műveletekhez                           | P2        | S     |
+| B17 | Adatmodell: JSON mezők, státusz, soft delete                       | P2        | L     |
+| B18 | DataLoaderek lapozása, lista-lekérdezések                          | P2        | M     |
+| B19 | Prisma 7 `prisma-client` generator                                 | P2        | M     |
+| B20 | Jelszó-hash frissítés (bcrypt → argon2)                            | P2        | S     |
+| B21 | Integrációs tesztek valódi Postgresszel                            | P2        | M     |
+| B22 | CSP reporting, Trusted Types                                       | P2        | S     |
 
 ---
 
@@ -44,7 +44,6 @@ Jelmagyarázat: **P0** = kritikus/biztonsági, **P1** = fontos, **P2** = nice-to
 **Hol**: `src/app/api/graphql/route.ts` (`authPlugin`, `enforceRateLimit`), `src/lib/graphql/operationsConfig.ts`, `src/lib/rateLimit/rateLimit.ts`.
 
 **Probléma**: a jogosultsági ellenőrzés (`assertGraphQLOperationAuthorized`) és a rate limiter is az operation name alapján dönt. Ezt a nevet a kliens írja a GraphQL dokumentumba. Egy támadó a mutációját elnevezheti egy publikus műveletnek (pl. `GetRecipes`), ekkor:
-
 - az auth-ellenőrzés publikus műveletnek látja,
 - a rate limiter a laza globális limitet (100/perc) alkalmazza a szigorú helyett.
 
@@ -53,7 +52,6 @@ A kommentár szerint a kliens által küldött `operationName` nem megbízható,
 **Enyhítő tényező**: a resolverek és a service-ek külön ellenőrzik a `userId`-t és a szerepkört (pl. `changePassword`, `deleteAllUser`, `AdminService.assertAdminRole`), tehát a tényleges kár korlátozott. Ez azonban nem mentesít a rétegezett védelem kijavítása alól.
 
 **Javítás**:
-
 1. A jogosultságot a művelet **gyökérmezői (root field)** szerint ellenőrizd (`requestContext.operation.selectionSet`), ne a név szerint. Térképezd a gyökérmezőket szerepkörökre (`createRecipe` → USER, `deleteAllUser` → ADMIN, stb.).
 2. A rate limitet is az Apollo `didResolveOperation` fázisában alkalmazd (a valós művelettel), ne a nyers kérés-törzsből regexszel kinyert névvel.
 3. A `GraphQLError` kóddal (`RATE_LIMITED`) lehet visszautasítani.
@@ -89,7 +87,6 @@ A kommentár szerint a kliens által küldött `operationName` nem megbízható,
 **Hol**: `UserService.resetPassword`.
 
 **Problémák**:
-
 - Ha az email-küldés elbukik, csak létező fióknál jön 500 hiba. Ez felhasználó-felderítést enged.
 - A küldés szinkron, így az időkülönbség is elárulja a fiók létezését.
 - A nem létező email-cím és a felhasználó email-címe is bekerül a logba (PII).
@@ -153,14 +150,12 @@ Az argon2id beállítás (64 MiB, t=3, p=1) az OWASP minimuma (19 MiB, t=2, p=1)
 **Hol**: `RecipeService.getRecipes`, keresési ág.
 
 **Problémák**:
-
 - a keresési ág nem használ `take`-et,
 - a találatokat similarity szerint kéri, majd memóriában `indexOf`-fal rendezi újra,
 - az `endCursor` `createdAt` alapú, a találati sorrend viszont relevancia alapú, így a következő oldal valószínűleg következetlen,
 - a sémában csak btree `@@index([title])` van, ami a `%` trigram-operátort nem gyorsítja (a migrációkat nem néztem).
 
 **Javítás**:
-
 1. Keyset-lapozás (score, id) szerint SQL-ben, `LIMIT`-tel.
 2. GIN `gin_trgm_ops` indexek a keresett oszlopokra.
 3. Alternatíva: Postgres full-text (`tsvector` generált oszlop) `unaccent`-tal a magyar ékezetekhez.
@@ -168,7 +163,6 @@ Az argon2id beállítás (64 MiB, t=3, p=1) az OWASP minimuma (19 MiB, t=2, p=1)
 ### B11. Redis cache (P1, M)
 
 **Problémák**:
-
 - az Upstash JSON-ból a `Date` mezők stringként jönnek vissza, de a típusok `Date`-et ígérnek,
 - a `rateRecipe` és `deleteRating` nyers `recipe:${id}` kulcsot töröl a `cacheKeys` helyett (a tényleges kulcsformát nem ismerem, stale cache gyanú, **ellenőrizd**),
 - a `UserService` beégetett `:all` kulcsokat használ, és csak a limit nélküli változatot érvényteleníti,
@@ -250,15 +244,15 @@ A Next.js `after()` a válasz után futtat munkát (naplózás, email). Cseréld
 
 Az Effect teljes bevezetését nem javaslom (meredek tanulási görbe, az egész kódbázist érintené). A képességeit célzott eszközökkel fedheted le:
 
-| Effect képesség | Jelenlegi állapot | Javasolt eszköz |
-|---|---|---|
-| Schema/validáció | Zod 4 megvan | Maradj a Zodnál |
-| Típusos hibák | `try/catch`, GraphQL hibák | neverthrow |
-| Retry/timeout/backoff | Nincs | cockatiel vagy p-retry (saját ajánlás) |
-| Dependency injection | Service objektumok | Kézi constructor injection |
-| Tracing/logging | Csak Speed Insights | `@vercel/otel` + pino |
-| Env/config validáció | Az `env.ts` tartalmát nem néztem | `@t3-oss/env-nextjs` (Zodra épül) |
-| Batching | DataLoader megvan | Nincs teendő |
+| Effect képesség       | Jelenlegi állapot                | Javasolt eszköz                        |
+| --------------------- | -------------------------------- | -------------------------------------- |
+| Schema/validáció      | Zod 4 megvan                     | Maradj a Zodnál                        |
+| Típusos hibák         | `try/catch`, GraphQL hibák       | neverthrow                             |
+| Retry/timeout/backoff | Nincs                            | cockatiel vagy p-retry (saját ajánlás) |
+| Dependency injection  | Service objektumok               | Kézi constructor injection             |
+| Tracing/logging       | Csak Speed Insights              | `@vercel/otel` + pino                  |
+| Env/config validáció  | Az `env.ts` tartalmát nem néztem | `@t3-oss/env-nextjs` (Zodra épül)      |
+| Batching              | DataLoader megvan                | Nincs teendő                           |
 
 Retry/timeout jelöltek: Nodemailer (átmeneti SMTP-hiba), Neon cold start, Upstash (tudatos fail-open/fail-closed döntés).
 
@@ -266,13 +260,12 @@ Retry/timeout jelöltek: Nodemailer (átmeneti SMTP-hiba), Neon cold start, Upst
 
 ## 5. Cutting-edge technológiák (ingyenesek)
 
-| Terület | Haszon | Kockázat | Javaslat |
-|---|---|---|---|
-| View Transitions (`<ViewTransition>`) | Magas, látványos | Alacsony | Kezdd ezzel |
-| `use cache` az adatrétegen | Közepes | Alacsony | Második lépés |
-| Teljes PPR / Cache Components | Magas | Közepes (CSP nonce) | Csak külön branchen |
-| Passkey (SimpleWebAuthn) | Közepes | Közepes | Opcionális, kiegészítő |
-
+| Terület                               | Haszon           | Kockázat            | Javaslat               |
+| ------------------------------------- | ---------------- | ------------------- | ---------------------- |
+| View Transitions (`<ViewTransition>`) | Magas, látványos | Alacsony            | Kezdd ezzel            |
+| `use cache` az adatrétegen            | Közepes          | Alacsony            | Második lépés          |
+| Teljes PPR / Cache Components         | Magas            | Közepes (CSP nonce) | Csak külön branchen    |
+| Passkey (SimpleWebAuthn)              | Közepes          | Közepes             | Opcionális, kiegészítő |
 - **View Transitions**: a receptkártyáról a részletoldalra az kép és a cím "átrepülhet". A `view-transition-name` legyen egyedi (`recipe-${id}`). `prefers-reduced-motion` esetén kapcsold ki. A motion az oldalon belüli mikro-animációkat viszi.
 - **Cache Components és PPR**: a nonce-alapú CSP és a cookie-ból olvasott locale kérésfüggő renderelést jelent, ami szembemegy a statikus váz elvével. Ezért előbb csak a `use cache` az adatrétegen (kategóriák, publikus listák, `revalidateTag` adminművelet után).
 - **Passkey**: az Auth.js beépített Passkeys providere kísérleti és DB-adaptert igényel, nem ajánlott élesben. Kiegészítésként, a jelszavas belépés megtartásával vezesd be.
@@ -281,14 +274,13 @@ Retry/timeout jelöltek: Nodemailer (átmeneti SMTP-hiba), Neon cold start, Upst
 
 ## 6. Új funkció-ötletek
 
-| Ötlet | Haszon | Munka | Kockázat |
-|---|---|---|---|
-| Főzés mód + Screen Wake Lock | Magas | Kicsi | Alacsony |
-| Installálható PWA (manifest) | Magas | Kicsi | Alacsony |
-| Web Push (követett felhasználók új receptje) | Közepes | Közepes | iOS: csak telepített PWA-nál |
-| Web Share API | Közepes | Kicsi | Alacsony |
-| Popover API / anchor positioning | Alacsony | Közepes | Egyenetlen böngészőtámogatás |
-
+| Ötlet                                        | Haszon   | Munka   | Kockázat                     |
+| -------------------------------------------- | -------- | ------- | ---------------------------- |
+| Főzés mód + Screen Wake Lock                 | Magas    | Kicsi   | Alacsony                     |
+| Installálható PWA (manifest)                 | Magas    | Kicsi   | Alacsony                     |
+| Web Push (követett felhasználók új receptje) | Közepes  | Közepes | iOS: csak telepített PWA-nál |
+| Web Share API                                | Közepes  | Kicsi   | Alacsony                     |
+| Popover API / anchor positioning             | Alacsony | Közepes | Egyenetlen böngészőtámogatás |
 - **PWA**: a Next.js beépítetten támogatja a manifestet (`src/app/manifest.ts`). Az offline rész kísérleti, tényleges offline recepthez Serwist és IndexedDB kell. A CSP-ben ellenőrizd a `worker-src` és `manifest-src` direktívákat.
 - **Főzés mód**: lépésenkénti nézet nagy betűvel, a képernyő nem alszik el. A PWA-ként telepített appban a leghasznosabb.
 - **Recipe rich result**: a JSON-LD-t kösd össze a videóval `@id`-vel, ellenőrizd a Rich Results Testtel.
@@ -311,16 +303,15 @@ Elvárások: minden animációnál `prefers-reduced-motion` kezelés (`MotionCon
 
 ## 8. Ingyenes Vercel-szolgáltatások
 
-| Feature | Hobby limit | Haszon |
-|---|---|---|
+| Feature                 | Hobby limit                  | Haszon                                                               |
+| ----------------------- | ---------------------------- | -------------------------------------------------------------------- |
 | Flags SDK + Edge Config | 100 000 olvasás, 100 írás/hó | Dashboardból állítható feature flag és konfig-érték, redeploy nélkül |
-| Web Analytics | 50 000 esemény/hó | Népszerű oldalak és receptek |
-| Speed Insights | 10 000 adatpont | Valós Core Web Vitals |
-| Draft Mode | Included | Nem publikált receptek előnézete |
-| Toolbar Comments | Included | Preview deploy-on kommentelés |
-| Cron Jobs | 2 db, napi 1 futás | Napi takarítás/seed |
-| Blob Storage | 1 GB | Recept-képfeltöltés |
-
+| Web Analytics           | 50 000 esemény/hó            | Népszerű oldalak és receptek                                         |
+| Speed Insights          | 10 000 adatpont              | Valós Core Web Vitals                                                |
+| Draft Mode              | Included                     | Nem publikált receptek előnézete                                     |
+| Toolbar Comments        | Included                     | Preview deploy-on kommentelés                                        |
+| Cron Jobs               | 2 db, napi 1 futás           | Napi takarítás/seed                                                  |
+| Blob Storage            | 1 GB                         | Recept-képfeltöltés                                                  |
 - A Flags SDK-hoz `FLAGS_SECRET` kell, és a Toolbar scriptjeit a CSP-be kell venni preview környezetben.
 - Ha a Hobby cron (naponta egyszer) nem elég, a GitHub Actions `schedule` workflow hívhatja a saját API route-ot.
 - A korlátokat érdemes a Vercel aktuális dokumentációjában újra ellenőrizni.

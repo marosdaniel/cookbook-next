@@ -1,8 +1,18 @@
 import crypto from 'node:crypto';
-import type { DocumentNode } from 'graphql';
+import type { DocumentNode, FieldNode } from 'graphql';
 import { parse, print, visit } from 'graphql';
 
 export const DEFAULT_GRAPHQL_MAX_LIMIT = 100;
+
+const stripTypenameVisitor = {
+  Field: (node: FieldNode) => {
+    if (node.name.value === '__typename') {
+      return null;
+    }
+
+    return undefined;
+  },
+};
 
 export const resolveQueryLimit = (limit?: number) => {
   if (limit === undefined || limit === null) {
@@ -25,15 +35,7 @@ export const getPersistedQueryHashFromDocument = (
 ) => {
   const parsed = typeof document === 'string' ? parse(document) : document;
 
-  const normalizedDocument = visit(parsed, {
-    Field: (node) => {
-      if (node.name.value === '__typename') {
-        return null;
-      }
-
-      return undefined;
-    },
-  });
+  const normalizedDocument = visit(parsed, stripTypenameVisitor);
 
   const normalizedQuery = print(normalizedDocument);
   return crypto.createHash('sha256').update(normalizedQuery).digest('hex');

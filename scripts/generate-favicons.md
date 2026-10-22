@@ -3,25 +3,30 @@
 ## Automatikus módszer (ajánlott)
 
 ### 1. Real Favicon Generator használata
+
 1. Látogass el: https://realfavicongenerator.net/
 2. Kattints a "Select your Favicon image" gombra
 3. Töltsd fel a dark mode vagy light mode logót (PNG formátumban)
 4. Állítsd be az opciókat:
 
 #### iOS Web Clip
+
 - Master picture: használd az eredeti képet
 - Background color: White (#FFFFFF)
 - Margin: 10-15%
 
 #### Android Chrome
+
 - Theme color: #FF00A1 (pink)
 - Master picture: eredeti
 - Margin: 10%
 
 #### Windows Metro
+
 - Tile color: #FF00A1
 
 #### macOS Safari
+
 - Theme color: #FF00A1
 - Pinned tab icon: monokróm verzió (automatikusan generálja)
 
@@ -50,14 +55,13 @@ convert logo-dark.png -resize 16x16 -define icon:auto-resize=16,32,48 public/fav
 - **Favicon.io**: https://favicon.io/
   - Egyszerűbb interfész
   - Gyors generálás
-  
+
 - **Favicon Generator**: https://www.favicon-generator.org/
   - Több formátum támogatás
 
 ## Ellenőrzés
 
 Miután elkészültek a favicon-ok, ellenőrizd:
-
 1. **Fájl méretek:**
    - favicon-16x16.png: ~500 bytes
    - favicon-32x32.png: ~1-2 KB
@@ -79,12 +83,14 @@ Miután elkészültek a favicon-ok, ellenőrizd:
 ## Troubleshooting
 
 ### Favicon nem jelenik meg
+
 1. Hard refresh: Cmd+Shift+R (Mac) vagy Ctrl+Shift+R (Windows)
 2. Törölj cache-t
 3. Inkognito módban próbáld
 4. Ellenőrizd a fájl elérési útvonalat a Network tab-ban
 
 ### Rossz méret/minőség
+
 1. Használj PNG-t ICO helyett ahol lehet
 2. Győződj meg róla, hogy az eredeti kép elég nagy (minimum 512x512)
 3. Használj éles, vektoros logót ha lehetséges

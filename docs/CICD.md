@@ -14,10 +14,12 @@ This document explains the GitHub Actions CI/CD pipeline defined in `.github/wor
    - [quality-checks](#1-quality-checks)
    - [e2e](#2-e2e)
    - [test-coverage](#3-test-coverage)
-  - [sonarqube](#4-sonarqube)
-  - [deploy-coverage-report](#5-deploy-coverage-report)
-  - [deploy-production](#6-deploy-production)
-  - [semantic-release](#7-semantic-release)
+
+- [sonarqube](#4-sonarqube)
+- [deploy-coverage-report](#5-deploy-coverage-report)
+- [deploy-production](#6-deploy-production)
+- [semantic-release](#7-semantic-release)
+
 6. [Secrets & Environment Variables](#secrets--environment-variables)
 7. [Why This Pipeline Exists](#why-this-pipeline-exists)
 
@@ -26,7 +28,6 @@ This document explains the GitHub Actions CI/CD pipeline defined in `.github/wor
 ## Overview
 
 The pipeline is named **"Deploy to Vercel Production"** and automates the full software delivery lifecycle:
-
 - **Validates** code quality (lint, types, unit tests, integration tests)
 - **Scans** commits and the working tree for accidentally committed secrets
 - **Tests** the app end-to-end in a real browser via Playwright
@@ -42,16 +43,15 @@ Every change that reaches `main` goes through all of these gates automatically �
 
 The workflow runs on three events:
 
-| Event | When |
-|-------|------|
-| `push` to `main` | When code is merged into the main branch |
+| Event                           | When                                          |
+| ------------------------------- | --------------------------------------------- |
+| `push` to `main`                | When code is merged into the main branch      |
 | `pull_request` targeting `main` | When a PR is opened, updated, or synchronized |
-| `workflow_dispatch` | Manually triggered from the GitHub Actions UI |
+| `workflow_dispatch`             | Manually triggered from the GitHub Actions UI |
 
 ### Path filters (`paths-ignore`)
 
 The workflow is smart about what actually warrants a run. It **skips** triggering when only these files change:
-
 - `**.md` — documentation files
 - `docs/**` — docs folder
 - `.vscode/**` — editor settings
@@ -71,7 +71,6 @@ concurrency:
 ```
 
 This prevents redundant pipeline runs:
-
 - **On PRs**: if you push two commits in quick succession, the first run is automatically cancelled when the second starts. Only the latest code is tested.
 - **On `main`**: runs are never cancelled mid-flight. A deployment in progress always completes, ensuring a stable production state.
 
@@ -111,17 +110,17 @@ quality-checks + e2e
 
 **Steps:**
 
-| Step | Command | What it does |
-|------|---------|--------------|
-| Checkout code | `actions/checkout@v7` | Clones the repository at the triggering commit |
-| Setup pnpm | `pnpm/action-setup@v6` | Installs pnpm 12.3.4, matching the `packageManager` field in `package.json` |
-| Setup Node.js | `actions/setup-node@v7` | Installs Node.js 24 and restores the pnpm dependency cache |
-| Install dependencies | `pnpm install --frozen-lockfile` | Installs all project dependencies from the lockfile |
-| Run Biome Lint | `pnpm lint:fix` | Runs Biome static analysis and auto-fixes formatting issues |
-| Verify GraphQL generated types | `pnpm codegen:check` | Verifies generated GraphQL types are synchronized with the schema and client documents |
-| Run Type Check | `pnpm run typecheck` | Runs `tsc --noEmit` to catch TypeScript type errors |
-| Run Unit Tests | `pnpm test:unit` | Runs Vitest unit tests |
-| Run Integration Tests | `pnpm test:integration` | Runs Vitest integration tests (these may require `DATABASE_URL`) |
+| Step                           | Command                          | What it does                                                                           |
+| ------------------------------ | -------------------------------- | -------------------------------------------------------------------------------------- |
+| Checkout code                  | `actions/checkout@v7`            | Clones the repository at the triggering commit                                         |
+| Setup pnpm                     | `pnpm/action-setup@v6`           | Installs pnpm 12.3.4, matching the `packageManager` field in `package.json`            |
+| Setup Node.js                  | `actions/setup-node@v7`          | Installs Node.js 24 and restores the pnpm dependency cache                             |
+| Install dependencies           | `pnpm install --frozen-lockfile` | Installs all project dependencies from the lockfile                                    |
+| Run Biome Lint                 | `pnpm lint:fix`                  | Runs Biome static analysis and auto-fixes formatting issues                            |
+| Verify GraphQL generated types | `pnpm codegen:check`             | Verifies generated GraphQL types are synchronized with the schema and client documents |
+| Run Type Check                 | `pnpm run typecheck`             | Runs `tsc --noEmit` to catch TypeScript type errors                                    |
+| Run Unit Tests                 | `pnpm test:unit`                 | Runs Vitest unit tests                                                                 |
+| Run Integration Tests          | `pnpm test:integration`          | Runs Vitest integration tests (these may require `DATABASE_URL`)                       |
 
 **Why this job matters**: Catching lint errors, type errors, and broken tests at this stage is cheap. It takes ~1–2 minutes and prevents broken code from ever reaching deployment or expensive E2E test runs.
 
@@ -135,13 +134,13 @@ quality-checks + e2e
 
 **Steps:**
 
-| Step | What it does |
-|------|--------------|
-| Checkout + setup | Same as `quality-checks` |
-| Install Playwright Browsers | Downloads Chromium and its OS-level dependencies |
-| Run Playwright tests | Executes the full E2E test suite (`pnpm test:e2e`) |
-| Generate E2E Summary | Parses `test-results/e2e-results.json` and appends a formatted table to the GitHub Actions step summary (visible in the workflow run UI) |
-| Upload Playwright report | Uploads `playwright-report/` and `test-results/` as a GitHub artifact for later download and inspection |
+| Step                        | What it does                                                                                                                             |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Checkout + setup            | Same as `quality-checks`                                                                                                                 |
+| Install Playwright Browsers | Downloads Chromium and its OS-level dependencies                                                                                         |
+| Run Playwright tests        | Executes the full E2E test suite (`pnpm test:e2e`)                                                                                       |
+| Generate E2E Summary        | Parses `test-results/e2e-results.json` and appends a formatted table to the GitHub Actions step summary (visible in the workflow run UI) |
+| Upload Playwright report    | Uploads `playwright-report/` and `test-results/` as a GitHub artifact for later download and inspection                                  |
 
 **The summary step uses `if: always()`** — it runs even if the tests failed, so you always get a report of what happened.
 
@@ -159,12 +158,12 @@ quality-checks + e2e
 
 **Steps:**
 
-| Step | What it does |
-|------|--------------|
-| Checkout + setup | Same as `quality-checks` |
-| Run Coverage | Runs `pnpm test:coverage` (Vitest with `--coverage`), producing `coverage/coverage-summary.json` and an HTML report |
-| Generate Coverage Summary | Parses the JSON and appends a coverage table (Lines, Statements, Functions, Branches %) to the step summary |
-| Upload coverage artifact | Stores the `coverage/` directory as a GitHub artifact named `coverage-report` |
+| Step                       | What it does                                                                                                                                     |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Checkout + setup           | Same as `quality-checks`                                                                                                                         |
+| Run Coverage               | Runs `pnpm test:coverage` (Vitest with `--coverage`), producing `coverage/coverage-summary.json` and an HTML report                              |
+| Generate Coverage Summary  | Parses the JSON and appends a coverage table (Lines, Statements, Functions, Branches %) to the step summary                                      |
+| Upload coverage artifact   | Stores the `coverage/` directory as a GitHub artifact named `coverage-report`                                                                    |
 | Upload coverage to Codecov | Uploads the coverage report to Codecov via `codecov/codecov-action@v7` (`fail_ci_if_error: false`, so a Codecov outage never fails the pipeline) |
 
 **Why this job matters**: Code coverage gives a quantitative signal about test thoroughness. A sudden drop in coverage on a PR is a warning that new code was added without corresponding tests.
@@ -179,12 +178,12 @@ quality-checks + e2e
 
 **Steps:**
 
-| Step | What it does |
-|------|--------------|
-| Checkout code | Fetches the full repository history required by the scanner |
-| Download coverage artifact | Downloads the coverage report produced by `test-coverage` |
-| Verify coverage report | Fails if `coverage/lcov.info` is missing |
-| Run SonarQube Cloud Scan | Uploads source and coverage data using `SONAR_TOKEN` |
+| Step                       | What it does                                                |
+| -------------------------- | ----------------------------------------------------------- |
+| Checkout code              | Fetches the full repository history required by the scanner |
+| Download coverage artifact | Downloads the coverage report produced by `test-coverage`   |
+| Verify coverage report     | Fails if `coverage/lcov.info` is missing                    |
+| Run SonarQube Cloud Scan   | Uploads source and coverage data using `SONAR_TOKEN`        |
 
 **Why this job matters**: It provides the repository's static-analysis, reliability, security, and maintainability signal without blocking the coverage artifact publication or production deployment job.
 
@@ -202,16 +201,16 @@ quality-checks + e2e
 
 **Steps:**
 
-| Step | What it does |
-|------|--------------|
-| Configure GitHub Pages | Sets up the Pages environment via `actions/configure-pages@v6` |
-| Download coverage artifact | Downloads the `coverage-report` artifact into `artifacts/coverage/` |
-| Download E2E artifact | Downloads the `playwright-report` artifact into `artifacts/e2e/` |
-| Build reports site | Creates a `reports/` directory, copies the coverage HTML and Playwright HTML report into it, and generates an `index.html` landing page linking to both |
-| Add published links to summary | Appends links to the live GitHub Pages URLs in the step summary |
-| Remove stale github-pages artifacts | Uses the GitHub API (`gh api`) to delete any leftover `github-pages` artifacts from the current run before deploying, avoiding upload conflicts |
-| Upload to GitHub Pages | Packages the `reports/` directory as a Pages artifact |
-| Deploy to GitHub Pages | Deploys the artifact to `https://marosdaniel.github.io/cookbook-next/` |
+| Step                                | What it does                                                                                                                                            |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Configure GitHub Pages              | Sets up the Pages environment via `actions/configure-pages@v6`                                                                                          |
+| Download coverage artifact          | Downloads the `coverage-report` artifact into `artifacts/coverage/`                                                                                     |
+| Download E2E artifact               | Downloads the `playwright-report` artifact into `artifacts/e2e/`                                                                                        |
+| Build reports site                  | Creates a `reports/` directory, copies the coverage HTML and Playwright HTML report into it, and generates an `index.html` landing page linking to both |
+| Add published links to summary      | Appends links to the live GitHub Pages URLs in the step summary                                                                                         |
+| Remove stale github-pages artifacts | Uses the GitHub API (`gh api`) to delete any leftover `github-pages` artifacts from the current run before deploying, avoiding upload conflicts         |
+| Upload to GitHub Pages              | Packages the `reports/` directory as a Pages artifact                                                                                                   |
+| Deploy to GitHub Pages              | Deploys the artifact to `https://marosdaniel.github.io/cookbook-next/`                                                                                  |
 
 **Published URLs:**
 - `https://marosdaniel.github.io/cookbook-next/coverage/` — interactive coverage report
@@ -231,16 +230,16 @@ quality-checks + e2e
 
 **Steps:**
 
-| Step | What it does |
-|------|--------------|
-| Checkout + setup | Same as above |
-| Install Vercel CLI | Installs the latest `vercel` CLI globally |
-| Debug - Check Vercel Token | Fails fast with a clear error message if `VERCEL_TOKEN` secret is missing or empty |
-| Pull Vercel Environment | Runs `vercel pull` to download production environment config (`.vercel/` directory) |
-| Install dependencies | `pnpm install` with `DATABASE_URL` available (required for Prisma client generation) |
-| Run Prisma Migrate Deploy | Runs pending database migrations against the production database. This is safe to run in CI because `migrate deploy` only applies already-committed migrations — it never generates new ones |
-| Build Project Artifacts | Runs `vercel build --prod`, which executes the Next.js production build inside Vercel's build environment |
-| Deploy Project Artifacts | Runs `vercel deploy --prebuilt --prod`, uploading the pre-built artifacts. Using `--prebuilt` avoids building twice |
+| Step                       | What it does                                                                                                                                                                                 |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Checkout + setup           | Same as above                                                                                                                                                                                |
+| Install Vercel CLI         | Installs the latest `vercel` CLI globally                                                                                                                                                    |
+| Debug - Check Vercel Token | Fails fast with a clear error message if `VERCEL_TOKEN` secret is missing or empty                                                                                                           |
+| Pull Vercel Environment    | Runs `vercel pull` to download production environment config (`.vercel/` directory)                                                                                                          |
+| Install dependencies       | `pnpm install` with `DATABASE_URL` available (required for Prisma client generation)                                                                                                         |
+| Run Prisma Migrate Deploy  | Runs pending database migrations against the production database. This is safe to run in CI because `migrate deploy` only applies already-committed migrations — it never generates new ones |
+| Build Project Artifacts    | Runs `vercel build --prod`, which executes the Next.js production build inside Vercel's build environment                                                                                    |
+| Deploy Project Artifacts   | Runs `vercel deploy --prebuilt --prod`, uploading the pre-built artifacts. Using `--prebuilt` avoids building twice                                                                          |
 
 **Why this job matters**: This is the continuous delivery part of the pipeline. Every merge to `main` that passes all tests is automatically shipped to production — no manual deploy button needed. The separation of `build` and `deploy` steps (via `--prebuilt`) also means the actual build happens in a reproducible CI environment rather than inside Vercel's opaque build system.
 
@@ -257,20 +256,19 @@ quality-checks + e2e
 **Key detail**: `fetch-depth: 0` is set on the checkout step. This is required because semantic-release needs the full git history to determine what has changed since the last release.
 
 **How it works**: semantic-release reads all commits since the last tag, analyses their prefixes (`feat:`, `fix:`, `chore:`, `BREAKING CHANGE:`, etc.), and:
-
 1. Determines the next [semver](https://semver.org/) version (`MAJOR.MINOR.PATCH`)
 2. Creates a git tag
 3. Publishes a GitHub Release with a generated changelog
 
 **Version bumping rules** (conventional commits):
 
-| Commit prefix | Version bump |
-|---------------|-------------|
-| `fix:` | Patch (`1.0.0` → `1.0.1`) |
-| `feat:` | Minor (`1.0.0` → `1.1.0`) |
-| `feat!:` / `feat(scope)!:` | Major (`1.0.0` → `2.0.0`) |
-| `BREAKING CHANGE:` footer | Major (`1.0.0` → `2.0.0`) |
-| `chore:`, `docs:`, `style:` | No release |
+| Commit prefix               | Version bump              |
+| --------------------------- | ------------------------- |
+| `fix:`                      | Patch (`1.0.0` → `1.0.1`) |
+| `feat:`                     | Minor (`1.0.0` → `1.1.0`) |
+| `feat!:` / `feat(scope)!:`  | Major (`1.0.0` → `2.0.0`) |
+| `BREAKING CHANGE:` footer   | Major (`1.0.0` → `2.0.0`) |
+| `chore:`, `docs:`, `style:` | No release                |
 
 The commit analyzer is configured to recognize the Conventional Commits `!`
 marker, both with and without a scope. Without this parser configuration,
@@ -294,15 +292,15 @@ not remove it from Git history.
 
 The pipeline relies on the following secrets configured in the repository's GitHub Settings → Secrets:
 
-| Secret | Used in | Purpose |
-|--------|---------|---------|
-| `DATABASE_URL` | `quality-checks`, `test-coverage`, `deploy-production` | Connection string for the Neon PostgreSQL database. Required by Prisma for type generation and migrations |
-| `DIRECT_URL` | `deploy-production` | Optional direct Neon connection string used for Prisma migrations; falls back to `DATABASE_URL` |
-| `VERCEL_TOKEN` | `deploy-production` | Personal access token for authenticating with the Vercel API |
-| `VERCEL_ORG_ID` | `deploy-production` | Identifies the Vercel organization/team |
-| `VERCEL_PROJECT_ID` | `deploy-production` | Identifies the specific Vercel project to deploy to |
-| `SONAR_TOKEN` | `sonarqube` | Authentication token for the SonarQube Cloud scan |
-| `GITHUB_TOKEN` | `semantic-release`, `deploy-coverage-report` | Automatically provided by GitHub Actions. Used by semantic-release to create tags and releases, and by `deploy-coverage-report` to clean up stale `github-pages` artifacts via the GitHub API |
+| Secret              | Used in                                                | Purpose                                                                                                                                                                                       |
+| ------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`      | `quality-checks`, `test-coverage`, `deploy-production` | Connection string for the Neon PostgreSQL database. Required by Prisma for type generation and migrations                                                                                     |
+| `DIRECT_URL`        | `deploy-production`                                    | Optional direct Neon connection string used for Prisma migrations; falls back to `DATABASE_URL`                                                                                               |
+| `VERCEL_TOKEN`      | `deploy-production`                                    | Personal access token for authenticating with the Vercel API                                                                                                                                  |
+| `VERCEL_ORG_ID`     | `deploy-production`                                    | Identifies the Vercel organization/team                                                                                                                                                       |
+| `VERCEL_PROJECT_ID` | `deploy-production`                                    | Identifies the specific Vercel project to deploy to                                                                                                                                           |
+| `SONAR_TOKEN`       | `sonarqube`                                            | Authentication token for the SonarQube Cloud scan                                                                                                                                             |
+| `GITHUB_TOKEN`      | `semantic-release`, `deploy-coverage-report`           | Automatically provided by GitHub Actions. Used by semantic-release to create tags and releases, and by `deploy-coverage-report` to clean up stale `github-pages` artifacts via the GitHub API |
 
 Codecov upload in `test-coverage` uses `codecov/codecov-action@v7` without an explicit token secret (`fail_ci_if_error: false`), relying on tokenless upload for public repos.
 
@@ -311,7 +309,6 @@ Codecov upload in `test-coverage` uses `codecov/codecov-action@v7` without an ex
 ## Why This Pipeline Exists
 
 Without automation, the equivalent manual process for every merge would be:
-
 1. Pull the latest code
 2. Run lint and fix issues
 3. Run the type checker
@@ -326,7 +323,6 @@ Without automation, the equivalent manual process for every merge would be:
 That is ~10 manual steps, each of which can be forgotten, skipped under time pressure, or done inconsistently between developers. The pipeline eliminates every one of them.
 
 **Concrete benefits:**
-
 - **Broken code never reaches production** — all tests must pass before deployment
 - **Database migrations are always applied** before the new code is live, keeping the schema and application in sync
 - **Test results are always visible** — no need to ask "did the tests pass?" on a PR; the summary is right there

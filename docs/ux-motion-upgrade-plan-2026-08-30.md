@@ -41,27 +41,27 @@ A terv P1-es motion-feladatai és a P2-es polish-elemek lefejlesztésre kerülte
 
 ### 1.1 Ahol már van motion (39 fájl)
 
-| Terület | Mi van | Minőség |
-|---|---|---|
-| Auth formok (Login/SignUp/ResetPassword) | Container-fade + mezőnkénti stagger (0.07–0.08s), hiba-shake, success-pulse, `AnimatePresence mode="wait"` swap | ✅ Referencia-minőség — ez a stílus-etalon |
-| Cookie/privacy policy | `ReadingProgress`: `useScroll` + `useSpring`, reduced-motion-nál rejtve | ✅ Jó |
-| Recept-detail | `useInView` szekció-reveal, `LayoutGroup` lépés-kiemelés, hozzávaló-checklist layout animáció | ✅ Jó |
-| Mikro-interakciók | Logo/AuthButton spring hover/tap, ThemeSwitcher ikon-swap, FavoriteButton burst | ✅ Jó |
-| RecipeRating | scale/opacity visszajelzés értékelés után | 🟡 refetch-lag rontja (lásd backlog N-P1-10) |
+| Terület                                  | Mi van                                                                                                          | Minőség                                      |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Auth formok (Login/SignUp/ResetPassword) | Container-fade + mezőnkénti stagger (0.07–0.08s), hiba-shake, success-pulse, `AnimatePresence mode="wait"` swap | ✅ Referencia-minőség — ez a stílus-etalon   |
+| Cookie/privacy policy                    | `ReadingProgress`: `useScroll` + `useSpring`, reduced-motion-nál rejtve                                         | ✅ Jó                                        |
+| Recept-detail                            | `useInView` szekció-reveal, `LayoutGroup` lépés-kiemelés, hozzávaló-checklist layout animáció                   | ✅ Jó                                        |
+| Mikro-interakciók                        | Logo/AuthButton spring hover/tap, ThemeSwitcher ikon-swap, FavoriteButton burst                                 | ✅ Jó                                        |
+| RecipeRating                             | scale/opacity visszajelzés értékelés után                                                                       | 🟡 refetch-lag rontja (lásd backlog N-P1-10) |
 
 ### 1.2 Ahol hiányzik (ez a terv tárgya)
 
-| # | Hely | Hiány | UX-indok (miért nem dekoráció) |
-|---|---|---|---|
-| M1 | RecipeCard + listák | ✅ Belépő, exit, tap és desktop lista-átrendezési motion elkészült | A szűrés/rendezés/Load More eredménye ma „ugrik” — az animáció **vizuális kontinuitást** ad: a user látja, mi került be/ki, nem veszti el a kontextust |
-| M2 | RecipesPage szűrősáv | ✅ `AnimatePresence` height-collapse + opacity | Az `AnimatePresence` height-collapse jelzi, hogy a tartalom *ugyanaz maradt*, csak a szűrő nyílt/záródott |
-| M3 | Skeleton → tartalom | ✅ Crossfade a `RecipeGrid`-ben | Crossfade csökkenti az észlelt betöltési időt (perceived performance) |
-| M4 | HomePage carousel + szekciók | ✅ Szekciónkénti `Reveal` | Scroll-reveal irányítja a figyelmet a fold alatti tartalomra |
-| M5 | Footer | ✅ CTA reveal, staggerelt oszlopok, hover-mozgás | Lásd [footer-redesign-2026-08-30.md](footer-redesign-2026-08-30.md) |
-| M6 | Back-to-top gomb | ✅ Scroll-küszöb, entry/exit motion, reduced-motion guard | Hosszú listáknál (RecipesPage) navigációs alapfunkció |
-| M7 | Üres állapotok | ✅ Közös, animált `EmptyState` CTA-támogatással | Az üres lista ma „hibának” tűnhet; animált empty state megnyugtat + akciót ajánl |
-| M8 | Modal/Drawer | Mantine beépített transition | **Nem bántjuk** — a Mantine transitionök konzisztensek és CSP-safe-ek; motionre cserélni öncélú lenne |
-| M9 | Page transition | ✅ Minimális route-entry fade `template.tsx`-szel | Csak minimál fade-et javaslunk (1.4) — az agresszív route-transition App Routerben törékeny |
+| #   | Hely                         | Hiány                                                              | UX-indok (miért nem dekoráció)                                                                                                                         |
+| --- | ---------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| M1  | RecipeCard + listák          | ✅ Belépő, exit, tap és desktop lista-átrendezési motion elkészült | A szűrés/rendezés/Load More eredménye ma „ugrik” — az animáció **vizuális kontinuitást** ad: a user látja, mi került be/ki, nem veszti el a kontextust |
+| M2  | RecipesPage szűrősáv         | ✅ `AnimatePresence` height-collapse + opacity                     | Az `AnimatePresence` height-collapse jelzi, hogy a tartalom _ugyanaz maradt_, csak a szűrő nyílt/záródott                                              |
+| M3  | Skeleton → tartalom          | ✅ Crossfade a `RecipeGrid`-ben                                    | Crossfade csökkenti az észlelt betöltési időt (perceived performance)                                                                                  |
+| M4  | HomePage carousel + szekciók | ✅ Szekciónkénti `Reveal`                                          | Scroll-reveal irányítja a figyelmet a fold alatti tartalomra                                                                                           |
+| M5  | Footer                       | ✅ CTA reveal, staggerelt oszlopok, hover-mozgás                   | Lásd [footer-redesign-2026-08-30.md](footer-redesign-2026-08-30.md)                                                                                    |
+| M6  | Back-to-top gomb             | ✅ Scroll-küszöb, entry/exit motion, reduced-motion guard          | Hosszú listáknál (RecipesPage) navigációs alapfunkció                                                                                                  |
+| M7  | Üres állapotok               | ✅ Közös, animált `EmptyState` CTA-támogatással                    | Az üres lista ma „hibának” tűnhet; animált empty state megnyugtat + akciót ajánl                                                                       |
+| M8  | Modal/Drawer                 | Mantine beépített transition                                       | **Nem bántjuk** — a Mantine transitionök konzisztensek és CSP-safe-ek; motionre cserélni öncélú lenne                                                  |
+| M9  | Page transition              | ✅ Minimális route-entry fade `template.tsx`-szel                  | Csak minimál fade-et javaslunk (1.4) — az agresszív route-transition App Routerben törékeny                                                            |
 
 ### 1.3 Keretfeltételek (minden javaslatra érvényes)
 
@@ -92,7 +92,12 @@ type RevealProps = PropsWithChildren<{
   y?: number;
 }>;
 
-export const Reveal = ({ children, delay = 0, amount = 0.25, y = 16 }: RevealProps) => {
+export const Reveal = ({
+  children,
+  delay = 0,
+  amount = 0.25,
+  y = 16,
+}: RevealProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount });
 
@@ -109,7 +114,7 @@ export const Reveal = ({ children, delay = 0, amount = 0.25, y = 16 }: RevealPro
 };
 ```
 
-*Reduced motion*: a `MotionConfig` miatt transform/opacity nem animál → az elem azonnal látható. Nincs extra teendő.
+_Reduced motion_: a `MotionConfig` miatt transform/opacity nem animál → az elem azonnal látható. Nincs extra teendő.
 
 ### 2.2 Lista-animációs variánsok (stagger)
 
@@ -162,7 +167,7 @@ import { listItemVariants, listVariants } from '@/lib/motion/variants';
       </motion.div>
     ))}
   </AnimatePresence>
-</SimpleGrid>
+</SimpleGrid>;
 ```
 
 Megjegyzések:
@@ -186,7 +191,7 @@ Megjegyzések:
       <RecipeFilters /* ... */ />
     </motion.div>
   )}
-</AnimatePresence>
+</AnimatePresence>;
 ```
 
 **Miért**: a height-animáció megtartja a lista pozícióját a user szeme előtt; az abrupt mount/unmount ma „ugráltatja” a tartalmat.
@@ -197,7 +202,11 @@ Megjegyzések:
 // pl. RecipesPage listablokk
 <AnimatePresence mode="wait" initial={false}>
   {loading ? (
-    <motion.div key="skeleton" exit={{ opacity: 0 }} transition={MOTION_TRANSITION.fast}>
+    <motion.div
+      key="skeleton"
+      exit={{ opacity: 0 }}
+      transition={MOTION_TRANSITION.fast}
+    >
       <RecipeListSkeleton count={6} />
     </motion.div>
   ) : (
@@ -205,7 +214,7 @@ Megjegyzések:
       {/* 3.1 szerinti grid */}
     </motion.div>
   )}
-</AnimatePresence>
+</AnimatePresence>;
 ```
 
 **Miért**: a hard swap „villan”; a 150 ms-os crossfade folytonossá teszi a betöltést. A skeletonok mérete egyezzen a kártyákéval (layout shift = 0).
@@ -226,7 +235,12 @@ Megjegyzések:
 
 import { ActionIcon } from '@mantine/core';
 import { IconArrowUp } from '@tabler/icons-react';
-import { AnimatePresence, motion, useReducedMotion, useScroll } from 'motion/react';
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+} from 'motion/react';
 import { useEffect, useState } from 'react';
 import { MOTION_TRANSITION } from '@/lib/motion/transitions';
 
@@ -253,7 +267,10 @@ export const BackToTop = () => {
             variant="filled"
             aria-label="Back to top"
             onClick={() =>
-              window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' })
+              window.scrollTo({
+                top: 0,
+                behavior: prefersReducedMotion ? 'auto' : 'smooth',
+              })
             }
           >
             <IconArrowUp size={20} />
@@ -265,7 +282,7 @@ export const BackToTop = () => {
 };
 ```
 
-*Reduced motion*: a gomb megjelenik (opacity-fallback), de a scroll `behavior: 'auto'` — explicit guard, mert a smooth scroll nem transform-animáció.
+_Reduced motion_: a gomb megjelenik (opacity-fallback), de a scroll `behavior: 'auto'` — explicit guard, mert a smooth scroll nem transform-animáció.
 
 ### 3.6 Üres állapotok (M7) — P1
 
@@ -277,11 +294,20 @@ Egységes `EmptyState` komponens (ikon + cím + leírás + opcionális CTA), eny
 import { Button, Stack, Text, ThemeIcon, Title } from '@mantine/core';
 import { motion } from 'motion/react';
 
-export const EmptyState = ({ icon, title, description, action }: EmptyStateProps) => (
+export const EmptyState = ({
+  icon,
+  title,
+  description,
+  action,
+}: EmptyStateProps) => (
   <Stack align="center" gap="sm" py="xl">
     <motion.div
       animate={{ y: [0, -6, 0] }}
-      transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: 'easeInOut' }}
+      transition={{
+        duration: 3,
+        repeat: Number.POSITIVE_INFINITY,
+        ease: 'easeInOut',
+      }}
     >
       <ThemeIcon size={64} radius="xl" variant="light">
         {icon}
@@ -296,7 +322,7 @@ export const EmptyState = ({ icon, title, description, action }: EmptyStateProps
 );
 ```
 
-Használat: kedvencek/saját receptek/követések üres listái, keresés találat nélkül. **Miért**: az üres képernyő ma megkülönböztethetetlen a hibától; az empty state akciót ad (pl. „Browse recipes”). *A repeat-animáció `useReducedMotion()` guardot kap.*
+Használat: kedvencek/saját receptek/követések üres listái, keresés találat nélkül. **Miért**: az üres képernyő ma megkülönböztethetetlen a hibától; az empty state akciót ad (pl. „Browse recipes”). _A repeat-animáció `useReducedMotion()` guardot kap._
 
 ### 3.7 Page transition (M9) — P2, minimál
 
@@ -311,7 +337,11 @@ import { MOTION_TRANSITION } from '@/lib/motion/transitions';
 
 export default function Template({ children }: { children: React.ReactNode }) {
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={MOTION_TRANSITION.fast}>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={MOTION_TRANSITION.fast}
+    >
       {children}
     </motion.div>
   );
@@ -328,14 +358,14 @@ Az admin MVP 2026-10-10-én elkészült; a részleteket az [admin-panel-plan-202
 
 ## 4. Vizuális/design finomítások (motion nélkül)
 
-| # | Terület | Probléma | Javaslat | Prio |
-|---|---|---|---|---|
-| V1 | Kártya-hierarchia | A RecipeCard CSS-hover (translateY −4px) és a motion-minták keverednek | Egy forrás: a hover-lift maradjon CSS-ben (olcsóbb), a motion csak belépés/exit/tap — dokumentálva a variants fájlban | P1 |
-| V2 | Tipográfia | A section-címek (HomePage/RecipesPage) mérete/margója oldalanként eltér | Közös `SectionTitle` komponens (`Title order={2} size="h3" mb="md"`) | P2 |
-| V3 | Spacing | Vegyes `mt/mb` értékek szekciók között | Szekció-spacing konvenció: oldalak `Stack gap="xl"`-lel tagolnak, ad-hoc margók helyett | P2 |
-| V4 | darkTheme | A darkTheme overridejai dead code-ok (nincs bekötve) | `SchemeAwareTheme` bekötése — backlog N-P1-6, e terv előfeltétele a sötét módú kontraszt-finomításnak | P1 |
-| V5 | Gomb-hierarchia | Több oldalon 2+ filled gomb versenyez | Oldalanként max 1 filled primary; másodlagos akciók `light`/`subtle` variánsok | P2 |
-| V6 | Fókusz-állapotok | A motion-os elemeken (Logo, AuthButton) a fókuszgyűrű a transform alatt elmozdul | `focus-visible` ring a wrapperen, ne az animált gyereken | P2 |
+| #   | Terület           | Probléma                                                                         | Javaslat                                                                                                              | Prio |
+| --- | ----------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---- |
+| V1  | Kártya-hierarchia | A RecipeCard CSS-hover (translateY −4px) és a motion-minták keverednek           | Egy forrás: a hover-lift maradjon CSS-ben (olcsóbb), a motion csak belépés/exit/tap — dokumentálva a variants fájlban | P1   |
+| V2  | Tipográfia        | A section-címek (HomePage/RecipesPage) mérete/margója oldalanként eltér          | Közös `SectionTitle` komponens (`Title order={2} size="h3" mb="md"`)                                                  | P2   |
+| V3  | Spacing           | Vegyes `mt/mb` értékek szekciók között                                           | Szekció-spacing konvenció: oldalak `Stack gap="xl"`-lel tagolnak, ad-hoc margók helyett                               | P2   |
+| V4  | darkTheme         | A darkTheme overridejai dead code-ok (nincs bekötve)                             | `SchemeAwareTheme` bekötése — backlog N-P1-6, e terv előfeltétele a sötét módú kontraszt-finomításnak                 | P1   |
+| V5  | Gomb-hierarchia   | Több oldalon 2+ filled gomb versenyez                                            | Oldalanként max 1 filled primary; másodlagos akciók `light`/`subtle` variánsok                                        | P2   |
+| V6  | Fókusz-állapotok  | A motion-os elemeken (Logo, AuthButton) a fókuszgyűrű a transform alatt elmozdul | `focus-visible` ring a wrapperen, ne az animált gyereken                                                              | P2   |
 
 ## 5. Bevezetési sorrend
 

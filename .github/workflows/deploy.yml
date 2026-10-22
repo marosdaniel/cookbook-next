@@ -5,24 +5,24 @@ on:
     branches:
       - main
     paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - '.vscode/**'
-      - '.github/**'
-      - '!.github/workflows/**'
-      - 'LICENSE'
-      - '.gitignore'
-      - '.env.example'
+      - "**.md"
+      - "docs/**"
+      - ".vscode/**"
+      - ".github/**"
+      - "!.github/workflows/**"
+      - "LICENSE"
+      - ".gitignore"
+      - ".env.example"
   pull_request:
     branches:
       - main
     paths-ignore:
-      - '**.md'
-      - 'docs/**'
-      - '.vscode/**'
-      - 'LICENSE'
-      - '.gitignore'
-      - '.env.example'
+      - "**.md"
+      - "docs/**"
+      - ".vscode/**"
+      - "LICENSE"
+      - ".gitignore"
+      - ".env.example"
   workflow_dispatch:
 
 concurrency:
@@ -52,8 +52,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24'
-          cache: 'pnpm'
+          node-version: "24"
+          cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
@@ -95,8 +95,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24'
-          cache: 'pnpm'
+          node-version: "24"
+          cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
@@ -164,8 +164,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24'
-          cache: 'pnpm'
+          node-version: "24"
+          cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
@@ -355,8 +355,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24'
-          cache: 'pnpm'
+          node-version: "24"
+          cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install Vercel CLI
@@ -400,7 +400,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL || secrets.DATABASE_URL }}
-          PRISMA_SCHEMA_DISABLE_ADVISORY_LOCK: '1'
+          PRISMA_SCHEMA_DISABLE_ADVISORY_LOCK: "1"
 
       - name: Build Project Artifacts
         run: vercel build --prod --token="$VERCEL_TOKEN"
@@ -439,8 +439,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '24'
-          cache: 'pnpm'
+          node-version: "24"
+          cache: "pnpm"
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies

@@ -14,7 +14,6 @@ Minden variánshoz szükséges új fordítási kulcsok a 5. szekcióban.
 ## 1. Variáns A — „Refined minimal” (drop-in csere, azonos magasság)
 
 **Struktúra**: változatlan tartalom, rendezettebb hierarchia + finom felső border + motion-réteg. A legkisebb kockázatú frissítés: az AppShell-magasság marad.
-
 - Vizuális: `borderTop 1px` (`--mantine-color-default-border`), mobil `gap` 4px → `6/xs`, linkek `size="sm"` mobilon (nagyobb touch target).
 - Motion: egyszeri fade-in-up a footer tartalmán (`useInView`, StrictMode-safe), link-hover underline a Mantine `underline="hover"`-rel (marad CSS).
 
@@ -76,17 +75,42 @@ const Footer: FC = () => {
       style={{ borderTop: '1px solid var(--mantine-color-default-border)' }}
     >
       {/* Mobile */}
-      <Stack h="100%" px="md" justify="center" align="center" gap={6} hiddenFrom="md">
-        <Logo variant="icon" width={32} height={32} withText href={PUBLIC_ROUTES.HOME} />
+      <Stack
+        h="100%"
+        px="md"
+        justify="center"
+        align="center"
+        gap={6}
+        hiddenFrom="md"
+      >
+        <Logo
+          variant="icon"
+          width={32}
+          height={32}
+          withText
+          href={PUBLIC_ROUTES.HOME}
+        />
         <Text size="xs" c="dimmed" data-testid="footer-copyright">
           {translate('copyright', { year: currentYear })}
         </Text>
         <FooterLinks />
       </Stack>
       {/* Desktop */}
-      <Group h="100%" justify="space-between" align="center" px="md" visibleFrom="md">
+      <Group
+        h="100%"
+        justify="space-between"
+        align="center"
+        px="md"
+        visibleFrom="md"
+      >
         <Group gap="xs">
-          <Logo variant="icon" width={32} height={32} withText href={PUBLIC_ROUTES.HOME} />
+          <Logo
+            variant="icon"
+            width={32}
+            height={32}
+            withText
+            href={PUBLIC_ROUTES.HOME}
+          />
           <Text size="xs" c="dimmed" data-testid="footer-copyright">
             {translate('copyright', { year: currentYear })}
           </Text>
@@ -109,7 +133,6 @@ export default Footer;
 ## 2. Variáns B — „Structured” (3 oszlopos, bővíthető)
 
 **Struktúra**: brand-oszlop (logo + tagline) · navigáció (Explore: Recipes, Create) · jogi linkek; alul vékony copyright-sor. Egyetlen responsive `SimpleGrid` — nincs mobil/desktop duplikáció. Magasabb (~200px mobil / ~140px desktop) → az AppShell-ből kiköltöztetve (4. szekció).
-
 - Vizuális: felső border + `Container size="lg"` igazítás a tartalommal; oszlopcímek `Text fw={600} size="sm"`; linkek `c="dimmed"` → hoverre téma-szín.
 - Motion: oszloponkénti stagger-reveal (`listVariants` a közös [variants.ts](ux-motion-upgrade-plan-2026-08-30.md)-ből), link-hoverre 2px-es `x` eltolás (mikro-interakció, jelzi a kattinthatóságot).
 
@@ -117,13 +140,26 @@ export default Footer;
 // src/components/Footer/Footer.tsx  (Variáns B)
 'use client';
 
-import { Anchor, Box, Container, Divider, Group, SimpleGrid, Stack, Text } from '@mantine/core';
+import {
+  Anchor,
+  Box,
+  Container,
+  Divider,
+  Group,
+  SimpleGrid,
+  Stack,
+  Text,
+} from '@mantine/core';
 import Link from 'next/link';
 import { motion, useInView } from 'motion/react';
 import { useTranslations } from 'next-intl';
 import { type FC, useRef } from 'react';
 import { MOTION_TRANSITION } from '@/lib/motion/transitions';
-import { AUTH_ROUTES, PROTECTED_ROUTES, PUBLIC_ROUTES } from '../../types/routes';
+import {
+  AUTH_ROUTES,
+  PROTECTED_ROUTES,
+  PUBLIC_ROUTES,
+} from '../../types/routes';
 import { Logo } from '../Logo';
 
 const columnVariants = {
@@ -164,14 +200,23 @@ const Footer: FC = () => {
     >
       <Container size="lg">
         <motion.div
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.08 } },
+          }}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
         >
           <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xl">
             <motion.div variants={columnVariants}>
               <Stack gap="xs">
-                <Logo variant="icon" width={36} height={36} withText href={PUBLIC_ROUTES.HOME} />
+                <Logo
+                  variant="icon"
+                  width={36}
+                  height={36}
+                  withText
+                  href={PUBLIC_ROUTES.HOME}
+                />
                 <Text size="sm" c="dimmed" maw={260}>
                   {translate('tagline')}
                 </Text>
@@ -182,12 +227,18 @@ const Footer: FC = () => {
                 <Text fw={600} size="sm">
                   {translate('explore')}
                 </Text>
-                <FooterLink href={PUBLIC_ROUTES.RECIPES} label={translate('links.recipes')} />
+                <FooterLink
+                  href={PUBLIC_ROUTES.RECIPES}
+                  label={translate('links.recipes')}
+                />
                 <FooterLink
                   href={PROTECTED_ROUTES.RECIPES_CREATE}
                   label={translate('links.createRecipe')}
                 />
-                <FooterLink href={AUTH_ROUTES.SIGNUP} label={translate('links.signup')} />
+                <FooterLink
+                  href={AUTH_ROUTES.SIGNUP}
+                  label={translate('links.signup')}
+                />
               </Stack>
             </motion.div>
             <motion.div variants={columnVariants}>
@@ -257,7 +308,7 @@ export default Footer;
       </Button>
     </Group>
   </Container>
-</Box>
+</Box>;
 ```
 
 - Motion: a CTA-gomb `whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}` (AuthButton-minta); a brand-sáv a `Reveal`-lel úszik be.
@@ -275,12 +326,16 @@ A nagyobb footer nem fér el az `AppShell.Footer` fix magasságú, viewporthoz r
 
 ```tsx
 // src/components/Shell/Shell.tsx
-<AppShell style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}>
+<AppShell
+  style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}
+>
   <AppShell.Main style={{ flex: '1 0 auto', minHeight: 'auto' }}>
-  {children}
+    {children}
   </AppShell.Main>
-  <Box data-testid="shell-footer"><Footer /></Box>
-</AppShell>
+  <Box data-testid="shell-footer">
+    <Footer />
+  </Box>
+</AppShell>;
 ```
 
 Rövid oldalakon a flex-grow a footert a viewport aljára tolja. Hosszú oldalakon a Main a tartalommal együtt nő, ezért a footer a tartalom után görgethető, nem rögzül a képernyő aljára. A wrapper a `--app-shell-navbar-offset` változóval veszi figyelembe a desktop navbart. Immersive create/edit útvonalakon továbbra sincs shell footer.
@@ -313,14 +368,14 @@ Rövid oldalakon a flex-grow a footert a viewport aljára tolja. Hosszú oldalak
 
 ## 6. Összehasonlítás és döntés
 
-| Szempont | A — Refined minimal | B — Structured | C — Showcase |
-|---|---|---|---|
-| Munkaigény | S | M | M/L |
-| Layout-változás | Nincs | AppShell-átalakítás | AppShell-átalakítás |
-| SEO belső linkek | — | ✅ | ✅ |
-| Konverziós elem | — | — | ✅ CTA |
-| E2E teszt-hatás | Minimális | Minimális (testid-k maradnak) | Testid-k megmaradnak, egyediségük ellenőrzött |
-| Kockázat | Minimális | Alacsony | Közepes (gradiens dark módban tesztelendő) |
+| Szempont         | A — Refined minimal | B — Structured                | C — Showcase                                  |
+| ---------------- | ------------------- | ----------------------------- | --------------------------------------------- |
+| Munkaigény       | S                   | M                             | M/L                                           |
+| Layout-változás  | Nincs               | AppShell-átalakítás           | AppShell-átalakítás                           |
+| SEO belső linkek | —                   | ✅                            | ✅                                            |
+| Konverziós elem  | —                   | —                             | ✅ CTA                                        |
+| E2E teszt-hatás  | Minimális           | Minimális (testid-k maradnak) | Testid-k megmaradnak, egyediségük ellenőrzött |
+| Kockázat         | Minimális           | Alacsony                      | Közepes (gradiens dark módban tesztelendő)    |
 
 **Döntés**: a **C variáns** valósult meg. Az A és B változat a korábbi alternatív koncepciók dokumentációjaként marad itt; nem a jelenlegi komponens leírásai.
 

@@ -2,6 +2,13 @@ import { render } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { RecipeFormProvider, useRecipeFormContext } from './FormContext';
 
+const Consumer = () => {
+  const context = useRecipeFormContext();
+  return (
+    <div data-testid="context-value">{String(context.values.title)}</div>
+  );
+};
+
 describe('Recipe form context', () => {
   it('exposes the form through the hook inside the provider', () => {
     const form = {
@@ -34,13 +41,6 @@ describe('Recipe form context', () => {
         socialImage: '',
       },
     } as never;
-
-    const Consumer = () => {
-      const context = useRecipeFormContext();
-      return (
-        <div data-testid="context-value">{String(context.values.title)}</div>
-      );
-    };
 
     const { getByTestId } = render(
       <RecipeFormProvider form={form}>

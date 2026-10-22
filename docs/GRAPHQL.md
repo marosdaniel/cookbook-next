@@ -16,7 +16,6 @@ This document explains the GraphQL architecture, code generation workflow, secur
 ## Overview
 
 The Cookbook API uses **Apollo Server 5** with a modular GraphQL schema and **GraphQL Code Generator** for type-safe client operations. The architecture enforces security through:
-
 - **Persisted queries** (SHA-256 allowlist) to prevent injection attacks
 - **Field-level authorization** to control access to sensitive user fields
 - **Declarative policies** that scale without hardcoded auth logic
@@ -91,15 +90,12 @@ Configuration is in [`codegen.ts`](../codegen.ts):
 ```typescript
 export default {
   schema: 'src/lib/graphql/typeDefs/**/*.graphql',
-  documents: [
-    'src/lib/graphql/queries.ts',
-    'src/lib/graphql/mutations.ts',
-  ],
+  documents: ['src/lib/graphql/queries.ts', 'src/lib/graphql/mutations.ts'],
   generates: {
     'src/lib/graphql/generated/': {
       preset: 'client',
       config: {
-        documentMode: 'string',  // Generates string docs for runtime validation
+        documentMode: 'string', // Generates string docs for runtime validation
         scalars: {
           DateTime: 'string',
         },
@@ -114,6 +110,7 @@ export default {
 Output in [`src/lib/graphql/generated/`](../src/lib/graphql/generated/):
 
 #### `graphql.ts`
+
 Exported TypeScript types from the SDL schema:
 
 ```typescript
@@ -136,22 +133,25 @@ export type RecipeCreateInput = {
 ```
 
 #### `gql.ts`
+
 Document registry mapping GraphQL operation strings to TypeScript types:
 
 ```typescript
 const documents: Documents = {
-  "query GetRecipeById($id: ID!) { recipe(id: $id) { ... } }": 
+  'query GetRecipeById($id: ID!) { recipe(id: $id) { ... } }':
     types.GetRecipeByIdDocument,
-  "mutation CreateRecipe($input: RecipeCreateInput!) { createRecipe(input: $input) { ... } }":
+  'mutation CreateRecipe($input: RecipeCreateInput!) { createRecipe(input: $input) { ... } }':
     types.CreateRecipeDocument,
   // ... 20+ operations
 };
 ```
 
 #### `fragment-masking.ts`
+
 Type safety utilities for GraphQL fragments (generated, eslint-disabled).
 
 #### `index.ts`
+
 Public export of all operation types and helpers.
 
 ### Running Codegen
@@ -216,7 +216,7 @@ const isSelfOrAdmin: FieldPolicy = (source, context) =>
   Boolean(context.userId && source?.id && context.userId === source.id);
 
 export const userFieldPolicies: Record<string, FieldPolicy> = {
-  email: isSelfOrAdmin,  // Only owner or admin sees email
+  email: isSelfOrAdmin, // Only owner or admin sees email
   // More fields can be added as needed
 };
 ```
@@ -253,8 +253,8 @@ const fieldAuthPlugin: ApolloServerPlugin = {
 // Client could pass any userId
 const getFavoriteRecipes = async (
   _: unknown,
-  { userId }: { userId: string },  // ❌ Client-controlled
-  { }: GraphQLContext
+  { userId }: { userId: string }, // ❌ Client-controlled
+  {}: GraphQLContext,
 ) => UserService.getFavoriteRecipes(userId);
 ```
 
@@ -263,8 +263,8 @@ const getFavoriteRecipes = async (
 // userId comes from session context only
 const getFavoriteRecipes = async (
   _: unknown,
-  _args: unknown,  // No arguments accepted
-  { userId }: GraphQLContext  // Derived from session
+  _args: unknown, // No arguments accepted
+  { userId }: GraphQLContext, // Derived from session
 ) => {
   if (!userId) throw 'Unauthorized';
   return await UserService.getFavoriteRecipes(userId);
@@ -298,7 +298,7 @@ extend type Query {
 export const getRecipesByIngredient = async (
   _: unknown,
   { ingredient }: { ingredient: string },
-  { userId, dataloaders }: GraphQLContext
+  { userId, dataloaders }: GraphQLContext,
 ) => {
   return await RecipeService.getRecipesByIngredient(ingredient);
 };
@@ -358,7 +358,7 @@ extend type Mutation {
 export const rateRecipe = async (
   _: unknown,
   { id, rating }: { id: string; rating: number },
-  { userId }: GraphQLContext
+  { userId }: GraphQLContext,
 ) => {
   if (!userId) throw 'Unauthorized';
   return await RecipeService.addRating(id, userId, rating);
@@ -394,7 +394,6 @@ const handleRate = async (recipeId: string, rating: number) => {
 ### Modifying Input Types
 
 Input types are auto-generated from the SDL. To add a field:
-
 1. **Modify the SDL**:
 
 ```graphql
@@ -405,7 +404,7 @@ input RecipeCreateInput {
   ingredients: [IngredientInput!]!
   instructions: [String!]!
   isPublic: Boolean!
-  source: String  # New field
+  source: String # New field
 }
 ```
 
@@ -416,14 +415,13 @@ pnpm codegen
 ```
 
 The `RecipeCreateInput` type is automatically updated in `generated/graphql.ts`.
-
 3. **Update resolvers** to use the new field if needed:
 
 ```typescript
 export const createRecipe = async (
   _: unknown,
   { input }: { input: RecipeCreateInput },
-  { userId }: GraphQLContext
+  { userId }: GraphQLContext,
 ) => {
   // input.source is now available with full type safety
   return await RecipeService.create({
@@ -448,7 +446,6 @@ Fails if any SDL or document changes haven't been regenerated. Useful before com
 ### Debug Generated Types
 
 The generated files are at `src/lib/graphql/generated/`. You can inspect:
-
 - `graphql.ts` – All input types and schema types
 - `gql.ts` – Operation result types and document registry
 - `fragment-masking.ts` – Fragment utilities
@@ -466,16 +463,14 @@ console.log(persistedQueryHashes); // Set of SHA-256 hashes
 ### Add a Field Policy
 
 To restrict access to a new sensitive User field:
-
 1. **Add to `fieldPolicies.ts`**:
 
 ```typescript
-const isAdmin: FieldPolicy = (source, context) =>
-  context.role === 'ADMIN';
+const isAdmin: FieldPolicy = (source, context) => context.role === 'ADMIN';
 
 export const userFieldPolicies: Record<string, FieldPolicy> = {
   email: isSelfOrAdmin,
-  apiKeys: isAdmin,  // New: only admins see API keys
+  apiKeys: isAdmin, // New: only admins see API keys
 };
 ```
 

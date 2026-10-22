@@ -13,19 +13,19 @@
 
 ### SonarCloud Quality
 
-| Metric | Badge |
-| --- | --- |
-| Quality Gate | [![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
-| Bugs | [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=bugs)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
-| Code Smells | [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
-| Coverage | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=coverage)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
+| Metric           | Badge                                                                                                                                                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Quality Gate     | [![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next)              |
+| Bugs             | [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=bugs)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next)                                     |
+| Code Smells      | [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next)                       |
+| Coverage         | [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=coverage)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next)                             |
 | Duplicated Lines | [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
-| Lines of Code | [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
-| Reliability | [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
-| Security | [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
-| Technical Debt | [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
-| Maintainability | [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
-| Vulnerabilities | [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next) |
+| Lines of Code    | [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next)                           |
+| Reliability      | [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next)         |
+| Security         | [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next)               |
+| Technical Debt   | [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next)                    |
+| Maintainability  | [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next)           |
+| Vulnerabilities  | [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=marosdaniel_cookbook-next&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=marosdaniel_cookbook-next)               |
 
 </div>
 
@@ -55,6 +55,7 @@
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **Framework:** Next.js 16.4.0 (App Router, Turbopack)
 - **Language:** TypeScript 7.0.2
 - **UI Library:** Mantine 9.7.2 (core, form, hooks, notifications, modals, spotlight, carousel)
@@ -66,6 +67,7 @@
 - **i18n:** next-intl ^4.14.9 (English, Hungarian, German)
 
 ### Backend
+
 - **API:** Apollo Server ^5.5.1 + GraphQL 17.0.2 (`@as-integrations/next`), modular schema (user/recipe/metadata), `graphql-armor` hardening, DataLoader batching
 - **Database:** Serverless Postgres via Neon (`@neondatabase/serverless` + `@prisma/adapter-neon`, connection pooling)
 - **ORM:** Prisma 7.10.0 (`@prisma/client` and Neon adapter)
@@ -76,6 +78,7 @@
 - **Validation & sanitization:** Zod ^4.6.7 + sanitize-html ^2.18.0
 
 ### DevOps & Tools
+
 - **Build Tool:** Turbopack
 - **Testing:** Vitest ^5.0.4 + Testing Library + Happy DOM (unit/integration), Playwright ^1.64.0 (E2E)
 - **Code Quality:** Biome 2.5.15
@@ -295,7 +298,6 @@ CI=1 pnpm test:e2e
 ```
 
 Where reports and artifacts are written:
-
 - `playwright-report/` — HTML report (local)
 - `test-results/` — raw results and traces/videos (CI artifact)
 - On CI the reports are uploaded and published to GitHub Pages under the project (see `.github/workflows/deploy.yml`).
@@ -309,7 +311,6 @@ SonarCloud analyzes this project in CI after the coverage report is generated. T
 ### Fetch issues locally
 
 The `sonar:issues` script reads existing issue data from SonarCloud; it does **not** start a new analysis. It fetches all unresolved issues for project key `marosdaniel_cookbook-next`, follows the API pagination, and prints a table with the issue key, severity, type, status, rule, file, line, and message.
-
 1. Create a token in SonarCloud under **My Account → Access Tokens**. The account associated with the token must be able to browse this project.
 2. Add it to the project-root `.env.local` file:
 
@@ -338,6 +339,7 @@ The script reads `.env.local` directly; this file is excluded from Git. Keep the
 The application uses Apollo Server with a type-safe GraphQL API.
 
 ### Endpoint
+
 ```
 POST /api/graphql
 ```
@@ -438,29 +440,29 @@ enum UserRole {
 
 ## 🔧 Scripts
 
-| Script | Description |
-|--------|-------------|
-| `pnpm dev` | Start the Next.js development server with Turbopack |
-| `pnpm build` | Generate Prisma client and build the production app |
-| `pnpm start` | Start the production server |
-| `pnpm postinstall` | Generate the Prisma client after dependency installation |
-| `pnpm typecheck` | Run Prisma generation and TypeScript type checking |
-| `pnpm test:unit` | Run unit and integration tests with Vitest |
-| `pnpm test:coverage` | Run tests and generate coverage reports |
-| `pnpm test:e2e` | Run Playwright end-to-end tests |
-| `pnpm test:e2e:ui` | Launch the Playwright UI runner |
-| `pnpm test:integration` | Run the integration test suite with Vitest |
-| `pnpm lint` | Lint the codebase with Biome |
-| `pnpm lint:fix` | Auto-fix Biome issues |
-| `pnpm format` | Format code with Biome |
-| `pnpm format:fix` | Auto-format code with Biome |
-| `pnpm deps:update` | Refresh dependency versions with npm-check-updates |
-| `pnpm deps:update:without-ts` | Refresh dependencies while keeping TypeScript pinned |
-| `pnpm analyze` | Build the app with the Next.js bundle analyzer |
-| `pnpm audit:fix` | Apply available pnpm audit fixes |
-| `pnpm codegen` | Generate TypeScript types from the GraphQL schema |
-| `pnpm codegen:check` | Verify generated GraphQL types are up to date |
-| `pnpm sonar:issues` | Display unresolved SonarCloud issues in a table (optional full JSON output with `--output <file>`) |
+| Script                        | Description                                                                                        |
+| ----------------------------- | -------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                    | Start the Next.js development server with Turbopack                                                |
+| `pnpm build`                  | Generate Prisma client and build the production app                                                |
+| `pnpm start`                  | Start the production server                                                                        |
+| `pnpm postinstall`            | Generate the Prisma client after dependency installation                                           |
+| `pnpm typecheck`              | Run Prisma generation and TypeScript type checking                                                 |
+| `pnpm test:unit`              | Run unit and integration tests with Vitest                                                         |
+| `pnpm test:coverage`          | Run tests and generate coverage reports                                                            |
+| `pnpm test:e2e`               | Run Playwright end-to-end tests                                                                    |
+| `pnpm test:e2e:ui`            | Launch the Playwright UI runner                                                                    |
+| `pnpm test:integration`       | Run the integration test suite with Vitest                                                         |
+| `pnpm lint`                   | Lint the codebase with Biome                                                                       |
+| `pnpm lint:fix`               | Auto-fix Biome issues                                                                              |
+| `pnpm format`                 | Format code with Biome                                                                             |
+| `pnpm format:fix`             | Auto-format code with Biome                                                                        |
+| `pnpm deps:update`            | Refresh dependency versions with npm-check-updates                                                 |
+| `pnpm deps:update:without-ts` | Refresh dependencies while keeping TypeScript pinned                                               |
+| `pnpm analyze`                | Build the app with the Next.js bundle analyzer                                                     |
+| `pnpm audit:fix`              | Apply available pnpm audit fixes                                                                   |
+| `pnpm codegen`                | Generate TypeScript types from the GraphQL schema                                                  |
+| `pnpm codegen:check`          | Verify generated GraphQL types are up to date                                                      |
+| `pnpm sonar:issues`           | Display unresolved SonarCloud issues in a table (optional full JSON output with `--output <file>`) |
 
 ---
 
@@ -469,10 +471,12 @@ enum UserRole {
 This project is deployed on **Vercel** and uses a GitHub Actions workflow for CI/CD.
 
 ### Automatic Deployments
+
 - **Production:** pushes to the `main` branch
 - **Preview:** pull requests targeting `main`
 
 ### Manual Deployment
+
 ```bash
 vercel --prod
 ```
@@ -495,7 +499,6 @@ Set these as GitHub Actions secrets for CI and deployment:
 ### CI/CD Pipeline
 
 The workflow in [.github/workflows/deploy.yml](.github/workflows/deploy.yml) runs the following stages:
-
 1. **Quality checks**
    - Biome linting
    - GraphQL generated type verification
@@ -547,7 +550,6 @@ git commit -m "docs: update README [skip ci]"
 ## 🤝 Contributing
 
 Contributions are welcome. A typical workflow:
-
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes and add or update tests where relevant
@@ -555,6 +557,7 @@ Contributions are welcome. A typical workflow:
 5. Commit your changes and open a pull request
 
 ### Code Style
+
 - Use **Biome** for linting and formatting
 - Follow **TypeScript** best practices
 - Write **tests** for new features and bug fixes
@@ -571,7 +574,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 👤 Author
 
 **Daniel Maros**
-
 - GitHub: [@marosdaniel](https://github.com/marosdaniel)
 - Repository: [cookbook-next](https://github.com/marosdaniel/cookbook-next)
 

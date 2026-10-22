@@ -11,23 +11,23 @@
 
 A [UserService.ts](../src/lib/services/UserService.ts) **ugyanazokat** a Zod sémákat importálja és futtatja, mint a kliens-formok:
 
-| Séma ([validation.ts](../src/lib/validation/validation.ts)) | Kliens-használat (zodResolver) | Szerver-használat (UserService) |
-|---|---|---|
-| `customValidationSchema` | — (a signup a `signUpValidationSchema`-t használja) | `createUser` → `.parse()` (L175) |
-| `signUpValidationSchema` | [SignUpForm.tsx](../src/app/(auth)/signup/SignUpForm.tsx) | — (a `privacyAccepted` kliens-only, lásd 2.2) |
-| `passwordEditValidationSchema` | [Password.tsx](../src/app/me/profile/Password/Password.tsx) | `changePassword` → `.safeParse()` (L268) |
-| `resetPasswordValidationSchema` | [ResetPasswordForm.tsx](../src/app/(auth)/reset-password/ResetPasswordForm.tsx) | `resetPassword` → `.safeParse()` (L308) |
-| `setNewPasswordValidationSchema` | [SetNewPasswordForm.tsx](../src/app/(auth)/reset-password/[token]/SetNewPasswordForm.tsx) | `setNewPassword` → `.safeParse()` (L369) |
-| `nameValidationSchema` | [PersonalData.tsx](../src/app/me/profile/PersonalData/PersonalData.tsx) | `updateUser` → `.parse()` (L430) |
+| Séma ([validation.ts](../src/lib/validation/validation.ts)) | Kliens-használat (zodResolver)                                                            | Szerver-használat (UserService)               |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------- |
+| `customValidationSchema`                                    | — (a signup a `signUpValidationSchema`-t használja)                                       | `createUser` → `.parse()` (L175)              |
+| `signUpValidationSchema`                                    | [SignUpForm.tsx](../src/app/(auth)/signup/SignUpForm.tsx)                                 | — (a `privacyAccepted` kliens-only, lásd 2.2) |
+| `passwordEditValidationSchema`                              | [Password.tsx](../src/app/me/profile/Password/Password.tsx)                               | `changePassword` → `.safeParse()` (L268)      |
+| `resetPasswordValidationSchema`                             | [ResetPasswordForm.tsx](../src/app/(auth)/reset-password/ResetPasswordForm.tsx)           | `resetPassword` → `.safeParse()` (L308)       |
+| `setNewPasswordValidationSchema`                            | [SetNewPasswordForm.tsx](../src/app/(auth)/reset-password/[token]/SetNewPasswordForm.tsx) | `setNewPassword` → `.safeParse()` (L369)      |
+| `nameValidationSchema`                                      | [PersonalData.tsx](../src/app/me/profile/PersonalData/PersonalData.tsx)                   | `updateUser` → `.parse()` (L430)              |
 
 A jelszó-policy (`STRONG_PASSWORD_REGEX`: min 8, kis-/nagybetű, szám, speciális) **egyetlen helyen** él. Ez az audit-doksik „duplikáció-gyanúját” lezárja: **user-oldalon nincs duplikáció.**
 
 ### 1.2 Recept-flow: itt VAN rés ❌
 
-| Réteg | Mi validál | Evidencia |
-|---|---|---|
-| Kliens | `recipeFormValidationSchema` (teljes: hosszak, URL-formátum, pozitív számok, YouTube-regex, slug-regex, SEO-limitek) | [useRecipeForm.tsx](../src/components/Recipe/Create/hooks/useRecipeForm.tsx), [useRecipeEditForm.tsx](../src/components/Recipe/Create/hooks/useRecipeEditForm.tsx) |
-| Szerver | Csak kézi jelenlét-ellenőrzés (`validateRequiredFields`: 7 mező truthy-check) + sanitizálás | [resolvers/recipe/utils.ts](../src/lib/graphql/resolvers/recipe/utils.ts#L43) |
+| Réteg   | Mi validál                                                                                                           | Evidencia                                                                                                                                                          |
+| ------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Kliens  | `recipeFormValidationSchema` (teljes: hosszak, URL-formátum, pozitív számok, YouTube-regex, slug-regex, SEO-limitek) | [useRecipeForm.tsx](../src/components/Recipe/Create/hooks/useRecipeForm.tsx), [useRecipeEditForm.tsx](../src/components/Recipe/Create/hooks/useRecipeEditForm.tsx) |
+| Szerver | Csak kézi jelenlét-ellenőrzés (`validateRequiredFields`: 7 mező truthy-check) + sanitizálás                          | [resolvers/recipe/utils.ts](../src/lib/graphql/resolvers/recipe/utils.ts#L43)                                                                                      |
 
 Következmény: egy közvetlen GraphQL-hívás (az operation authorization a művelet jogosultságát ellenőrzi, de nem korlátozza a paraméterértékeket) átvihet:
 - negatív/0 `cookingTime`/`servings`/`quantity` értéket,
@@ -94,14 +94,17 @@ export const userNameSchema = z
   .min(3, 'Minumum 3 chars needed')
   .max(20, 'Maximum 20 chars allowed');
 
-export const urlOrEmptySchema = z.url({ message: 'Invalid URL' }).optional().or(z.literal(''));
+export const urlOrEmptySchema = z
+  .url({ message: 'Invalid URL' })
+  .optional()
+  .or(z.literal(''));
 
 export const slugSchema = z
   .string()
   .regex(/^[a-z0-9-]*$/, 'Only lowercase letters, numbers and hyphens');
 ```
 
-**Jelszó-kontextus kezelése** (a feladat külön kérdése): a `passwordSchema` kizárólag *plaintext user-inputra* való (regisztráció, jelszóváltás, login-form). A már hashelt jelszó sosem megy át rajta — a hash-elés a `hashPassword()`-ben történik a validáció UTÁN, a szerver-sémák pedig a *bemeneti* DTO-t validálják, nem a DB-rekordot. Ezért nincs szükség „hash-toleráns” sémára; a határvonal: **séma = transport-input, nem persistence-modell.**
+**Jelszó-kontextus kezelése** (a feladat külön kérdése): a `passwordSchema` kizárólag _plaintext user-inputra_ való (regisztráció, jelszóváltás, login-form). A már hashelt jelszó sosem megy át rajta — a hash-elés a `hashPassword()`-ben történik a validáció UTÁN, a szerver-sémák pedig a _bemeneti_ DTO-t validálják, nem a DB-rekordot. Ezért nincs szükség „hash-toleráns” sémára; a határvonal: **séma = transport-input, nem persistence-modell.**
 
 ### 2.3 Szerveroldali recept-séma (a rés zárása)
 
@@ -137,12 +140,21 @@ export const recipeInputSchema = z.object({
   labels: z.array(z.string()).max(20),
   ingredients: z.array(recipeIngredientInputSchema).min(1).max(100),
   preparationSteps: z
-    .array(z.object({ localId: z.string().optional(), description: z.string().min(1).max(2000), order: z.number().int() }))
+    .array(
+      z.object({
+        localId: z.string().optional(),
+        description: z.string().min(1).max(2000),
+        order: z.number().int(),
+      }),
+    )
     .min(1)
     .max(50),
   youtubeLink: z
     .string()
-    .regex(/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/, 'Invalid YouTube URL')
+    .regex(
+      /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/,
+      'Invalid YouTube URL',
+    )
     .optional()
     .nullable()
     .or(z.literal('')),
@@ -191,15 +203,27 @@ Megjegyzés: az itt bevezetett `max()` felső korlátok **új** szabályok (DoS/
 ```ts
 // src/lib/validation/forms/auth.ts
 import { z } from 'zod';
-import { emailSchema, passwordSchema, personNameSchema, userNameSchema } from '../shared/atoms';
+import {
+  emailSchema,
+  passwordSchema,
+  personNameSchema,
+  userNameSchema,
+} from '../shared/atoms';
 
-const withPasswordConfirm = <S extends z.ZodRawShape>(shape: S, confirmField: string, passwordField: string) =>
+const withPasswordConfirm = <S extends z.ZodRawShape>(
+  shape: S,
+  confirmField: string,
+  passwordField: string,
+) =>
   z.object(shape).refine((data) => data[passwordField] === data[confirmField], {
     message: 'Passwords must match',
     path: [confirmField],
   });
 
-export const loginValidationSchema = z.object({ email: emailSchema, password: passwordSchema });
+export const loginValidationSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
+});
 
 export const signUpValidationSchema = withPasswordConfirm(
   {
@@ -209,7 +233,9 @@ export const signUpValidationSchema = withPasswordConfirm(
     password: passwordSchema,
     confirmPassword: z.string(),
     userName: userNameSchema,
-    privacyAccepted: z.literal(true, { error: 'You must accept the privacy policy' }),
+    privacyAccepted: z.literal(true, {
+      error: 'You must accept the privacy policy',
+    }),
   },
   'confirmPassword',
   'password',
@@ -221,15 +247,15 @@ Ezzel a `setNewPasswordValidationSchema` jelenlegi `max(64)`-hiánya automatikus
 
 ## 3. Migrációs lépések (TS-hibamentes sorrend)
 
-| Lépés | Művelet | Érintett fájlok | Kockázat |
-|---|---|---|---|
-| 1 | `shared/atoms.ts` létrehozása; a `validation.ts` a saját inline definíciói HELYETT az atomokból komponál (a publikus exportnevek változatlanok!) | `validation.ts`, új `shared/` | Nulla — az export-felület azonos, a meglévő 6 kliens- és 5 szerver-import érintetlen |
-| 2 | Unit tesztek futtatása (`validation.test.ts` a viselkedés-kontraktot őrzi; a `setNewPassword` max-64 új viselkedés — teszt frissítendő) | `validation.test.ts` | Alacsony |
-| 3 | `shared/recipe.ts` + `validateRecipeInput` bekötése a `createRecipe`/`editRecipe` útvonalba a `validateRequiredFields` helyére | `resolvers/recipe/utils.ts`, mutation-resolverek | Közepes — meglévő (érvénytelen) adatot nem érint, csak új írásokat |
-| 4 | A kliens-form séma (`recipeFormValidationSchema`) kiegészítése az új max-korlátokkal, és átköltöztetés `forms/recipe.ts`-be (re-export a régi helyről) | `validation.ts`, `forms/recipe.ts` | Alacsony |
-| 5 | Auth/profil form-sémák átköltöztetése `forms/auth.ts`/`forms/profile.ts`-be, `validation.ts` = re-export réteg `@deprecated` kommenttel | formok, `validation.ts` | Alacsony |
-| 6 | Import-útvonalak átállítása (`@/lib/validation` barrel frissítése), majd a deprecated re-exportok törlése egy külön PR-ban | 11 fájl | Alacsony |
-| 7 | `WEAK_PASSWORD_REGEX` törlése (csak teszt használja) | `validation.ts`, teszt | Nulla |
+| Lépés | Művelet                                                                                                                                                | Érintett fájlok                                  | Kockázat                                                                             |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| 1     | `shared/atoms.ts` létrehozása; a `validation.ts` a saját inline definíciói HELYETT az atomokból komponál (a publikus exportnevek változatlanok!)       | `validation.ts`, új `shared/`                    | Nulla — az export-felület azonos, a meglévő 6 kliens- és 5 szerver-import érintetlen |
+| 2     | Unit tesztek futtatása (`validation.test.ts` a viselkedés-kontraktot őrzi; a `setNewPassword` max-64 új viselkedés — teszt frissítendő)                | `validation.test.ts`                             | Alacsony                                                                             |
+| 3     | `shared/recipe.ts` + `validateRecipeInput` bekötése a `createRecipe`/`editRecipe` útvonalba a `validateRequiredFields` helyére                         | `resolvers/recipe/utils.ts`, mutation-resolverek | Közepes — meglévő (érvénytelen) adatot nem érint, csak új írásokat                   |
+| 4     | A kliens-form séma (`recipeFormValidationSchema`) kiegészítése az új max-korlátokkal, és átköltöztetés `forms/recipe.ts`-be (re-export a régi helyről) | `validation.ts`, `forms/recipe.ts`               | Alacsony                                                                             |
+| 5     | Auth/profil form-sémák átköltöztetése `forms/auth.ts`/`forms/profile.ts`-be, `validation.ts` = re-export réteg `@deprecated` kommenttel                | formok, `validation.ts`                          | Alacsony                                                                             |
+| 6     | Import-útvonalak átállítása (`@/lib/validation` barrel frissítése), majd a deprecated re-exportok törlése egy külön PR-ban                             | 11 fájl                                          | Alacsony                                                                             |
+| 7     | `WEAK_PASSWORD_REGEX` törlése (csak teszt használja)                                                                                                   | `validation.ts`, teszt                           | Nulla                                                                                |
 
 Minden lépés önállóan shippelhető; a 3. lépés az egyetlen viselkedés-változás (szerver szigorodik) — release note-ot érdemel.
 

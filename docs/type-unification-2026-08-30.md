@@ -7,27 +7,27 @@
 
 Az itt leírt type-unification refaktor fő részei elkészültek. A GraphQL wire-típusok és resolver-kontraktusok most codegenből származnak, a kliens operation dokumentumai generált Apollo-kompatibilis `DocumentNode` értékeket használnak, a kézi domain-réteg pedig a UI/session kivételekre szűkült.
 
-| Terület | Státusz | Megjegyzés |
-|---|---|---|
-| Resolver codegen | ✅ Elkészült | `typescript-resolvers`, generált `Resolvers`, `GraphQLContext`, Prisma parent mapping |
-| Kliens operationök | ✅ Elkészült | Forrás: `src/lib/graphql/operations.graphql`; `queries.ts` és `mutations.ts` stabil exportokat ad |
-| Resolver/service inputok | ✅ Elkészült | Generated mutation/query argok; a recipe normalizálás külön `NormalizedRecipeInput` |
-| User domain típusok | ✅ Elkészült | A fölösleges input/arg aliasok törölve; session-típusok megmaradtak |
-| Recipe UI típusok | ✅ Elkészült | Generated query outputból levezetve; `localId` UI-only kivételként megmarad |
-| Prisma-import őrszabály | ✅ Elkészült | Biome tiltja a Prisma importot app/component/provider alatt, API kivétellel |
-| Fókusz-validáció | ✅ Elkészült | Codegen, typecheck és migrációs fókusztesztek zöldek |
-| Teljes validáció | 🟡 Részben nyitott | A teljes suite-ben 3 korábbi szerződés-eltérés maradt; `codegen:check` regenerált output miatt dirty diffet jelez |
+| Terület                  | Státusz            | Megjegyzés                                                                                                        |
+| ------------------------ | ------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| Resolver codegen         | ✅ Elkészült       | `typescript-resolvers`, generált `Resolvers`, `GraphQLContext`, Prisma parent mapping                             |
+| Kliens operationök       | ✅ Elkészült       | Forrás: `src/lib/graphql/operations.graphql`; `queries.ts` és `mutations.ts` stabil exportokat ad                 |
+| Resolver/service inputok | ✅ Elkészült       | Generated mutation/query argok; a recipe normalizálás külön `NormalizedRecipeInput`                               |
+| User domain típusok      | ✅ Elkészült       | A fölösleges input/arg aliasok törölve; session-típusok megmaradtak                                               |
+| Recipe UI típusok        | ✅ Elkészült       | Generated query outputból levezetve; `localId` UI-only kivételként megmarad                                       |
+| Prisma-import őrszabály  | ✅ Elkészült       | Biome tiltja a Prisma importot app/component/provider alatt, API kivétellel                                       |
+| Fókusz-validáció         | ✅ Elkészült       | Codegen, typecheck és migrációs fókusztesztek zöldek                                                              |
+| Teljes validáció         | 🟡 Részben nyitott | A teljes suite-ben 3 korábbi szerződés-eltérés maradt; `codegen:check` regenerált output miatt dirty diffet jelez |
 
 ---
 
 ## 1. Jelenlegi állapot — a négy párhuzamos típusforrás
 
-| Forrás | Hol él | Ki használja | Állapot |
-|---|---|---|---|
-| **Prisma client típusok** | `@prisma/client` (generált) | Services (`UserService`, `RecipeService`), `UserRole` re-export | ✅ Helyén van |
-| **Kézzel írt domain-típusok** | [src/types/user.ts](../src/types/user.ts), [src/types/recipe.ts](../src/types/recipe.ts), common.ts | Kliens-komponensek, Redux, session és UI-only view-k | ✅ Karcsúsítva; generated típusokból levezetve |
-| **Kézzel írt operation-interfészek** | [queries.ts](../src/lib/graphql/queries.ts), mutations.ts | Stabil Apollo exportok | ✅ A kézi interfészek és castok eltávolítva |
-| **Codegen (client preset)** | [src/lib/graphql/generated/](../src/lib/graphql/generated/) | Apollo operation fogyasztók és resolverek | ✅ Használatban, resolver codegen kiegészítéssel |
+| Forrás                               | Hol él                                                                                              | Ki használja                                                    | Állapot                                          |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
+| **Prisma client típusok**            | `@prisma/client` (generált)                                                                         | Services (`UserService`, `RecipeService`), `UserRole` re-export | ✅ Helyén van                                    |
+| **Kézzel írt domain-típusok**        | [src/types/user.ts](../src/types/user.ts), [src/types/recipe.ts](../src/types/recipe.ts), common.ts | Kliens-komponensek, Redux, session és UI-only view-k            | ✅ Karcsúsítva; generated típusokból levezetve   |
+| **Kézzel írt operation-interfészek** | [queries.ts](../src/lib/graphql/queries.ts), mutations.ts                                           | Stabil Apollo exportok                                          | ✅ A kézi interfészek és castok eltávolítva      |
+| **Codegen (client preset)**          | [src/lib/graphql/generated/](../src/lib/graphql/generated/)                                         | Apollo operation fogyasztók és resolverek                       | ✅ Használatban, resolver codegen kiegészítéssel |
 
 ### 1.1 A központi paradoxon
 
@@ -35,11 +35,11 @@ Korábban a codegen infrastruktúra teljes volt, de a kliens kézi interfészekk
 
 ### 1.2 Konkrét duplikációk/eltérések
 
-| Entitás | Definíciók | Eltérés |
-|---|---|---|
-| **User** | ① Prisma `User` (password, sessionVersion, status-mezőkkel) ② [types/user.ts](../src/types/user.ts) `User`/`BaseUser`/`SessionUser` ③ GraphQL SDL `User` ④ next-auth.d.ts session-augmentáció | A ② kézzel tükrözi a ③-at; a `password`/`sessionVersion` helyesen hiányzik belőle — de ezt semmi nem garantálja, csak konvenció |
-| **Recipe** | ① Prisma `Recipe` (`category: JsonValue`) ② [types/recipe.ts](../src/types/recipe.ts) `RecipeBase`/`RecipeDetail` (`category: RecipeTaxonomyItem`) ③ SDL `Recipe` ④ queries.ts inline shape-ek | A JSON-mezők típusa a ②-ben kézzel „erősített” — a Prisma `JsonValue` → `RecipeTaxonomyItem` konverziót futásidőben semmi nem validálja |
-| **Resolver args** | Generált `Mutation*Args`/`Query*Args`, `Resolvers` | A SDL-lel való egyezést a `typescript-resolvers` plugin ellenőrzi; a recipe normalizálás külön belső típust használ |
+| Entitás           | Definíciók                                                                                                                                                                                     | Eltérés                                                                                                                                 |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **User**          | ① Prisma `User` (password, sessionVersion, status-mezőkkel) ② [types/user.ts](../src/types/user.ts) `User`/`BaseUser`/`SessionUser` ③ GraphQL SDL `User` ④ next-auth.d.ts session-augmentáció  | A ② kézzel tükrözi a ③-at; a `password`/`sessionVersion` helyesen hiányzik belőle — de ezt semmi nem garantálja, csak konvenció         |
+| **Recipe**        | ① Prisma `Recipe` (`category: JsonValue`) ② [types/recipe.ts](../src/types/recipe.ts) `RecipeBase`/`RecipeDetail` (`category: RecipeTaxonomyItem`) ③ SDL `Recipe` ④ queries.ts inline shape-ek | A JSON-mezők típusa a ②-ben kézzel „erősített” — a Prisma `JsonValue` → `RecipeTaxonomyItem` konverziót futásidőben semmi nem validálja |
+| **Resolver args** | Generált `Mutation*Args`/`Query*Args`, `Resolvers`                                                                                                                                             | A SDL-lel való egyezést a `typescript-resolvers` plugin ellenőrzi; a recipe normalizálás külön belső típust használ                     |
 
 ### 1.3 Ami jól van, és maradjon
 
@@ -105,9 +105,16 @@ Inkrementálisan, query-nként (a client preset `graphql()` fv-e a meglévő str
 
 ```ts
 // ELŐTTE (queries.ts):
-interface GetRecipeByIdData { getRecipeById: RecipeDetail }
-interface GetRecipeByIdVariables { id: string }
-export const GET_RECIPE_BY_ID: TypedDocumentNode<GetRecipeByIdData, GetRecipeByIdVariables> = gql`…`;
+interface GetRecipeByIdData {
+  getRecipeById: RecipeDetail;
+}
+interface GetRecipeByIdVariables {
+  id: string;
+}
+export const GET_RECIPE_BY_ID: TypedDocumentNode<
+  GetRecipeByIdData,
+  GetRecipeByIdVariables
+> = gql`…`;
 
 // UTÁNA:
 import { graphql } from '@/lib/graphql/generated';
@@ -127,7 +134,9 @@ Fogyasztó oldalon a `useQuery(GET_RECIPE_BY_ID)` visszatérési típusa automat
 import type { ResultOf } from '@graphql-typed-document-node/core';
 import type { GET_RECIPE_BY_ID } from '@/lib/graphql/queries';
 
-export type RecipeDetailFromQuery = NonNullable<ResultOf<typeof GET_RECIPE_BY_ID>['getRecipeById']>;
+export type RecipeDetailFromQuery = NonNullable<
+  ResultOf<typeof GET_RECIPE_BY_ID>['getRecipeById']
+>;
 ```
 
 Javasolt sorrend (kockázat szerint növekvő): `GET_METADATA` → user-query-k → recipe-listák → `GET_RECIPE_BY_ID` → mutation-ök. A persisted-query-registry hash-ei a dokumentum-stringből képződnek — a formázás megtartásával a hash nem változik; ha mégis, a registry újragenerálandó (ugyanabban a PR-ban).
@@ -141,8 +150,12 @@ Megjegyzés: a client preset **fragment masking**-je opcionálisan kikapcsolhat�
 import type { Resolvers } from '@/lib/graphql/generated/resolvers-types';
 
 export const resolvers: Resolvers = {
-  Query: { /* a mezőnevek, argok, return-shape-ek fordító-ellenőrzöttek */ },
-  Mutation: { /* ... */ },
+  Query: {
+    /* a mezőnevek, argok, return-shape-ek fordító-ellenőrzöttek */
+  },
+  Mutation: {
+    /* ... */
+  },
 };
 ```
 
@@ -150,11 +163,11 @@ Ez elkészült: a `CreateUserArgs` és társai törölve lettek a [types/user.ts
 
 ### Lépés 4 — src/types/* karcsúsítás ✅
 
-| Fájl | Teendő |
-|---|---|
-| [types/user.ts](../src/types/user.ts) | Marad: `SessionUser` (next-auth-hoz), `UserRole` re-export. A `User`/`BaseUser` → generált `User` típusból levezetve (`Pick`), az input/args típusok törölve (generáltak). Dokumentált szabály: *„jelszó-mező típus szinten sem létezik kliens-oldalon — a GraphQL SDL nem exponálja, a generált típus így garantálja”* |
-| [types/recipe.ts](../src/types/recipe.ts) | Marad: `RecipeIngredient` (a `localId` UI-only fogalom!), `RecipeFormSource`, `RecipeCardDataBase` — de generált alapból levezetve. A `RecipeBase`/`RecipeDetail` fokozatosan a query-inferált típusokra cserélendő |
-| resolver `types.ts`-ek | A user mutation alias-fájl törölve; a recipe fájl csak a normalizált belső input-határt tartja |
+| Fájl                                      | Teendő                                                                                                                                                                                                                                                                                                                  |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [types/user.ts](../src/types/user.ts)     | Marad: `SessionUser` (next-auth-hoz), `UserRole` re-export. A `User`/`BaseUser` → generált `User` típusból levezetve (`Pick`), az input/args típusok törölve (generáltak). Dokumentált szabály: _„jelszó-mező típus szinten sem létezik kliens-oldalon — a GraphQL SDL nem exponálja, a generált típus így garantálja”_ |
+| [types/recipe.ts](../src/types/recipe.ts) | Marad: `RecipeIngredient` (a `localId` UI-only fogalom!), `RecipeFormSource`, `RecipeCardDataBase` — de generált alapból levezetve. A `RecipeBase`/`RecipeDetail` fokozatosan a query-inferált típusokra cserélendő                                                                                                     |
+| resolver `types.ts`-ek                    | A user mutation alias-fájl törölve; a recipe fájl csak a normalizált belső input-határt tartja                                                                                                                                                                                                                          |
 
 ### Lépés 5 — őrszabályok ✅
 
@@ -163,12 +176,12 @@ Ez elkészült: a `CreateUserArgs` és társai törölve lettek a [types/user.ts
 
 ## 4. Ahol az eltérés SZÜKSÉGSZERŰ (dokumentált kivételek)
 
-| Eltérés | Ok | Kezelés |
-|---|---|---|
-| `SessionUser.email?` vs. `User.email` | A session-payload minimalizált | Kézi típus marad, kommenttel |
-| `RecipeIngredient.localId` | Kliens-oldali list-key, nem megy a szerverre | UI-típusban marad; a szerver-séma `localId`-t optional-ként tűri (már így van) |
-| Prisma `JsonValue` vs. `RecipeTaxonomyItem` | A taxonómia JSON-snapshot a DB-ben | Az admin metadata CRUD és rendezés elkészült; a recept JSON-snapshot kompatibilitása megmaradt, ezért a GraphQL-határ típuskonverziója továbbra is fontos |
-| `DateTime` scalar `string`-ként | A wire-formátum ISO-string | codegen scalar-config (már beállítva) |
+| Eltérés                                     | Ok                                           | Kezelés                                                                                                                                                   |
+| ------------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SessionUser.email?` vs. `User.email`       | A session-payload minimalizált               | Kézi típus marad, kommenttel                                                                                                                              |
+| `RecipeIngredient.localId`                  | Kliens-oldali list-key, nem megy a szerverre | UI-típusban marad; a szerver-séma `localId`-t optional-ként tűri (már így van)                                                                            |
+| Prisma `JsonValue` vs. `RecipeTaxonomyItem` | A taxonómia JSON-snapshot a DB-ben           | Az admin metadata CRUD és rendezés elkészült; a recept JSON-snapshot kompatibilitása megmaradt, ezért a GraphQL-határ típuskonverziója továbbra is fontos |
+| `DateTime` scalar `string`-ként             | A wire-formátum ISO-string                   | codegen scalar-config (már beállítva)                                                                                                                     |
 
 ## Validációs eredmények
 
@@ -180,12 +193,12 @@ Ez elkészült: a `CreateUserArgs` és társai törölve lettek a [types/user.ts
 
 ## 5. Ütemezés és méret
 
-| Lépés | Méret | Megjegyzés |
-|---|---|---|
-| 1. codegen bővítés | S | 1 fájl + 1 devDependency |
-| 2. queries/mutations migráció | M | ~10 dokumentum, inkrementálisan shippelhető |
-| 3. resolver-típusok | M | A `Resolvers` típus felfedi a mai lazaságokat — várhatóan tucatnyi apró típushiba-javítás |
-| 4. types/* karcsúsítás | S/M | A 2–3. után mechanikus |
-| 5. őrszabályok | S | Biome-konfig |
+| Lépés                         | Méret | Megjegyzés                                                                                |
+| ----------------------------- | ----- | ----------------------------------------------------------------------------------------- |
+| 1. codegen bővítés            | S     | 1 fájl + 1 devDependency                                                                  |
+| 2. queries/mutations migráció | M     | ~10 dokumentum, inkrementálisan shippelhető                                               |
+| 3. resolver-típusok           | M     | A `Resolvers` típus felfedi a mai lazaságokat — várhatóan tucatnyi apró típushiba-javítás |
+| 4. types/* karcsúsítás        | S/M   | A 2–3. után mechanikus                                                                    |
+| 5. őrszabályok                | S     | Biome-konfig                                                                              |
 
 Összefüggés: a `noImplicitAny` migrációt (backlog N-P1-3) érdemes a 3. lépés UTÁN futtatni — a generált resolver-típusok sok implicit any-t maguktól megszüntetnek.
