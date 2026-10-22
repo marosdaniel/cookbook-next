@@ -4,9 +4,7 @@ import { RecipeFormProvider, useRecipeFormContext } from './FormContext';
 
 const Consumer = () => {
   const context = useRecipeFormContext();
-  return (
-    <div data-testid="context-value">{String(context.values.title)}</div>
-  );
+  return <div data-testid="context-value">{String(context.values.title)}</div>;
 };
 
 describe('Recipe form context', () => {
