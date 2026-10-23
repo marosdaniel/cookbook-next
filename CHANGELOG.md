@@ -1,3 +1,10 @@
+# [3.11.0](https://github.com/marosdaniel/cookbook-next/compare/v3.10.0...v3.11.0) (2026-10-23)
+
+
+### Features
+
+* add support for view transitions in RecipeCard and RecipeCarousel components; update tests accordingly ([e949c43](https://github.com/marosdaniel/cookbook-next/commit/e949c430087fdfa8cde7e6145ce12bd2754a65a8))
+
 # [3.10.0](https://github.com/marosdaniel/cookbook-next/compare/v3.9.0...v3.10.0) (2026-10-22)
 
 
