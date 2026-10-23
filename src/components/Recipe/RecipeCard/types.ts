@@ -9,6 +9,7 @@ export interface RecipeCardData extends RecipeCardDataBase {
 export interface RecipeCardProps {
   recipe: RecipeCardData;
   withFavorite?: boolean;
+  withTransitions?: boolean;
 }
 
 export interface RecipeGridProps {

@@ -28,10 +28,16 @@ const GLOW_SPRING = {
   mass: 0.35,
 };
 
-const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
+const RecipeCard = ({
+  recipe,
+  withFavorite = true,
+  withTransitions = true,
+}: RecipeCardProps) => {
   const translate = useTranslations('misc');
   const tCommon = useTranslations();
   const shouldReduceMotion = useReducedMotion();
+  // Named view transitions must be unique per page; skip them for duplicate copies.
+  const shouldSkipViewTransitions = shouldReduceMotion || !withTransitions;
   const [glowVisible, setGlowVisible] = useState(false);
   const glowX = useSpring(0, GLOW_SPRING);
   const glowY = useSpring(0, GLOW_SPRING);
@@ -105,7 +111,7 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
         className={classes.imageSection}
         data-testid="recipe-card-image"
       >
-        {shouldReduceMotion ? (
+        {shouldSkipViewTransitions ? (
           image
         ) : (
           <ViewTransition name={transitionNames.image}>{image}</ViewTransition>
@@ -139,7 +145,7 @@ const RecipeCard = ({ recipe, withFavorite = true }: RecipeCardProps) => {
           </Badge>
         </Group>
 
-        {shouldReduceMotion ? (
+        {shouldSkipViewTransitions ? (
           <Text
             fw={600}
             size="md"

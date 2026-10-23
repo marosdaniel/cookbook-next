@@ -88,8 +88,19 @@ vi.mock('motion/react', () => ({
 }));
 
 vi.mock('../RecipeCard', () => ({
-  RecipeCard: ({ recipe }: { recipe: { id: string; title: string } }) => (
-    <div data-testid={`recipe-card-${recipe.id}`}>{recipe.title}</div>
+  RecipeCard: ({
+    recipe,
+    withTransitions,
+  }: {
+    recipe: { id: string; title: string };
+    withTransitions?: boolean;
+  }) => (
+    <div
+      data-testid={`recipe-card-${recipe.id}`}
+      data-with-transitions={String(withTransitions ?? true)}
+    >
+      {recipe.title}
+    </div>
   ),
 }));
 
@@ -176,5 +187,38 @@ describe('RecipeCarousel', () => {
       screen.getByTestId('recipe-carousel-static-grid'),
     ).toBeInTheDocument();
     expect(screen.getAllByTestId('recipe-carousel-slide')).toHaveLength(2);
+  });
+
+  it('disables view transitions on the carousel copy when the static grid is shown', () => {
+    const recipes: NonNullable<RecipeCarouselProps['recipes']> = [
+      { id: 'recipe-1', title: 'Recipe one' } as never,
+      { id: 'recipe-2', title: 'Recipe two' } as never,
+    ];
+
+    render(<RecipeCarousel recipes={recipes} staticOnDesktop />);
+
+    for (const slide of screen.getAllByTestId('recipe-carousel-slide')) {
+      expect(
+        slide.querySelector('[data-with-transitions="false"]'),
+      ).toBeInTheDocument();
+    }
+  });
+
+  it('keeps view transitions on the carousel when no static grid is shown', () => {
+    const recipes: NonNullable<RecipeCarouselProps['recipes']> = [
+      { id: 'recipe-1', title: 'Recipe one' } as never,
+      { id: 'recipe-2', title: 'Recipe two' } as never,
+      { id: 'recipe-3', title: 'Recipe three' } as never,
+    ];
+
+    render(<RecipeCarousel recipes={recipes} staticOnDesktop />);
+
+    expect(
+      screen.queryByTestId('recipe-carousel-static-grid'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('recipe-card-recipe-1')).toHaveAttribute(
+      'data-with-transitions',
+      'true',
+    );
   });
 });

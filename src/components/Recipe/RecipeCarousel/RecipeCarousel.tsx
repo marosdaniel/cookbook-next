@@ -119,7 +119,11 @@ const RecipeCarousel = ({
                 className={classes.carouselSlide}
                 data-testid="recipe-carousel-slide"
               >
-                <RecipeCard recipe={recipe} withFavorite={withFavorite} />
+                <RecipeCard
+                  recipe={recipe}
+                  withFavorite={withFavorite}
+                  withTransitions={!useStaticDesktopGrid}
+                />
               </Carousel.Slide>
             ))}
           </Carousel>
