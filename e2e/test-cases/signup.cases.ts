@@ -10,7 +10,9 @@ export async function shouldRenderSignUpForm(page: Page): Promise<void> {
   await expect(page.locator('#email')).toBeVisible();
   await expect(page.locator('#password')).toBeVisible();
   await expect(page.locator('#confirm-password')).toBeVisible();
-  await expect(page.locator('[data-testid="submit-button"]')).toBeVisible();
+  await expect(
+    page.locator('[data-testid="sign-up-submit-button"]'),
+  ).toBeVisible();
 }
 
 export async function shouldHaveLoginLinkOnSignUpPage(
