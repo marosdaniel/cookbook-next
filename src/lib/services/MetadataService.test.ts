@@ -81,6 +81,16 @@ describe('MetadataService', () => {
       expect(mocks.prisma.metadata.findMany).not.toHaveBeenCalled();
     });
 
+    it('ignores an empty cached list and reads the database', async () => {
+      mocks.redis?.get.mockResolvedValue([]);
+      mocks.prisma.metadata.findMany.mockResolvedValue(dbRows);
+
+      const items = await MetadataService.getActiveMetadata();
+
+      expect(mocks.prisma.metadata.findMany).toHaveBeenCalled();
+      expect(items).toEqual(publicItems);
+    });
+
     it('loads active rows on a cache miss and caches them for an hour', async () => {
       mocks.prisma.metadata.findMany.mockResolvedValue(dbRows);
 

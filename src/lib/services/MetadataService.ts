@@ -20,7 +20,8 @@ export const metadataLookupKey = (type: string, key: string) =>
 const loadActiveMetadata = async (): Promise<PublicMetadataItem[]> => {
   if (redis) {
     const cached = await redis.get(cacheKeys.metadataActive);
-    if (cached) {
+    // An empty list is treated as a miss so a stale empty result is not served for the whole TTL.
+    if (Array.isArray(cached) && cached.length > 0) {
       return cached as PublicMetadataItem[];
     }
   }
