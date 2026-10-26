@@ -1,3 +1,15 @@
+# [3.13.0](https://github.com/marosdaniel/cookbook-next/compare/v3.12.0...v3.13.0) (2026-10-26)
+
+
+### Bug Fixes
+
+* update locator for sign-up submit button in signup test cases ([131e326](https://github.com/marosdaniel/cookbook-next/commit/131e326aebece0c478df9bae385411f75ed31742))
+
+
+### Features
+
+* refactor authentication forms and tests; streamline animation variants and improve error handling ([9b87008](https://github.com/marosdaniel/cookbook-next/commit/9b87008c0bd2f6ff98cd0ada033cad5d4b8e95e5))
+
 # [3.12.0](https://github.com/marosdaniel/cookbook-next/compare/v3.11.0...v3.12.0) (2026-10-26)
 
 
