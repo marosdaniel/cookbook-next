@@ -19,22 +19,22 @@ import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 import { useState } from 'react';
 import { SET_NEW_PASSWORD } from '@/lib/graphql/mutations';
+import { MotionContainer } from '@/lib/motion/components';
+import {
+  authButtonVariants,
+  authContainerVariants,
+  authFieldListVariants,
+  authFieldVariants,
+} from '@/lib/motion/variants';
 import {
   isFormSubmitDisabled,
   setNewPasswordValidationSchema,
 } from '@/lib/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
-import { MotionContainer } from '../../../../lib/motion/components';
-import { AUTH_ROUTES } from '../../../../types/routes';
-import { showErrorNotification } from '../../../../utils/notifications';
+import { AUTH_ROUTES } from '@/types/routes';
+import { showErrorNotification } from '@/utils/notifications';
 import { AUTH_CONSTANTS } from '../../consts';
-import {
-  buttonVariants,
-  containerVariants,
-  fieldListVariants,
-  fieldVariants,
-  successIconVariants,
-} from './consts';
+import { successIconVariants } from './consts';
 import type { SetNewPasswordFormValues } from './types';
 
 export const SetNewPasswordForm: FC = () => {
@@ -83,6 +83,14 @@ export const SetNewPasswordForm: FC = () => {
         setTimeout(() => {
           router.push(AUTH_ROUTES.LOGIN);
         }, AUTH_CONSTANTS.PASSWORD_RESET_REDIRECT_DELAY);
+      } else {
+        setSubmitState('error');
+        setTimeout(() => setSubmitState('idle'), 600);
+        showErrorNotification(
+          translate('response.passwordResetFailed'),
+          translate('response.somethingWentWrong'),
+          result.data?.setNewPassword,
+        );
       }
     } catch (error: unknown) {
       setSubmitState('error');
@@ -104,7 +112,7 @@ export const SetNewPasswordForm: FC = () => {
         my={30}
         id="password-reset-success"
         data-testid="password-reset-success"
-        variants={containerVariants}
+        variants={authContainerVariants}
         initial="hidden"
         animate="visible"
       >
@@ -173,47 +181,13 @@ export const SetNewPasswordForm: FC = () => {
     );
   }
 
-  const fields = [
-    {
-      id: 'newPassword',
-      node: (
-        <PasswordInput
-          id="newPassword"
-          label={translate('auth.newPassword')}
-          placeholder={translate('auth.enterNewPassword')}
-          required
-          description={translate('response.passwordRequirements')}
-          mb="md"
-          key={form.key('newPassword')}
-          data-testid="set-new-password-input"
-          {...form.getInputProps('newPassword')}
-        />
-      ),
-    },
-    {
-      id: 'confirmPassword',
-      node: (
-        <PasswordInput
-          id="confirmPassword"
-          label={translate('auth.confirmPassword')}
-          placeholder={translate('auth.confirmNewPassword')}
-          required
-          mb="lg"
-          key={form.key('confirmPassword')}
-          data-testid="set-new-password-confirm-input"
-          {...form.getInputProps('confirmPassword')}
-        />
-      ),
-    },
-  ];
-
   return (
     <MotionContainer
       size={460}
       my={30}
       id="set-new-password-page"
       data-testid="set-new-password-page"
-      variants={containerVariants}
+      variants={authContainerVariants}
       initial="hidden"
       animate="visible"
     >
@@ -245,19 +219,39 @@ export const SetNewPasswordForm: FC = () => {
           radius="md"
         >
           <motion.div
-            variants={fieldListVariants}
+            variants={authFieldListVariants}
             initial="hidden"
             animate="visible"
           >
-            {fields.map(({ id, node }) => (
-              <motion.div key={id} variants={fieldVariants}>
-                {node}
-              </motion.div>
-            ))}
+            <motion.div variants={authFieldVariants}>
+              <PasswordInput
+                id="newPassword"
+                label={translate('auth.newPassword')}
+                placeholder={translate('auth.enterNewPassword')}
+                required
+                description={translate('response.passwordRequirements')}
+                mb="md"
+                key={form.key('newPassword')}
+                data-testid="set-new-password-input"
+                {...form.getInputProps('newPassword')}
+              />
+            </motion.div>
+            <motion.div variants={authFieldVariants}>
+              <PasswordInput
+                id="confirmPassword"
+                label={translate('auth.confirmPassword')}
+                placeholder={translate('auth.confirmNewPassword')}
+                required
+                mb="lg"
+                key={form.key('confirmPassword')}
+                data-testid="set-new-password-confirm-input"
+                {...form.getInputProps('confirmPassword')}
+              />
+            </motion.div>
           </motion.div>
 
           <motion.div
-            variants={buttonVariants}
+            variants={authButtonVariants}
             animate={submitState}
             whileTap="tap"
           >

@@ -19,25 +19,24 @@ import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 import { useState } from 'react';
 import { RESET_PASSWORD } from '@/lib/graphql/mutations';
+import { MotionContainer } from '@/lib/motion/components';
+import {
+  authButtonVariants,
+  authContainerVariants,
+  authFieldListVariants,
+  authFieldVariants,
+} from '@/lib/motion/variants';
 import {
   isFormSubmitDisabled,
   resetPasswordValidationSchema,
 } from '@/lib/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
-import { MotionContainer } from '../../../lib/motion/components';
-import { AUTH_ROUTES } from '../../../types/routes';
+import { AUTH_ROUTES } from '@/types/routes';
 import {
   showErrorNotification,
   showSuccessNotification,
 } from '../../../utils/notifications';
-import {
-  buttonVariants,
-  containerVariants,
-  fieldListVariants,
-  fieldVariants,
-  successIconVariants,
-  swapVariants,
-} from './consts';
+import { successIconVariants, swapVariants } from './consts';
 import type { ResetPasswordFormValues } from './types';
 
 export const ResetPasswordForm: FC = () => {
@@ -72,6 +71,14 @@ export const ResetPasswordForm: FC = () => {
           translate('response.success'),
           result.data.resetPassword.message ?? '',
         );
+      } else {
+        setSubmitState('error');
+        setTimeout(() => setSubmitState('idle'), 600);
+        showErrorNotification(
+          translate('response.resetPasswordFailed'),
+          translate('response.somethingWentWrong'),
+          result.data?.resetPassword,
+        );
       }
     } catch (error: unknown) {
       setSubmitState('error');
@@ -92,7 +99,7 @@ export const ResetPasswordForm: FC = () => {
       my={30}
       id="reset-password-page"
       data-testid="reset-password-page"
-      variants={containerVariants}
+      variants={authContainerVariants}
       initial="hidden"
       animate="visible"
     >
@@ -178,12 +185,12 @@ export const ResetPasswordForm: FC = () => {
                 style={{ width: '100%' }}
               >
                 <motion.div
-                  variants={fieldListVariants}
+                  variants={authFieldListVariants}
                   initial="hidden"
                   animate="visible"
                 >
                   <Stack gap="md">
-                    <motion.div variants={fieldVariants}>
+                    <motion.div variants={authFieldVariants}>
                       <TextInput
                         id="email"
                         label={translate('user.email')}
@@ -196,7 +203,7 @@ export const ResetPasswordForm: FC = () => {
                     </motion.div>
 
                     <motion.div
-                      variants={buttonVariants}
+                      variants={authButtonVariants}
                       animate={submitState}
                       whileTap="tap"
                     >

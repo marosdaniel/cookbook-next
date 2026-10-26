@@ -15,7 +15,7 @@ vi.mock('@/lib/seo/seo', () => ({
 }));
 
 vi.mock('./SignUpForm', () => ({
-  default: () => <div data-testid="signup-page-form">signup form</div>,
+  SignUpForm: () => <div data-testid="signup-page-form">signup form</div>,
 }));
 
 describe('SignUpPage', () => {

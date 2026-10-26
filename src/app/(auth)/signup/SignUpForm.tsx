@@ -19,24 +19,24 @@ import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 import { useState } from 'react';
+import PrivacyPolicyLink from '@/components/PrivacyPolicyLink';
 import { CREATE_USER } from '@/lib/graphql/mutations';
+import { MotionContainer } from '@/lib/motion/components';
+import {
+  authContainerVariants,
+  authFieldListVariants,
+  authFieldVariants,
+} from '@/lib/motion/variants';
 import { isFormSubmitDisabled, signUpValidationSchema } from '@/lib/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
+import { AUTH_ROUTES } from '@/types/routes';
 import {
   showErrorNotification,
   showSuccessNotification,
 } from '@/utils/notifications';
-import PrivacyPolicyLink from '../../../components/PrivacyPolicyLink';
-import { MotionContainer } from '../../../lib/motion/components';
-import { AUTH_ROUTES } from '../../../types/routes';
-import {
-  buttonVariants,
-  containerVariants,
-  fieldListVariants,
-  fieldVariants,
-} from './consts';
+import { buttonVariants } from './consts';
 
-const SignUpForm: FC = () => {
+export const SignUpForm: FC = () => {
   const translate = useTranslations();
   const router = useRouter();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -98,6 +98,14 @@ const SignUpForm: FC = () => {
           setIsLoggingIn(false);
           router.push(AUTH_ROUTES.LOGIN);
         }
+      } else {
+        setSubmitState('error');
+        setTimeout(() => setSubmitState('idle'), 600);
+        showErrorNotification(
+          translate('response.error'),
+          translate('response.unknownError'),
+          data?.createUser,
+        );
       }
     } catch (error) {
       setIsLoggingIn(false);
@@ -211,7 +219,7 @@ const SignUpForm: FC = () => {
       my={40}
       id="sign-up-page"
       data-testid="sign-up-page"
-      variants={containerVariants}
+      variants={authContainerVariants}
       initial="hidden"
       animate="visible"
     >
@@ -244,7 +252,6 @@ const SignUpForm: FC = () => {
               size="sm"
               component={Link}
               href={AUTH_ROUTES.LOGIN}
-              aria-label="Login"
               data-testid="login-link"
             >
               {translate('auth.login')}
@@ -268,20 +275,19 @@ const SignUpForm: FC = () => {
           onSubmit={form.onSubmit(handleSignUp)}
           data-testid="sign-up-form"
         >
-          {/* Staggered fields */}
           <motion.div
-            variants={fieldListVariants}
+            variants={authFieldListVariants}
             initial="hidden"
             animate="visible"
           >
             {fields.map(({ id, node }) => (
-              <motion.div key={id} variants={fieldVariants}>
+              <motion.div key={id} variants={authFieldVariants}>
                 {node}
               </motion.div>
             ))}
           </motion.div>
 
-          <motion.div variants={fieldVariants}>
+          <motion.div variants={authFieldVariants}>
             <Checkbox
               size="md"
               label={<PrivacyPolicyLink />}
@@ -292,30 +298,26 @@ const SignUpForm: FC = () => {
             />
           </motion.div>
 
-          <div data-testid="submit-button">
-            <motion.div
-              variants={buttonVariants}
-              animate={submitState}
-              whileTap="tap"
+          <motion.div
+            variants={buttonVariants}
+            animate={submitState}
+            whileTap="tap"
+          >
+            <Button
+              id="submit-button"
+              data-testid="sign-up-submit-button"
+              fullWidth
+              mt="xl"
+              type="submit"
+              disabled={isSubmitDisabled}
+              loading={loading || isLoggingIn}
+              loaderProps={{ type: 'dots' }}
             >
-              <Button
-                id="submit-button"
-                data-testid="sign-up-submit-button"
-                fullWidth
-                mt="xl"
-                type="submit"
-                disabled={isSubmitDisabled}
-                loading={loading || isLoggingIn}
-                loaderProps={{ type: 'dots' }}
-              >
-                {translate('auth.createAnAccountButton')}
-              </Button>
-            </motion.div>
-          </div>
+              {translate('auth.createAnAccountButton')}
+            </Button>
+          </motion.div>
         </Paper>
       </motion.div>
     </MotionContainer>
   );
 };
-
-export default SignUpForm;

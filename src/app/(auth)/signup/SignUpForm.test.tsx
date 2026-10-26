@@ -6,7 +6,7 @@ import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@/utils/test-utils';
 import { AUTH_ROUTES } from '../../../types/routes';
-import SignUpForm from './SignUpForm';
+import { SignUpForm } from './SignUpForm';
 
 // Mock zodResolver
 vi.mock('@/lib/validation/zodResolver', () => ({

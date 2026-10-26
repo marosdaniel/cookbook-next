@@ -3,7 +3,6 @@
 import {
   Anchor,
   Button,
-  Container,
   Group,
   Paper,
   PasswordInput,
@@ -12,64 +11,28 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { motion, type Variants } from 'motion/react';
+import { motion } from 'motion/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import type { FC, MouseEvent } from 'react';
+import type { FC } from 'react';
 import { useState } from 'react';
+import { MotionContainer } from '@/lib/motion/components';
+import {
+  authButtonVariants,
+  authContainerVariants,
+  authFieldListVariants,
+  authFieldVariants,
+} from '@/lib/motion/variants';
+import { loginValidationSchema } from '@/lib/validation';
 import { zodResolver } from '@/lib/validation/zodResolver';
+import { AUTH_ROUTES } from '@/types/routes';
 import {
   showErrorNotification,
   showSuccessNotification,
 } from '@/utils/notifications';
-import { loginValidationSchema } from '../../../lib/validation';
-import { AUTH_ROUTES } from '../../../types/routes';
 import type { LoginFormValues } from './types';
-
-// --- Animation variants ---
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.45, ease: 'easeOut' as const },
-  },
-};
-
-const fieldListVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.15,
-    },
-  },
-};
-
-const fieldVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.3, ease: 'easeOut' as const },
-  },
-};
-
-const buttonVariants: Variants = {
-  idle: { scale: 1 },
-  tap: { scale: 0.97 },
-  error: {
-    x: [-6, 6, -4, 4, 0],
-    transition: { duration: 0.35 },
-  },
-};
-
-// ---
-
-const MotionContainer = motion.create(Container);
 
 export const LoginForm: FC = () => {
   const translate = useTranslations();
@@ -86,11 +49,11 @@ export const LoginForm: FC = () => {
     validate: zodResolver(loginValidationSchema, (key) => translate(key)),
   });
 
-  const handleNavigateToResetPassword = (
-    event: MouseEvent<HTMLAnchorElement>,
-  ) => {
-    event.preventDefault();
-    router.push(AUTH_ROUTES.RESET_PASSWORD);
+  const showLoginError = (message: string) => {
+    showErrorNotification(translate('response.error'), message);
+    setIsSigningIn(false);
+    setSubmitState('error');
+    setTimeout(() => setSubmitState('idle'), 600);
   };
 
   const handleLogin = async (values: LoginFormValues) => {
@@ -103,13 +66,7 @@ export const LoginForm: FC = () => {
       });
 
       if (result?.error) {
-        showErrorNotification(
-          translate('response.error'),
-          translate('auth.invalidCredentials'),
-        );
-        setIsSigningIn(false);
-        setSubmitState('error');
-        setTimeout(() => setSubmitState('idle'), 600);
+        showLoginError(translate('auth.invalidCredentials'));
         return;
       }
 
@@ -120,52 +77,16 @@ export const LoginForm: FC = () => {
         );
         // Navigation will unmount component, keep loading state
         router.push('/');
+        return;
       }
+
+      showLoginError(translate('auth.loginError'));
     } catch {
-      showErrorNotification(
-        translate('response.error'),
-        translate('auth.loginError'),
-      );
-      setIsSigningIn(false);
-      setSubmitState('error');
-      setTimeout(() => setSubmitState('idle'), 600);
+      showLoginError(translate('auth.loginError'));
     }
   };
 
   const isLoginDisabled = form.submitting || isSigningIn;
-
-  const fields = [
-    {
-      id: 'email',
-      node: (
-        <TextInput
-          label={translate('user.email')}
-          placeholder={translate('auth.emailPlaceholder')}
-          required
-          id="email"
-          type="email"
-          autoComplete="email"
-          data-testid="login-email-input"
-          {...form.getInputProps('email')}
-        />
-      ),
-    },
-    {
-      id: 'password',
-      node: (
-        <PasswordInput
-          placeholder={translate('user.password')}
-          required
-          mt="md"
-          id="password"
-          label={translate('user.password')}
-          autoComplete="current-password"
-          data-testid="login-password-input"
-          {...form.getInputProps('password')}
-        />
-      ),
-    },
-  ];
 
   return (
     <MotionContainer
@@ -173,7 +94,7 @@ export const LoginForm: FC = () => {
       my={40}
       id="login-page"
       data-testid="login-page"
-      variants={containerVariants}
+      variants={authContainerVariants}
       initial="hidden"
       animate="visible"
     >
@@ -228,26 +149,45 @@ export const LoginForm: FC = () => {
           data-testid="login-form"
         >
           <motion.div
-            variants={fieldListVariants}
+            variants={authFieldListVariants}
             initial="hidden"
             animate="visible"
           >
-            {fields.map(({ id, node }) => (
-              <motion.div key={id} variants={fieldVariants}>
-                {node}
-              </motion.div>
-            ))}
+            <motion.div variants={authFieldVariants}>
+              <TextInput
+                label={translate('user.email')}
+                placeholder={translate('auth.emailPlaceholder')}
+                required
+                id="email"
+                type="email"
+                autoComplete="email"
+                data-testid="login-email-input"
+                {...form.getInputProps('email')}
+              />
+            </motion.div>
+
+            <motion.div variants={authFieldVariants}>
+              <PasswordInput
+                placeholder={translate('user.password')}
+                required
+                mt="md"
+                id="password"
+                label={translate('user.password')}
+                autoComplete="current-password"
+                data-testid="login-password-input"
+                {...form.getInputProps('password')}
+              />
+            </motion.div>
           </motion.div>
 
-          <motion.div variants={fieldVariants}>
+          <motion.div variants={authFieldVariants}>
             <Group justify="flex-end" mt="lg">
               <Anchor
                 variant="gradient"
                 gradient={{ from: 'blue', to: 'cyan', deg: 90 }}
                 size="sm"
-                component="a"
+                component={Link}
                 href={AUTH_ROUTES.RESET_PASSWORD}
-                onClick={handleNavigateToResetPassword}
                 data-testid="forgot-password"
               >
                 {translate('auth.forgotPassword')}
@@ -256,7 +196,7 @@ export const LoginForm: FC = () => {
           </motion.div>
 
           <motion.div
-            variants={buttonVariants}
+            variants={authButtonVariants}
             animate={submitState}
             whileTap="tap"
           >
@@ -267,7 +207,7 @@ export const LoginForm: FC = () => {
               mt="xl"
               type="submit"
               disabled={isLoginDisabled}
-              loading={form.submitting || isSigningIn}
+              loading={isLoginDisabled}
               loaderProps={{ type: 'dots' }}
             >
               {translate('auth.signIn')}

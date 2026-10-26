@@ -60,8 +60,17 @@ vi.mock('@mantine/notifications', () => ({
 
 // Mock next/link
 vi.mock('next/link', () => ({
-  default: ({ children, href }: { children: ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
+  default: ({
+    children,
+    href,
+    ...rest
+  }: {
+    children: ReactNode;
+    href: string;
+  } & Record<string, unknown>) => (
+    <a href={href} {...rest}>
+      {children}
+    </a>
   ),
 }));
 
@@ -168,12 +177,13 @@ describe('LoginForm', () => {
       expect(forgotPasswordLink).toBeInTheDocument();
     });
 
-    it('navigates to reset password when forgot password link is clicked', () => {
+    it('links to reset password page from forgot password link', () => {
       render(<LoginForm />);
 
-      fireEvent.click(screen.getByTestId('forgot-password'));
-
-      expect(mockPush).toHaveBeenCalledWith(AUTH_ROUTES.RESET_PASSWORD);
+      expect(screen.getByTestId('forgot-password')).toHaveAttribute(
+        'href',
+        AUTH_ROUTES.RESET_PASSWORD,
+      );
     });
 
     it('has correct container id', () => {
