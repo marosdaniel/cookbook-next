@@ -1,3 +1,10 @@
+# [3.12.0](https://github.com/marosdaniel/cookbook-next/compare/v3.11.0...v3.12.0) (2026-10-26)
+
+
+### Features
+
+* update MetadataService to handle empty cached lists correctly ([50cc62b](https://github.com/marosdaniel/cookbook-next/commit/50cc62b5606271395b2522888966f6760238defb))
+
 # [3.11.0](https://github.com/marosdaniel/cookbook-next/compare/v3.10.0...v3.11.0) (2026-10-23)
 
 
