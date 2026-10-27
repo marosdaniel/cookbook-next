@@ -54,7 +54,7 @@
     "@prisma/client": "7.10.1",
     "@reduxjs/toolkit": "^2.13.0",
     "@t3-oss/env-nextjs": "^0.13.11",
-    "@tabler/icons-react": "^3.49.0",
+    "@tabler/icons-react": "^3.50.0",
     "@upstash/ratelimit": "^2.2.0",
     "@upstash/redis": "^1.40.0",
     "@vercel/speed-insights": "^2.0.0",
