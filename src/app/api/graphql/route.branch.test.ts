@@ -97,7 +97,11 @@ vi.mock('@/lib/rateLimit/rateLimit', () => ({
     limit: 60,
     remaining: 59,
   })),
+  fallbackGlobalRateLimiter: {
+    limit: vi.fn(async () => ({ success: true, limit: 100, remaining: 99 })),
+  },
   getRateLimitGroupForField: vi.fn(() => null),
+  RATE_LIMIT_REDIS_TIMEOUT_MS: 750,
   rateLimiter: { limit: vi.fn() },
 }));
 

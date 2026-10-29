@@ -21,6 +21,15 @@ export const redisToken = env.UPSTASH_REDIS_REST_TOKEN || env.KV_REST_API_TOKEN;
 
 const REDIS_FAILURE_TTL_MS = 5_000;
 const REDIS_OPERATION_TIMEOUT_MS = 1_000;
+export const DEFAULT_REDIS_BREAKER_THRESHOLD = 3;
+
+export const resolveRedisBreakerThreshold = (): number => {
+  const configured = Number(env.REDIS_BREAKER_THRESHOLD);
+  if (Number.isInteger(configured) && configured >= 1) {
+    return configured;
+  }
+  return DEFAULT_REDIS_BREAKER_THRESHOLD;
+};
 
 const isValidRedisUrl = (value: string | undefined) => {
   if (!value) {
@@ -47,11 +56,11 @@ interface RedisWithCircuitBreaker {
   incr: (key: string) => Promise<unknown>;
 }
 
-// A single failure (including a timeout) opens the circuit; after the
+// Opens the circuit after N consecutive failures (default 3); after the
 // cool-down one trial call decides whether it closes again.
 const redisBreaker = circuitBreaker(handleAll, {
   halfOpenAfter: REDIS_FAILURE_TTL_MS,
-  breaker: new ConsecutiveBreaker(1),
+  breaker: new ConsecutiveBreaker(resolveRedisBreakerThreshold()),
 });
 
 redisBreaker.onBreak((reason) => {

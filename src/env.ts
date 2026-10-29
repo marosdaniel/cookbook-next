@@ -29,6 +29,14 @@ const validatedEnv = createEnv({
     TRUSTED_PROXY_MODE: z.enum(['vercel']).optional(),
     GRAPHQL_ALLOWLIST_ENFORCE: z.enum(['true', 'false']).optional(),
     UPSTASH_RATELIMIT_ANALYTICS: z.enum(['true', 'false']).optional(),
+    REDIS_BREAKER_THRESHOLD: z
+      .string()
+      .regex(/^\d+$/, 'REDIS_BREAKER_THRESHOLD must be a positive integer')
+      .optional(),
+    RATE_LIMIT_TIMEOUT_MS: z
+      .string()
+      .regex(/^\d+$/, 'RATE_LIMIT_TIMEOUT_MS must be a positive integer')
+      .optional(),
     VERCEL: z.string().optional(),
     VERCEL_URL: z.string().optional(),
     VERCEL_PROJECT_PRODUCTION_URL: z.string().optional(),
@@ -55,6 +63,8 @@ const validatedEnv = createEnv({
     TRUSTED_PROXY_MODE: process.env.TRUSTED_PROXY_MODE,
     GRAPHQL_ALLOWLIST_ENFORCE: process.env.GRAPHQL_ALLOWLIST_ENFORCE,
     UPSTASH_RATELIMIT_ANALYTICS: process.env.UPSTASH_RATELIMIT_ANALYTICS,
+    REDIS_BREAKER_THRESHOLD: process.env.REDIS_BREAKER_THRESHOLD,
+    RATE_LIMIT_TIMEOUT_MS: process.env.RATE_LIMIT_TIMEOUT_MS,
     VERCEL: process.env.VERCEL,
     VERCEL_URL: process.env.VERCEL_URL,
     VERCEL_PROJECT_PRODUCTION_URL: process.env.VERCEL_PROJECT_PRODUCTION_URL,

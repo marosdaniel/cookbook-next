@@ -26,18 +26,22 @@ describe('redis client fallback', () => {
     vi.useRealTimers();
   });
 
-  it('stops retrying Redis after a transient failure', async () => {
-    redisGetMock.mockRejectedValueOnce(new Error('dns failure'));
+  it('stops retrying Redis after reaching the consecutive failure threshold (default 3)', async () => {
+    redisGetMock.mockRejectedValue(new Error('dns failure'));
 
     const { redis } = await import('./redis');
 
     expect(await redis?.get('key')).toBeNull();
     expect(await redis?.get('key')).toBeNull();
-    expect(redisGetMock).toHaveBeenCalledTimes(1);
+    expect(await redis?.get('key')).toBeNull();
+    // 4th call is short-circuited by the open breaker
+    expect(await redis?.get('key')).toBeNull();
+    expect(redisGetMock).toHaveBeenCalledTimes(3);
   });
 
   it('retries Redis after the cool-down period and closes the circuit on success', async () => {
     vi.useFakeTimers();
+    process.env.REDIS_BREAKER_THRESHOLD = '1';
     redisGetMock
       .mockRejectedValueOnce(new Error('dns failure'))
       .mockResolvedValue('cached');
@@ -53,10 +57,12 @@ describe('redis client fallback', () => {
     expect(await redis?.get('key')).toBe('cached');
     expect(await redis?.get('key')).toBe('cached');
     expect(redisGetMock).toHaveBeenCalledTimes(3);
+    delete process.env.REDIS_BREAKER_THRESHOLD;
   });
 
-  it('opens the circuit when a Redis operation exceeds the timeout', async () => {
+  it('opens the circuit when Redis operations exceed the timeout threshold', async () => {
     vi.useFakeTimers();
+    process.env.REDIS_BREAKER_THRESHOLD = '1';
     redisGetMock.mockImplementation(() => new Promise(() => {}));
 
     const { redis } = await import('./redis');
@@ -67,6 +73,7 @@ describe('redis client fallback', () => {
     expect(await pending).toBeNull();
     expect(await redis?.get('key')).toBeNull();
     expect(redisGetMock).toHaveBeenCalledTimes(1);
+    delete process.env.REDIS_BREAKER_THRESHOLD;
   });
 
   it('does not initialize Redis when the URL is invalid', async () => {

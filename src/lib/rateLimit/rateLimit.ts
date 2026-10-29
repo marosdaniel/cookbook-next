@@ -48,7 +48,17 @@ export type RateLimitOperation = Extract<
   | typeof OPERATION_NAMES.DELETE_ALL_RECIPES
 >;
 
-export const RATE_LIMIT_REDIS_TIMEOUT_MS = 750;
+export const DEFAULT_RATE_LIMIT_REDIS_TIMEOUT_MS = 750;
+
+export const resolveRateLimitTimeoutMs = (): number => {
+  const configured = Number(env.RATE_LIMIT_TIMEOUT_MS);
+  if (Number.isInteger(configured) && configured >= 50) {
+    return configured;
+  }
+  return DEFAULT_RATE_LIMIT_REDIS_TIMEOUT_MS;
+};
+
+export const RATE_LIMIT_REDIS_TIMEOUT_MS = resolveRateLimitTimeoutMs();
 
 export const createInMemoryLimiter = (
   maxRequests: number,

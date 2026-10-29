@@ -1,7 +1,11 @@
 import { randomUUID } from 'node:crypto';
 import { NextRequest } from 'next/server';
 import { getRateLimitClientKey } from '@/lib/rateLimit/clientIp';
-import { rateLimiter } from '@/lib/rateLimit/rateLimit';
+import {
+  fallbackGlobalRateLimiter,
+  RATE_LIMIT_REDIS_TIMEOUT_MS,
+  rateLimiter,
+} from '@/lib/rateLimit/rateLimit';
 import { withTimeout } from '@/lib/redis/redis';
 import { requestStorage, resolveSessionSafely } from '@/server/graphql/context';
 import { graphqlNextHandler as handler } from '@/server/graphql/server';
@@ -48,7 +52,7 @@ const enforceGlobalRateLimit = async (
   try {
     const rateLimitResult = await withTimeout(
       () => limiter.limit(clientKey),
-      750,
+      RATE_LIMIT_REDIS_TIMEOUT_MS,
     );
 
     if (!rateLimitResult) {
@@ -66,7 +70,17 @@ const enforceGlobalRateLimit = async (
       'X-RateLimit-Remaining': remaining.toString(),
     });
   } catch (error) {
-    console.warn('GraphQL global rate limiter failed.', error);
+    console.warn(
+      'GraphQL global rate limiter failed; using in-memory fallback.',
+      error,
+    );
+    const fallbackResult = await fallbackGlobalRateLimiter.limit(clientKey);
+    if (!fallbackResult.success) {
+      return createJsonResponse({ error: 'Too many requests' }, 429, {
+        'X-RateLimit-Limit': fallbackResult.limit.toString(),
+        'X-RateLimit-Remaining': fallbackResult.remaining.toString(),
+      });
+    }
     return null;
   }
 };
