@@ -45,6 +45,14 @@ describe('AdminLayout', () => {
     );
   });
 
+  it('treats a revoked session as anonymous and redirects to login', async () => {
+    mocks.auth.mockRejectedValue(new Error('Session has been revoked'));
+
+    await expect(AdminLayout({ children: <p>secret</p> })).rejects.toThrow(
+      'REDIRECT:/login?callbackUrl=%2Fadmin',
+    );
+  });
+
   it('redirects signed-in users without the admin role home', async () => {
     mocks.auth.mockResolvedValue({ user: { id: 'u1', role: 'USER' } });
 
