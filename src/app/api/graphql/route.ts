@@ -19,10 +19,10 @@ import {
   createUserRatingLoader,
   createUserRecipesLoader,
 } from '@/lib/dataloader/loaders';
-import { assertGraphQLOperationAuthorized } from '@/lib/graphql/authorization';
 import { canResolveUserField } from '@/lib/graphql/fieldPolicies';
 import { normalizeGraphQLOperationName } from '@/lib/graphql/operations';
 import { allowlistPlugin } from '@/lib/graphql/plugins/allowlist';
+import { rootFieldAuthPlugin } from '@/lib/graphql/plugins/rootFieldAuth';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
@@ -76,27 +76,6 @@ const loggingPlugin: ApolloServerPlugin<GraphQLContext> = {
             ...(errorCode ? { errorCode } : {}),
           }),
         );
-        return Promise.resolve();
-      },
-    });
-  },
-};
-
-/**
- * Plugin to validate operation permissions
- */
-const authPlugin: ApolloServerPlugin<GraphQLContext> = {
-  requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
-    return Promise.resolve({
-      didResolveOperation(requestContext) {
-        const operationName = requestContext.operationName;
-        const { role } = requestContext.contextValue;
-
-        assertGraphQLOperationAuthorized(operationName, role);
-
-        // Authorize the operation selected by Apollo after parsing the document.
-        // The client-supplied HTTP operationName is not trusted for this check.
-        requestContext.contextValue.operationName = operationName;
         return Promise.resolve();
       },
     });
@@ -164,7 +143,7 @@ const server = new ApolloServer<GraphQLContext>({
     ...protection.plugins,
     loggingPlugin,
     allowlistPlugin,
-    authPlugin,
+    rootFieldAuthPlugin,
     fieldAuthPlugin,
   ],
   validationRules: [...protection.validationRules],

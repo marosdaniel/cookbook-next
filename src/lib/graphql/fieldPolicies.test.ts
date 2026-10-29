@@ -20,6 +20,30 @@ describe('user field policies', () => {
     ).toBe(false);
   });
 
+  it('restricts favoriteRecipes to the owner or an admin', () => {
+    expect(
+      canResolveUserField(
+        'favoriteRecipes',
+        { id: 'user-1' },
+        { userId: 'user-1' },
+      ),
+    ).toBe(true);
+    expect(
+      canResolveUserField(
+        'favoriteRecipes',
+        { id: 'user-1' },
+        { role: 'ADMIN' },
+      ),
+    ).toBe(true);
+    expect(
+      canResolveUserField(
+        'favoriteRecipes',
+        { id: 'user-2' },
+        { userId: 'user-1' },
+      ),
+    ).toBe(false);
+  });
+
   it('allows fields without a registered policy', () => {
     expect(
       canResolveUserField('userName', { id: 'user-2' }, { userId: 'user-1' }),

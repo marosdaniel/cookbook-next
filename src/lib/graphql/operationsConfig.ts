@@ -100,11 +100,43 @@ export const operationsConfig: OperationsConfig = {
   ],
 };
 
+export type RootFieldAccessLevel = 'PUBLIC' | 'USER' | 'ADMIN';
+
+export const ROOT_FIELD_POLICY: Readonly<Record<string, RootFieldAccessLevel>> =
+  Object.freeze({
+    ...Object.fromEntries(
+      operationsConfig.publicOperations.map((field) => [
+        field,
+        'PUBLIC' as const,
+      ]),
+    ),
+    ...Object.fromEntries(
+      [
+        ...operationsConfig.userOperations,
+        ...operationsConfig.bloggerOperations,
+      ].map((field) => [field, 'USER' as const]),
+    ),
+    ...Object.fromEntries(
+      operationsConfig.adminOperations.map((field) => [
+        field,
+        'ADMIN' as const,
+      ]),
+    ),
+  });
+
+export const getRootFieldPolicy = (fieldName: string): RootFieldAccessLevel => {
+  const normalized = normalizeGraphQLOperationName(fieldName);
+  if (!normalized) {
+    return 'ADMIN';
+  }
+  return ROOT_FIELD_POLICY[normalized] ?? 'ADMIN';
+};
+
 /**
  * Checks if an operation is public (no auth required)
  */
 export const isPublicOperation = (operationName: string): boolean => {
-  return operationsConfig.publicOperations.includes(operationName);
+  return getRootFieldPolicy(operationName) === 'PUBLIC';
 };
 
 /**

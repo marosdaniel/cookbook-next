@@ -20,6 +20,7 @@ const isSelfOrAdmin: FieldPolicy = (source, context) =>
 
 export const userFieldPolicies: Record<string, FieldPolicy> = {
   email: isSelfOrAdmin,
+  favoriteRecipes: isSelfOrAdmin,
 };
 
 export const canResolveUserField = (
