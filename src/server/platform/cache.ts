@@ -8,6 +8,10 @@ export const LIST_CACHE_TTL_SECONDS = 15;
 export const DETAIL_CACHE_TTL_SECONDS = 60;
 export const SESSION_VERSION_CACHE_TTL_SECONDS = 60;
 
+// Keys are deleted in batches so a bulk invalidation does not fire thousands
+// of concurrent Redis requests at once.
+const KEY_DELETE_BATCH_SIZE = 100;
+
 const DATE_FIELD_NAMES = new Set([
   'createdAt',
   'updatedAt',
@@ -122,11 +126,15 @@ export async function getRecipeListVersion(): Promise<number> {
 
 export interface CacheInvalidationScope {
   recipeId?: string;
+  recipeIds?: string[];
   slugs?: Array<string | null | undefined>;
   authorId?: string;
+  authorIds?: string[];
   favoriteUserId?: string;
   followerUserId?: string;
   sessionUserId?: string;
+  /** Clears every per-user cache entry (recipes, favorites, following, session version). */
+  userIds?: string[];
   metadataActive?: boolean;
   invalidateRecipeLists?: boolean;
 }
@@ -139,9 +147,17 @@ export async function invalidateCacheScope(
 
   const keysToDelete = new Set<string>();
 
+  const addRecipeKeys = (recipeId: string) => {
+    keysToDelete.add(cacheKeys.recipeDetail(recipeId));
+    keysToDelete.add(cacheKeys.recipeLookup(recipeId));
+  };
+
   if (scope.recipeId) {
-    keysToDelete.add(cacheKeys.recipeDetail(scope.recipeId));
-    keysToDelete.add(cacheKeys.recipeLookup(scope.recipeId));
+    addRecipeKeys(scope.recipeId);
+  }
+
+  for (const recipeId of scope.recipeIds ?? []) {
+    addRecipeKeys(recipeId);
   }
 
   for (const slug of scope.slugs ?? []) {
@@ -152,6 +168,10 @@ export async function invalidateCacheScope(
 
   if (scope.authorId) {
     keysToDelete.add(cacheKeys.userRecipes(scope.authorId, undefined));
+  }
+
+  for (const authorId of scope.authorIds ?? []) {
+    keysToDelete.add(cacheKeys.userRecipes(authorId, undefined));
   }
 
   if (scope.favoriteUserId) {
@@ -166,21 +186,29 @@ export async function invalidateCacheScope(
     keysToDelete.add(cacheKeys.sessionVersion(scope.sessionUserId));
   }
 
+  for (const userId of scope.userIds ?? []) {
+    keysToDelete.add(cacheKeys.userRecipes(userId, undefined));
+    keysToDelete.add(cacheKeys.userFavorites(userId, undefined));
+    keysToDelete.add(cacheKeys.userFollowing(userId, undefined));
+    keysToDelete.add(cacheKeys.sessionVersion(userId));
+  }
+
   if (scope.metadataActive) {
     keysToDelete.add(cacheKeys.metadataActive);
   }
 
   try {
-    const operations: Promise<unknown>[] = [
-      ...[...keysToDelete].map((key) => currentRedis.del(key)),
-    ];
-
-    if (scope.invalidateRecipeLists && currentRedis.incr) {
-      operations.push(currentRedis.incr(cacheKeys.recipeListVersion));
+    const keys = [...keysToDelete];
+    for (let start = 0; start < keys.length; start += KEY_DELETE_BATCH_SIZE) {
+      await Promise.all(
+        keys
+          .slice(start, start + KEY_DELETE_BATCH_SIZE)
+          .map((key) => currentRedis.del(key)),
+      );
     }
 
-    if (operations.length > 0) {
-      await Promise.all(operations);
+    if (scope.invalidateRecipeLists && currentRedis.incr) {
+      await currentRedis.incr(cacheKeys.recipeListVersion);
     }
   } catch (error) {
     logger.warn({ err: error }, 'Redis cache invalidation error');

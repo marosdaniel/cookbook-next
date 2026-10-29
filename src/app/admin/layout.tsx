@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
-import { auth } from '@/lib/auth/auth';
+import { getSessionSafely } from '@/lib/auth/safeSession';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
 import { getMetadata } from '@/lib/seo/seo';
 import { ADMIN_ROUTES, AUTH_ROUTES, PUBLIC_ROUTES } from '@/types/routes';
@@ -20,8 +20,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // Authoritative guard: the proxy only rejects early, so the role is checked again here.
+// getSessionSafely() never throws, so a revoked session redirects to login.
 const AdminLayout = async ({ children }: Readonly<PropsWithChildren>) => {
-  const session = await auth();
+  const session = await getSessionSafely();
 
   if (!session?.user) {
     redirect(

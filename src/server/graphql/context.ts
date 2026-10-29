@@ -1,5 +1,4 @@
-import type { Session } from 'next-auth';
-import { auth } from '@/lib/auth/auth';
+import { getSessionSafely } from '@/lib/auth/safeSession';
 import {
   createIsFavoriteLoader,
   createRatingsLoader,
@@ -17,17 +16,7 @@ import type { GraphQLContext } from '@/types/graphql/context';
 
 export { type RequestStoreContext, requestStorage };
 
-export const resolveSessionSafely = async (): Promise<Session | null> => {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return null;
-    }
-    return session;
-  } catch {
-    return null;
-  }
-};
+export const resolveSessionSafely = getSessionSafely;
 
 export const createGraphQLContext = async (): Promise<GraphQLContext> => {
   const store = requestStorage.getStore();

@@ -39,15 +39,9 @@ src/lib/graphql/typeDefs/
 
 ### Building the Schema
 
-The schema is assembled at runtime in [`src/app/api/graphql/route.ts`](../src/app/api/graphql/route.ts):
+The combined `typeDefs` and the scalar resolvers are exported by [`src/lib/graphql/schema.ts`](../src/lib/graphql/schema.ts). The resolver map (`Query`, `Mutation`, `Recipe`, `User`) is in [`src/lib/graphql/resolvers.ts`](../src/lib/graphql/resolvers.ts).
 
-```typescript
-const userTypeDefs = require('./typeDefs/user.graphql');
-const recipeTypeDefs = require('./typeDefs/recipe.graphql');
-// ... etc
-
-const typeDefs = [userTypeDefs, recipeTypeDefs, ...];
-```
+The Apollo Server instance, its plugins and the error formatting live in [`src/server/graphql/server.ts`](../src/server/graphql/server.ts). The Next.js route handler [`src/app/api/graphql/route.ts`](../src/app/api/graphql/route.ts) only performs HTTP-level checks (method, content type, body size, JSON validity, global rate limit) before handing the request over.
 
 ### Resolver Organization
 
@@ -190,9 +184,9 @@ This ensures the SDL and client documents stay synchronized. Failures indicate:
 The GraphQL server (`src/server/graphql/server.ts`) enforces defense-in-depth across multiple plugins in `src/server/graphql/plugins/`:
 
 1. **Persisted-Query Allowlist (`allowlist.ts`)**:
-   [`persistedQueryRegistry.ts`](../src/lib/graphql/persistedQueryRegistry.ts) maintains normalized SHA-256 hashes for all shipped client documents, and [`allowlist.ts`](../src/server/graphql/plugins/allowlist.ts) enforces that registry in `didResolveOperation` (rejecting unknown documents with `PERSISTED_QUERY_NOT_ALLOWED` / HTTP 400). Enforcement is enabled by default in production and can be toggled via `GRAPHQL_ALLOWLIST_ENFORCE`.
+   [`persistedQueryRegistry.ts`](../src/lib/graphql/persistedQueryRegistry.ts) maintains normalized SHA-256 hashes for all shipped client documents, and [`allowlist.ts`](../src/server/graphql/plugins/allowlist.ts) enforces that registry in `didResolveOperation` (rejecting unknown documents with `PERSISTED_QUERY_NOT_ALLOWED` / HTTP 400). Enforcement is enabled by default in production and can be toggled via `GRAPHQL_ALLOWLIST_ENFORCE`. A coverage test (`persistedQueryRegistry.coverage.test.ts`) fails when a generated client document is missing from the registry.
 2. **Root-Field Authorization (`rootFieldAuth.ts`)**:
-   Instead of trusting the client-supplied `operationName`, `rootFieldAuthPlugin` traverses the parsed GraphQL AST (including inline and named fragments) and authorizes every requested root `Query`/`Mutation` field against `ROOT_FIELD_POLICY` (`PUBLIC`, `USER`, `ADMIN`, fail-closed to `ADMIN`).
+   Instead of trusting the client-supplied `operationName`, `rootFieldAuthPlugin` traverses the parsed GraphQL AST (including inline and named fragments) and authorizes every requested root `Query`/`Mutation` field against `ROOT_FIELD_POLICY` (`PUBLIC`, `USER`, `ADMIN`, fail-closed to `ADMIN`). A unit test fails when a schema Query/Mutation field has no policy entry.
 3. **Per-Group Rate Limiting (`rateLimit.ts`)**:
    - Pre-parse global IP limiter (`100 req / 60s`) runs at the HTTP route boundary.
    - Operation-level rate limiting runs inside `rateLimitPlugin` on the resolved root fields across isolated buckets:
@@ -201,7 +195,7 @@ The GraphQL server (`src/server/graphql/server.ts`) enforces defense-in-depth ac
      - `content-write` (`createRecipe`, `editRecipe`, `deleteRecipe` — 30 req / 10m per userId)
      - `rating` (`rateRecipe`, `deleteRating` — 60 req / 10m per userId)
      - `admin` (metadata and destructive admin mutations — 60 req / 10m per userId)
-   - If Redis is unavailable or exceeds `RATE_LIMIT_TIMEOUT_MS` (default 750ms), an in-memory sliding-window fallback limiter activates automatically.
+   - If Redis is unavailable or exceeds `RATE_LIMIT_TIMEOUT_MS` (default 750ms), an in-memory sliding-window fallback limiter activates automatically. The fallback is per server instance, so the effective limit is weaker than the Redis-backed one.
 4. **GraphQL Armor**:
    Enforces validation limits for depth (7), cost (1000), aliases (15), directives (50), and tokens (1000).
 
@@ -281,6 +275,11 @@ const getFavoriteRecipes = async (
 - ✅ Clear intent: "this query is for the authenticated user"
 - ✅ Easier to test (mock `context.userId` instead of worrying about parameter injection)
 
+### 4. Sessions and Audit Trail
+
+- **Sessions:** the GraphQL context resolves the session with `getSessionSafely()` ([`src/lib/auth/safeSession.ts`](../src/lib/auth/safeSession.ts)). It never throws: a revoked session is treated as an anonymous request, and unexpected failures (for example a database outage) are logged as warnings. Call this helper instead of `auth()` in server code.
+- **Audit trail:** admin mutations and destructive operations write an `AuditLog` entry. Bulk deletes (`USERS_DELETED_ALL`, `RECIPES_DELETED_ALL`) and an admin deleting another account (`USER_DELETED`) write the entry in the same transaction as the delete, so one cannot succeed without the other. Payloads never contain personal data (counts and identifiers only).
+
 ---
 
 ## Working with GraphQL
@@ -309,11 +308,10 @@ export const getRecipesByIngredient = async (
 };
 ```
 
-3. **Register in the schema**:
+3. **Register the resolver** in [`src/lib/graphql/resolvers.ts`](../src/lib/graphql/resolvers.ts):
 
 ```typescript
-// src/app/api/graphql/route.ts
-import getRecipesByIngredient from '@/lib/graphql/resolvers/recipe/queries/getRecipesByIngredient';
+import { getRecipesByIngredient } from './resolvers/recipe/queries';
 
 // In the resolvers object
 Query: {
@@ -322,22 +320,23 @@ Query: {
 },
 ```
 
-4. **Add to client documents**:
+4. **Authorize the field.** Add an entry to `OPERATION_NAMES` in [`operations.ts`](../src/lib/graphql/operations.ts) and list it in [`operationsConfig.ts`](../src/lib/graphql/operationsConfig.ts) (`publicOperations`, `userOperations` or `adminOperations`). `ROOT_FIELD_POLICY` is derived from these lists, and a field that is not listed is admin-only. A unit test fails when a Query/Mutation field in the SDL has no policy. If the operation needs its own rate limit group, add it in [`rateLimit.ts`](../src/lib/rateLimit/rateLimit.ts).
 
-```typescript
-// src/lib/graphql/queries.ts
-export const GET_RECIPES_BY_INGREDIENT = gql`
-  query GetRecipesByIngredient($ingredient: String!) {
-    getRecipesByIngredient(ingredient: $ingredient) {
-      id
-      title
-      slug
-    }
+5. **Add the client document.** Add the operation to [`operations.graphql`](../src/lib/graphql/operations.graphql) and export the generated document from `queries.ts`:
+
+```graphql
+query getRecipesByIngredient($ingredient: String!) {
+  getRecipesByIngredient(ingredient: $ingredient) {
+    id
+    title
+    slug
   }
-`;
+}
 ```
 
-5. **Run codegen**:
+6. **Register the document in the allowlist.** Add it to `clientDocuments` in [`persistedQueryRegistry.ts`](../src/lib/graphql/persistedQueryRegistry.ts). In production every document that is not in the registry is rejected with `PERSISTED_QUERY_NOT_ALLOWED`; `persistedQueryRegistry.coverage.test.ts` fails when a generated document is missing.
+
+7. **Run codegen**:
 
 ```bash
 pnpm codegen
@@ -346,6 +345,8 @@ pnpm codegen
 This generates `GetRecipesByIngredientQuery` type in `generated/graphql.ts`.
 
 ### Adding a New Mutation
+
+Follow the same checklist as for a query (authorize the field, add the document, register it in the allowlist, run codegen). The mutation-specific parts are:
 
 1. **Define the SDL**:
 
@@ -370,7 +371,7 @@ export const rateRecipe = async (
 };
 ```
 
-3. **Register and add to documents**:
+3. **Register the resolver and add the document**:
 
 ```typescript
 // src/lib/graphql/mutations.ts
@@ -457,13 +458,20 @@ The generated files are at `src/lib/graphql/generated/`. You can inspect:
 
 ### Inspect the Persisted Query Registry
 
-The registry contains hashes of client documents, but is not currently enforced
-by the GraphQL route:
+The registry holds the normalized SHA-256 hashes of all shipped client
+documents and is enforced by the allowlist plugin in production:
 
 ```typescript
-import { persistedQueryHashes } from '@/lib/graphql/persistedQueryRegistry';
+import {
+  isDocumentAllowed,
+  persistedQueryHashes,
+} from '@/lib/graphql/persistedQueryRegistry';
+
 console.log(persistedQueryHashes); // Set of SHA-256 hashes
+console.log(isDocumentAllowed(someDocument)); // true when the document is registered
 ```
+
+To test the behaviour locally, run the app with `GRAPHQL_ALLOWLIST_ENFORCE=true`.
 
 ### Add a Field Policy
 
@@ -490,7 +498,8 @@ export const userFieldPolicies: Record<string, FieldPolicy> = {
 3. **Use context for auth** – never accept user IDs as query parameters
 4. **Declare field policies** – don't hardcode auth checks in resolver logic
 5. **Test with generated types** – import from `generated/graphql.ts` and `generated/gql.ts`
-6. **Treat the persisted-query registry as an inventory only** until it is wired into request validation
+6. **Register every new client document in the persisted-query registry** – production rejects unknown documents, and the coverage test catches a missing one
+7. **Use `getSessionSafely()`** instead of calling `auth()` directly in server code
 
 ---
 

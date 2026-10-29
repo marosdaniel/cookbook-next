@@ -1,8 +1,6 @@
 import { ZodError } from 'zod';
 import { hashPassword } from '@/lib/auth/password';
-import { cacheKeys } from '@/lib/cache/cacheKeys';
 import { sendWelcomeEmail } from '@/lib/email/nodemailer';
-import { redis } from '@/lib/redis/redis';
 import { sanitizeText } from '@/lib/sanitize/sanitize';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
@@ -14,7 +12,8 @@ import {
   assertAdminRole,
   assertDestructiveConfirmation,
 } from '@/server/modules/admin/policy';
-import { logger } from '@/server/platform/logger';
+import { invalidateCacheScope } from '@/server/platform/cache';
+import { DeletionRepository } from './deletionRepository';
 import { PasswordService, schedulePostResponseTask } from './passwordService';
 import { UserRepository } from './repository';
 import {
@@ -178,31 +177,26 @@ export const AccountService = {
       return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
     }
 
-    await UserRepository.deleteById(id);
+    const recipes = user.recipes ?? [];
 
-    const currentRedis = redis;
-    if (currentRedis) {
-      try {
-        const recipeKeysToInvalidate = (user.recipes ?? []).flatMap((r) => [
-          cacheKeys.recipeDetail(r.id),
-          cacheKeys.recipeLookup(r.id),
-          ...(r.slug ? [cacheKeys.recipeLookup(r.slug)] : []),
-        ]);
-
-        await Promise.all([
-          currentRedis.del(cacheKeys.userFavorites(id, undefined)),
-          currentRedis.del(cacheKeys.userFollowing(id, undefined)),
-          currentRedis.del(cacheKeys.userRecipes(id, undefined)),
-          currentRedis.del(cacheKeys.sessionVersion(id)),
-          ...recipeKeysToInvalidate.map((key) => currentRedis.del(key)),
-          ...(recipeKeysToInvalidate.length > 0 && currentRedis.incr
-            ? [currentRedis.incr(cacheKeys.recipeListVersion)]
-            : []),
-        ]);
-      } catch (error) {
-        logger.error({ err: error }, 'Redis cache invalidation error');
-      }
+    if (currentUserId === id) {
+      await UserRepository.deleteById(id);
+    } else {
+      // An admin removing somebody else's account is audited in the same
+      // transaction as the delete.
+      await DeletionRepository.deleteByIdWithAudit({
+        actorId: currentUserId,
+        targetId: id,
+        deletedRecipeCount: recipes.length,
+      });
     }
+
+    await invalidateCacheScope({
+      userIds: [id],
+      recipeIds: recipes.map((recipe) => recipe.id),
+      slugs: recipes.map((recipe) => recipe.slug),
+      invalidateRecipeLists: recipes.length > 0,
+    });
 
     return true;
   },
@@ -215,15 +209,21 @@ export const AccountService = {
     assertAdminRole(currentUserRole);
     assertDestructiveConfirmation(confirmation);
 
+    // The affected identifiers must be collected before the delete, so the
+    // matching cache entries and sessions can be invalidated afterwards.
+    const [recipes, userIds] = await Promise.all([
+      DeletionRepository.findRecipeIdentifiersNotAuthoredBy(currentUserId),
+      DeletionRepository.findUserIdsExcept(currentUserId),
+    ]);
+
     const result = await UserRepository.deleteAllUsersExcept(currentUserId);
 
-    if (redis?.incr) {
-      try {
-        await redis.incr(cacheKeys.recipeListVersion);
-      } catch (error) {
-        logger.error({ err: error }, 'Redis cache invalidation error');
-      }
-    }
+    await invalidateCacheScope({
+      userIds,
+      recipeIds: recipes.map((recipe) => recipe.id),
+      slugs: recipes.map((recipe) => recipe.slug),
+      invalidateRecipeLists: true,
+    });
 
     return result.count;
   },
@@ -236,16 +236,20 @@ export const AccountService = {
     assertAdminRole(currentUserRole);
     assertDestructiveConfirmation(confirmation);
 
+    const recipes =
+      await DeletionRepository.findRecipeIdentifiersNotAuthoredBy(
+        currentUserId,
+      );
+
     const result =
       await UserRepository.deleteAllRecipesExceptAuthor(currentUserId);
 
-    if (redis?.incr) {
-      try {
-        await redis.incr(cacheKeys.recipeListVersion);
-      } catch (error) {
-        logger.error({ err: error }, 'Redis cache invalidation error');
-      }
-    }
+    await invalidateCacheScope({
+      recipeIds: recipes.map((recipe) => recipe.id),
+      slugs: recipes.map((recipe) => recipe.slug),
+      authorIds: [...new Set(recipes.map((recipe) => recipe.createdBy))],
+      invalidateRecipeLists: true,
+    });
 
     return result.count;
   },
