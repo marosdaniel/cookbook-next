@@ -1,5 +1,4 @@
 import crypto from 'node:crypto';
-import { UserRole } from '@prisma/client';
 import { after } from 'next/server';
 import { ZodError } from 'zod';
 import { hashPassword, verifyPassword } from '@/lib/auth/password';
@@ -9,7 +8,6 @@ import {
   sendPasswordResetEmail,
   sendWelcomeEmail,
 } from '@/lib/email/nodemailer';
-import { prisma } from '@/lib/prisma/prisma';
 import { checkPasswordResetEmailRateLimit } from '@/lib/rateLimit/rateLimit';
 import { redis } from '@/lib/redis/redis';
 import { sanitizeText } from '@/lib/sanitize/sanitize';
@@ -23,6 +21,7 @@ import {
   setNewPasswordValidationSchema,
 } from '@/lib/validation/validation';
 import type { RecipeDomainItem } from '@/server/modules/recipe/types';
+import { UserRepository } from '@/server/modules/user/repository';
 import {
   type FollowingDomainResult,
   type PasswordEditDomainInput,
@@ -42,7 +41,6 @@ import {
 } from '@/server/platform/errors';
 import { resolveQueryLimit } from '@/server/platform/pagination';
 
-const LATEST_RECIPES_LIMIT = 4;
 const ADMIN_DESTRUCTIVE_ACTION_CONFIRMATION = 'DELETE_ALL';
 const UNIFORM_PASSWORD_RESET_RESPONSE = {
   success: true,
@@ -72,20 +70,7 @@ const schedulePostResponseTask = (
 export const UserService = {
   // Queries
   async getUserById(id: string) {
-    const user = await prisma.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        userName: true,
-        email: true,
-        role: true,
-        locale: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    const user = await UserRepository.findPublicById(id);
     if (!user) {
       return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
     }
@@ -105,16 +90,10 @@ export const UserService = {
       }
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        favoriteRecipes: {
-          include: { ingredients: true, preparationSteps: true },
-          orderBy: { createdAt: 'desc' },
-          ...(normalizedLimit ? { take: normalizedLimit } : {}),
-        },
-      },
-    });
+    const user = await UserRepository.findWithFavoriteRecipes(
+      userId,
+      normalizedLimit,
+    );
     if (!user) {
       return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
     }
@@ -143,26 +122,8 @@ export const UserService = {
       }
     }
 
-    const [follows, totalFollowing] = await Promise.all([
-      prisma.follow.findMany({
-        where: { followerId: userId },
-        include: {
-          following: {
-            include: {
-              recipes: {
-                orderBy: { createdAt: 'desc' },
-                take: LATEST_RECIPES_LIMIT,
-                include: { ingredients: true, preparationSteps: true },
-              },
-              _count: { select: { recipes: true } },
-            },
-          },
-        },
-        orderBy: { createdAt: 'desc' },
-        ...(normalizedLimit ? { take: normalizedLimit } : {}),
-      }),
-      prisma.follow.count({ where: { followerId: userId } }),
-    ]);
+    const [follows, totalFollowing] =
+      await UserRepository.findFollowingAndCount(userId, normalizedLimit);
 
     const users = follows.map((follow) => ({
       id: follow.following.id,
@@ -231,14 +192,10 @@ export const UserService = {
       return throwCustomError('Invalid input data', ErrorTypes.BAD_REQUEST);
     }
 
-    const existingUser = await prisma.user.findFirst({
-      where: {
-        OR: [
-          { userName: { equals: userName, mode: 'insensitive' } },
-          { email: { equals: email, mode: 'insensitive' } },
-        ],
-      },
-    });
+    const existingUser = await UserRepository.findByUserNameOrEmailInsensitive(
+      userName,
+      email,
+    );
 
     if (existingUser) {
       if (existingUser.userName.toLowerCase() === userName.toLowerCase()) {
@@ -264,16 +221,13 @@ export const UserService = {
 
     const hashedPassword = await hashPassword(password);
 
-    const newUser = await prisma.user.create({
-      data: {
-        firstName,
-        lastName,
-        userName,
-        email: email.toLowerCase(),
-        password: hashedPassword,
-        locale: locale || 'en-gb',
-        role: UserRole.USER,
-      },
+    const newUser = await UserRepository.createUser({
+      firstName,
+      lastName,
+      userName,
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      locale: locale || 'en-gb',
     });
 
     schedulePostResponseTask(
@@ -312,7 +266,7 @@ export const UserService = {
 
     const { currentPassword, newPassword } = passwordEditInput;
 
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const user = await UserRepository.findById(userId);
     if (!user) {
       return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
     }
@@ -327,13 +281,10 @@ export const UserService = {
 
     const hashedPassword = await hashPassword(newPassword);
 
-    await prisma.user.update({
-      where: { id: userId },
-      data: {
-        password: hashedPassword,
-        sessionVersion: { increment: 1 },
-      },
-    });
+    await UserRepository.updatePasswordAndIncrementSession(
+      userId,
+      hashedPassword,
+    );
 
     return true;
   },
@@ -360,9 +311,7 @@ export const UserService = {
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
-    });
+    const user = await UserRepository.findByEmail(normalizedEmail);
 
     if (!user) {
       return { ...UNIFORM_PASSWORD_RESET_RESPONSE };
@@ -375,13 +324,11 @@ export const UserService = {
       .digest('hex');
     const resetExpires = new Date(Date.now() + 60 * 60 * 1000);
 
-    await prisma.user.update({
-      where: { email: normalizedEmail },
-      data: {
-        resetPasswordToken: hashedToken,
-        resetPasswordExpires: resetExpires,
-      },
-    });
+    await UserRepository.savePasswordResetToken(
+      normalizedEmail,
+      hashedToken,
+      resetExpires,
+    );
 
     schedulePostResponseTask(
       () => sendPasswordResetEmail(user.email, resetToken),
@@ -407,12 +354,7 @@ export const UserService = {
     }
 
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
-    const user = await prisma.user.findFirst({
-      where: {
-        resetPasswordToken: hashedToken,
-        resetPasswordExpires: { gt: new Date() },
-      },
-    });
+    const user = await UserRepository.findValidResetTokenUser(hashedToken);
 
     if (!user) {
       return throwCustomError(
@@ -423,15 +365,11 @@ export const UserService = {
 
     const hashedPassword = await hashPassword(newPassword);
 
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        password: hashedPassword,
-        sessionVersion: { increment: 1 },
-        resetPasswordToken: null,
-        resetPasswordExpires: null,
-      },
-    });
+    await UserRepository.updatePasswordAndIncrementSession(
+      user.id,
+      hashedPassword,
+      true,
+    );
 
     return {
       success: true,
@@ -455,18 +393,15 @@ export const UserService = {
       });
     }
 
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const user = await UserRepository.findById(userId);
     if (!user) {
       return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
     }
 
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: {
-        firstName: firstName ?? user.firstName,
-        lastName: lastName ?? user.lastName,
-        locale: locale ?? user.locale,
-      },
+    const updatedUser = await UserRepository.updateProfile(userId, {
+      firstName: firstName ?? user.firstName,
+      lastName: lastName ?? user.lastName,
+      locale: locale ?? user.locale,
     });
 
     return {
@@ -484,19 +419,12 @@ export const UserService = {
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id },
-      include: {
-        recipes: {
-          select: { id: true, slug: true },
-        },
-      },
-    });
+    const user = await UserRepository.findByIdWithRecipeIdentifiers(id);
     if (!user) {
       return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
     }
 
-    await prisma.user.delete({ where: { id } });
+    await UserRepository.deleteById(id);
 
     const currentRedis = redis;
     if (currentRedis) {
@@ -547,9 +475,7 @@ export const UserService = {
       `[audit] admin deleteAllUser invoked by ${currentUserId} at ${new Date().toISOString()}`,
     );
 
-    const result = await prisma.user.deleteMany({
-      where: { id: { not: currentUserId } },
-    });
+    const result = await UserRepository.deleteAllUsersExcept(currentUserId);
 
     if (redis?.incr) {
       try {
@@ -585,9 +511,8 @@ export const UserService = {
       `[audit] admin deleteAllRecipes invoked by ${currentUserId} at ${new Date().toISOString()}`,
     );
 
-    const result = await prisma.recipe.deleteMany({
-      where: { createdBy: { not: currentUserId } },
-    });
+    const result =
+      await UserRepository.deleteAllRecipesExceptAuthor(currentUserId);
     return result.count;
   },
 
@@ -606,19 +531,20 @@ export const UserService = {
       );
     }
 
-    const user = await prisma.user.findUnique({ where: { id: targetUserId } });
+    const user = await UserRepository.findById(targetUserId);
     if (!user) {
       return err(domainNotFound('USER_NOT_FOUND', 'User not found'));
     }
 
-    const recipe = await prisma.recipe.findUnique({ where: { id: recipeId } });
+    const recipe = await UserRepository.findRecipeById(recipeId);
     if (!recipe) {
       return err(domainNotFound('RECIPE_NOT_FOUND', 'Recipe not found'));
     }
 
-    const alreadyFavorite = await prisma.user.findFirst({
-      where: { id: targetUserId, favoriteRecipes: { some: { id: recipeId } } },
-    });
+    const alreadyFavorite = await UserRepository.hasFavoriteRecipe(
+      targetUserId,
+      recipeId,
+    );
 
     if (alreadyFavorite) {
       return err(
@@ -626,10 +552,7 @@ export const UserService = {
       );
     }
 
-    await prisma.user.update({
-      where: { id: targetUserId },
-      data: { favoriteRecipes: { connect: { id: recipeId } } },
-    });
+    await UserRepository.connectFavoriteRecipe(targetUserId, recipeId);
 
     if (redis) {
       try {
@@ -661,19 +584,20 @@ export const UserService = {
       );
     }
 
-    const user = await prisma.user.findUnique({ where: { id: targetUserId } });
+    const user = await UserRepository.findById(targetUserId);
     if (!user) {
       return err(domainNotFound('USER_NOT_FOUND', 'User not found'));
     }
 
-    const recipe = await prisma.recipe.findUnique({ where: { id: recipeId } });
+    const recipe = await UserRepository.findRecipeById(recipeId);
     if (!recipe) {
       return err(domainNotFound('RECIPE_NOT_FOUND', 'Recipe not found'));
     }
 
-    const alreadyFavorite = await prisma.user.findFirst({
-      where: { id: targetUserId, favoriteRecipes: { some: { id: recipeId } } },
-    });
+    const alreadyFavorite = await UserRepository.hasFavoriteRecipe(
+      targetUserId,
+      recipeId,
+    );
 
     if (!alreadyFavorite) {
       return err(
@@ -681,10 +605,7 @@ export const UserService = {
       );
     }
 
-    await prisma.user.update({
-      where: { id: targetUserId },
-      data: { favoriteRecipes: { disconnect: { id: recipeId } } },
-    });
+    await UserRepository.disconnectFavoriteRecipe(targetUserId, recipeId);
 
     if (redis) {
       try {
@@ -711,21 +632,15 @@ export const UserService = {
       );
     }
 
-    const targetUser = await prisma.user.findUnique({
-      where: { id: targetUserId },
-    });
+    const targetUser = await UserRepository.findById(targetUserId);
     if (!targetUser) {
       return err(domainNotFound('USER_NOT_FOUND', 'User not found'));
     }
 
-    const existingFollow = await prisma.follow.findUnique({
-      where: {
-        followerId_followingId: {
-          followerId: currentUserId,
-          followingId: targetUserId,
-        },
-      },
-    });
+    const existingFollow = await UserRepository.findFollow(
+      currentUserId,
+      targetUserId,
+    );
 
     if (existingFollow) {
       return err(
@@ -733,9 +648,7 @@ export const UserService = {
       );
     }
 
-    await prisma.follow.create({
-      data: { followerId: currentUserId, followingId: targetUserId },
-    });
+    await UserRepository.createFollow(currentUserId, targetUserId);
 
     if (redis) {
       try {
@@ -756,14 +669,10 @@ export const UserService = {
     currentUserId: string,
     targetUserId: string,
   ): Promise<Result<DomainSuccess, DomainError>> {
-    const existingFollow = await prisma.follow.findUnique({
-      where: {
-        followerId_followingId: {
-          followerId: currentUserId,
-          followingId: targetUserId,
-        },
-      },
-    });
+    const existingFollow = await UserRepository.findFollow(
+      currentUserId,
+      targetUserId,
+    );
 
     if (!existingFollow) {
       return err(
@@ -771,14 +680,7 @@ export const UserService = {
       );
     }
 
-    await prisma.follow.delete({
-      where: {
-        followerId_followingId: {
-          followerId: currentUserId,
-          followingId: targetUserId,
-        },
-      },
-    });
+    await UserRepository.deleteFollow(currentUserId, targetUserId);
 
     if (redis) {
       try {

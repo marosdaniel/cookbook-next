@@ -1,6 +1,4 @@
-import type { Prisma } from '@prisma/client';
 import { cacheKeys } from '@/lib/cache/cacheKeys';
-import { prisma } from '@/lib/prisma/prisma';
 import { redis } from '@/lib/redis/redis';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
@@ -10,86 +8,24 @@ import {
   sanitizeRecipeInput,
   validateRequiredFields,
 } from '@/server/modules/recipe/mapper';
+import {
+  buildWhereClause,
+  type RecipeFilterInput,
+  type RecipeListItem,
+  RecipeRepository,
+  type RecipeWithAuthor,
+  type RecipeWithRelations,
+} from '@/server/modules/recipe/repository';
 import type {
   NormalizedRecipeInput,
   RatingDomainInput,
 } from '@/server/modules/recipe/types';
 import { resolveQueryLimit } from '@/server/platform/pagination';
 
-export interface RecipeFilterInput {
-  search?: string;
-  title?: string;
-  categoryKey?: string;
-  difficultyLevelKey?: string;
-  labelKeys?: string[];
-  maxCookingTime?: number;
-}
-
-function buildWhereClause(filter?: RecipeFilterInput): Prisma.RecipeWhereInput {
-  const where: Prisma.RecipeWhereInput = {};
-  if (!filter) return where;
-
-  if (filter.categoryKey) {
-    where.category = { path: ['key'], equals: filter.categoryKey };
-  }
-  if (filter.difficultyLevelKey) {
-    where.difficultyLevel = {
-      path: ['key'],
-      equals: filter.difficultyLevelKey,
-    };
-  }
-  if (filter.labelKeys && filter.labelKeys.length > 0) {
-    where.labels = {
-      array_contains: filter.labelKeys.map((key) => ({ key })),
-    };
-  }
-  if (filter.maxCookingTime) {
-    where.cookingTime = { lte: filter.maxCookingTime };
-  }
-
-  return where;
-}
+export type { RecipeFilterInput };
 
 type RecipeCursor = { createdAt: string; id: string };
 
-// Card/list projection — excludes heavy relations (ingredients, preparationSteps)
-// that only the detail views need. Keeps every scalar Recipe field so any
-// GraphQL query field can still be served without another round trip.
-const RECIPE_LIST_SELECT = {
-  id: true,
-  title: true,
-  description: true,
-  category: true,
-  labels: true,
-  imgSrc: true,
-  cookingTime: true,
-  difficultyLevel: true,
-  servings: true,
-  youtubeLink: true,
-  createdAt: true,
-  updatedAt: true,
-  prepTimeMinutes: true,
-  cookTimeMinutes: true,
-  restTimeMinutes: true,
-  totalTimeMinutes: true,
-  servingUnit: true,
-  cuisine: true,
-  dietaryFlags: true,
-  allergens: true,
-  equipment: true,
-  costLevel: true,
-  tips: true,
-  substitutions: true,
-  slug: true,
-  seoTitle: true,
-  seoDescription: true,
-  socialImage: true,
-  createdBy: true,
-} satisfies Prisma.RecipeSelect;
-
-type RecipeListItem = Prisma.RecipeGetPayload<{
-  select: typeof RECIPE_LIST_SELECT;
-}>;
 type RecipeListResult = {
   recipes: RecipeListItem[];
   totalRecipes: number;
@@ -98,18 +34,6 @@ type RecipeListResult = {
     endCursor: string | null;
   };
 };
-type RecipeWithRelations = Prisma.RecipeGetPayload<{
-  include: { ingredients: true; preparationSteps: true };
-}>;
-type RecipeWithAuthor = Prisma.RecipeGetPayload<{
-  include: {
-    ingredients: true;
-    preparationSteps: true;
-    author: {
-      select: { userName: true; firstName: true; lastName: true };
-    };
-  };
-}>;
 
 const encodeCursor = (cursor: { createdAt: Date; id: string }) =>
   Buffer.from(
@@ -211,13 +135,10 @@ async function assertSlugAvailable(
 ) {
   if (!slug) return;
 
-  const conflict = await prisma.recipe.findFirst({
-    where: {
-      slug: { equals: slug, mode: 'insensitive' },
-      ...(excludeRecipeId ? { id: { not: excludeRecipeId } } : {}),
-    },
-    select: { id: true },
-  });
+  const conflict = await RecipeRepository.findSlugConflict(
+    slug,
+    excludeRecipeId,
+  );
 
   if (conflict) {
     return throwCustomError(
@@ -254,23 +175,7 @@ export const RecipeService = {
     const searchTerm = (filter?.search ?? filter?.title)?.trim();
     let searchIds: string[] | undefined;
     if (searchTerm) {
-      const matches = await prisma.$queryRaw<Array<{ id: string }>>`
-        SELECT r.id
-        FROM recipes r
-        LEFT JOIN ingredients i ON i."recipeId" = r.id
-        WHERE r.title % ${searchTerm}
-           OR COALESCE(r.description, '') % ${searchTerm}
-           OR COALESCE(r.tips, '') % ${searchTerm}
-           OR COALESCE(r.substitutions, '') % ${searchTerm}
-           OR COALESCE(i.name, '') % ${searchTerm}
-        GROUP BY r.id
-        ORDER BY MAX(GREATEST(
-          similarity(r.title, ${searchTerm}),
-          similarity(COALESCE(r.description, ''), ${searchTerm}),
-          similarity(COALESCE(i.name, ''), ${searchTerm})
-        )) DESC
-      `;
-      searchIds = matches.map(({ id }) => id);
+      searchIds = await RecipeRepository.searchIdsByTrigram(searchTerm);
       if (searchIds.length === 0) {
         return {
           recipes: [],
@@ -281,20 +186,16 @@ export const RecipeService = {
       where.id = { in: searchIds };
     }
 
-    const [recipes, totalRecipes] = await Promise.all([
-      prisma.recipe.findMany({
+    const [recipes, totalRecipes] = await RecipeRepository.findManyListAndCount(
+      {
         where,
-        select: RECIPE_LIST_SELECT,
-        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
-        ...(normalizedLimit && !searchIds ? { take: normalizedLimit + 1 } : {}),
-      }),
-      prisma.recipe.count({
-        where: {
+        countWhere: {
           ...buildWhereClause(filter),
           ...(searchIds ? { id: { in: searchIds } } : {}),
         },
-      }),
-    ]);
+        take: normalizedLimit && !searchIds ? normalizedLimit + 1 : undefined,
+      },
+    );
 
     const orderedRecipes = searchIds
       ? [...recipes].sort(
@@ -329,10 +230,7 @@ export const RecipeService = {
     const cached = await getCachedData<RecipeWithRelations>(cacheKey);
     if (cached) return cached;
 
-    const existingRecipe = await prisma.recipe.findUnique({
-      where: { id },
-      include: { ingredients: true, preparationSteps: true },
-    });
+    const existingRecipe = await RecipeRepository.findByIdWithRelations(id);
 
     if (!existingRecipe) {
       return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
@@ -352,20 +250,7 @@ export const RecipeService = {
     const cached = await getCachedData<RecipeWithAuthor>(cacheKey);
     if (cached) return cached;
 
-    const recipe = await prisma.recipe.findFirst({
-      where: { OR: [{ slug: idOrSlug }, { id: idOrSlug }] },
-      include: {
-        ingredients: true,
-        preparationSteps: true,
-        author: {
-          select: {
-            userName: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
-    });
+    const recipe = await RecipeRepository.findBySlugOrIdWithAuthor(idOrSlug);
 
     if (!recipe) {
       return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
@@ -386,15 +271,8 @@ export const RecipeService = {
     }>(cacheKey);
     if (cached) return cached;
 
-    const [recipes, totalRecipes] = await Promise.all([
-      prisma.recipe.findMany({
-        where: { createdBy: userId },
-        select: RECIPE_LIST_SELECT,
-        orderBy: { createdAt: 'desc' },
-        ...(normalizedLimit ? { take: normalizedLimit } : {}),
-      }),
-      prisma.recipe.count({ where: { createdBy: userId } }),
-    ]);
+    const [recipes, totalRecipes] =
+      await RecipeRepository.findByAuthorIdAndCount(userId, normalizedLimit);
 
     const result = { recipes, totalRecipes };
 
@@ -413,33 +291,13 @@ export const RecipeService = {
 
     await assertSlugAvailable(data.slug);
 
-    const newRecipe = await prisma.recipe.create({
-      data: {
-        ...data,
-        createdBy: userId,
-        ingredients: {
-          create: sanitizedInput.ingredients.map((i) => ({
-            localId: i.localId,
-            name: i.name,
-            quantity: i.quantity,
-            unit: i.unit,
-            isOptional: i.isOptional ?? false,
-            note: i.note ?? null,
-          })),
-        },
-        preparationSteps: {
-          create: sanitizedInput.preparationSteps.map((s, index) => ({
-            description: s.description,
-            order: s.order || index + 1,
-          })),
-        },
-      },
-      include: { ingredients: true, preparationSteps: true },
-    });
+    const newRecipe = await RecipeRepository.createWithRelations(
+      userId,
+      data,
+      sanitizedInput.ingredients,
+      sanitizedInput.preparationSteps,
+    );
 
-    // Invalidate user's recipe list and the general recipes list
-    // Since list keys depend on filters, we can't easily delete all variations without scanning,
-    // but we can at least target the main ones we know.
     await invalidateCache([cacheKeys.userRecipes(userId, undefined)]);
     await invalidateRecipeLists();
 
@@ -455,9 +313,7 @@ export const RecipeService = {
     const sanitizedInput = sanitizeRecipeInput(recipeEditInput);
     validateRequiredFields(sanitizedInput);
 
-    const existingRecipe = await prisma.recipe.findUnique({
-      where: { id: recipeId },
-    });
+    const existingRecipe = await RecipeRepository.findById(recipeId);
     if (!existingRecipe) {
       return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
     }
@@ -469,31 +325,12 @@ export const RecipeService = {
 
     await assertSlugAvailable(data.slug, recipeId);
 
-    const updatedRecipe = await prisma.recipe.update({
-      where: { id: recipeId },
-      data: {
-        ...data,
-        ingredients: {
-          deleteMany: {},
-          create: sanitizedInput.ingredients.map((i) => ({
-            localId: i.localId,
-            name: i.name,
-            quantity: i.quantity,
-            unit: i.unit,
-            isOptional: i.isOptional ?? false,
-            note: i.note ?? null,
-          })),
-        },
-        preparationSteps: {
-          deleteMany: {},
-          create: sanitizedInput.preparationSteps.map((s, index) => ({
-            description: s.description,
-            order: s.order || index + 1,
-          })),
-        },
-      },
-      include: { ingredients: true, preparationSteps: true },
-    });
+    const updatedRecipe = await RecipeRepository.updateWithRelations(
+      recipeId,
+      data,
+      sanitizedInput.ingredients,
+      sanitizedInput.preparationSteps,
+    );
 
     await invalidateCache([
       cacheKeys.recipeDetail(recipeId),
@@ -502,7 +339,7 @@ export const RecipeService = {
         ? [cacheKeys.recipeLookup(existingRecipe.slug)]
         : []),
       ...(data.slug ? [cacheKeys.recipeLookup(data.slug)] : []),
-      cacheKeys.userRecipes(userId, undefined),
+      cacheKeys.userRecipes(existingRecipe.createdBy, undefined),
     ]);
     await invalidateRecipeLists();
 
@@ -514,18 +351,14 @@ export const RecipeService = {
     userRole: string | undefined,
     recipeId: string,
   ) {
-    const existingRecipe = await prisma.recipe.findUnique({
-      where: { id: recipeId },
-    });
+    const existingRecipe = await RecipeRepository.findById(recipeId);
     if (!existingRecipe) {
       return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
     }
 
     assertRecipeResourceAccess(userId, userRole, existingRecipe);
 
-    const deletedRecipe = await prisma.recipe.delete({
-      where: { id: recipeId },
-    });
+    const deletedRecipe = await RecipeRepository.deleteById(recipeId);
 
     await invalidateCache([
       cacheKeys.recipeDetail(recipeId),
@@ -533,6 +366,7 @@ export const RecipeService = {
       ...(existingRecipe.slug
         ? [cacheKeys.recipeLookup(existingRecipe.slug)]
         : []),
+      cacheKeys.userRecipes(existingRecipe.createdBy, undefined),
     ]);
     await invalidateRecipeLists();
 
@@ -551,9 +385,7 @@ export const RecipeService = {
       );
     }
 
-    const recipe = await prisma.recipe.findUnique({
-      where: { id: ratingInput.recipeId },
-    });
+    const recipe = await RecipeRepository.findById(ratingInput.recipeId);
     if (!recipe) {
       return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
     }
@@ -565,36 +397,27 @@ export const RecipeService = {
       );
     }
 
-    await prisma.rating.upsert({
-      where: {
-        recipeId_userId: { recipeId: ratingInput.recipeId, userId: userId },
-      },
-      update: { ratingValue: ratingInput.ratingValue },
-      create: {
-        recipeId: ratingInput.recipeId,
-        userId: userId,
-        ratingValue: ratingInput.ratingValue,
-      },
-    });
+    await RecipeRepository.upsertRating(
+      ratingInput.recipeId,
+      userId,
+      ratingInput.ratingValue,
+    );
 
-    const updatedRecipe = await prisma.recipe.findUnique({
-      where: { id: ratingInput.recipeId },
-      include: { ingredients: true, preparationSteps: true },
-    });
+    const updatedRecipe = await RecipeRepository.findByIdWithRelations(
+      ratingInput.recipeId,
+    );
 
-    await invalidateCache([`recipe:${ratingInput.recipeId}`]);
+    await invalidateCache([cacheKeys.recipeDetail(ratingInput.recipeId)]);
 
     return updatedRecipe;
   },
 
   async deleteRating(userId: string, recipeId: string) {
     try {
-      const deleted = await prisma.rating.delete({
-        where: { recipeId_userId: { recipeId, userId } },
-      });
+      const deleted = await RecipeRepository.deleteRating(recipeId, userId);
 
       if (deleted) {
-        await invalidateCache([`recipe:${recipeId}`]);
+        await invalidateCache([cacheKeys.recipeDetail(recipeId)]);
       }
 
       return !!deleted;
