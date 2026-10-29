@@ -1,18 +1,20 @@
 import type { Prisma } from '@prisma/client';
 import { cacheKeys } from '@/lib/cache/cacheKeys';
-import type { RatingInput } from '@/lib/graphql/generated/resolvers-types';
-import { resolveQueryLimit } from '@/lib/graphql/protection';
-import type { NormalizedRecipeInput } from '@/lib/graphql/resolvers/recipe/types';
+import { prisma } from '@/lib/prisma/prisma';
+import { redis } from '@/lib/redis/redis';
+import { ErrorTypes } from '@/lib/validation/errorCatalog';
+import { throwCustomError } from '@/lib/validation/throwCustomError';
 import {
   buildRecipeData,
   resolveRecipeMetadata,
   sanitizeRecipeInput,
   validateRequiredFields,
-} from '@/lib/graphql/resolvers/recipe/utils';
-import { prisma } from '@/lib/prisma/prisma';
-import { redis } from '@/lib/redis/redis';
-import { ErrorTypes } from '@/lib/validation/errorCatalog';
-import { throwCustomError } from '@/lib/validation/throwCustomError';
+} from '@/server/modules/recipe/mapper';
+import type {
+  NormalizedRecipeInput,
+  RatingDomainInput,
+} from '@/server/modules/recipe/types';
+import { resolveQueryLimit } from '@/server/platform/pagination';
 
 export interface RecipeFilterInput {
   search?: string;
@@ -537,7 +539,7 @@ export const RecipeService = {
     return !!deletedRecipe;
   },
 
-  async rateRecipe(userId: string, ratingInput: RatingInput) {
+  async rateRecipe(userId: string, ratingInput: RatingDomainInput) {
     if (
       !Number.isFinite(ratingInput.ratingValue) ||
       ratingInput.ratingValue < 1 ||

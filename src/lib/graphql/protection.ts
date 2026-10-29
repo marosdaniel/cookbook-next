@@ -1,8 +1,13 @@
 import crypto from 'node:crypto';
 import type { DocumentNode, FieldNode } from 'graphql';
 import { parse, print, visit } from 'graphql';
+import {
+  DEFAULT_QUERY_MAX_LIMIT,
+  resolveQueryLimit,
+} from '@/server/platform/pagination';
 
-export const DEFAULT_GRAPHQL_MAX_LIMIT = 100;
+export const DEFAULT_GRAPHQL_MAX_LIMIT = DEFAULT_QUERY_MAX_LIMIT;
+export { resolveQueryLimit };
 
 const stripTypenameVisitor = {
   Field: (node: FieldNode) => {
@@ -12,18 +17,6 @@ const stripTypenameVisitor = {
 
     return undefined;
   },
-};
-
-export const resolveQueryLimit = (limit?: number) => {
-  if (limit === undefined || limit === null) {
-    return undefined;
-  }
-
-  if (!Number.isFinite(limit)) {
-    return undefined;
-  }
-
-  return Math.min(Math.max(Math.trunc(limit), 1), DEFAULT_GRAPHQL_MAX_LIMIT);
 };
 
 /**

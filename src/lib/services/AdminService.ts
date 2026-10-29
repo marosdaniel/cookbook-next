@@ -1,8 +1,4 @@
 import { type MetadataType, Prisma } from '@prisma/client';
-import type {
-  MetadataCreateInput,
-  MetadataUpdateInput,
-} from '@/lib/graphql/generated/resolvers-types';
 import {
   METADATA_KEY_MAX_LENGTH,
   METADATA_KEY_PATTERN,
@@ -12,6 +8,10 @@ import { prisma } from '@/lib/prisma/prisma';
 import { MetadataService } from '@/lib/services/MetadataService';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
+import type {
+  MetadataCreateDomainInput,
+  MetadataUpdateDomainInput,
+} from '@/server/modules/admin/types';
 
 const SORT_ORDER_STEP = 10;
 
@@ -96,7 +96,7 @@ export const AdminService = {
   async createMetadata(
     actorId: string,
     actorRole: string | undefined,
-    input: MetadataCreateInput,
+    input: MetadataCreateDomainInput,
   ) {
     assertAdminRole(actorRole);
 
@@ -155,7 +155,7 @@ export const AdminService = {
     actorId: string,
     actorRole: string | undefined,
     id: string,
-    input: MetadataUpdateInput,
+    input: MetadataUpdateDomainInput,
   ) {
     assertAdminRole(actorRole);
 

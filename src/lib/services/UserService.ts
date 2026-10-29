@@ -9,14 +9,6 @@ import {
   sendPasswordResetEmail,
   sendWelcomeEmail,
 } from '@/lib/email/nodemailer';
-import type {
-  UserRegisterInput as GeneratedUserRegisterInput,
-  UserUpdateInput as GeneratedUserUpdateInput,
-  PasswordEditInput,
-} from '@/lib/graphql/generated/resolvers-types';
-import { USER_REGISTER_MESSAGE_KEYS } from '@/lib/graphql/MESSAGE_KEYS';
-import { resolveQueryLimit } from '@/lib/graphql/protection';
-import type { RecipeResolverParent } from '@/lib/graphql/resolvers/types';
 import { prisma } from '@/lib/prisma/prisma';
 import { checkPasswordResetEmailRateLimit } from '@/lib/rateLimit/rateLimit';
 import { redis } from '@/lib/redis/redis';
@@ -30,6 +22,14 @@ import {
   resetPasswordValidationSchema,
   setNewPasswordValidationSchema,
 } from '@/lib/validation/validation';
+import type { RecipeDomainItem } from '@/server/modules/recipe/types';
+import {
+  type FollowingDomainResult,
+  type PasswordEditDomainInput,
+  USER_REGISTER_DOMAIN_KEYS,
+  type UserRegisterDomainInput,
+  type UserUpdateDomainInput,
+} from '@/server/modules/user/types';
 import {
   type DomainError,
   type DomainSuccess,
@@ -40,6 +40,7 @@ import {
   ok,
   type Result,
 } from '@/server/platform/errors';
+import { resolveQueryLimit } from '@/server/platform/pagination';
 
 const LATEST_RECIPES_LIMIT = 4;
 const ADMIN_DESTRUCTIVE_ACTION_CONFIRMATION = 'DELETE_ALL';
@@ -66,19 +67,6 @@ const schedulePostResponseTask = (
   } catch {
     void executeSafely();
   }
-};
-
-type FollowingResult = {
-  users: Array<{
-    id: string;
-    firstName: string;
-    lastName: string;
-    userName: string;
-    recipeCount: number;
-    followedAt: Date;
-    latestRecipes: RecipeResolverParent[];
-  }>;
-  totalFollowing: number;
 };
 
 export const UserService = {
@@ -111,7 +99,7 @@ export const UserService = {
     if (redis) {
       try {
         const cached = await redis.get(cacheKey);
-        if (cached) return cached as RecipeResolverParent[];
+        if (cached) return cached as RecipeDomainItem[];
       } catch (error) {
         console.error('Redis cache get error:', error);
       }
@@ -149,7 +137,7 @@ export const UserService = {
     if (redis) {
       try {
         const cached = await redis.get(cacheKey);
-        if (cached) return cached as FollowingResult;
+        if (cached) return cached as FollowingDomainResult;
       } catch (error) {
         console.error('Redis cache get error:', error);
       }
@@ -200,7 +188,7 @@ export const UserService = {
   },
 
   // Mutations
-  async createUser(userRegisterInput: GeneratedUserRegisterInput) {
+  async createUser(userRegisterInput: UserRegisterDomainInput) {
     const {
       firstName: rawFirstName,
       lastName: rawLastName,
@@ -233,7 +221,7 @@ export const UserService = {
           firstErrorMessage,
           ErrorTypes.VALIDATION_ERROR,
           {
-            messageKey: USER_REGISTER_MESSAGE_KEYS.VALIDATION_ERROR,
+            messageKey: USER_REGISTER_DOMAIN_KEYS.VALIDATION_ERROR,
             zodIssues: error.issues,
             originalError: error,
           },
@@ -258,7 +246,7 @@ export const UserService = {
           'This username is already taken',
           ErrorTypes.CONFLICT,
           {
-            messageKey: USER_REGISTER_MESSAGE_KEYS.USERNAME_TAKEN,
+            messageKey: USER_REGISTER_DOMAIN_KEYS.USERNAME_TAKEN,
           },
         );
       }
@@ -268,7 +256,7 @@ export const UserService = {
           'This email address is already registered',
           ErrorTypes.CONFLICT,
           {
-            messageKey: USER_REGISTER_MESSAGE_KEYS.EMAIL_TAKEN,
+            messageKey: USER_REGISTER_DOMAIN_KEYS.EMAIL_TAKEN,
           },
         );
       }
@@ -296,7 +284,7 @@ export const UserService = {
     return {
       success: true,
       message: 'User successfully created',
-      messageKey: USER_REGISTER_MESSAGE_KEYS.SUCCESS,
+      messageKey: USER_REGISTER_DOMAIN_KEYS.SUCCESS,
       statusCode: 201,
       user: {
         ...newUser,
@@ -306,7 +294,10 @@ export const UserService = {
     };
   },
 
-  async changePassword(userId: string, passwordEditInput: PasswordEditInput) {
+  async changePassword(
+    userId: string,
+    passwordEditInput: PasswordEditDomainInput,
+  ) {
     const validation =
       passwordEditValidationSchema.safeParse(passwordEditInput);
     if (!validation.success) {
@@ -449,7 +440,7 @@ export const UserService = {
     };
   },
 
-  async updateUser(userId: string, userUpdateInput: GeneratedUserUpdateInput) {
+  async updateUser(userId: string, userUpdateInput: UserUpdateDomainInput) {
     const {
       firstName: rawFirstName,
       lastName: rawLastName,
