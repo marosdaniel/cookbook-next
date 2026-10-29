@@ -39,7 +39,7 @@ CI=1 pnpm test:e2e
 
 The project ships `playwright.config.ts` which configures:
 - `baseURL` pointing to the local dev server (`http://127.0.0.1:3000`).
-- `webServer` section that runs `NEXTAUTH_SECRET=... corepack pnpm exec next dev --hostname 127.0.0.1 --port 3000` when tests start. The test configuration supplies a local fallback secret when `NEXTAUTH_SECRET` is not set.
+- `webServer` section that runs `pnpm exec next dev --hostname 127.0.0.1 --port 3000` when tests start. `NEXTAUTH_SECRET` is passed through the `env` option: `src/env.ts` requires at least 32 characters, so when the variable is unset or shorter than that, the config falls back to a 33-character e2e-only value (never used outside the Playwright dev server).
 - reporters: HTML, GitHub, and `json` (for CI summaries).
 - artifacts: `trace`, `screenshot` and `video` policy on failure.
 
@@ -110,6 +110,7 @@ test('Home renders', async ({ page }) => {
 ## Troubleshooting
 
 - If Playwright complains about cross-origin requests during dev runs, ensure `allowedDevOrigins` in `next.config.ts` includes `127.0.0.1` and `localhost` (already configured in this project).
+- If the web server exits with `Invalid environment variables` and `NEXTAUTH_SECRET ... Too small`, the secret passed to it is shorter than 32 characters. The Playwright config already falls back to a long enough value when `NEXTAUTH_SECRET` is unset or too short, so check for a locally exported short value.
 - If tests fail only on CI, re-run with `CI=1 pnpm test:e2e` locally to reproduce server behavior.
 
 ## Contact / Help

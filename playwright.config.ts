@@ -3,6 +3,18 @@ import { defineConfig, devices } from '@playwright/test';
 const PORT = 3000;
 const HOSTNAME = '127.0.0.1';
 
+// src/env.ts requires NEXTAUTH_SECRET to be at least 32 characters. The CI e2e
+// job does not provide one, so fall back to an e2e-only value that is long
+// enough. It is only ever passed to the Playwright dev server.
+const NEXTAUTH_SECRET_MIN_LENGTH = 32;
+const E2E_FALLBACK_NEXTAUTH_SECRET = 'e2e-secret-'.repeat(3);
+const configuredNextAuthSecret = process.env.NEXTAUTH_SECRET;
+const nextAuthSecret =
+  configuredNextAuthSecret &&
+  configuredNextAuthSecret.length >= NEXTAUTH_SECRET_MIN_LENGTH
+    ? configuredNextAuthSecret
+    : E2E_FALLBACK_NEXTAUTH_SECRET;
+
 export default defineConfig({
   testDir: './e2e',
   timeout: 30_000,
@@ -39,9 +51,11 @@ export default defineConfig({
     },
   ],
   webServer: {
-    // Ensure NEXTAUTH_SECRET is defined for the dev server used by Playwright.
-    // This prevents NextAuth from throwing MissingSecret during e2e runs.
-    command: `NEXTAUTH_SECRET=${process.env.NEXTAUTH_SECRET ?? 'test-secret'} pnpm exec next dev --hostname ${HOSTNAME} --port ${PORT}`,
+    command: `pnpm exec next dev --hostname ${HOSTNAME} --port ${PORT}`,
+    // Ensure a valid NEXTAUTH_SECRET (>= 32 characters) is defined for the dev
+    // server used by Playwright. It is passed through `env` rather than the
+    // shell command, so unusual characters in a configured secret are safe.
+    env: { NEXTAUTH_SECRET: nextAuthSecret },
     url: `http://${HOSTNAME}:${PORT}`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
