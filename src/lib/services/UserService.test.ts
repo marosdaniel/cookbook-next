@@ -200,6 +200,45 @@ describe('UserService', () => {
     expect(mockUpdate).toHaveBeenCalled();
   });
 
+  it('returns the exact same response for existing and non-existent emails even when email sending fails, without logging emails', async () => {
+    const { sendPasswordResetEmail } = await import('@/lib/email/nodemailer');
+    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const consoleErrorSpy = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    // Non-existent user
+    mockFindUnique.mockResolvedValueOnce(null);
+    const missingResponse = await UserService.resetPassword(
+      'nonexistent@example.com',
+    );
+
+    // Existing user whose email delivery fails
+    mockFindUnique.mockResolvedValueOnce({
+      id: 'user-1',
+      email: 'existing@example.com',
+    });
+    mockUpdate.mockResolvedValueOnce({});
+    vi.mocked(sendPasswordResetEmail).mockRejectedValueOnce(
+      new Error('SMTP down'),
+    );
+
+    const existingFailedResponse = await UserService.resetPassword(
+      'existing@example.com',
+    );
+
+    expect(existingFailedResponse).toEqual(missingResponse);
+    expect(consoleLogSpy).not.toHaveBeenCalledWith(
+      expect.stringContaining('nonexistent@example.com'),
+    );
+    expect(consoleLogSpy).not.toHaveBeenCalledWith(
+      expect.stringContaining('existing@example.com'),
+    );
+
+    consoleLogSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
+  });
+
   it('updates a user profile with sanitized values', async () => {
     mockFindUnique.mockResolvedValueOnce({
       id: 'user-1',

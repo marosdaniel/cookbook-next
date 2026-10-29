@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { UserRole } from '@prisma/client';
+import { after } from 'next/server';
 import { ZodError } from 'zod';
 import { hashPassword, verifyPassword } from '@/lib/auth/password';
 import { cacheKeys } from '@/lib/cache/cacheKeys';
@@ -36,6 +37,30 @@ import {
 
 const LATEST_RECIPES_LIMIT = 4;
 const ADMIN_DESTRUCTIVE_ACTION_CONFIRMATION = 'DELETE_ALL';
+const UNIFORM_PASSWORD_RESET_RESPONSE = {
+  success: true,
+  message:
+    'If an account with that email exists, a password reset link has been sent.',
+} as const;
+
+const schedulePostResponseTask = (
+  task: () => Promise<unknown>,
+  errorMessage: string,
+): void => {
+  const executeSafely = async () => {
+    try {
+      await task();
+    } catch (error) {
+      console.error(errorMessage, error);
+    }
+  };
+
+  try {
+    after(executeSafely);
+  } catch {
+    void executeSafely();
+  }
+};
 
 type FollowingResult = {
   users: Array<{
@@ -257,9 +282,10 @@ export const UserService = {
       },
     });
 
-    sendWelcomeEmail(newUser.email, newUser.firstName).catch((error) => {
-      console.error('Error sending welcome email:', error);
-    });
+    schedulePostResponseTask(
+      () => sendWelcomeEmail(newUser.email, newUser.firstName),
+      'Error sending welcome email:',
+    );
 
     return {
       success: true,
@@ -342,14 +368,7 @@ export const UserService = {
     });
 
     if (!user) {
-      console.log(
-        `Password reset requested for non-existent email: ${normalizedEmail}`,
-      );
-      return {
-        success: true,
-        message:
-          'If an account with that email exists, a password reset link has been sent.',
-      };
+      return { ...UNIFORM_PASSWORD_RESET_RESPONSE };
     }
 
     const resetToken = generateResetToken();
@@ -367,21 +386,12 @@ export const UserService = {
       },
     });
 
-    try {
-      await sendPasswordResetEmail(user.email, resetToken);
-    } catch (error) {
-      console.error('Error sending reset email:', error);
-      return throwCustomError(
-        'Failed to send password reset email',
-        ErrorTypes.INTERNAL_SERVER_ERROR,
-      );
-    }
+    schedulePostResponseTask(
+      () => sendPasswordResetEmail(user.email, resetToken),
+      'Error sending reset email:',
+    );
 
-    return {
-      success: true,
-      message:
-        'If an account with that email exists, a password reset link has been sent.',
-    };
+    return { ...UNIFORM_PASSWORD_RESET_RESPONSE };
   },
 
   async setNewPassword(input: { token: string; newPassword: string }) {
@@ -425,8 +435,6 @@ export const UserService = {
         resetPasswordExpires: null,
       },
     });
-
-    console.log(`Password successfully reset for user: ${user.email}`);
 
     return {
       success: true,
