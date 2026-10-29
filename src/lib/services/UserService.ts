@@ -14,11 +14,7 @@ import type {
   UserUpdateInput as GeneratedUserUpdateInput,
   PasswordEditInput,
 } from '@/lib/graphql/generated/resolvers-types';
-import {
-  USER_FAVORITE_MESSAGE_KEYS,
-  USER_FOLLOW_MESSAGE_KEYS,
-  USER_REGISTER_MESSAGE_KEYS,
-} from '@/lib/graphql/MESSAGE_KEYS';
+import { USER_REGISTER_MESSAGE_KEYS } from '@/lib/graphql/MESSAGE_KEYS';
 import { resolveQueryLimit } from '@/lib/graphql/protection';
 import type { RecipeResolverParent } from '@/lib/graphql/resolvers/types';
 import { prisma } from '@/lib/prisma/prisma';
@@ -34,6 +30,16 @@ import {
   resetPasswordValidationSchema,
   setNewPasswordValidationSchema,
 } from '@/lib/validation/validation';
+import {
+  type DomainError,
+  type DomainSuccess,
+  domainBadRequest,
+  domainForbidden,
+  domainNotFound,
+  err,
+  ok,
+  type Result,
+} from '@/server/platform/errors';
 
 const LATEST_RECIPES_LIMIT = 4;
 const ADMIN_DESTRUCTIVE_ACTION_CONFIRMATION = 'DELETE_ALL';
@@ -599,34 +605,24 @@ export const UserService = {
     currentUserRole: string,
     targetUserId: string,
     recipeId: string,
-  ) {
+  ): Promise<Result<DomainSuccess, DomainError>> {
     if (currentUserId !== targetUserId && currentUserRole !== 'ADMIN') {
-      return {
-        success: false,
-        message: 'Unauthorized operation - insufficient permissions',
-        messageKey: USER_FAVORITE_MESSAGE_KEYS.UNAUTHORIZED,
-        statusCode: ErrorTypes.FORBIDDEN.errorStatus,
-      };
+      return err(
+        domainForbidden(
+          'UNAUTHORIZED',
+          'Unauthorized operation - insufficient permissions',
+        ),
+      );
     }
 
     const user = await prisma.user.findUnique({ where: { id: targetUserId } });
     if (!user) {
-      return {
-        success: false,
-        message: 'User not found',
-        messageKey: USER_FAVORITE_MESSAGE_KEYS.USER_NOT_FOUND,
-        statusCode: ErrorTypes.NOT_FOUND.errorStatus,
-      };
+      return err(domainNotFound('USER_NOT_FOUND', 'User not found'));
     }
 
     const recipe = await prisma.recipe.findUnique({ where: { id: recipeId } });
     if (!recipe) {
-      return {
-        success: false,
-        message: 'Recipe not found',
-        messageKey: USER_FAVORITE_MESSAGE_KEYS.RECIPE_NOT_FOUND,
-        statusCode: ErrorTypes.NOT_FOUND.errorStatus,
-      };
+      return err(domainNotFound('RECIPE_NOT_FOUND', 'Recipe not found'));
     }
 
     const alreadyFavorite = await prisma.user.findFirst({
@@ -634,12 +630,9 @@ export const UserService = {
     });
 
     if (alreadyFavorite) {
-      return {
-        success: false,
-        message: 'Recipe already in favorites',
-        messageKey: USER_FAVORITE_MESSAGE_KEYS.ALREADY_FAVORITE,
-        statusCode: ErrorTypes.BAD_REQUEST.errorStatus,
-      };
+      return err(
+        domainBadRequest('ALREADY_FAVORITE', 'Recipe already in favorites'),
+      );
     }
 
     await prisma.user.update({
@@ -649,18 +642,17 @@ export const UserService = {
 
     if (redis) {
       try {
-        await redis.del(`user:${targetUserId}:favorites:all`);
+        await redis.del(cacheKeys.userFavorites(targetUserId, undefined));
       } catch (error) {
         console.error('Redis cache invalidation error:', error);
       }
     }
 
-    return {
-      success: true,
+    return ok({
+      reason: 'SUCCESS',
       message: 'Recipe successfully added to favorites',
-      messageKey: USER_FAVORITE_MESSAGE_KEYS.SUCCESS,
       statusCode: 200,
-    };
+    });
   },
 
   async removeFromFavoriteRecipes(
@@ -668,34 +660,24 @@ export const UserService = {
     currentUserRole: string,
     targetUserId: string,
     recipeId: string,
-  ) {
+  ): Promise<Result<DomainSuccess, DomainError>> {
     if (currentUserId !== targetUserId && currentUserRole !== 'ADMIN') {
-      return {
-        success: false,
-        message: 'Unauthorized operation - insufficient permissions',
-        messageKey: USER_FAVORITE_MESSAGE_KEYS.UNAUTHORIZED,
-        statusCode: ErrorTypes.FORBIDDEN.errorStatus,
-      };
+      return err(
+        domainForbidden(
+          'UNAUTHORIZED',
+          'Unauthorized operation - insufficient permissions',
+        ),
+      );
     }
 
     const user = await prisma.user.findUnique({ where: { id: targetUserId } });
     if (!user) {
-      return {
-        success: false,
-        message: 'User not found',
-        messageKey: USER_FAVORITE_MESSAGE_KEYS.USER_NOT_FOUND,
-        statusCode: ErrorTypes.NOT_FOUND.errorStatus,
-      };
+      return err(domainNotFound('USER_NOT_FOUND', 'User not found'));
     }
 
     const recipe = await prisma.recipe.findUnique({ where: { id: recipeId } });
     if (!recipe) {
-      return {
-        success: false,
-        message: 'Recipe not found',
-        messageKey: USER_FAVORITE_MESSAGE_KEYS.RECIPE_NOT_FOUND,
-        statusCode: ErrorTypes.NOT_FOUND.errorStatus,
-      };
+      return err(domainNotFound('RECIPE_NOT_FOUND', 'Recipe not found'));
     }
 
     const alreadyFavorite = await prisma.user.findFirst({
@@ -703,12 +685,9 @@ export const UserService = {
     });
 
     if (!alreadyFavorite) {
-      return {
-        success: false,
-        message: 'Recipe not in favorites',
-        messageKey: USER_FAVORITE_MESSAGE_KEYS.NOT_IN_FAVORITES,
-        statusCode: ErrorTypes.BAD_REQUEST.errorStatus,
-      };
+      return err(
+        domainBadRequest('NOT_IN_FAVORITES', 'Recipe not in favorites'),
+      );
     }
 
     await prisma.user.update({
@@ -718,40 +697,34 @@ export const UserService = {
 
     if (redis) {
       try {
-        await redis.del(`user:${targetUserId}:favorites:all`);
+        await redis.del(cacheKeys.userFavorites(targetUserId, undefined));
       } catch (error) {
         console.error('Redis cache invalidation error:', error);
       }
     }
 
-    return {
-      success: true,
+    return ok({
+      reason: 'SUCCESS',
       message: 'Recipe successfully removed from favorites',
-      messageKey: USER_FAVORITE_MESSAGE_KEYS.SUCCESS,
       statusCode: 200,
-    };
+    });
   },
 
-  async followUser(currentUserId: string, targetUserId: string) {
+  async followUser(
+    currentUserId: string,
+    targetUserId: string,
+  ): Promise<Result<DomainSuccess, DomainError>> {
     if (currentUserId === targetUserId) {
-      return {
-        success: false,
-        message: 'You cannot follow yourself',
-        messageKey: USER_FOLLOW_MESSAGE_KEYS.CANNOT_FOLLOW_SELF,
-        statusCode: ErrorTypes.BAD_REQUEST.errorStatus,
-      };
+      return err(
+        domainBadRequest('CANNOT_FOLLOW_SELF', 'You cannot follow yourself'),
+      );
     }
 
     const targetUser = await prisma.user.findUnique({
       where: { id: targetUserId },
     });
     if (!targetUser) {
-      return {
-        success: false,
-        message: 'User not found',
-        messageKey: USER_FOLLOW_MESSAGE_KEYS.USER_NOT_FOUND,
-        statusCode: ErrorTypes.NOT_FOUND.errorStatus,
-      };
+      return err(domainNotFound('USER_NOT_FOUND', 'User not found'));
     }
 
     const existingFollow = await prisma.follow.findUnique({
@@ -764,12 +737,9 @@ export const UserService = {
     });
 
     if (existingFollow) {
-      return {
-        success: false,
-        message: 'Already following this user',
-        messageKey: USER_FOLLOW_MESSAGE_KEYS.ALREADY_FOLLOWING,
-        statusCode: ErrorTypes.BAD_REQUEST.errorStatus,
-      };
+      return err(
+        domainBadRequest('ALREADY_FOLLOWING', 'Already following this user'),
+      );
     }
 
     await prisma.follow.create({
@@ -778,21 +748,23 @@ export const UserService = {
 
     if (redis) {
       try {
-        await redis.del(`user:${currentUserId}:following:all`);
+        await redis.del(cacheKeys.userFollowing(currentUserId, undefined));
       } catch (error) {
         console.error('Redis cache invalidation error:', error);
       }
     }
 
-    return {
-      success: true,
+    return ok({
+      reason: 'FOLLOW_SUCCESS',
       message: 'Successfully followed user',
-      messageKey: USER_FOLLOW_MESSAGE_KEYS.FOLLOW_SUCCESS,
       statusCode: 200,
-    };
+    });
   },
 
-  async unfollowUser(currentUserId: string, targetUserId: string) {
+  async unfollowUser(
+    currentUserId: string,
+    targetUserId: string,
+  ): Promise<Result<DomainSuccess, DomainError>> {
     const existingFollow = await prisma.follow.findUnique({
       where: {
         followerId_followingId: {
@@ -803,12 +775,9 @@ export const UserService = {
     });
 
     if (!existingFollow) {
-      return {
-        success: false,
-        message: 'You are not following this user',
-        messageKey: USER_FOLLOW_MESSAGE_KEYS.NOT_FOLLOWING,
-        statusCode: ErrorTypes.BAD_REQUEST.errorStatus,
-      };
+      return err(
+        domainBadRequest('NOT_FOLLOWING', 'You are not following this user'),
+      );
     }
 
     await prisma.follow.delete({
@@ -822,17 +791,16 @@ export const UserService = {
 
     if (redis) {
       try {
-        await redis.del(`user:${currentUserId}:following:all`);
+        await redis.del(cacheKeys.userFollowing(currentUserId, undefined));
       } catch (error) {
         console.error('Redis cache invalidation error:', error);
       }
     }
 
-    return {
-      success: true,
+    return ok({
+      reason: 'UNFOLLOW_SUCCESS',
       message: 'Successfully unfollowed user',
-      messageKey: USER_FOLLOW_MESSAGE_KEYS.UNFOLLOW_SUCCESS,
       statusCode: 200,
-    };
+    });
   },
 };

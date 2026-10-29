@@ -1,4 +1,6 @@
 import { UserService } from '@/lib/services/UserService';
+import { mapFollowResult } from '@/server/graphql/errorMapper';
+import { domainForbidden, err } from '@/server/platform/errors';
 import type { GraphQLContext } from '@/types/graphql/context';
 import type { OperationResponse } from '@/types/graphql/responses';
 
@@ -8,13 +10,11 @@ export const unfollowUser = async (
   { userId: currentUserId }: GraphQLContext,
 ): Promise<OperationResponse> => {
   if (!currentUserId) {
-    return {
-      success: false,
-      message: 'Authentication required',
-      messageKey: 'response.userFollowUnauthorized',
-      statusCode: 403,
-    };
+    return mapFollowResult(
+      err(domainForbidden('UNAUTHORIZED', 'Authentication required')),
+    );
   }
 
-  return await UserService.unfollowUser(currentUserId, targetUserId);
+  const result = await UserService.unfollowUser(currentUserId, targetUserId);
+  return mapFollowResult(result);
 };

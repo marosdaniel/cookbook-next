@@ -324,8 +324,10 @@ describe('UserService', () => {
       'recipe-1',
     );
 
-    expect(result.success).toBe(true);
-    expect(result.messageKey).toBe('response.userFavoriteSuccess');
+    expect(result.isOk()).toBe(true);
+    if (result.isOk()) {
+      expect(result.value.reason).toBe('SUCCESS');
+    }
     expect(mockUpdate).toHaveBeenCalled();
   });
 
@@ -373,8 +375,10 @@ describe('UserService', () => {
       'recipe-1',
     );
 
-    expect(result.success).toBe(true);
-    expect(result.messageKey).toBe('response.userFavoriteSuccess');
+    expect(result.isOk()).toBe(true);
+    if (result.isOk()) {
+      expect(result.value.reason).toBe('SUCCESS');
+    }
     expect(mockUpdate).toHaveBeenCalled();
   });
 
@@ -406,7 +410,7 @@ describe('UserService', () => {
 
     const result = await UserService.followUser('user-1', 'user-2');
 
-    expect(result.success).toBe(true);
+    expect(result.isOk()).toBe(true);
     expect(followCreate).toHaveBeenCalled();
     expect(redis?.del).not.toBeDefined();
   });
@@ -420,26 +424,27 @@ describe('UserService', () => {
     } as never);
     mockFindFirst.mockResolvedValueOnce({ id: 'user-1' });
 
-    await expect(
-      UserService.addToFavoriteRecipes('user-1', 'USER', 'user-1', 'recipe-1'),
-    ).resolves.toMatchObject({ success: false });
+    const addDup = await UserService.addToFavoriteRecipes(
+      'user-1',
+      'USER',
+      'user-1',
+      'recipe-1',
+    );
+    expect(addDup.isErr()).toBe(true);
 
-    await expect(
-      UserService.removeFromFavoriteRecipes(
-        'user-1',
-        'USER',
-        'user-1',
-        'recipe-1',
-      ),
-    ).resolves.toMatchObject({ success: false });
+    const removeMissing = await UserService.removeFromFavoriteRecipes(
+      'user-1',
+      'USER',
+      'user-1',
+      'recipe-1',
+    );
+    expect(removeMissing.isErr()).toBe(true);
 
-    await expect(
-      UserService.followUser('user-1', 'user-1'),
-    ).resolves.toMatchObject({ success: false });
+    const followSelf = await UserService.followUser('user-1', 'user-1');
+    expect(followSelf.isErr()).toBe(true);
 
-    await expect(
-      UserService.unfollowUser('user-1', 'user-2'),
-    ).resolves.toMatchObject({ success: false });
+    const unfollowMissing = await UserService.unfollowUser('user-1', 'user-2');
+    expect(unfollowMissing.isErr()).toBe(true);
 
     await expect(
       UserService.deleteAllUser('admin-1', 'USER', 'DELETE_ALL'),
