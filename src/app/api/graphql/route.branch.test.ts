@@ -401,7 +401,7 @@ describe('GraphQL route branch coverage', () => {
       getApolloServerOptions().plugins as Array<{
         requestDidStart: (context: unknown) => Promise<unknown>;
       }>
-    )[1];
+    )[2];
     const context = {
       operationName: 'GetRecipes',
       contextValue: {
@@ -462,7 +462,7 @@ describe('GraphQL route branch coverage', () => {
       getApolloServerOptions().plugins as Array<{
         requestDidStart: () => Promise<unknown>;
       }>
-    )[2];
+    )[3];
     const listener = (await requestDidStart()) as {
       executionDidStart: () => Promise<unknown>;
     };

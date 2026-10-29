@@ -5,7 +5,11 @@ import {
   CREATE_METADATA,
   CREATE_RECIPE,
   CREATE_USER,
+  DELETE_ALL_RECIPES,
+  DELETE_ALL_USER,
   DELETE_RATING,
+  DELETE_RECIPE,
+  DELETE_USER,
   EDIT_RECIPE,
   FOLLOW_USER,
   RATE_RECIPE,
@@ -27,6 +31,7 @@ import {
   GET_LATEST_RECIPES,
   GET_METADATA_BY_TYPE,
   GET_RECIPE_BY_ID,
+  GET_RECIPES,
   GET_RECIPES_BY_USER_ID,
   GET_USER_BY_ID,
 } from './queries';
@@ -38,6 +43,7 @@ const clientDocuments: DocumentNode[] = [
   GET_RECIPE_BY_ID,
   GET_FAVORITE_RECIPES,
   GET_LATEST_RECIPES,
+  GET_RECIPES,
   GET_RECIPES_BY_USER_ID,
   GET_FOLLOWING,
   CREATE_USER,
@@ -45,8 +51,12 @@ const clientDocuments: DocumentNode[] = [
   SET_NEW_PASSWORD,
   CHANGE_PASSWORD,
   UPDATE_USER,
+  DELETE_USER,
+  DELETE_ALL_USER,
   CREATE_RECIPE,
   EDIT_RECIPE,
+  DELETE_RECIPE,
+  DELETE_ALL_RECIPES,
   RATE_RECIPE,
   DELETE_RATING,
   ADD_TO_FAVORITE_RECIPES,
@@ -65,6 +75,9 @@ export const persistedQueryHashes = new Set(
     getPersistedQueryHashFromDocument(document),
   ),
 );
+
+export const isDocumentAllowed = (document: DocumentNode | string): boolean =>
+  persistedQueryHashes.has(getPersistedQueryHashFromDocument(document));
 
 export const isPersistedQueryAllowed = (query: string, persistedHash: string) =>
   persistedQueryHashes.has(persistedHash) &&

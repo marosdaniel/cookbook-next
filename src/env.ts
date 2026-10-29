@@ -27,6 +27,7 @@ const validatedEnv = createEnv({
     EMAIL_FROM_NAME: z.string().optional(),
 
     TRUSTED_PROXY_MODE: z.enum(['vercel']).optional(),
+    GRAPHQL_ALLOWLIST_ENFORCE: z.enum(['true', 'false']).optional(),
     VERCEL: z.string().optional(),
     VERCEL_URL: z.string().optional(),
     VERCEL_PROJECT_PRODUCTION_URL: z.string().optional(),
@@ -51,6 +52,7 @@ const validatedEnv = createEnv({
     EMAIL_FROM: process.env.EMAIL_FROM,
     EMAIL_FROM_NAME: process.env.EMAIL_FROM_NAME,
     TRUSTED_PROXY_MODE: process.env.TRUSTED_PROXY_MODE,
+    GRAPHQL_ALLOWLIST_ENFORCE: process.env.GRAPHQL_ALLOWLIST_ENFORCE,
     VERCEL: process.env.VERCEL,
     VERCEL_URL: process.env.VERCEL_URL,
     VERCEL_PROJECT_PRODUCTION_URL: process.env.VERCEL_PROJECT_PRODUCTION_URL,

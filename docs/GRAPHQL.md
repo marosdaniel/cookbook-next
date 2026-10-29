@@ -192,13 +192,11 @@ The GraphQL route authorizes the parsed operation name using
 GraphQL Armor validation limits for depth, cost, aliases, directives, and tokens.
 
 [`persistedQueryRegistry.ts`](../src/lib/graphql/persistedQueryRegistry.ts)
-maintains hashes for client documents, but the route does not currently enforce
-that registry. It is not a query allowlist or a security boundary.
-
-The Apollo client sends complete GraphQL documents; Automatic Persisted Queries
-(APQ) are disabled. Do not rely on the persisted-query registry to block
-requests. Enabling APQ requires wiring both client transport and server-side
-validation, with matching hash normalization.
+maintains normalized SHA-256 hashes for all shipped client documents, and
+[`allowlist.ts`](../src/lib/graphql/plugins/allowlist.ts) enforces that registry
+in Apollo's `didResolveOperation` hook (rejecting unknown documents with
+`PERSISTED_QUERY_NOT_ALLOWED` / HTTP 400). Enforcement is enabled by default in
+production and can be toggled in development via `GRAPHQL_ALLOWLIST_ENFORCE`.
 
 ### 2. Field-Level Authorization
 

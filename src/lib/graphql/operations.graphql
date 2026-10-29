@@ -72,6 +72,22 @@ mutation DeleteRating($recipeId: ID!) {
   deleteRating(recipeId: $recipeId)
 }
 
+mutation DeleteRecipe($id: ID!) {
+  deleteRecipe(id: $id)
+}
+
+mutation DeleteUser($id: ID!) {
+  deleteUser(id: $id)
+}
+
+mutation DeleteAllUser($confirmation: String!) {
+  deleteAllUser(confirmation: $confirmation)
+}
+
+mutation DeleteAllRecipes($confirmation: String!) {
+  deleteAllRecipes(confirmation: $confirmation)
+}
+
 mutation AddToFavoriteRecipes($userId: ID!, $recipeId: ID!) {
   addToFavoriteRecipes(userId: $userId, recipeId: $recipeId) {
     success

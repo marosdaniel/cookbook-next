@@ -7,5 +7,6 @@ export {
   GetRecipeByIdDocument as GET_RECIPE_BY_ID,
   GetRecipesByUserIdDocument as GET_RECIPES_BY_USER_ID,
   GetRecipesDocument as GET_LATEST_RECIPES,
+  GetRecipesDocument as GET_RECIPES,
   GetUserByIdDocument as GET_USER_BY_ID,
 } from '@/lib/graphql/generated/graphql';

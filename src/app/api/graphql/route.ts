@@ -22,6 +22,7 @@ import {
 import { assertGraphQLOperationAuthorized } from '@/lib/graphql/authorization';
 import { canResolveUserField } from '@/lib/graphql/fieldPolicies';
 import { normalizeGraphQLOperationName } from '@/lib/graphql/operations';
+import { allowlistPlugin } from '@/lib/graphql/plugins/allowlist';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
@@ -159,13 +160,21 @@ const fieldAuthPlugin: ApolloServerPlugin<GraphQLContext> = {
 const server = new ApolloServer<GraphQLContext>({
   typeDefs,
   resolvers: { ...scalarResolvers, ...resolvers },
-  plugins: [...protection.plugins, loggingPlugin, authPlugin, fieldAuthPlugin],
+  plugins: [
+    ...protection.plugins,
+    loggingPlugin,
+    allowlistPlugin,
+    authPlugin,
+    fieldAuthPlugin,
+  ],
   validationRules: [...protection.validationRules],
   introspection: process.env.NODE_ENV !== 'production',
   allowBatchedHttpRequests: false,
   formatError: (formattedError) => {
     const publicErrorCodes = new Set([
       'BAD_USER_INPUT',
+      'BAD_REQUEST',
+      'PERSISTED_QUERY_NOT_ALLOWED',
       'UNAUTHENTICATED',
       'FORBIDDEN',
       'NOT_FOUND',
