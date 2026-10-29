@@ -190,6 +190,7 @@ export const AccountService = {
           currentRedis.del(cacheKeys.userFavorites(id, undefined)),
           currentRedis.del(cacheKeys.userFollowing(id, undefined)),
           currentRedis.del(cacheKeys.userRecipes(id, undefined)),
+          currentRedis.del(cacheKeys.sessionVersion(id)),
           ...recipeKeysToInvalidate.map((key) => currentRedis.del(key)),
           ...(recipeKeysToInvalidate.length > 0 && currentRedis.incr
             ? [currentRedis.incr(cacheKeys.recipeListVersion)]

@@ -13,6 +13,7 @@ const stableSerialize = (value: Record<string, unknown>) =>
 export const cacheKeys = {
   recipeListVersion: RECIPE_LIST_VERSION_KEY,
   metadataActive: 'metadata:active:all',
+  sessionVersion: (userId: string) => `session:v:${userId}`,
   recipeList: (
     version: number,
     limit: number | undefined,

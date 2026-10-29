@@ -3,6 +3,12 @@ import Credentials from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma/prisma';
 import { getRateLimitClientKey } from '@/lib/rateLimit/clientIp';
 import { checkLoginRateLimit } from '@/lib/rateLimit/rateLimit';
+import {
+  cacheKeys,
+  getCachedValue,
+  SESSION_VERSION_CACHE_TTL_SECONDS,
+  setCachedValue,
+} from '@/server/platform/cache';
 import type { Locale } from '@/types/common';
 import { authConfig } from './auth.config';
 import {
@@ -15,6 +21,32 @@ import {
 const configuredJwt = authConfig.callbacks?.jwt;
 const configuredSession = authConfig.callbacks?.session;
 
+const resolveUserSessionVersion = async (
+  userId: string,
+): Promise<number | null> => {
+  const cacheKey = cacheKeys.sessionVersion(userId);
+  const cachedVersion = await getCachedValue<number>(cacheKey);
+  if (typeof cachedVersion === 'number') {
+    return cachedVersion;
+  }
+
+  const currentUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { sessionVersion: true },
+  });
+
+  if (!currentUser) {
+    return null;
+  }
+
+  await setCachedValue(
+    cacheKey,
+    currentUser.sessionVersion,
+    SESSION_VERSION_CACHE_TTL_SECONDS,
+  );
+  return currentUser.sessionVersion;
+};
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
   callbacks: {
@@ -25,19 +57,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         : context.token;
 
       if (token.id) {
-        const currentUser = await prisma.user.findUnique({
-          where: { id: token.id },
-          select: { sessionVersion: true },
-        });
+        const currentSessionVersion = await resolveUserSessionVersion(token.id);
 
         if (
-          !currentUser ||
+          currentSessionVersion === null ||
           (token.authVersion !== undefined &&
-            token.authVersion !== currentUser.sessionVersion)
+            token.authVersion !== currentSessionVersion)
         ) {
           token.revoked = true;
         } else {
-          token.authVersion = currentUser.sessionVersion;
+          token.authVersion = currentSessionVersion;
         }
       }
 

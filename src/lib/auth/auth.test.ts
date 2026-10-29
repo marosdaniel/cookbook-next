@@ -4,10 +4,14 @@ const {
   mockPrismaUserFindUnique,
   mockPrismaUserUpdate,
   mockCheckLoginRateLimit,
+  mockGetCachedValue,
+  mockSetCachedValue,
 } = vi.hoisted(() => ({
   mockPrismaUserFindUnique: vi.fn(),
   mockPrismaUserUpdate: vi.fn(),
   mockCheckLoginRateLimit: vi.fn(),
+  mockGetCachedValue: vi.fn(),
+  mockSetCachedValue: vi.fn(),
 }));
 
 import { prisma } from '@/lib/prisma/prisma';
@@ -51,6 +55,15 @@ vi.mock('@/lib/rateLimit/rateLimit', () => ({
   checkLoginRateLimit: mockCheckLoginRateLimit,
 }));
 
+vi.mock('@/server/platform/cache', () => ({
+  cacheKeys: {
+    sessionVersion: (userId: string) => `session:v:${userId}`,
+  },
+  SESSION_VERSION_CACHE_TTL_SECONDS: 60,
+  getCachedValue: mockGetCachedValue,
+  setCachedValue: mockSetCachedValue,
+}));
+
 vi.mock('./password', () => ({
   verifyPassword: vi.fn(),
   verifyDummyPassword: vi.fn().mockResolvedValue(undefined),
@@ -66,6 +79,8 @@ describe('auth.ts', () => {
     vi.resetModules();
     mockPrismaUserFindUnique.mockReset();
     mockPrismaUserUpdate.mockReset();
+    mockGetCachedValue.mockResolvedValue(null);
+    mockSetCachedValue.mockResolvedValue(undefined);
     mockCheckLoginRateLimit.mockResolvedValue({
       success: true,
       limit: 5,
@@ -235,6 +250,41 @@ describe('auth.ts', () => {
           session: { user: {} },
         }),
       ).rejects.toThrow('Session has been revoked');
+    });
+
+    it('serves the second jwt sessionVersion check from Redis cache without hitting Prisma', async () => {
+      const callbacks = (
+        capturedConfig as {
+          callbacks: {
+            jwt: (ctx: unknown) => Promise<Record<string, unknown>>;
+          };
+        }
+      ).callbacks;
+
+      // First call: cache miss -> reads DB and writes to Redis
+      mockGetCachedValue.mockResolvedValueOnce(null);
+      (prisma.user.findUnique as Mock).mockResolvedValueOnce({
+        sessionVersion: 4,
+      });
+
+      const firstToken = await callbacks.jwt({
+        token: { id: 'user-1', authVersion: 4 },
+      });
+      expect(firstToken.revoked).toBeUndefined();
+      expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
+      expect(mockSetCachedValue).toHaveBeenCalledWith(
+        'session:v:user-1',
+        4,
+        60,
+      );
+
+      // Second call: cache hit -> no DB query
+      mockGetCachedValue.mockResolvedValueOnce(4);
+      const secondToken = await callbacks.jwt({
+        token: { id: 'user-1', authVersion: 4 },
+      });
+      expect(secondToken.revoked).toBeUndefined();
+      expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -5,6 +5,7 @@ export { cacheKeys };
 
 export const LIST_CACHE_TTL_SECONDS = 15;
 export const DETAIL_CACHE_TTL_SECONDS = 60;
+export const SESSION_VERSION_CACHE_TTL_SECONDS = 60;
 
 const DATE_FIELD_NAMES = new Set([
   'createdAt',
@@ -124,6 +125,7 @@ export interface CacheInvalidationScope {
   authorId?: string;
   favoriteUserId?: string;
   followerUserId?: string;
+  sessionUserId?: string;
   metadataActive?: boolean;
   invalidateRecipeLists?: boolean;
 }
@@ -157,6 +159,10 @@ export async function invalidateCacheScope(
 
   if (scope.followerUserId) {
     keysToDelete.add(cacheKeys.userFollowing(scope.followerUserId, undefined));
+  }
+
+  if (scope.sessionUserId) {
+    keysToDelete.add(cacheKeys.sessionVersion(scope.sessionUserId));
   }
 
   if (scope.metadataActive) {

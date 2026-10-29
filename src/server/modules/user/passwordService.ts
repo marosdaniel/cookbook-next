@@ -13,6 +13,7 @@ import {
   resetPasswordValidationSchema,
   setNewPasswordValidationSchema,
 } from '@/lib/validation/validation';
+import { invalidateCacheScope } from '@/server/platform/cache';
 import { UserRepository } from './repository';
 import type { PasswordEditDomainInput } from './types';
 
@@ -79,6 +80,8 @@ export const PasswordService = {
       userId,
       hashedPassword,
     );
+
+    await invalidateCacheScope({ sessionUserId: userId });
 
     return true;
   },
@@ -164,6 +167,8 @@ export const PasswordService = {
       hashedPassword,
       true,
     );
+
+    await invalidateCacheScope({ sessionUserId: user.id });
 
     return {
       success: true,
