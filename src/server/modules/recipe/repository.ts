@@ -1,5 +1,10 @@
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma/prisma';
+import {
+  buildTrigramSearchQuery,
+  type SearchScoreCursor,
+  type TrigramSearchRow,
+} from './search';
 import type {
   IngredientDomainInput,
   NormalizablePreparationStep,
@@ -126,24 +131,26 @@ export const RecipeRepository = {
     });
   },
 
-  async searchIdsByTrigram(searchTerm: string): Promise<string[]> {
-    const matches = await prisma.$queryRaw<Array<{ id: string }>>`
-      SELECT r.id
-      FROM recipes r
-      LEFT JOIN ingredients i ON i."recipeId" = r.id
-      WHERE r.title % ${searchTerm}
-         OR COALESCE(r.description, '') % ${searchTerm}
-         OR COALESCE(r.tips, '') % ${searchTerm}
-         OR COALESCE(r.substitutions, '') % ${searchTerm}
-         OR COALESCE(i.name, '') % ${searchTerm}
-      GROUP BY r.id
-      ORDER BY MAX(GREATEST(
-        similarity(r.title, ${searchTerm}),
-        similarity(COALESCE(r.description, ''), ${searchTerm}),
-        similarity(COALESCE(i.name, ''), ${searchTerm})
-      )) DESC
-    `;
-    return matches.map(({ id }) => id);
+  async searchPaginatedByTrigram(opts: {
+    searchTerm: string;
+    filter?: RecipeFilterInput;
+    cursor?: SearchScoreCursor | null;
+    take?: number;
+  }): Promise<TrigramSearchRow[]> {
+    const query = buildTrigramSearchQuery(opts);
+    return prisma.$queryRaw<TrigramSearchRow[]>(query);
+  },
+
+  async findManyListByIds(ids: string[]): Promise<RecipeListItem[]> {
+    if (ids.length === 0) return [];
+    const items = await prisma.recipe.findMany({
+      where: { id: { in: ids } },
+      select: RECIPE_LIST_SELECT,
+    });
+    const byId = new Map(items.map((item) => [item.id, item]));
+    return ids
+      .map((id) => byId.get(id))
+      .filter((item): item is RecipeListItem => item !== undefined);
   },
 
   async findManyListAndCount(opts: {
