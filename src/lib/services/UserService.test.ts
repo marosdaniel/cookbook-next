@@ -9,6 +9,8 @@ const {
   mockDeleteMany,
   mockCount,
   mockFindMany,
+  mockUserFindMany,
+  mockRecipeFindMany,
 } = vi.hoisted(() => ({
   mockFindUnique: vi.fn(),
   mockFindFirst: vi.fn(),
@@ -18,6 +20,8 @@ const {
   mockDeleteMany: vi.fn(),
   mockCount: vi.fn(),
   mockFindMany: vi.fn(),
+  mockUserFindMany: vi.fn(),
+  mockRecipeFindMany: vi.fn(),
 }));
 
 vi.mock('@/lib/prisma/prisma', () => ({
@@ -25,6 +29,7 @@ vi.mock('@/lib/prisma/prisma', () => ({
     user: {
       findUnique: mockFindUnique,
       findFirst: mockFindFirst,
+      findMany: mockUserFindMany,
       create: mockCreate,
       update: mockUpdate,
       delete: mockDelete,
@@ -32,6 +37,7 @@ vi.mock('@/lib/prisma/prisma', () => ({
     },
     recipe: {
       findUnique: vi.fn(),
+      findMany: mockRecipeFindMany,
       deleteMany: vi.fn(),
     },
     follow: {
@@ -104,6 +110,10 @@ describe('UserService', () => {
     mockDeleteMany.mockReset();
     mockCount.mockReset();
     mockFindMany.mockReset();
+    mockUserFindMany.mockReset();
+    mockUserFindMany.mockResolvedValue([]);
+    mockRecipeFindMany.mockReset();
+    mockRecipeFindMany.mockResolvedValue([]);
   });
 
   it('creates a user and returns the expected payload', async () => {
