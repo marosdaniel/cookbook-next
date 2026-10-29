@@ -20,14 +20,16 @@ import type { FollowingDomainResult } from './types';
 export const FollowService = {
   async getFollowing(userId: string, limit?: number) {
     const normalizedLimit = resolveQueryLimit(limit);
-    const cacheKey = cacheKeys.userFollowing(userId, normalizedLimit);
 
-    return cached<FollowingDomainResult>({
-      key: cacheKey,
+    // One canonical cache entry per user (bounded to the max page size). The
+    // requested limit is applied on read, so invalidating this single key
+    // refreshes every limit variant.
+    const following = await cached<FollowingDomainResult>({
+      key: cacheKeys.userFollowing(userId, undefined),
       ttlSeconds: DETAIL_CACHE_TTL_SECONDS,
       load: async () => {
         const [follows, totalFollowing] =
-          await UserRepository.findFollowingAndCount(userId, normalizedLimit);
+          await UserRepository.findFollowingAndCount(userId);
 
         const users = follows.map((follow) => ({
           id: follow.following.id,
@@ -42,6 +44,10 @@ export const FollowService = {
         return { users, totalFollowing };
       },
     });
+
+    return normalizedLimit
+      ? { ...following, users: following.users.slice(0, normalizedLimit) }
+      : following;
   },
 
   async followUser(

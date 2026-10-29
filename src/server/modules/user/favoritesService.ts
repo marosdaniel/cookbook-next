@@ -22,22 +22,23 @@ import { UserRepository } from './repository';
 export const FavoritesService = {
   async getFavoriteRecipes(userId: string, limit?: number) {
     const normalizedLimit = resolveQueryLimit(limit);
-    const cacheKey = cacheKeys.userFavorites(userId, normalizedLimit);
 
-    return cached({
-      key: cacheKey,
+    // One canonical cache entry per user (bounded to the max page size). The
+    // requested limit is applied on read, so invalidating this single key
+    // refreshes every limit variant.
+    const favorites = await cached({
+      key: cacheKeys.userFavorites(userId, undefined),
       ttlSeconds: DETAIL_CACHE_TTL_SECONDS,
       load: async () => {
-        const user = await UserRepository.findWithFavoriteRecipes(
-          userId,
-          normalizedLimit,
-        );
+        const user = await UserRepository.findWithFavoriteRecipes(userId);
         if (!user) {
           return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
         }
         return user.favoriteRecipes;
       },
     });
+
+    return normalizedLimit ? favorites.slice(0, normalizedLimit) : favorites;
   },
 
   async addToFavoriteRecipes(
