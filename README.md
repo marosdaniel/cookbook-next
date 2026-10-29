@@ -124,12 +124,16 @@ Create a `.env.local` file with the variables this app actually uses:
 # Database (Postgres / Neon)
 DATABASE_URL=postgresql://username:password@db-host:5432/cookbook
 
-# NextAuth
+# NextAuth (NEXTAUTH_SECRET must be at least 32 characters)
 NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your-secret-key-here
+NEXTAUTH_SECRET=replace-with-at-least-32-character-secret-value
 
 # Public canonical URL for SEO metadata and Open Graph URLs
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+# Optional GraphQL / Rate Limit toggles
+GRAPHQL_ALLOWLIST_ENFORCE=false
+UPSTASH_RATELIMIT_ANALYTICS=false
 
 # Optional email delivery (used by password reset / welcome emails)
 EMAIL_HOST=smtp.example.com

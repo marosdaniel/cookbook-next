@@ -6,7 +6,7 @@ const isTest = Boolean(process.env.VITEST);
 const validatedEnv = createEnv({
   server: {
     DATABASE_URL: z.string().min(1),
-    NEXTAUTH_SECRET: z.string().min(1),
+    NEXTAUTH_SECRET: z.string().min(32),
     NEXTAUTH_URL: z.url().optional(),
 
     // Redis is optional; src/lib/redis/redis.ts degrades gracefully without it.
