@@ -1,5 +1,9 @@
-import { cacheKeys } from '@/lib/cache/cacheKeys';
-import { redis } from '@/lib/redis/redis';
+import {
+  cached,
+  cacheKeys,
+  DETAIL_CACHE_TTL_SECONDS,
+  invalidateCacheScope,
+} from '@/server/platform/cache';
 import {
   type DomainError,
   type DomainSuccess,
@@ -18,39 +22,26 @@ export const FollowService = {
     const normalizedLimit = resolveQueryLimit(limit);
     const cacheKey = cacheKeys.userFollowing(userId, normalizedLimit);
 
-    if (redis) {
-      try {
-        const cached = await redis.get(cacheKey);
-        if (cached) return cached as FollowingDomainResult;
-      } catch (error) {
-        console.error('Redis cache get error:', error);
-      }
-    }
+    return cached<FollowingDomainResult>({
+      key: cacheKey,
+      ttlSeconds: DETAIL_CACHE_TTL_SECONDS,
+      load: async () => {
+        const [follows, totalFollowing] =
+          await UserRepository.findFollowingAndCount(userId, normalizedLimit);
 
-    const [follows, totalFollowing] =
-      await UserRepository.findFollowingAndCount(userId, normalizedLimit);
+        const users = follows.map((follow) => ({
+          id: follow.following.id,
+          firstName: follow.following.firstName,
+          lastName: follow.following.lastName,
+          userName: follow.following.userName,
+          recipeCount: follow.following._count.recipes,
+          followedAt: follow.createdAt,
+          latestRecipes: follow.following.recipes,
+        }));
 
-    const users = follows.map((follow) => ({
-      id: follow.following.id,
-      firstName: follow.following.firstName,
-      lastName: follow.following.lastName,
-      userName: follow.following.userName,
-      recipeCount: follow.following._count.recipes,
-      followedAt: follow.createdAt,
-      latestRecipes: follow.following.recipes,
-    }));
-
-    const result = { users, totalFollowing };
-
-    if (redis) {
-      try {
-        await redis.setex(cacheKey, 60, result);
-      } catch (error) {
-        console.error('Redis cache set error:', error);
-      }
-    }
-
-    return result;
+        return { users, totalFollowing };
+      },
+    });
   },
 
   async followUser(
@@ -81,13 +72,7 @@ export const FollowService = {
 
     await UserRepository.createFollow(currentUserId, targetUserId);
 
-    if (redis) {
-      try {
-        await redis.del(cacheKeys.userFollowing(currentUserId, undefined));
-      } catch (error) {
-        console.error('Redis cache invalidation error:', error);
-      }
-    }
+    await invalidateCacheScope({ followerUserId: currentUserId });
 
     return ok({
       reason: 'FOLLOW_SUCCESS',
@@ -113,13 +98,7 @@ export const FollowService = {
 
     await UserRepository.deleteFollow(currentUserId, targetUserId);
 
-    if (redis) {
-      try {
-        await redis.del(cacheKeys.userFollowing(currentUserId, undefined));
-      } catch (error) {
-        console.error('Redis cache invalidation error:', error);
-      }
-    }
+    await invalidateCacheScope({ followerUserId: currentUserId });
 
     return ok({
       reason: 'UNFOLLOW_SUCCESS',

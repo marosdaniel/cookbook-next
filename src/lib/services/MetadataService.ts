@@ -1,7 +1,10 @@
 import type { MetadataType } from '@prisma/client';
-import { cacheKeys } from '@/lib/cache/cacheKeys';
 import { prisma } from '@/lib/prisma/prisma';
-import { redis } from '@/lib/redis/redis';
+import {
+  cached,
+  cacheKeys,
+  invalidateCacheScope,
+} from '@/server/platform/cache';
 
 const ACTIVE_METADATA_CACHE_TTL_SECONDS = 60 * 60;
 
@@ -17,40 +20,28 @@ export type PublicMetadataItem = {
 export const metadataLookupKey = (type: string, key: string) =>
   `${type}:${key}`;
 
-const loadActiveMetadata = async (): Promise<PublicMetadataItem[]> => {
-  if (redis) {
-    const cached = await redis.get(cacheKeys.metadataActive);
-    // An empty list is treated as a miss so a stale empty result is not served for the whole TTL.
-    if (Array.isArray(cached) && cached.length > 0) {
-      return cached as PublicMetadataItem[];
-    }
-  }
+const loadActiveMetadata = async (): Promise<PublicMetadataItem[]> =>
+  cached<PublicMetadataItem[]>({
+    key: cacheKeys.metadataActive,
+    ttlSeconds: ACTIVE_METADATA_CACHE_TTL_SECONDS,
+    shouldCache: (items) => Array.isArray(items) && items.length > 0,
+    load: async () => {
+      const rows = await prisma.metadata.findMany({
+        where: { isActive: true },
+        orderBy: [{ type: 'asc' }, { sortOrder: 'asc' }],
+      });
 
-  const rows = await prisma.metadata.findMany({
-    where: { isActive: true },
-    orderBy: [{ type: 'asc' }, { sortOrder: 'asc' }],
+      return rows.map(
+        (row): PublicMetadataItem => ({
+          id: row.id,
+          name: row.key,
+          key: row.key,
+          label: row.translationKey,
+          type: row.type,
+        }),
+      );
+    },
   });
-
-  const items = rows.map(
-    (row): PublicMetadataItem => ({
-      id: row.id,
-      name: row.key,
-      key: row.key,
-      label: row.translationKey,
-      type: row.type,
-    }),
-  );
-
-  if (redis) {
-    await redis.setex(
-      cacheKeys.metadataActive,
-      ACTIVE_METADATA_CACHE_TTL_SECONDS,
-      items,
-    );
-  }
-
-  return items;
-};
 
 export const MetadataService = {
   async getActiveMetadata(type?: string): Promise<PublicMetadataItem[]> {
@@ -73,8 +64,6 @@ export const MetadataService = {
   },
 
   async invalidateActiveMetadataCache(): Promise<void> {
-    if (redis) {
-      await redis.del(cacheKeys.metadataActive);
-    }
+    await invalidateCacheScope({ metadataActive: true });
   },
 };

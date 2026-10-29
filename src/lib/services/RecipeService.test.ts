@@ -272,6 +272,34 @@ describe('RecipeService additional branches', () => {
     expect(mockRedis.setex).toHaveBeenCalled();
     expect(mockRedis.del).toHaveBeenCalled();
   });
+
+  it('invalidates detail and lookup keys (id and slug) on rateRecipe and deleteRating', async () => {
+    const { prisma } = await import('@/lib/prisma/prisma');
+    vi.mocked(prisma.recipe.findUnique).mockResolvedValue({
+      id: 'recipe-42',
+      createdBy: 'author-1',
+      slug: 'crispy-duck',
+    } as never);
+    vi.mocked(prisma.rating.upsert).mockResolvedValue({} as never);
+    vi.mocked(prisma.rating.delete).mockResolvedValue({ id: 'r1' } as never);
+
+    await RecipeService.rateRecipe('rater-1', {
+      recipeId: 'recipe-42',
+      ratingValue: 5,
+    });
+
+    expect(mockRedis.del).toHaveBeenCalledWith('recipe:recipe-42');
+    expect(mockRedis.del).toHaveBeenCalledWith('recipe:lookup:recipe-42');
+    expect(mockRedis.del).toHaveBeenCalledWith('recipe:lookup:crispy-duck');
+
+    mockRedis.del.mockClear();
+
+    await RecipeService.deleteRating('rater-1', 'recipe-42');
+
+    expect(mockRedis.del).toHaveBeenCalledWith('recipe:recipe-42');
+    expect(mockRedis.del).toHaveBeenCalledWith('recipe:lookup:recipe-42');
+    expect(mockRedis.del).toHaveBeenCalledWith('recipe:lookup:crispy-duck');
+  });
 });
 
 describe('assertRecipeResourceAccess', () => {

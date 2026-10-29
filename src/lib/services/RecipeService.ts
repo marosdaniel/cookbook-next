@@ -1,5 +1,3 @@
-import { cacheKeys } from '@/lib/cache/cacheKeys';
-import { redis } from '@/lib/redis/redis';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
 import {
@@ -20,6 +18,16 @@ import type {
   NormalizedRecipeInput,
   RatingDomainInput,
 } from '@/server/modules/recipe/types';
+import {
+  cached,
+  cacheKeys,
+  DETAIL_CACHE_TTL_SECONDS,
+  getCachedValue,
+  getRecipeListVersion,
+  invalidateCacheScope,
+  LIST_CACHE_TTL_SECONDS,
+  setCachedValue,
+} from '@/server/platform/cache';
 import { resolveQueryLimit } from '@/server/platform/pagination';
 
 export type { RecipeFilterInput };
@@ -60,59 +68,6 @@ const decodeCursor = (cursor: string | undefined): RecipeCursor | null => {
     return null;
   }
 };
-
-async function getCachedData<T>(key: string): Promise<T | null> {
-  if (!redis) return null;
-  try {
-    const cached = await redis.get(key);
-    if (cached) return cached as T;
-  } catch (error) {
-    console.warn('Redis cache get error:', error);
-  }
-  return null;
-}
-
-const LIST_CACHE_TTL_SECONDS = 15;
-const DETAIL_CACHE_TTL_SECONDS = 60;
-
-async function setCachedData(
-  key: string,
-  value: unknown,
-  ttl: number = DETAIL_CACHE_TTL_SECONDS,
-) {
-  if (!redis) return;
-  try {
-    await redis.setex(key, ttl, value);
-  } catch (error) {
-    console.warn('Redis cache set error:', error);
-  }
-}
-
-async function invalidateCache(keys: string[]) {
-  const currentRedis = redis;
-  if (!currentRedis) return;
-  try {
-    await Promise.all(keys.map((key) => currentRedis.del(key)));
-  } catch (error) {
-    console.warn('Redis cache invalidation error:', error);
-  }
-}
-
-async function getRecipeListVersion() {
-  const cachedVersion = await getCachedData<number>(
-    cacheKeys.recipeListVersion,
-  );
-  return typeof cachedVersion === 'number' ? cachedVersion : 1;
-}
-
-async function invalidateRecipeLists() {
-  if (!redis?.incr) return;
-  try {
-    await redis.incr(cacheKeys.recipeListVersion);
-  } catch (error) {
-    console.warn('Redis recipe list version invalidation error:', error);
-  }
-}
 
 export const assertRecipeResourceAccess = (
   userId: string,
@@ -160,8 +115,8 @@ export const RecipeService = {
       after,
     );
 
-    const cached = await getCachedData<RecipeListResult>(cacheKey);
-    if (cached) return cached;
+    const cachedList = await getCachedValue<RecipeListResult>(cacheKey);
+    if (cachedList) return cachedList;
 
     const cursor = decodeCursor(after);
     const where = buildWhereClause(filter);
@@ -219,7 +174,7 @@ export const RecipeService = {
       },
     };
 
-    await setCachedData(cacheKey, result, LIST_CACHE_TTL_SECONDS);
+    await setCachedValue(cacheKey, result, LIST_CACHE_TTL_SECONDS);
 
     return result;
   },
@@ -227,8 +182,8 @@ export const RecipeService = {
   async getRecipeById(id: string) {
     const cacheKey = cacheKeys.recipeDetail(id);
 
-    const cached = await getCachedData<RecipeWithRelations>(cacheKey);
-    if (cached) return cached;
+    const cachedRecipe = await getCachedValue<RecipeWithRelations>(cacheKey);
+    if (cachedRecipe) return cachedRecipe;
 
     const existingRecipe = await RecipeRepository.findByIdWithRelations(id);
 
@@ -236,7 +191,7 @@ export const RecipeService = {
       return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
     }
 
-    await setCachedData(cacheKey, existingRecipe, DETAIL_CACHE_TTL_SECONDS);
+    await setCachedValue(cacheKey, existingRecipe, DETAIL_CACHE_TTL_SECONDS);
 
     return existingRecipe;
   },
@@ -247,8 +202,8 @@ export const RecipeService = {
   async getRecipeBySlugOrId(idOrSlug: string) {
     const cacheKey = cacheKeys.recipeLookup(idOrSlug);
 
-    const cached = await getCachedData<RecipeWithAuthor>(cacheKey);
-    if (cached) return cached;
+    const cachedRecipe = await getCachedValue<RecipeWithAuthor>(cacheKey);
+    if (cachedRecipe) return cachedRecipe;
 
     const recipe = await RecipeRepository.findBySlugOrIdWithAuthor(idOrSlug);
 
@@ -256,7 +211,7 @@ export const RecipeService = {
       return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
     }
 
-    await setCachedData(cacheKey, recipe, DETAIL_CACHE_TTL_SECONDS);
+    await setCachedValue(cacheKey, recipe, DETAIL_CACHE_TTL_SECONDS);
 
     return recipe;
   },
@@ -265,20 +220,21 @@ export const RecipeService = {
     const normalizedLimit = resolveQueryLimit(limit);
     const cacheKey = cacheKeys.userRecipes(userId, normalizedLimit);
 
-    const cached = await getCachedData<{
+    return cached<{
       recipes: RecipeListItem[];
       totalRecipes: number;
-    }>(cacheKey);
-    if (cached) return cached;
-
-    const [recipes, totalRecipes] =
-      await RecipeRepository.findByAuthorIdAndCount(userId, normalizedLimit);
-
-    const result = { recipes, totalRecipes };
-
-    await setCachedData(cacheKey, result, LIST_CACHE_TTL_SECONDS);
-
-    return result;
+    }>({
+      key: cacheKey,
+      ttlSeconds: LIST_CACHE_TTL_SECONDS,
+      load: async () => {
+        const [recipes, totalRecipes] =
+          await RecipeRepository.findByAuthorIdAndCount(
+            userId,
+            normalizedLimit,
+          );
+        return { recipes, totalRecipes };
+      },
+    });
   },
 
   // Mutations
@@ -298,8 +254,10 @@ export const RecipeService = {
       sanitizedInput.preparationSteps,
     );
 
-    await invalidateCache([cacheKeys.userRecipes(userId, undefined)]);
-    await invalidateRecipeLists();
+    await invalidateCacheScope({
+      authorId: userId,
+      invalidateRecipeLists: true,
+    });
 
     return newRecipe;
   },
@@ -332,16 +290,12 @@ export const RecipeService = {
       sanitizedInput.preparationSteps,
     );
 
-    await invalidateCache([
-      cacheKeys.recipeDetail(recipeId),
-      cacheKeys.recipeLookup(recipeId),
-      ...(existingRecipe.slug
-        ? [cacheKeys.recipeLookup(existingRecipe.slug)]
-        : []),
-      ...(data.slug ? [cacheKeys.recipeLookup(data.slug)] : []),
-      cacheKeys.userRecipes(existingRecipe.createdBy, undefined),
-    ]);
-    await invalidateRecipeLists();
+    await invalidateCacheScope({
+      recipeId,
+      slugs: [existingRecipe.slug, data.slug],
+      authorId: existingRecipe.createdBy,
+      invalidateRecipeLists: true,
+    });
 
     return updatedRecipe;
   },
@@ -360,15 +314,12 @@ export const RecipeService = {
 
     const deletedRecipe = await RecipeRepository.deleteById(recipeId);
 
-    await invalidateCache([
-      cacheKeys.recipeDetail(recipeId),
-      cacheKeys.recipeLookup(recipeId),
-      ...(existingRecipe.slug
-        ? [cacheKeys.recipeLookup(existingRecipe.slug)]
-        : []),
-      cacheKeys.userRecipes(existingRecipe.createdBy, undefined),
-    ]);
-    await invalidateRecipeLists();
+    await invalidateCacheScope({
+      recipeId,
+      slugs: [existingRecipe.slug],
+      authorId: existingRecipe.createdBy,
+      invalidateRecipeLists: true,
+    });
 
     return !!deletedRecipe;
   },
@@ -407,17 +358,24 @@ export const RecipeService = {
       ratingInput.recipeId,
     );
 
-    await invalidateCache([cacheKeys.recipeDetail(ratingInput.recipeId)]);
+    await invalidateCacheScope({
+      recipeId: ratingInput.recipeId,
+      slugs: [recipe.slug],
+    });
 
     return updatedRecipe;
   },
 
   async deleteRating(userId: string, recipeId: string) {
     try {
+      const existingRecipe = await RecipeRepository.findById(recipeId);
       const deleted = await RecipeRepository.deleteRating(recipeId, userId);
 
       if (deleted) {
-        await invalidateCache([cacheKeys.recipeDetail(recipeId)]);
+        await invalidateCacheScope({
+          recipeId,
+          slugs: [existingRecipe?.slug],
+        });
       }
 
       return !!deleted;

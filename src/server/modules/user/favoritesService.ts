@@ -1,8 +1,11 @@
-import { cacheKeys } from '@/lib/cache/cacheKeys';
-import { redis } from '@/lib/redis/redis';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
-import type { RecipeDomainItem } from '@/server/modules/recipe/types';
+import {
+  cached,
+  cacheKeys,
+  DETAIL_CACHE_TTL_SECONDS,
+  invalidateCacheScope,
+} from '@/server/platform/cache';
 import {
   type DomainError,
   type DomainSuccess,
@@ -21,32 +24,20 @@ export const FavoritesService = {
     const normalizedLimit = resolveQueryLimit(limit);
     const cacheKey = cacheKeys.userFavorites(userId, normalizedLimit);
 
-    if (redis) {
-      try {
-        const cached = await redis.get(cacheKey);
-        if (cached) return cached as RecipeDomainItem[];
-      } catch (error) {
-        console.error('Redis cache get error:', error);
-      }
-    }
-
-    const user = await UserRepository.findWithFavoriteRecipes(
-      userId,
-      normalizedLimit,
-    );
-    if (!user) {
-      return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
-    }
-
-    if (redis) {
-      try {
-        await redis.setex(cacheKey, 60, user.favoriteRecipes);
-      } catch (error) {
-        console.error('Redis cache set error:', error);
-      }
-    }
-
-    return user.favoriteRecipes;
+    return cached({
+      key: cacheKey,
+      ttlSeconds: DETAIL_CACHE_TTL_SECONDS,
+      load: async () => {
+        const user = await UserRepository.findWithFavoriteRecipes(
+          userId,
+          normalizedLimit,
+        );
+        if (!user) {
+          return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
+        }
+        return user.favoriteRecipes;
+      },
+    });
   },
 
   async addToFavoriteRecipes(
@@ -87,13 +78,7 @@ export const FavoritesService = {
 
     await UserRepository.connectFavoriteRecipe(targetUserId, recipeId);
 
-    if (redis) {
-      try {
-        await redis.del(cacheKeys.userFavorites(targetUserId, undefined));
-      } catch (error) {
-        console.error('Redis cache invalidation error:', error);
-      }
-    }
+    await invalidateCacheScope({ favoriteUserId: targetUserId });
 
     return ok({
       reason: 'SUCCESS',
@@ -140,13 +125,7 @@ export const FavoritesService = {
 
     await UserRepository.disconnectFavoriteRecipe(targetUserId, recipeId);
 
-    if (redis) {
-      try {
-        await redis.del(cacheKeys.userFavorites(targetUserId, undefined));
-      } catch (error) {
-        console.error('Redis cache invalidation error:', error);
-      }
-    }
+    await invalidateCacheScope({ favoriteUserId: targetUserId });
 
     return ok({
       reason: 'SUCCESS',
