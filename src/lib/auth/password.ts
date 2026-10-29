@@ -13,8 +13,49 @@ const ARGON2_OPTIONS = {
   hashLength: 32,
 } as const;
 
+let cachedDummyHashPromise: Promise<string> | null = null;
+
+const getDummyHash = (): Promise<string> => {
+  if (!cachedDummyHashPromise) {
+    cachedDummyHashPromise = argon2.hash(
+      'dummy-timing-equalization-password',
+      ARGON2_OPTIONS,
+    );
+  }
+  return cachedDummyHashPromise;
+};
+
 export function hashPassword(password: string): Promise<string> {
   return argon2.hash(password, ARGON2_OPTIONS);
+}
+
+export async function verifyDummyPassword(password: string): Promise<void> {
+  try {
+    const dummyHash = await getDummyHash();
+    await argon2.verify(dummyHash, password);
+  } catch {
+    // Ignore errors during dummy timing verification
+  }
+}
+
+export function needsPasswordRehash(hashedPassword: string): boolean {
+  if (!hashedPassword) {
+    return false;
+  }
+
+  if (hashedPassword.startsWith('$2')) {
+    return true;
+  }
+
+  if (hashedPassword.startsWith('$argon2')) {
+    try {
+      return argon2.needsRehash(hashedPassword, ARGON2_OPTIONS);
+    } catch {
+      return false;
+    }
+  }
+
+  return false;
 }
 
 export function verifyPassword(

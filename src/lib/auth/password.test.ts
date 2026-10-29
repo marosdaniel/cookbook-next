@@ -4,8 +4,10 @@ import {
   createIssuedAt,
   createTokenId,
   hashPassword,
+  needsPasswordRehash,
   PASSWORD_HASH_ALGORITHM,
   PASSWORD_SALT_ROUNDS,
+  verifyDummyPassword,
   verifyPassword,
 } from './password';
 
@@ -21,12 +23,23 @@ describe('password helpers', () => {
     expect(await verifyPassword('wrong-password', hashedPassword)).toBe(false);
   });
 
-  it('verifies legacy bcrypt hashes', async () => {
+  it('verifies legacy bcrypt hashes and flags them for rehash', async () => {
     const password = 'legacy-password';
     const hashedPassword = await bcrypt.hash(password, 2);
 
     expect(await verifyPassword(password, hashedPassword)).toBe(true);
     expect(await verifyPassword('other-password', hashedPassword)).toBe(false);
+    expect(needsPasswordRehash(hashedPassword)).toBe(true);
+
+    const argonHash = await hashPassword(password);
+    expect(needsPasswordRehash(argonHash)).toBe(false);
+    expect(needsPasswordRehash('')).toBe(false);
+  });
+
+  it('runs timing-equalization dummy password verification without throwing', async () => {
+    await expect(
+      verifyDummyPassword('candidate-password'),
+    ).resolves.toBeUndefined();
   });
 
   it('returns false for empty and unsupported hashes', async () => {

@@ -1,11 +1,22 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 
-const { mockPrismaUserFindUnique } = vi.hoisted(() => ({
+const {
+  mockPrismaUserFindUnique,
+  mockPrismaUserUpdate,
+  mockCheckLoginRateLimit,
+} = vi.hoisted(() => ({
   mockPrismaUserFindUnique: vi.fn(),
+  mockPrismaUserUpdate: vi.fn(),
+  mockCheckLoginRateLimit: vi.fn(),
 }));
 
 import { prisma } from '@/lib/prisma/prisma';
-import { verifyPassword } from './password';
+import {
+  hashPassword,
+  needsPasswordRehash,
+  verifyDummyPassword,
+  verifyPassword,
+} from './password';
 
 // Mock NextAuth and capture the config
 let capturedConfig: unknown;
@@ -31,26 +42,42 @@ vi.mock('@/lib/prisma/prisma', () => ({
   prisma: {
     user: {
       findUnique: mockPrismaUserFindUnique,
+      update: mockPrismaUserUpdate,
     },
   },
 }));
 
+vi.mock('@/lib/rateLimit/rateLimit', () => ({
+  checkLoginRateLimit: mockCheckLoginRateLimit,
+}));
+
 vi.mock('./password', () => ({
   verifyPassword: vi.fn(),
+  verifyDummyPassword: vi.fn().mockResolvedValue(undefined),
+  needsPasswordRehash: vi.fn().mockReturnValue(false),
+  hashPassword: vi.fn().mockResolvedValue('$argon2id$v=19$upgraded'),
 }));
 
 describe('auth.ts', () => {
-  let authorize: (credentials: unknown) => Promise<unknown>;
+  let authorize: (credentials: unknown, request?: unknown) => Promise<unknown>;
 
   beforeEach(async () => {
     vi.clearAllMocks();
     vi.resetModules();
     mockPrismaUserFindUnique.mockReset();
+    mockPrismaUserUpdate.mockReset();
+    mockCheckLoginRateLimit.mockResolvedValue({
+      success: true,
+      limit: 5,
+      remaining: 4,
+    });
     // Re-import to trigger NextAuth call
     await import('./auth');
     authorize = (
       capturedConfig as {
-        providers: [{ authorize: (c: unknown) => Promise<unknown> }];
+        providers: [
+          { authorize: (c: unknown, req?: unknown) => Promise<unknown> },
+        ];
       }
     ).providers[0].authorize;
   });
@@ -62,11 +89,81 @@ describe('auth.ts', () => {
       );
     });
 
-    it('should throw error if user not found', async () => {
+    it('should throw error if user not found and run dummy timing verification', async () => {
       (prisma.user.findUnique as Mock).mockResolvedValue(null);
       await expect(
         authorize({ email: 'test@example.com', password: 'password' }),
       ).rejects.toThrow('Invalid email or password');
+      expect(verifyDummyPassword).toHaveBeenCalledWith('password');
+    });
+
+    it('normalizes email to lowercase so User@Example.com and user@example.com match the same account', async () => {
+      const mockUser = {
+        id: '1',
+        email: 'user@example.com',
+        password: '$argon2id$v=19$hashed-password',
+        firstName: 'John',
+        lastName: 'Doe',
+        userName: 'johndoe',
+        role: 'USER',
+        locale: 'en',
+      };
+      (prisma.user.findUnique as Mock).mockResolvedValue(mockUser);
+      (verifyPassword as Mock).mockResolvedValue(true);
+
+      await authorize({
+        email: 'User@Example.com',
+        password: 'password',
+      });
+
+      expect(prisma.user.findUnique).toHaveBeenCalledWith({
+        where: { email: 'user@example.com' },
+      });
+    });
+
+    it('transparently upgrades legacy bcrypt hashes to argon2 on successful login', async () => {
+      const mockUser = {
+        id: '1',
+        email: 'user@example.com',
+        password: '$2a$12$legacybcrypthash',
+        firstName: 'John',
+        lastName: 'Doe',
+        userName: 'johndoe',
+        role: 'USER',
+        locale: 'en',
+      };
+      (prisma.user.findUnique as Mock).mockResolvedValue(mockUser);
+      (verifyPassword as Mock).mockResolvedValue(true);
+      (needsPasswordRehash as Mock).mockReturnValue(true);
+      (hashPassword as Mock).mockResolvedValue('$argon2id$v=19$new-hash');
+
+      await authorize({
+        email: 'user@example.com',
+        password: 'password',
+      });
+
+      expect(hashPassword).toHaveBeenCalledWith('password');
+      expect(prisma.user.update).toHaveBeenCalledWith({
+        where: { id: '1' },
+        data: { password: '$argon2id$v=19$new-hash' },
+      });
+    });
+
+    it('returns the same generic error when login rate limit is exceeded without leaking account existence', async () => {
+      mockCheckLoginRateLimit.mockResolvedValue({
+        success: false,
+        limit: 5,
+        remaining: 0,
+      });
+
+      await expect(
+        authorize(
+          { email: 'victim@example.com', password: 'password' },
+          new Request('http://localhost/api/auth/callback/credentials'),
+        ),
+      ).rejects.toThrow('Invalid email or password');
+
+      expect(prisma.user.findUnique).not.toHaveBeenCalled();
     });
 
     it('should throw error if password invalid', async () => {

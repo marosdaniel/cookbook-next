@@ -183,6 +183,27 @@ export const fallbackPasswordResetEmailRateLimiter = createInMemoryLimiter(
   60 * 60_000,
 );
 
+// Login credentials limiters: 5 per 15m per email hash, 20 per 15m per IP
+export const loginEmailRateLimiter = createLimiter(
+  'ratelimit:auth:login-email',
+  '15 m',
+  5,
+);
+export const fallbackLoginEmailRateLimiter = createInMemoryLimiter(
+  5,
+  15 * 60_000,
+);
+
+export const loginIpRateLimiter = createLimiter(
+  'ratelimit:auth:login-ip',
+  '15 m',
+  20,
+);
+export const fallbackLoginIpRateLimiter = createInMemoryLimiter(
+  20,
+  15 * 60_000,
+);
+
 export const hashRateLimitIdentifier = (value: string): string =>
   crypto.createHash('sha256').update(value.trim().toLowerCase()).digest('hex');
 
@@ -231,6 +252,35 @@ export const checkPasswordResetEmailRateLimit = async (
     fallbackPasswordResetEmailRateLimiter,
     emailHash,
   );
+};
+
+export const checkLoginRateLimit = async (
+  email: string,
+  clientIp?: string | null,
+): Promise<RateLimitCheckResult> => {
+  const emailHash = hashRateLimitIdentifier(email);
+  const emailResult = await executeRateLimitWithFallback(
+    loginEmailRateLimiter,
+    fallbackLoginEmailRateLimiter,
+    emailHash,
+  );
+
+  if (!emailResult.success) {
+    return emailResult;
+  }
+
+  if (clientIp) {
+    const ipResult = await executeRateLimitWithFallback(
+      loginIpRateLimiter,
+      fallbackLoginIpRateLimiter,
+      clientIp,
+    );
+    if (!ipResult.success) {
+      return ipResult;
+    }
+  }
+
+  return emailResult;
 };
 
 const AUTH_SENSITIVE_OPERATIONS: ReadonlySet<string> = new Set([
