@@ -178,6 +178,18 @@ const server = new ApolloServer<GraphQLContext>({
   },
 });
 
+const resolveSessionSafely = async (): Promise<Session | null> => {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return null;
+    }
+    return session;
+  } catch {
+    return null;
+  }
+};
+
 /**
  * Create GraphQL context for each request
  */
@@ -186,7 +198,7 @@ const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(
   {
     context: async (): Promise<GraphQLContext> => {
       const store = requestStorage.getStore();
-      const session = store?.session ?? (await auth());
+      const session = store ? store.session : await resolveSessionSafely();
       const userId = session?.user?.id;
 
       return {
@@ -289,7 +301,7 @@ const wrappedHandler = async (
     );
   }
 
-  const session = await auth();
+  const session = await resolveSessionSafely();
   const requestId = request.headers.get('x-request-id') || randomUUID();
   const clientKey = getRateLimitClientKey(request);
 

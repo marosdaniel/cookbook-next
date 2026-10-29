@@ -318,6 +318,24 @@ describe('GraphQL route branch coverage', () => {
     expect(response.headers.get('Vary')).toBe('Cookie, Authorization');
   });
 
+  it('treats revoked sessions (auth() rejection) as anonymous instead of returning 500', async () => {
+    vi.mocked(auth).mockRejectedValue(new Error('Session has been revoked'));
+    const { wrappedHandler } = await import('./route');
+    const request = new Request('http://localhost/api/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        operationName: 'GetRecipes',
+        query: 'query GetRecipes { hello }',
+      }),
+    });
+
+    const response = await wrappedHandler(request as never, {} as never);
+
+    expect(response.status).toBe(200);
+    expect(mockHandler).toHaveBeenCalled();
+  });
+
   it('returns a request-id tagged internal error when Apollo fails', async () => {
     mockHandler.mockRejectedValue(new Error('Apollo failed'));
     const { wrappedHandler } = await import('./route');

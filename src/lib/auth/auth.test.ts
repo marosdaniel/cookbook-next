@@ -210,9 +210,31 @@ describe('auth.ts', () => {
       });
     });
 
-    it('should cover the jwt/session callback branch paths in auth.ts', async () => {
-      const { auth } = await import('./auth');
-      expect(auth).toBeDefined();
+    it('should mark token as revoked when sessionVersion does not match DB and reject in session callback', async () => {
+      const callbacks = (
+        capturedConfig as {
+          callbacks: {
+            jwt: (ctx: unknown) => Promise<Record<string, unknown>>;
+            session: (ctx: unknown) => Promise<unknown>;
+          };
+        }
+      ).callbacks;
+
+      (prisma.user.findUnique as Mock).mockResolvedValue({
+        sessionVersion: 3,
+      });
+
+      const revokedToken = await callbacks.jwt({
+        token: { id: 'user-1', authVersion: 2 },
+      });
+      expect(revokedToken.revoked).toBe(true);
+
+      await expect(
+        callbacks.session({
+          token: revokedToken,
+          session: { user: {} },
+        }),
+      ).rejects.toThrow('Session has been revoked');
     });
   });
 });
