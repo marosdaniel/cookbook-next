@@ -192,6 +192,45 @@ describe('UserService', () => {
     );
   });
 
+  it('executes deleteAllUser and AuditLog creation atomically inside a transaction', async () => {
+    const prismaMod = await import('@/lib/prisma/prisma');
+    const mockAuditCreate = vi.fn().mockResolvedValue({ id: 'audit-1' });
+    mockDeleteMany.mockResolvedValue({ count: 3 });
+
+    const mockTransaction = vi.fn(async (cb: (tx: unknown) => unknown) =>
+      cb({
+        user: prismaMod.prisma.user,
+        auditLog: { create: mockAuditCreate },
+      }),
+    );
+    (
+      prismaMod.prisma as unknown as { $transaction: typeof mockTransaction }
+    ).$transaction = mockTransaction;
+
+    const deletedCount = await UserService.deleteAllUser(
+      'admin-1',
+      'ADMIN',
+      'DELETE_ALL',
+    );
+    expect(deletedCount).toBe(3);
+    expect(mockTransaction).toHaveBeenCalledTimes(1);
+    expect(mockAuditCreate).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        actorId: 'admin-1',
+        action: 'USERS_DELETED_ALL',
+        targetType: 'User',
+        targetId: 'all',
+        payload: { deletedCount: 3 },
+      }),
+    });
+
+    // If auditLog.create fails inside the transaction, the whole operation rejects
+    mockAuditCreate.mockRejectedValueOnce(new Error('audit write failed'));
+    await expect(
+      UserService.deleteAllUser('admin-1', 'ADMIN', 'DELETE_ALL'),
+    ).rejects.toThrow('audit write failed');
+  });
+
   it('sends a reset email for a known user and stores a hashed reset token', async () => {
     const { generateResetToken, sendPasswordResetEmail } = await import(
       '@/lib/email/nodemailer'

@@ -10,6 +10,10 @@ import {
   customValidationSchema,
   nameValidationSchema,
 } from '@/lib/validation/validation';
+import {
+  assertAdminRole,
+  assertDestructiveConfirmation,
+} from '@/server/modules/admin/policy';
 import { logger } from '@/server/platform/logger';
 import { PasswordService, schedulePostResponseTask } from './passwordService';
 import { UserRepository } from './repository';
@@ -18,8 +22,6 @@ import {
   type UserRegisterDomainInput,
   type UserUpdateDomainInput,
 } from './types';
-
-const ADMIN_DESTRUCTIVE_ACTION_CONFIRMATION = 'DELETE_ALL';
 
 export const AccountService = {
   ...PasswordService,
@@ -210,23 +212,8 @@ export const AccountService = {
     currentUserRole: string,
     confirmation?: string,
   ) {
-    if (currentUserRole !== 'ADMIN') {
-      return throwCustomError(
-        'Unauthorized operation - admin rights required',
-        ErrorTypes.FORBIDDEN,
-      );
-    }
-
-    if (confirmation !== ADMIN_DESTRUCTIVE_ACTION_CONFIRMATION) {
-      return throwCustomError(
-        'Destructive admin action requires explicit confirmation',
-        ErrorTypes.BAD_REQUEST,
-      );
-    }
-
-    console.warn(
-      `[audit] admin deleteAllUser invoked by ${currentUserId} at ${new Date().toISOString()}`,
-    );
+    assertAdminRole(currentUserRole);
+    assertDestructiveConfirmation(confirmation);
 
     const result = await UserRepository.deleteAllUsersExcept(currentUserId);
 
@@ -246,26 +233,20 @@ export const AccountService = {
     currentUserRole: string,
     confirmation?: string,
   ) {
-    if (currentUserRole !== 'ADMIN') {
-      return throwCustomError(
-        'Unauthorized operation - admin rights required',
-        ErrorTypes.FORBIDDEN,
-      );
-    }
-
-    if (confirmation !== ADMIN_DESTRUCTIVE_ACTION_CONFIRMATION) {
-      return throwCustomError(
-        'Destructive admin action requires explicit confirmation',
-        ErrorTypes.BAD_REQUEST,
-      );
-    }
-
-    console.warn(
-      `[audit] admin deleteAllRecipes invoked by ${currentUserId} at ${new Date().toISOString()}`,
-    );
+    assertAdminRole(currentUserRole);
+    assertDestructiveConfirmation(confirmation);
 
     const result =
       await UserRepository.deleteAllRecipesExceptAuthor(currentUserId);
+
+    if (redis?.incr) {
+      try {
+        await redis.incr(cacheKeys.recipeListVersion);
+      } catch (error) {
+        logger.error({ err: error }, 'Redis cache invalidation error');
+      }
+    }
+
     return result.count;
   },
 };

@@ -162,16 +162,56 @@ export const UserRepository = {
     return prisma.user.delete({ where: { id } });
   },
 
-  async deleteAllUsersExcept(excludeUserId: string) {
-    return prisma.user.deleteMany({
-      where: { id: { not: excludeUserId } },
-    });
+  async deleteAllUsersExcept(actorId: string) {
+    const runDeleteAndAudit = async (tx: {
+      user: typeof prisma.user;
+      auditLog?: typeof prisma.auditLog;
+    }) => {
+      const deleted = await tx.user.deleteMany({
+        where: { id: { not: actorId } },
+      });
+      await tx.auditLog?.create({
+        data: {
+          actorId,
+          action: 'USERS_DELETED_ALL',
+          targetType: 'User',
+          targetId: 'all',
+          payload: { deletedCount: deleted.count },
+        },
+      });
+      return deleted;
+    };
+
+    if (typeof prisma.$transaction === 'function') {
+      return prisma.$transaction(async (tx) => runDeleteAndAudit(tx));
+    }
+    return runDeleteAndAudit(prisma);
   },
 
-  async deleteAllRecipesExceptAuthor(excludeUserId: string) {
-    return prisma.recipe.deleteMany({
-      where: { createdBy: { not: excludeUserId } },
-    });
+  async deleteAllRecipesExceptAuthor(actorId: string) {
+    const runDeleteAndAudit = async (tx: {
+      recipe: typeof prisma.recipe;
+      auditLog?: typeof prisma.auditLog;
+    }) => {
+      const deleted = await tx.recipe.deleteMany({
+        where: { createdBy: { not: actorId } },
+      });
+      await tx.auditLog?.create({
+        data: {
+          actorId,
+          action: 'RECIPES_DELETED_ALL',
+          targetType: 'Recipe',
+          targetId: 'all',
+          payload: { deletedCount: deleted.count },
+        },
+      });
+      return deleted;
+    };
+
+    if (typeof prisma.$transaction === 'function') {
+      return prisma.$transaction(async (tx) => runDeleteAndAudit(tx));
+    }
+    return runDeleteAndAudit(prisma);
   },
 
   async findRecipeById(recipeId: string) {

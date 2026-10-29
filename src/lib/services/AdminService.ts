@@ -8,6 +8,7 @@ import { prisma } from '@/lib/prisma/prisma';
 import { MetadataService } from '@/lib/services/MetadataService';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
+import { assertAdminRole } from '@/server/modules/admin/policy';
 import type {
   MetadataCreateDomainInput,
   MetadataUpdateDomainInput,
@@ -49,15 +50,6 @@ const toAuditSnapshot = (item: AuditableMetadata): Prisma.InputJsonObject => ({
   sortOrder: item.sortOrder,
   isActive: item.isActive,
 });
-
-const assertAdminRole = (role: string | undefined): void => {
-  if (role !== 'ADMIN') {
-    throwCustomError(
-      'Unauthorized operation - admin rights required',
-      ErrorTypes.FORBIDDEN,
-    );
-  }
-};
 
 const assertKnownTranslationKey = async (
   type: MetadataType,

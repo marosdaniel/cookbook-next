@@ -156,9 +156,10 @@ describe('AdminService', () => {
     });
 
     it('keeps the action successful when the audit write fails', async () => {
-      const consoleError = vi
-        .spyOn(console, 'error')
-        .mockImplementation(() => undefined);
+      const { logger } = await import('@/server/platform/logger');
+      const loggerErrorSpy = vi
+        .spyOn(logger, 'error')
+        .mockImplementation(() => undefined as never);
       mocks.prisma.metadata.findFirst.mockResolvedValue(null);
       mocks.prisma.metadata.create.mockResolvedValue(storedItem);
       mocks.prisma.auditLog.create.mockRejectedValue(new Error('db down'));
@@ -166,12 +167,15 @@ describe('AdminService', () => {
       await expect(
         AdminService.createMetadata('admin-1', 'ADMIN', createInput),
       ).resolves.toEqual(storedItem);
-      expect(consoleError).toHaveBeenCalledWith(
+      expect(loggerErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          err: expect.any(Error),
+          action: 'METADATA_CREATED',
+        }),
         'Audit log write failed',
-        expect.any(Error),
       );
 
-      consoleError.mockRestore();
+      loggerErrorSpy.mockRestore();
     });
   });
 
