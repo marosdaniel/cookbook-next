@@ -128,7 +128,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   addToFavoriteRecipes: OperationResponse;
   changePassword: BaseResponse;
-  cleanUserRecipes: Scalars['Boolean']['output'];
   createMetadata: AdminMetadataItem;
   createRecipe: Recipe;
   createUser: UserOperationResponse;
@@ -159,11 +158,6 @@ export type MutationAddToFavoriteRecipesArgs = {
 
 export type MutationChangePasswordArgs = {
   passwordEditInput: PasswordEditInput;
-};
-
-
-export type MutationCleanUserRecipesArgs = {
-  userId: Scalars['ID']['input'];
 };
 
 
@@ -303,18 +297,13 @@ export type Query = {
   __typename?: 'Query';
   getAdminMetadata: Array<AdminMetadataItem>;
   getAllMetadata: Array<MetadataItem>;
-  getAllUser: Array<User>;
   getFavoriteRecipes: Array<Recipe>;
   getFollowing: FollowingData;
   getMetadataByType: Array<MetadataItem>;
-  getRatingsByRecipe: Array<Rating>;
   getRecipeById: Recipe;
   getRecipes: RecipeData;
-  getRecipesByTitle: RecipeData;
   getRecipesByUserId: RecipeData;
-  getRecipesByUserName: RecipeData;
   getUserById: User;
-  getUserByUserName: User;
 };
 
 
@@ -338,11 +327,6 @@ export type QueryGetMetadataByTypeArgs = {
 };
 
 
-export type QueryGetRatingsByRecipeArgs = {
-  recipeId: Scalars['ID']['input'];
-};
-
-
 export type QueryGetRecipeByIdArgs = {
   id: Scalars['ID']['input'];
 };
@@ -355,31 +339,14 @@ export type QueryGetRecipesArgs = {
 };
 
 
-export type QueryGetRecipesByTitleArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  title: Scalars['String']['input'];
-};
-
-
 export type QueryGetRecipesByUserIdArgs = {
   limit?: InputMaybe<Scalars['Int']['input']>;
   userId: Scalars['ID']['input'];
 };
 
 
-export type QueryGetRecipesByUserNameArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  userName: Scalars['String']['input'];
-};
-
-
 export type QueryGetUserByIdArgs = {
   id: Scalars['ID']['input'];
-};
-
-
-export type QueryGetUserByUserNameArgs = {
-  userName: Scalars['String']['input'];
 };
 
 export type Rating = {
@@ -812,7 +779,6 @@ export type MetadataTypeResolvers = EnumResolverSignature<{ ALLERGEN?: any, CATE
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   addToFavoriteRecipes?: Resolver<ResolversTypes['OperationResponse'], ParentType, ContextType, RequireFields<MutationAddToFavoriteRecipesArgs, 'recipeId' | 'userId'>>;
   changePassword?: Resolver<ResolversTypes['BaseResponse'], ParentType, ContextType, RequireFields<MutationChangePasswordArgs, 'passwordEditInput'>>;
-  cleanUserRecipes?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationCleanUserRecipesArgs, 'userId'>>;
   createMetadata?: Resolver<ResolversTypes['AdminMetadataItem'], ParentType, ContextType, RequireFields<MutationCreateMetadataArgs, 'metadataCreateInput'>>;
   createRecipe?: Resolver<ResolversTypes['Recipe'], ParentType, ContextType, Partial<MutationCreateRecipeArgs>>;
   createUser?: Resolver<ResolversTypes['UserOperationResponse'], ParentType, ContextType, Partial<MutationCreateUserArgs>>;
@@ -855,18 +821,13 @@ export type PreparationStepResolvers<ContextType = GraphQLContext, ParentType ex
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   getAdminMetadata?: Resolver<Array<ResolversTypes['AdminMetadataItem']>, ParentType, ContextType, Partial<QueryGetAdminMetadataArgs>>;
   getAllMetadata?: Resolver<Array<ResolversTypes['MetadataItem']>, ParentType, ContextType>;
-  getAllUser?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   getFavoriteRecipes?: Resolver<Array<ResolversTypes['Recipe']>, ParentType, ContextType, Partial<QueryGetFavoriteRecipesArgs>>;
   getFollowing?: Resolver<ResolversTypes['FollowingData'], ParentType, ContextType, Partial<QueryGetFollowingArgs>>;
   getMetadataByType?: Resolver<Array<ResolversTypes['MetadataItem']>, ParentType, ContextType, RequireFields<QueryGetMetadataByTypeArgs, 'type'>>;
-  getRatingsByRecipe?: Resolver<Array<ResolversTypes['Rating']>, ParentType, ContextType, RequireFields<QueryGetRatingsByRecipeArgs, 'recipeId'>>;
   getRecipeById?: Resolver<ResolversTypes['Recipe'], ParentType, ContextType, RequireFields<QueryGetRecipeByIdArgs, 'id'>>;
   getRecipes?: Resolver<ResolversTypes['RecipeData'], ParentType, ContextType, Partial<QueryGetRecipesArgs>>;
-  getRecipesByTitle?: Resolver<ResolversTypes['RecipeData'], ParentType, ContextType, RequireFields<QueryGetRecipesByTitleArgs, 'title'>>;
   getRecipesByUserId?: Resolver<ResolversTypes['RecipeData'], ParentType, ContextType, RequireFields<QueryGetRecipesByUserIdArgs, 'userId'>>;
-  getRecipesByUserName?: Resolver<ResolversTypes['RecipeData'], ParentType, ContextType, RequireFields<QueryGetRecipesByUserNameArgs, 'userName'>>;
   getUserById?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryGetUserByIdArgs, 'id'>>;
-  getUserByUserName?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryGetUserByUserNameArgs, 'userName'>>;
 }>;
 
 export type RatingResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Rating'] = ResolversParentTypes['Rating']> = ResolversObject<{

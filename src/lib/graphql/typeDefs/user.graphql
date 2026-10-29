@@ -91,8 +91,6 @@ type FollowingData {
 
 type Query {
   getUserById(id: ID!): User!
-  getUserByUserName(userName: String!): User!
-  getAllUser: [User!]!
   getFavoriteRecipes(limit: Int): [Recipe!]!
   getFollowing(limit: Int): FollowingData!
 }
@@ -113,6 +111,4 @@ type Mutation {
 
   followUser(targetUserId: ID!): OperationResponse!
   unfollowUser(targetUserId: ID!): OperationResponse!
-
-  cleanUserRecipes(userId: ID!): Boolean!
 }

@@ -37,7 +37,6 @@ vi.mock('./resolvers/recipe/queries', () => ({
 vi.mock('./resolvers/user/mutations', () => ({
   addToFavoriteRecipes: vi.fn(),
   changePassword: vi.fn(),
-  cleanUserRecipes: vi.fn(),
   createUser: vi.fn(),
   deleteAllRecipes: vi.fn(),
   deleteAllUser: vi.fn(),

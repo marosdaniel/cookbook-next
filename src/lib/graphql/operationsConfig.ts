@@ -27,14 +27,10 @@ export const operationsConfig: OperationsConfig = {
     // Recipe queries
     OPERATION_NAMES.GET_RECIPES,
     OPERATION_NAMES.GET_RECIPE_BY_ID,
-    OPERATION_NAMES.GET_RECIPES_BY_TITLE,
-    OPERATION_NAMES.GET_RECIPES_BY_USER_NAME,
     OPERATION_NAMES.GET_RECIPES_BY_USER_ID,
 
     // User queries
     OPERATION_NAMES.GET_USER_BY_ID,
-    OPERATION_NAMES.GET_USER_BY_USER_NAME,
-    OPERATION_NAMES.GET_ALL_USER,
 
     // Auth mutations
     OPERATION_NAMES.CREATE_USER,
@@ -44,9 +40,6 @@ export const operationsConfig: OperationsConfig = {
     // Metadata
     OPERATION_NAMES.GET_METADATA_BY_TYPE,
     OPERATION_NAMES.GET_ALL_METADATA,
-
-    // Ratings
-    OPERATION_NAMES.GET_RATINGS_BY_RECIPE,
   ],
 
   // Authenticated user operations
@@ -71,9 +64,6 @@ export const operationsConfig: OperationsConfig = {
     OPERATION_NAMES.FOLLOW_USER,
     OPERATION_NAMES.UNFOLLOW_USER,
 
-    // Metadata
-    OPERATION_NAMES.GET_METADATA_BY_KEY,
-
     // Ratings
     OPERATION_NAMES.RATE_RECIPE,
     OPERATION_NAMES.DELETE_RATING,
@@ -86,7 +76,6 @@ export const operationsConfig: OperationsConfig = {
   adminOperations: [
     // User management
     OPERATION_NAMES.DELETE_ALL_USER,
-    OPERATION_NAMES.CLEAN_USER_RECIPES,
 
     // Content moderation
     OPERATION_NAMES.DELETE_ALL_RECIPES,

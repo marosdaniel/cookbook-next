@@ -25,7 +25,6 @@ import {
 import {
   addToFavoriteRecipes,
   changePassword,
-  cleanUserRecipes,
   createUser,
   deleteAllRecipes,
   deleteAllUser,
@@ -58,7 +57,6 @@ export const resolvers: Resolvers = {
   Mutation: {
     addToFavoriteRecipes,
     changePassword,
-    cleanUserRecipes,
     createUser,
     deleteAllRecipes,
     deleteAllUser,

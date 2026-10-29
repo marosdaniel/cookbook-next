@@ -1,6 +1,5 @@
 export { addToFavoriteRecipes } from './addToFavoriteRecipes';
 export { changePassword } from './changePassword';
-export { cleanUserRecipes } from './cleanUserRecipes';
 export { createUser } from './createUser';
 export { deleteAllRecipes } from './deleteAllRecipes';
 export { deleteAllUser } from './deleteAllUser';
