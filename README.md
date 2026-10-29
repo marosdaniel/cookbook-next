@@ -131,9 +131,11 @@ NEXTAUTH_SECRET=replace-with-at-least-32-character-secret-value
 # Public canonical URL for SEO metadata and Open Graph URLs
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
-# Optional GraphQL / Rate Limit toggles
+# Optional GraphQL / Rate Limit / Redis toggles
 GRAPHQL_ALLOWLIST_ENFORCE=false
 UPSTASH_RATELIMIT_ANALYTICS=false
+REDIS_BREAKER_THRESHOLD=3
+RATE_LIMIT_TIMEOUT_MS=750
 
 # Optional email delivery (used by password reset / welcome emails)
 EMAIL_HOST=smtp.example.com

@@ -185,24 +185,31 @@ This ensures the SDL and client documents stay synchronized. Failures indicate:
 
 ## Security Architecture
 
-### 1. Operation Authorization and Query Protections
+### 1. Operation Authorization, Allowlist, and Rate Limiting
 
-The GraphQL route authorizes the parsed operation name using
-[`operationsConfig.ts`](../src/lib/graphql/operationsConfig.ts) and applies
-GraphQL Armor validation limits for depth, cost, aliases, directives, and tokens.
+The GraphQL server (`src/server/graphql/server.ts`) enforces defense-in-depth across multiple plugins in `src/server/graphql/plugins/`:
 
-[`persistedQueryRegistry.ts`](../src/lib/graphql/persistedQueryRegistry.ts)
-maintains normalized SHA-256 hashes for all shipped client documents, and
-[`allowlist.ts`](../src/lib/graphql/plugins/allowlist.ts) enforces that registry
-in Apollo's `didResolveOperation` hook (rejecting unknown documents with
-`PERSISTED_QUERY_NOT_ALLOWED` / HTTP 400). Enforcement is enabled by default in
-production and can be toggled in development via `GRAPHQL_ALLOWLIST_ENFORCE`.
+1. **Persisted-Query Allowlist (`allowlist.ts`)**:
+   [`persistedQueryRegistry.ts`](../src/lib/graphql/persistedQueryRegistry.ts) maintains normalized SHA-256 hashes for all shipped client documents, and [`allowlist.ts`](../src/server/graphql/plugins/allowlist.ts) enforces that registry in `didResolveOperation` (rejecting unknown documents with `PERSISTED_QUERY_NOT_ALLOWED` / HTTP 400). Enforcement is enabled by default in production and can be toggled via `GRAPHQL_ALLOWLIST_ENFORCE`.
+2. **Root-Field Authorization (`rootFieldAuth.ts`)**:
+   Instead of trusting the client-supplied `operationName`, `rootFieldAuthPlugin` traverses the parsed GraphQL AST (including inline and named fragments) and authorizes every requested root `Query`/`Mutation` field against `ROOT_FIELD_POLICY` (`PUBLIC`, `USER`, `ADMIN`, fail-closed to `ADMIN`).
+3. **Per-Group Rate Limiting (`rateLimit.ts`)**:
+   - Pre-parse global IP limiter (`100 req / 60s`) runs at the HTTP route boundary.
+   - Operation-level rate limiting runs inside `rateLimitPlugin` on the resolved root fields across isolated buckets:
+     - `auth-sensitive` (`resetPassword`, `setNewPassword`, `createUser` — 5 req / 10m per IP, plus 3 req / 60m per SHA-256 email hash on `resetPassword`)
+     - `password-change` (`changePassword` — 5 req / 10m per userId)
+     - `content-write` (`createRecipe`, `editRecipe`, `deleteRecipe` — 30 req / 10m per userId)
+     - `rating` (`rateRecipe`, `deleteRating` — 60 req / 10m per userId)
+     - `admin` (metadata and destructive admin mutations — 60 req / 10m per userId)
+   - If Redis is unavailable or exceeds `RATE_LIMIT_TIMEOUT_MS` (default 750ms), an in-memory sliding-window fallback limiter activates automatically.
+4. **GraphQL Armor**:
+   Enforces validation limits for depth (7), cost (1000), aliases (15), directives (50), and tokens (1000).
 
 ### 2. Field-Level Authorization
 
 **File:** [`src/lib/graphql/fieldPolicies.ts`](../src/lib/graphql/fieldPolicies.ts)
 
-**Purpose:** Control access to sensitive User fields without repeating auth logic.
+**Purpose:** Control access to sensitive User fields (`email`, `favoriteRecipes`) without repeating auth logic.
 
 **Implementation:**
 
@@ -214,8 +221,8 @@ const isSelfOrAdmin: FieldPolicy = (source, context) =>
   Boolean(context.userId && source?.id && context.userId === source.id);
 
 export const userFieldPolicies: Record<string, FieldPolicy> = {
-  email: isSelfOrAdmin, // Only owner or admin sees email
-  // More fields can be added as needed
+  email: isSelfOrAdmin,
+  favoriteRecipes: isSelfOrAdmin,
 };
 ```
 
