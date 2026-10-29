@@ -87,7 +87,7 @@ model Recipe {
   
   // Author relation
   createdBy String
-  author    User   @relation("UserRecipes", fields: [createdBy], references: [id])
+  author    User   @relation("UserRecipes", fields: [createdBy], references: [id], onDelete: Cascade)
 
   // Favorite relation
   favoritedBy    User[]   @relation("UserFavorites")

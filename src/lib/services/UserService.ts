@@ -487,19 +487,37 @@ export const UserService = {
       );
     }
 
-    const user = await prisma.user.findUnique({ where: { id } });
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: {
+        recipes: {
+          select: { id: true, slug: true },
+        },
+      },
+    });
     if (!user) {
       return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
     }
 
     await prisma.user.delete({ where: { id } });
 
-    if (redis) {
+    const currentRedis = redis;
+    if (currentRedis) {
       try {
+        const recipeKeysToInvalidate = (user.recipes ?? []).flatMap((r) => [
+          cacheKeys.recipeDetail(r.id),
+          cacheKeys.recipeLookup(r.id),
+          ...(r.slug ? [cacheKeys.recipeLookup(r.slug)] : []),
+        ]);
+
         await Promise.all([
-          redis.del(`user:${id}:favorites:all`),
-          redis.del(`user:${id}:following:all`),
-          redis.del(`recipes:user:${id}:all`),
+          currentRedis.del(cacheKeys.userFavorites(id, undefined)),
+          currentRedis.del(cacheKeys.userFollowing(id, undefined)),
+          currentRedis.del(cacheKeys.userRecipes(id, undefined)),
+          ...recipeKeysToInvalidate.map((key) => currentRedis.del(key)),
+          ...(recipeKeysToInvalidate.length > 0 && currentRedis.incr
+            ? [currentRedis.incr(cacheKeys.recipeListVersion)]
+            : []),
         ]);
       } catch (error) {
         console.error('Redis cache invalidation error:', error);
@@ -535,6 +553,15 @@ export const UserService = {
     const result = await prisma.user.deleteMany({
       where: { id: { not: currentUserId } },
     });
+
+    if (redis?.incr) {
+      try {
+        await redis.incr(cacheKeys.recipeListVersion);
+      } catch (error) {
+        console.error('Redis cache invalidation error:', error);
+      }
+    }
+
     return result.count;
   },
 

@@ -171,6 +171,19 @@ describe('UserService', () => {
     ).rejects.toThrow('User not found:NOT_FOUND');
   });
 
+  it('deletes a user with cascaded recipes', async () => {
+    mockFindUnique.mockResolvedValue({
+      id: 'user-1',
+      recipes: [{ id: 'recipe-1', slug: 'pasta-carbonara' }],
+    });
+    mockDelete.mockResolvedValue({ id: 'user-1' });
+
+    await expect(
+      UserService.deleteUser('user-1', 'USER', 'user-1'),
+    ).resolves.toBe(true);
+    expect(mockDelete).toHaveBeenCalledWith({ where: { id: 'user-1' } });
+  });
+
   it('requires confirmation for destructive admin deletion', async () => {
     await expect(
       UserService.deleteAllUser('admin-1', 'ADMIN', 'wrong-confirmation'),
