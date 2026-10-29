@@ -1,4 +1,3 @@
-import { AsyncLocalStorage } from 'node:async_hooks';
 import type { Session } from 'next-auth';
 import { auth } from '@/lib/auth/auth';
 import {
@@ -10,15 +9,13 @@ import {
   createUserRecipesLoader,
 } from '@/lib/dataloader/loaders';
 import { prisma } from '@/lib/prisma/prisma';
+import {
+  type RequestStoreContext,
+  requestStorage,
+} from '@/server/platform/requestContext';
 import type { GraphQLContext } from '@/types/graphql/context';
 
-export interface RequestStoreContext {
-  session: Session | null;
-  requestId: string;
-  clientKey: string;
-}
-
-export const requestStorage = new AsyncLocalStorage<RequestStoreContext>();
+export { type RequestStoreContext, requestStorage };
 
 export const resolveSessionSafely = async (): Promise<Session | null> => {
   try {

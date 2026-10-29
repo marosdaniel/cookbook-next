@@ -12,6 +12,7 @@ import type {
   MetadataCreateDomainInput,
   MetadataUpdateDomainInput,
 } from '@/server/modules/admin/types';
+import { logger } from '@/server/platform/logger';
 
 const SORT_ORDER_STEP = 10;
 
@@ -35,7 +36,10 @@ const writeAuditLog = async (entry: AuditEntry): Promise<void> => {
   try {
     await prisma.auditLog.create({ data: entry });
   } catch (error) {
-    console.error('Audit log write failed', error);
+    logger.error(
+      { err: error, action: entry.action },
+      'Audit log write failed',
+    );
   }
 };
 

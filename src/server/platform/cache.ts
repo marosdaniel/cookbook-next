@@ -1,5 +1,6 @@
 import { cacheKeys } from '@/lib/cache/cacheKeys';
 import { redis } from '@/lib/redis/redis';
+import { logger } from './logger';
 
 export { cacheKeys };
 
@@ -60,7 +61,7 @@ export async function getCachedValue<T>(key: string): Promise<T | null> {
       return reviveCachedDates(raw as T);
     }
   } catch (error) {
-    console.warn('Redis cache get error:', error);
+    logger.warn({ err: error, key }, 'Redis cache get error');
   }
   return null;
 }
@@ -74,7 +75,7 @@ export async function setCachedValue(
   try {
     await redis.setex(key, ttlSeconds, value);
   } catch (error) {
-    console.warn('Redis cache set error:', error);
+    logger.warn({ err: error, key }, 'Redis cache set error');
   }
 }
 
@@ -182,6 +183,6 @@ export async function invalidateCacheScope(
       await Promise.all(operations);
     }
   } catch (error) {
-    console.warn('Redis cache invalidation error:', error);
+    logger.warn({ err: error }, 'Redis cache invalidation error');
   }
 }

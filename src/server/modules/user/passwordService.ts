@@ -14,6 +14,7 @@ import {
   setNewPasswordValidationSchema,
 } from '@/lib/validation/validation';
 import { invalidateCacheScope } from '@/server/platform/cache';
+import { logger } from '@/server/platform/logger';
 import { UserRepository } from './repository';
 import type { PasswordEditDomainInput } from './types';
 
@@ -31,7 +32,7 @@ export const schedulePostResponseTask = (
     try {
       await task();
     } catch (error) {
-      console.error(errorMessage, error);
+      logger.error({ err: error }, errorMessage);
     }
   };
 

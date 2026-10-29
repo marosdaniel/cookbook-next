@@ -8,6 +8,7 @@ import {
   wrap,
 } from 'cockatiel';
 import { env } from '@/env';
+import { logger } from '@/server/platform/logger';
 
 // We create a singleton Redis instance that gets its URL and token from the environment variables:
 // UPSTASH_REDIS_REST_URL
@@ -64,9 +65,9 @@ const redisBreaker = circuitBreaker(handleAll, {
 });
 
 redisBreaker.onBreak((reason) => {
-  console.warn(
+  logger.warn(
+    { err: 'error' in reason ? reason.error : undefined },
     'Redis unavailable. Disabling cache for a short period.',
-    'error' in reason ? reason.error : undefined,
   );
 });
 
@@ -108,7 +109,7 @@ const redis: Redis | null = isValidRedisConfig(redisUrl, redisToken)
 export const rawRedisClient: Redis | null = redis;
 
 if (!redis) {
-  console.warn(
+  logger.warn(
     'Upstash Redis URL or Token is missing or invalid. Caching will not work.',
   );
 }

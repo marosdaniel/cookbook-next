@@ -2,6 +2,7 @@ import type {
   ApolloServerPlugin,
   GraphQLRequestListener,
 } from '@apollo/server';
+import { logger } from '@/server/platform/logger';
 import type { GraphQLContext } from '@/types/graphql/context';
 
 /**
@@ -25,18 +26,16 @@ export const loggingPlugin: ApolloServerPlugin<GraphQLContext> = {
       },
       willSendResponse({ contextValue, response }) {
         const status = response.http?.status ?? (errorCode ? 500 : 200);
-        console.info(
-          JSON.stringify({
-            event: 'graphql.request',
-            requestId: contextValue.requestId ?? 'unknown',
-            operationName:
-              contextValue.operationName ?? requestContext.operationName,
-            durationMs: Math.round(performance.now() - startedAt),
-            status,
-            userClass: contextValue.userId ? 'authenticated' : 'anonymous',
-            ...(errorCode ? { errorCode } : {}),
-          }),
-        );
+        logger.info({
+          event: 'graphql.request',
+          requestId: contextValue.requestId ?? 'unknown',
+          operationName:
+            contextValue.operationName ?? requestContext.operationName,
+          durationMs: Math.round(performance.now() - startedAt),
+          status,
+          userClass: contextValue.userId ? 'authenticated' : 'anonymous',
+          ...(errorCode ? { errorCode } : {}),
+        });
         return Promise.resolve();
       },
     });

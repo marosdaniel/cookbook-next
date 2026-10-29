@@ -7,6 +7,7 @@ import {
   OPERATION_NAMES,
 } from '@/lib/graphql/operations';
 import * as redisModule from '@/lib/redis/redis';
+import { logger } from '@/server/platform/logger';
 
 export type RateLimitGroupName =
   | 'auth-sensitive'
@@ -125,7 +126,10 @@ export const createLimiter = (
       prefix,
     });
   } catch (error) {
-    console.warn(`Rate limiter initialization failed for ${prefix}.`, error);
+    logger.warn(
+      { err: error, prefix },
+      `Rate limiter initialization failed for ${prefix}.`,
+    );
     return null;
   }
 };
@@ -245,9 +249,9 @@ export const executeRateLimitWithFallback = async (
       remaining: result.remaining,
     };
   } catch (error) {
-    console.warn(
+    logger.warn(
+      { err: error },
       'Primary rate limiter failed; using in-memory fallback.',
-      error,
     );
     return fallbackLimiter.limit(key);
   }

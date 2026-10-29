@@ -9,6 +9,7 @@ import {
 import { withTimeout } from '@/lib/redis/redis';
 import { requestStorage, resolveSessionSafely } from '@/server/graphql/context';
 import { graphqlNextHandler as handler } from '@/server/graphql/server';
+import { logger } from '@/server/platform/logger';
 
 const MAX_GRAPHQL_BODY_BYTES = 1_048_576;
 
@@ -70,9 +71,9 @@ const enforceGlobalRateLimit = async (
       'X-RateLimit-Remaining': remaining.toString(),
     });
   } catch (error) {
-    console.warn(
+    logger.warn(
+      { err: error },
       'GraphQL global rate limiter failed; using in-memory fallback.',
-      error,
     );
     const fallbackResult = await fallbackGlobalRateLimiter.limit(clientKey);
     if (!fallbackResult.success) {
@@ -183,7 +184,7 @@ const wrappedHandler = async (
 
     return response;
   } catch (error) {
-    console.error('Unhandled GraphQL route error:', error);
+    logger.error({ err: error, requestId }, 'Unhandled GraphQL route error');
     return createJsonResponse(
       {
         errors: [

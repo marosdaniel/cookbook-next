@@ -10,6 +10,7 @@ import {
   customValidationSchema,
   nameValidationSchema,
 } from '@/lib/validation/validation';
+import { logger } from '@/server/platform/logger';
 import { PasswordService, schedulePostResponseTask } from './passwordService';
 import { UserRepository } from './repository';
 import {
@@ -197,7 +198,7 @@ export const AccountService = {
             : []),
         ]);
       } catch (error) {
-        console.error('Redis cache invalidation error:', error);
+        logger.error({ err: error }, 'Redis cache invalidation error');
       }
     }
 
@@ -233,7 +234,7 @@ export const AccountService = {
       try {
         await redis.incr(cacheKeys.recipeListVersion);
       } catch (error) {
-        console.error('Redis cache invalidation error:', error);
+        logger.error({ err: error }, 'Redis cache invalidation error');
       }
     }
 
