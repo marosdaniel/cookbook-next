@@ -162,15 +162,14 @@ export const UserRepository = {
     return prisma.user.delete({ where: { id } });
   },
 
+  // The delete and its AuditLog entry must succeed or fail together, so both
+  // always run inside a single interactive transaction.
   async deleteAllUsersExcept(actorId: string) {
-    const runDeleteAndAudit = async (tx: {
-      user: typeof prisma.user;
-      auditLog?: typeof prisma.auditLog;
-    }) => {
+    return prisma.$transaction(async (tx) => {
       const deleted = await tx.user.deleteMany({
         where: { id: { not: actorId } },
       });
-      await tx.auditLog?.create({
+      await tx.auditLog.create({
         data: {
           actorId,
           action: 'USERS_DELETED_ALL',
@@ -180,23 +179,15 @@ export const UserRepository = {
         },
       });
       return deleted;
-    };
-
-    if (typeof prisma.$transaction === 'function') {
-      return prisma.$transaction(async (tx) => runDeleteAndAudit(tx));
-    }
-    return runDeleteAndAudit(prisma);
+    });
   },
 
   async deleteAllRecipesExceptAuthor(actorId: string) {
-    const runDeleteAndAudit = async (tx: {
-      recipe: typeof prisma.recipe;
-      auditLog?: typeof prisma.auditLog;
-    }) => {
+    return prisma.$transaction(async (tx) => {
       const deleted = await tx.recipe.deleteMany({
         where: { createdBy: { not: actorId } },
       });
-      await tx.auditLog?.create({
+      await tx.auditLog.create({
         data: {
           actorId,
           action: 'RECIPES_DELETED_ALL',
@@ -206,12 +197,7 @@ export const UserRepository = {
         },
       });
       return deleted;
-    };
-
-    if (typeof prisma.$transaction === 'function') {
-      return prisma.$transaction(async (tx) => runDeleteAndAudit(tx));
-    }
-    return runDeleteAndAudit(prisma);
+    });
   },
 
   async findRecipeById(recipeId: string) {
