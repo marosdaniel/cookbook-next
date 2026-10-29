@@ -338,7 +338,9 @@ export const RecipeService = {
       );
     }
 
-    const recipe = await RecipeRepository.findById(ratingInput.recipeId);
+    const recipe = await RecipeRepository.findByIdWithRelations(
+      ratingInput.recipeId,
+    );
     if (!recipe) {
       return throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
     }
@@ -356,16 +358,12 @@ export const RecipeService = {
       ratingInput.ratingValue,
     );
 
-    const updatedRecipe = await RecipeRepository.findByIdWithRelations(
-      ratingInput.recipeId,
-    );
-
     await invalidateCacheScope({
       recipeId: ratingInput.recipeId,
       slugs: [recipe.slug],
     });
 
-    return updatedRecipe;
+    return recipe;
   },
 
   async deleteRating(userId: string, recipeId: string) {

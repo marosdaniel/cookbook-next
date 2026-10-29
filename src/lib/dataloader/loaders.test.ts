@@ -76,6 +76,11 @@ describe('data loaders', () => {
     expect(findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { id: { in: ['user-1', 'user-2'] } },
+        select: expect.objectContaining({
+          recipes: expect.objectContaining({
+            take: 100,
+          }),
+        }),
       }),
     );
     expect(firstRecipes).toHaveLength(2);
@@ -106,6 +111,11 @@ describe('data loaders', () => {
     expect(findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { id: { in: ['user-1', 'user-2'] } },
+        select: expect.objectContaining({
+          favoriteRecipes: expect.objectContaining({
+            take: 100,
+          }),
+        }),
       }),
     );
     expect(firstRecipes).toHaveLength(1);

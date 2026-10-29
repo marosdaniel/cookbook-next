@@ -4,6 +4,8 @@ import type {
   UserResolverParent,
 } from '@/lib/graphql/resolvers/types';
 import type { AppPrismaClient } from '@/lib/prisma/prisma';
+import { RECIPE_LIST_SELECT } from '@/server/modules/recipe/types';
+import { DEFAULT_QUERY_MAX_LIMIT } from '@/server/platform/pagination';
 
 /**
  * Aggregated rating data for a single recipe — returned by the ratings loader.
@@ -128,7 +130,7 @@ export const createRecipeAuthorLoader = (prisma: AppPrismaClient) =>
   });
 
 /**
- * Batches user recipe lists for a set of user IDs into a single query.
+ * Batches user recipe lists for a set of user IDs into a single bounded query.
  */
 export const createUserRecipesLoader = (prisma: AppPrismaClient) =>
   new DataLoader<string, RecipeResolverParent[]>(async (userIds) => {
@@ -139,8 +141,9 @@ export const createUserRecipesLoader = (prisma: AppPrismaClient) =>
       select: {
         id: true,
         recipes: {
-          include: { ingredients: true, preparationSteps: true },
+          select: RECIPE_LIST_SELECT,
           orderBy: { createdAt: 'desc' },
+          take: DEFAULT_QUERY_MAX_LIMIT,
         },
       },
     });
@@ -154,7 +157,7 @@ export const createUserRecipesLoader = (prisma: AppPrismaClient) =>
   });
 
 /**
- * Batches favorite recipe lists for a set of user IDs into a single query.
+ * Batches favorite recipe lists for a set of user IDs into a single bounded query.
  */
 export const createUserFavoriteRecipesLoader = (prisma: AppPrismaClient) =>
   new DataLoader<string, RecipeResolverParent[]>(async (userIds) => {
@@ -165,8 +168,9 @@ export const createUserFavoriteRecipesLoader = (prisma: AppPrismaClient) =>
       select: {
         id: true,
         favoriteRecipes: {
-          include: { ingredients: true, preparationSteps: true },
+          select: RECIPE_LIST_SELECT,
           orderBy: { createdAt: 'desc' },
+          take: DEFAULT_QUERY_MAX_LIMIT,
         },
       },
     });

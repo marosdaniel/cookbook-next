@@ -1,5 +1,7 @@
 import { UserRole } from '@prisma/client';
 import { prisma } from '@/lib/prisma/prisma';
+import { RECIPE_LIST_SELECT } from '@/server/modules/recipe/repository';
+import { DEFAULT_QUERY_MAX_LIMIT } from '@/server/platform/pagination';
 
 const LATEST_RECIPES_LIMIT = 4;
 
@@ -58,9 +60,9 @@ export const UserRepository = {
       where: { id: userId },
       include: {
         favoriteRecipes: {
-          include: { ingredients: true, preparationSteps: true },
+          select: RECIPE_LIST_SELECT,
           orderBy: { createdAt: 'desc' },
-          ...(take ? { take } : {}),
+          take: take ?? DEFAULT_QUERY_MAX_LIMIT,
         },
       },
     });
@@ -74,16 +76,16 @@ export const UserRepository = {
           following: {
             include: {
               recipes: {
+                select: RECIPE_LIST_SELECT,
                 orderBy: { createdAt: 'desc' },
                 take: LATEST_RECIPES_LIMIT,
-                include: { ingredients: true, preparationSteps: true },
               },
               _count: { select: { recipes: true } },
             },
           },
         },
         orderBy: { createdAt: 'desc' },
-        ...(take ? { take } : {}),
+        take: take ?? DEFAULT_QUERY_MAX_LIMIT,
       }),
       prisma.follow.count({ where: { followerId: userId } }),
     ]);

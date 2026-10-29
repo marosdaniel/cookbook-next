@@ -5,10 +5,13 @@ import {
   type SearchScoreCursor,
   type TrigramSearchRow,
 } from './search';
-import type {
-  IngredientDomainInput,
-  NormalizablePreparationStep,
+import {
+  type IngredientDomainInput,
+  type NormalizablePreparationStep,
+  RECIPE_LIST_SELECT,
 } from './types';
+
+export { RECIPE_LIST_SELECT };
 
 export interface RecipeFilterInput {
   search?: string;
@@ -71,38 +74,6 @@ export function buildWhereClause(
 
   return where;
 }
-
-export const RECIPE_LIST_SELECT = {
-  id: true,
-  title: true,
-  description: true,
-  category: true,
-  labels: true,
-  imgSrc: true,
-  cookingTime: true,
-  difficultyLevel: true,
-  servings: true,
-  youtubeLink: true,
-  createdAt: true,
-  updatedAt: true,
-  prepTimeMinutes: true,
-  cookTimeMinutes: true,
-  restTimeMinutes: true,
-  totalTimeMinutes: true,
-  servingUnit: true,
-  cuisine: true,
-  dietaryFlags: true,
-  allergens: true,
-  equipment: true,
-  costLevel: true,
-  tips: true,
-  substitutions: true,
-  slug: true,
-  seoTitle: true,
-  seoDescription: true,
-  socialImage: true,
-  createdBy: true,
-} satisfies Prisma.RecipeSelect;
 
 export type RecipeListItem = Prisma.RecipeGetPayload<{
   select: typeof RECIPE_LIST_SELECT;
