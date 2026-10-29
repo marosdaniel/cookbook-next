@@ -33,6 +33,7 @@ export type ErrorTypeKey =
   | 'FORBIDDEN'
   | 'NOT_FOUND'
   | 'CONFLICT'
+  | 'RATE_LIMITED'
   | 'INTERNAL_SERVER_ERROR';
 
 export type ErrorCatalog = Record<ErrorTypeKey, ErrorTypeDefinition>;

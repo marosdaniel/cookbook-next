@@ -21,6 +21,7 @@ import {
 import { resolveQueryLimit } from '@/lib/graphql/protection';
 import type { RecipeResolverParent } from '@/lib/graphql/resolvers/types';
 import { prisma } from '@/lib/prisma/prisma';
+import { checkPasswordResetEmailRateLimit } from '@/lib/rateLimit/rateLimit';
 import { redis } from '@/lib/redis/redis';
 import { sanitizeText } from '@/lib/sanitize/sanitize';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
@@ -327,6 +328,15 @@ export const UserService = {
     }
 
     const normalizedEmail = email.toLowerCase();
+    const emailRateLimit =
+      await checkPasswordResetEmailRateLimit(normalizedEmail);
+    if (!emailRateLimit.success) {
+      return throwCustomError(
+        'Too many password reset requests. Please try again later.',
+        ErrorTypes.RATE_LIMITED,
+      );
+    }
+
     const user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
     });

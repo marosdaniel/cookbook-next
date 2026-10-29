@@ -14,6 +14,7 @@ import type { UserRole } from '../user';
  */
 export interface GraphQLContext {
   requestId?: string;
+  clientKey?: string;
   userId?: string;
   role?: UserRole;
   operationName?: string | null;

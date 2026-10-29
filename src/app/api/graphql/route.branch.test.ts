@@ -2,11 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { auth } from '@/lib/auth/auth';
 import { canResolveUserField } from '@/lib/graphql/fieldPolicies';
 import { getRateLimitClientKey } from '@/lib/rateLimit/clientIp';
-import {
-  getRateLimiterForOperation,
-  isRateLimitOperation,
-  isStrictRateLimitOperation,
-} from '@/lib/rateLimit/rateLimit';
+import { rateLimiter } from '@/lib/rateLimit/rateLimit';
 
 const {
   mockAuth,
@@ -96,9 +92,12 @@ vi.mock('@/lib/dataloader/loaders', () => ({
 }));
 
 vi.mock('@/lib/rateLimit/rateLimit', () => ({
-  getRateLimiterForOperation: vi.fn(() => ({ limit: vi.fn() })),
-  isRateLimitOperation: vi.fn(() => false),
-  isStrictRateLimitOperation: vi.fn(() => false),
+  executeRateLimitWithFallback: vi.fn(async () => ({
+    success: true,
+    limit: 60,
+    remaining: 59,
+  })),
+  getRateLimitGroupForField: vi.fn(() => null),
   rateLimiter: { limit: vi.fn() },
 }));
 
@@ -274,32 +273,7 @@ describe('GraphQL route branch coverage', () => {
     expect(mockHandler).toHaveBeenCalled();
   });
 
-  it('returns 503 when a strict operation has no rate limiter', async () => {
-    vi.mocked(isRateLimitOperation).mockReturnValue(true);
-    vi.mocked(isStrictRateLimitOperation).mockReturnValue(true);
-    vi.mocked(getRateLimiterForOperation).mockReturnValue(null);
-    const { wrappedHandler } = await import('./route');
-    const request = new Request('http://localhost/api/graphql', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        operationName: 'CreateUser',
-        query: 'mutation CreateUser { hello }',
-      }),
-    });
-
-    const response = await wrappedHandler(request as never, {} as never);
-
-    expect(response.status).toBe(503);
-    expect(response.headers.get('Retry-After')).toBe('5');
-  });
-
-  it('ignores a limiter exception for non-strict operations', async () => {
-    vi.mocked(isRateLimitOperation).mockReturnValue(true);
-    vi.mocked(isStrictRateLimitOperation).mockReturnValue(false);
-    vi.mocked(getRateLimiterForOperation).mockReturnValue({
-      limit: vi.fn(),
-    } as never);
+  it('ignores a global limiter exception and allows the request to proceed to plugin rate limiting', async () => {
     mockWithTimeout.mockRejectedValue(new Error('limiter unavailable'));
     const { wrappedHandler } = await import('./route');
     const request = new Request('http://localhost/api/graphql', {
@@ -317,35 +291,9 @@ describe('GraphQL route branch coverage', () => {
     expect(mockHandler).toHaveBeenCalled();
   });
 
-  it('returns 503 when a strict limiter throws', async () => {
-    vi.mocked(isRateLimitOperation).mockReturnValue(true);
-    vi.mocked(isStrictRateLimitOperation).mockReturnValue(true);
-    vi.mocked(getRateLimiterForOperation).mockReturnValue({
-      limit: vi.fn(),
-    } as never);
-    mockWithTimeout.mockRejectedValue(new Error('limiter unavailable'));
-    const { wrappedHandler } = await import('./route');
-    const request = new Request('http://localhost/api/graphql', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        operationName: 'CreateUser',
-        query: 'mutation CreateUser { hello }',
-      }),
-    });
-
-    const response = await wrappedHandler(request as never, {} as never);
-
-    expect(response.status).toBe(503);
-    expect(response.headers.get('Retry-After')).toBe('5');
-  });
-
-  it('uses the authenticated user key and preserves a supplied request id', async () => {
+  it('uses the client IP key for pre-parse global rate limiting and preserves a supplied request id', async () => {
     vi.mocked(auth).mockResolvedValue({ user: { id: 'user-1' } } as never);
     vi.mocked(getRateLimitClientKey).mockReturnValue('ip-key');
-    const limiter = { limit: vi.fn() };
-    vi.mocked(isRateLimitOperation).mockReturnValue(true);
-    vi.mocked(getRateLimiterForOperation).mockReturnValue(limiter as never);
     const { wrappedHandler } = await import('./route');
     const request = new Request('http://localhost/api/graphql', {
       method: 'POST',
@@ -364,7 +312,7 @@ describe('GraphQL route branch coverage', () => {
     expect(mockWithTimeout).toHaveBeenCalled();
     const operation = vi.mocked(mockWithTimeout).mock.calls[0]?.[0];
     await operation?.();
-    expect(limiter.limit).toHaveBeenCalledWith('user-1');
+    expect(rateLimiter?.limit).toHaveBeenCalledWith('ip-key');
     expect(response.headers.get('X-Request-Id')).toBe('request-123');
     expect(response.headers.get('Cache-Control')).toBe('no-store');
     expect(response.headers.get('Vary')).toBe('Cookie, Authorization');
@@ -462,7 +410,7 @@ describe('GraphQL route branch coverage', () => {
       getApolloServerOptions().plugins as Array<{
         requestDidStart: () => Promise<unknown>;
       }>
-    )[3];
+    )[4];
     const listener = (await requestDidStart()) as {
       executionDidStart: () => Promise<unknown>;
     };

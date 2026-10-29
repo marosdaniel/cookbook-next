@@ -67,36 +67,68 @@ describe('rate limit setup', () => {
     expect(fallbackStrictRateLimiter).toBeNull();
   });
 
-  it('selects the strict limiter for sensitive operations', async () => {
+  it('selects per-group limiters for sensitive operations', async () => {
     const {
+      adminRateLimiter,
+      authSensitiveRateLimiter,
+      contentWriteRateLimiter,
       getRateLimiterForOperation,
+      passwordChangeRateLimiter,
       rateLimiter: configuredRateLimiter,
-      strictRateLimiter: configuredStrictRateLimiter,
+      ratingRateLimiter,
     } = await import('./rateLimit');
 
     expect(getRateLimiterForOperation('resetPassword')).toBe(
-      configuredStrictRateLimiter,
+      authSensitiveRateLimiter,
+    );
+    expect(getRateLimiterForOperation('setNewPassword')).toBe(
+      authSensitiveRateLimiter,
+    );
+    expect(getRateLimiterForOperation('createUser')).toBe(
+      authSensitiveRateLimiter,
+    );
+    expect(getRateLimiterForOperation('changePassword')).toBe(
+      passwordChangeRateLimiter,
     );
     expect(getRateLimiterForOperation('createRecipe')).toBe(
-      configuredStrictRateLimiter,
+      contentWriteRateLimiter,
     );
     expect(getRateLimiterForOperation('editRecipe')).toBe(
-      configuredStrictRateLimiter,
+      contentWriteRateLimiter,
     );
     expect(getRateLimiterForOperation('deleteRecipe')).toBe(
-      configuredStrictRateLimiter,
+      contentWriteRateLimiter,
     );
-    expect(getRateLimiterForOperation('rateRecipe')).toBe(
-      configuredStrictRateLimiter,
-    );
-    expect(getRateLimiterForOperation('deleteRating')).toBe(
-      configuredStrictRateLimiter,
-    );
+    expect(getRateLimiterForOperation('rateRecipe')).toBe(ratingRateLimiter);
+    expect(getRateLimiterForOperation('deleteRating')).toBe(ratingRateLimiter);
     expect(getRateLimiterForOperation('setMetadataActive')).toBe(
-      configuredStrictRateLimiter,
+      adminRateLimiter,
     );
     expect(getRateLimiterForOperation('getRecipes')).toBe(
       configuredRateLimiter,
     );
+  });
+
+  it('hashes email identifiers with SHA-256 and enforces in-memory fallback', async () => {
+    const {
+      createInMemoryLimiter,
+      executeRateLimitWithFallback,
+      hashRateLimitIdentifier,
+    } = await import('./rateLimit');
+
+    const hashA = hashRateLimitIdentifier('User@Example.com');
+    const hashB = hashRateLimitIdentifier('user@example.com');
+    expect(hashA).toBe(hashB);
+    expect(hashA).not.toContain('example.com');
+    expect(hashA).toHaveLength(64);
+
+    const fallback = createInMemoryLimiter(2, 60_000);
+    const first = await executeRateLimitWithFallback(null, fallback, hashA);
+    const second = await executeRateLimitWithFallback(null, fallback, hashA);
+    const third = await executeRateLimitWithFallback(null, fallback, hashA);
+
+    expect(first.success).toBe(true);
+    expect(second.success).toBe(true);
+    expect(third.success).toBe(false);
   });
 });

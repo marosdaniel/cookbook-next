@@ -25,6 +25,10 @@ export const ErrorTypes: ErrorCatalog = {
     errorCode: 'CONFLICT', // e.g. email already exists
     errorStatus: 409, // 409 Conflict is the correct HTTP code for duplicates
   },
+  RATE_LIMITED: {
+    errorCode: 'RATE_LIMITED',
+    errorStatus: 429,
+  },
   INTERNAL_SERVER_ERROR: {
     errorCode: 'INTERNAL_SERVER_ERROR',
     errorStatus: 500,

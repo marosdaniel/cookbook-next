@@ -20,19 +20,14 @@ import {
   createUserRecipesLoader,
 } from '@/lib/dataloader/loaders';
 import { canResolveUserField } from '@/lib/graphql/fieldPolicies';
-import { normalizeGraphQLOperationName } from '@/lib/graphql/operations';
 import { allowlistPlugin } from '@/lib/graphql/plugins/allowlist';
+import { rateLimitPlugin } from '@/lib/graphql/plugins/rateLimit';
 import { rootFieldAuthPlugin } from '@/lib/graphql/plugins/rootFieldAuth';
 import { resolvers } from '@/lib/graphql/resolvers';
 import { resolvers as scalarResolvers, typeDefs } from '@/lib/graphql/schema';
 import { prisma } from '@/lib/prisma/prisma';
 import { getRateLimitClientKey } from '@/lib/rateLimit/clientIp';
-import {
-  getRateLimiterForOperation,
-  isRateLimitOperation,
-  isStrictRateLimitOperation,
-  rateLimiter,
-} from '@/lib/rateLimit/rateLimit';
+import { rateLimiter } from '@/lib/rateLimit/rateLimit';
 import { withTimeout } from '@/lib/redis/redis';
 import type { GraphQLContext } from '../../../types/graphql/context';
 
@@ -41,6 +36,7 @@ const MAX_GRAPHQL_BODY_BYTES = 1_048_576;
 const requestStorage = new AsyncLocalStorage<{
   session: Session | null;
   requestId: string;
+  clientKey: string;
 }>();
 
 /**
@@ -144,6 +140,7 @@ const server = new ApolloServer<GraphQLContext>({
     loggingPlugin,
     allowlistPlugin,
     rootFieldAuthPlugin,
+    rateLimitPlugin,
     fieldAuthPlugin,
   ],
   validationRules: [...protection.validationRules],
@@ -188,14 +185,16 @@ const handler = startServerAndCreateNextHandler<NextRequest, GraphQLContext>(
   server,
   {
     context: async (): Promise<GraphQLContext> => {
-      const session = requestStorage.getStore()?.session ?? (await auth());
+      const store = requestStorage.getStore();
+      const session = store?.session ?? (await auth());
       const userId = session?.user?.id;
 
       return {
         userId,
         role: session?.user?.role,
         operationName: null,
-        requestId: requestStorage.getStore()?.requestId ?? 'unknown',
+        requestId: store?.requestId ?? 'unknown',
+        clientKey: store?.clientKey,
         prisma,
         // DataLoaders are instantiated fresh per request so their internal
         // cache is scoped to a single request and never leaks between users.
@@ -241,47 +240,17 @@ const parseRequestPayload = (requestBody: string): GraphQLRequestPayload => {
   return JSON.parse(requestBody);
 };
 
-const extractOperationName = (
-  payload: GraphQLRequestPayload,
-): string | undefined => {
-  // Best-effort fallback for clients that omit operationName; this is only used
-  // to select the rate limiter and is not used for authorization decisions.
-  return normalizeGraphQLOperationName(
-    payload.operationName ??
-      payload.query?.match(/(?:query|mutation)\s+(\w+)/i)?.[1],
-  );
-};
-
-const enforceRateLimit = async (
-  request: Request,
-  operationName: string | undefined,
-  userId: string | undefined,
+const enforceGlobalRateLimit = async (
+  clientKey: string,
 ): Promise<Response | null> => {
-  const clientKey = getRateLimitClientKey(request);
-  const strictOperation = isStrictRateLimitOperation(operationName);
-  const limiter = isRateLimitOperation(operationName)
-    ? getRateLimiterForOperation(operationName)
-    : rateLimiter;
-
+  const limiter = rateLimiter;
   if (!limiter) {
-    console.error(
-      `Rate limiter unavailable for ${operationName ?? 'unknown'}.`,
-    );
-
-    if (strictOperation) {
-      return createJsonResponse(
-        { error: 'Rate limiter temporarily unavailable' },
-        503,
-        { 'Retry-After': '5' },
-      );
-    }
-
     return null;
   }
 
   try {
     const rateLimitResult = await withTimeout(
-      () => limiter.limit(userId ?? clientKey),
+      () => limiter.limit(clientKey),
       750,
     );
 
@@ -300,19 +269,7 @@ const enforceRateLimit = async (
       'X-RateLimit-Remaining': remaining.toString(),
     });
   } catch (error) {
-    console.warn(
-      `GraphQL ${strictOperation ? 'strict ' : ''}rate limiter failed.`,
-      error,
-    );
-
-    if (strictOperation) {
-      return createJsonResponse(
-        { error: 'Rate limiter temporarily unavailable' },
-        503,
-        { 'Retry-After': '5' },
-      );
-    }
-
+    console.warn('GraphQL global rate limiter failed.', error);
     return null;
   }
 };
@@ -333,8 +290,8 @@ const wrappedHandler = async (
   }
 
   const session = await auth();
-  const userId = session?.user?.id;
   const requestId = request.headers.get('x-request-id') || randomUUID();
+  const clientKey = getRateLimitClientKey(request);
 
   const contentType = request.headers.get('content-type') ?? '';
   if (!contentType.includes('application/json')) {
@@ -379,9 +336,8 @@ const wrappedHandler = async (
     );
   }
 
-  let payload: GraphQLRequestPayload;
   try {
-    payload = parseRequestPayload(requestBody);
+    parseRequestPayload(requestBody);
   } catch {
     return createJsonResponse(
       {
@@ -392,12 +348,7 @@ const wrappedHandler = async (
     );
   }
 
-  const operationName = extractOperationName(payload);
-  const rateLimitResponse = await enforceRateLimit(
-    request,
-    operationName,
-    userId,
-  );
+  const rateLimitResponse = await enforceGlobalRateLimit(clientKey);
   if (rateLimitResponse) {
     return rateLimitResponse;
   }
@@ -410,8 +361,9 @@ const wrappedHandler = async (
   });
 
   try {
-    const response = await requestStorage.run({ session, requestId }, () =>
-      handler(replayedRequest),
+    const response = await requestStorage.run(
+      { session, requestId, clientKey },
+      () => handler(replayedRequest),
     );
 
     response.headers.set('Cache-Control', 'no-store');
