@@ -34,7 +34,10 @@ import {
   LIST_CACHE_TTL_SECONDS,
   setCachedValue,
 } from '@/server/platform/cache';
-import { resolveQueryLimit } from '@/server/platform/pagination';
+import {
+  DEFAULT_QUERY_MAX_LIMIT,
+  resolveQueryLimit,
+} from '@/server/platform/pagination';
 
 export type { RecipeFilterInput };
 
@@ -220,23 +223,29 @@ export const RecipeService = {
 
   async getRecipesByUserId(userId: string, limit?: number) {
     const normalizedLimit = resolveQueryLimit(limit);
-    const cacheKey = cacheKeys.userRecipes(userId, normalizedLimit);
 
-    return cached<{
+    // One canonical cache entry per author (bounded to the max page size). The
+    // requested limit is applied on read, so invalidating this single key
+    // refreshes every limit variant; totalRecipes always reports the full count.
+    const result = await cached<{
       recipes: RecipeListItem[];
       totalRecipes: number;
     }>({
-      key: cacheKey,
+      key: cacheKeys.userRecipes(userId, undefined),
       ttlSeconds: LIST_CACHE_TTL_SECONDS,
       load: async () => {
         const [recipes, totalRecipes] =
           await RecipeRepository.findByAuthorIdAndCount(
             userId,
-            normalizedLimit,
+            DEFAULT_QUERY_MAX_LIMIT,
           );
         return { recipes, totalRecipes };
       },
     });
+
+    return normalizedLimit
+      ? { ...result, recipes: result.recipes.slice(0, normalizedLimit) }
+      : result;
   },
 
   // Mutations
