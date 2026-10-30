@@ -29,7 +29,6 @@ import ThemeSwitcher from '@/components/ThemeSwitcher';
 import { ADMIN_ROUTES, PUBLIC_ROUTES } from '@/types/routes';
 
 const NAVBAR_WIDTH = 260;
-const activePill = { layoutId: 'admin-nav-active-pill' };
 
 const AdminShell = ({ children }: Readonly<PropsWithChildren>) => {
   const translate = useTranslations('adminConsole');
@@ -149,23 +148,7 @@ const AdminShell = ({ children }: Readonly<PropsWithChildren>) => {
           onClick={closeMobile}
           data-testid="admin-nav-dashboard"
           variant="light"
-          style={{ position: 'relative', isolation: 'isolate' }}
-        >
-          {isDashboard ? (
-            <motion.span
-              {...activePill}
-              aria-hidden="true"
-              style={{
-                position: 'absolute',
-                inset: 0,
-                borderRadius: 'var(--mantine-radius-sm)',
-                background:
-                  'linear-gradient(90deg, var(--mantine-color-pink-light), var(--mantine-color-violet-light))',
-                zIndex: -1,
-              }}
-            />
-          ) : null}
-        </NavLink>
+        />
 
         <Text size="xs" c="dimmed" fw={700} tt="uppercase" mt="lg" mb="xs">
           {translate('navSectionPeople')}
