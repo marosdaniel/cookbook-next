@@ -2,43 +2,29 @@
 
 import { ColorSwatch, Group, Stack, Text } from '@mantine/core';
 import { useId } from 'react';
+import {
+  AREA_HEIGHT,
+  AREA_MARGIN,
+  AREA_WIDTH,
+  DONUT_CIRCUMFERENCE,
+  DONUT_RADIUS,
+  DONUT_SIZE,
+  DONUT_THICKNESS,
+  GRID_COLOR,
+  MAX_X_LABELS,
+  PINK,
+  ROLE_CHART_COLORS,
+  TEXT_COLOR,
+  VIOLET,
+  Y_TICK_COUNT,
+} from './consts';
 import type {
-  DailyRegistration,
-  InsightUserRole,
-  TopAuthor,
-} from '@/types/adminInsights';
-
-// Theme color names, so the charts follow the light and dark color scheme.
-const ROLE_CHART_COLORS: Record<InsightUserRole, string> = {
-  ADMIN: 'pink.6',
-  BLOGGER: 'violet.6',
-  USER: 'teal.6',
-};
-
-const toCssVariable = (color: string): string =>
-  `var(--mantine-color-${color.replace('.', '-')})`;
-
-const GRID_COLOR = 'var(--mantine-color-default-border)';
-const TEXT_COLOR = 'var(--mantine-color-dimmed)';
-const PINK = toCssVariable('pink.6');
-const VIOLET = toCssVariable('violet.6');
-
-const Y_TICK_COUNT = 4;
-const MIN_Y_MAX = 4;
-const MAX_X_LABELS = 6;
-
-/** Rounds the maximum up to a multiple of the tick count, so ticks are integers. */
-const getNiceMax = (value: number): number =>
-  Math.max(MIN_Y_MAX, Math.ceil(value / Y_TICK_COUNT) * Y_TICK_COUNT);
-
-type RegistrationsChartProps = {
-  data: readonly DailyRegistration[];
-  seriesLabel: string;
-};
-
-const AREA_WIDTH = 640;
-const AREA_HEIGHT = 280;
-const AREA_MARGIN = { top: 12, right: 12, bottom: 28, left: 32 };
+  DonutSegment,
+  RegistrationsChartProps,
+  RoleDonutChartProps,
+  TopAuthorsChartProps,
+} from './types';
+import { getNiceMax, toCssVariable } from './utils';
 
 export const RegistrationsChart = ({
   data,
@@ -151,22 +137,6 @@ export const RegistrationsChart = ({
   );
 };
 
-type RoleChartItem = {
-  role: InsightUserRole;
-  label: string;
-  count: number;
-};
-
-type RoleDonutChartProps = {
-  roles: readonly RoleChartItem[];
-  total: number;
-};
-
-const DONUT_SIZE = 190;
-const DONUT_THICKNESS = 26;
-const DONUT_RADIUS = (DONUT_SIZE - DONUT_THICKNESS) / 2;
-const DONUT_CIRCUMFERENCE = 2 * Math.PI * DONUT_RADIUS;
-
 export const RoleDonutChart = ({
   roles,
   total,
@@ -174,14 +144,15 @@ export const RoleDonutChart = ({
   const sum = roles.reduce((acc, item) => acc + item.count, 0);
   const center = DONUT_SIZE / 2;
 
-  const segments = roles.reduce<
-    { item: RoleChartItem; length: number; offset: number }[]
-  >((acc, item) => {
-    const offset = acc.reduce((used, segment) => used + segment.length, 0);
+  const segments: DonutSegment[] = [];
+  let offset = 0;
+
+  for (const item of roles) {
     const length = sum > 0 ? (item.count / sum) * DONUT_CIRCUMFERENCE : 0;
 
-    return [...acc, { item, length, offset }];
-  }, []);
+    segments.push({ item, length, offset });
+    offset += length;
+  }
 
   return (
     <Stack align="center" gap="md" data-testid="admin-roles-chart">
@@ -203,19 +174,19 @@ export const RoleDonutChart = ({
         <g transform={`rotate(-90 ${center} ${center})`}>
           {segments
             .filter((segment) => segment.length > 0)
-            .map(({ item, length, offset }) => (
+            .map((segment) => (
               <circle
-                key={item.role}
+                key={segment.item.role}
                 cx={center}
                 cy={center}
                 r={DONUT_RADIUS}
                 fill="none"
-                stroke={toCssVariable(ROLE_CHART_COLORS[item.role])}
+                stroke={toCssVariable(ROLE_CHART_COLORS[segment.item.role])}
                 strokeWidth={DONUT_THICKNESS}
-                strokeDasharray={`${length} ${DONUT_CIRCUMFERENCE - length}`}
-                strokeDashoffset={-offset}
+                strokeDasharray={`${segment.length} ${DONUT_CIRCUMFERENCE - segment.length}`}
+                strokeDashoffset={-segment.offset}
               >
-                <title>{`${item.label}: ${item.count}`}</title>
+                <title>{`${segment.item.label}: ${segment.item.count}`}</title>
               </circle>
             ))}
         </g>
@@ -247,11 +218,6 @@ export const RoleDonutChart = ({
       </Group>
     </Stack>
   );
-};
-
-type TopAuthorsChartProps = {
-  data: readonly TopAuthor[];
-  seriesLabel: string;
 };
 
 export const TopAuthorsChart = ({

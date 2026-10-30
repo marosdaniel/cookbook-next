@@ -25,7 +25,7 @@ import {
   RegistrationsChart,
   RoleDonutChart,
   TopAuthorsChart,
-} from '@/components/admin/AdminCharts';
+} from '@/components/admin/AdminCharts/AdminCharts';
 import { RoleBadge } from '@/components/admin/RoleBadge';
 import { StatCard } from '@/components/admin/StatCard';
 import { formatJoinedDate, getInitials } from '@/components/admin/userDisplay';
