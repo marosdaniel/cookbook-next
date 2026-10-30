@@ -9,10 +9,10 @@ import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import NextTopLoader from 'nextjs-toploader';
 import type { PropsWithChildren } from 'react';
+import { MANTINE_DEFAULT_PRIMARY_COLOR } from './consts';
 import { darkTheme } from './darkTheme';
 import { lightTheme } from './lightTheme';
 
-export const MANTINE_DEFAULT_PRIMARY_COLOR = '#E00890';
 const colorSchemeManager = localStorageColorSchemeManager({
   key: 'cookbook-color-scheme',
 });

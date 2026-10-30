@@ -12,7 +12,7 @@ import './globals.css';
 import type { PropsWithChildren } from 'react';
 import Shell from '@/components/Shell';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
-import { MANTINE_DEFAULT_PRIMARY_COLOR } from '../providers/mantine/mantine';
+import { MANTINE_DEFAULT_PRIMARY_COLOR } from '../providers/mantine/consts';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
