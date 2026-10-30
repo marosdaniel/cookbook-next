@@ -29,6 +29,8 @@ vi.mock('motion/react', () => ({
 
 import AdminShell from './AdminShell';
 
+// The global next-intl mock (vitest.setup.mts) returns the last segment of the
+// translation key, e.g. `dashboard.title` renders as `title`.
 describe('AdminShell', () => {
   beforeEach(() => {
     mocks.pathname = '/admin/metadata';
@@ -70,7 +72,7 @@ describe('AdminShell', () => {
       'data-active',
     );
     expect(screen.getByTestId('admin-breadcrumbs')).toHaveTextContent(
-      'dashboard.title',
+      /consoleTitle.*title/,
     );
   });
 });

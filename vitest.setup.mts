@@ -60,6 +60,16 @@ vi.mock('motion/react', () => ({
     createElement(Fragment, null, children),
   MotionConfig: ({ children }: { children?: ReactNode }) =>
     createElement(Fragment, null, children),
+  // Jump straight to the final value, so count-up numbers are deterministic.
+  animate: (
+    _from: number,
+    to: number,
+    options?: { onUpdate?: (latest: number) => void },
+  ) => {
+    options?.onUpdate?.(to);
+
+    return { stop: () => undefined };
+  },
   useMotionTemplate: () => '',
   useMotionValueEvent: () => undefined,
   useReducedMotion: () => false,

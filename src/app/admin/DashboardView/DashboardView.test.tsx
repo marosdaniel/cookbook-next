@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { UserOverview } from '@/types/adminInsights';
 import { render, screen } from '@/utils/test-utils';
 
-vi.mock('@/components/admin/AdminCharts', () => ({
+vi.mock('@/components/admin/AdminCharts/AdminCharts', () => ({
   RegistrationsChart: () => <div data-testid="registrations-chart" />,
   RoleDonutChart: () => <div data-testid="roles-chart" />,
   TopAuthorsChart: () => <div data-testid="authors-chart" />,
@@ -37,6 +37,8 @@ const overview: UserOverview = {
   ],
 };
 
+// The global next-intl mock (vitest.setup.mts) returns the last segment of the
+// translation key, e.g. `dashboard.recentUsers.empty` renders as `empty`.
 describe('DashboardView', () => {
   it('renders the stat cards, the charts and the newest members', () => {
     render(<DashboardView overview={overview} />);
@@ -50,6 +52,15 @@ describe('DashboardView', () => {
     expect(screen.getByTestId('role-badge-admin')).toBeInTheDocument();
   });
 
+  it('shows the final value of the animated stat numbers', () => {
+    render(<DashboardView overview={overview} />);
+
+    const cards = screen.getAllByTestId('admin-stat-card');
+
+    expect(cards[0]).toHaveTextContent('6');
+    expect(cards[1]).toHaveTextContent('2');
+  });
+
   it('shows empty states instead of the charts and lists when there is no data', () => {
     render(
       <DashboardView
@@ -58,7 +69,7 @@ describe('DashboardView', () => {
     );
 
     expect(screen.queryByTestId('authors-chart')).not.toBeInTheDocument();
-    expect(screen.getByText(/topAuthorsEmpty/)).toBeInTheDocument();
-    expect(screen.getByText(/recentUsers\.empty/)).toBeInTheDocument();
+    expect(screen.getByText('topAuthorsEmpty')).toBeInTheDocument();
+    expect(screen.getByText('empty')).toBeInTheDocument();
   });
 });
