@@ -20,6 +20,7 @@ import {
   IconUsers,
 } from '@tabler/icons-react';
 import { motion } from 'motion/react';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -155,7 +156,7 @@ const AdminShell = ({ children }: Readonly<PropsWithChildren>) => {
         </Text>
         <NavLink
           component={Link}
-          href={ADMIN_ROUTES.USERS}
+          href={ADMIN_ROUTES.USERS as Route}
           label={translate('navUsers')}
           leftSection={<IconUsers size={18} />}
           active={isUsers}

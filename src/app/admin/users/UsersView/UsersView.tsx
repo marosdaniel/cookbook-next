@@ -20,14 +20,11 @@ import {
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import { RoleBadge } from '@/components/admin/RoleBadge';
 import { formatJoinedDate, getInitials } from '@/components/admin/userDisplay';
-import { INSIGHT_USER_ROLES, type UserListResult } from '@/types/adminInsights';
+import { INSIGHT_USER_ROLES } from '@/types/adminInsights';
 import { ADMIN_ROUTES, adminUsersRoute } from '@/types/routes';
-
-type UsersViewProps = {
-  result: UserListResult;
-};
+import RoleBadge from '../../../../components/admin/RoleBadge';
+import type { UsersViewProps } from './types';
 
 const UsersView = ({ result }: Readonly<UsersViewProps>) => {
   const t = useTranslations('adminConsole');

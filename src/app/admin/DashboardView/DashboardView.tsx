@@ -20,23 +20,16 @@ import {
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import type { ReactNode } from 'react';
 import {
   RegistrationsChart,
   RoleDonutChart,
   TopAuthorsChart,
 } from '@/components/admin/AdminCharts/AdminCharts';
-import { RoleBadge } from '@/components/admin/RoleBadge';
 import { StatCard } from '@/components/admin/StatCard';
 import { formatJoinedDate, getInitials } from '@/components/admin/userDisplay';
-import type { UserOverview } from '@/types/adminInsights';
 import { adminUsersRoute } from '@/types/routes';
-
-type PanelProps = {
-  title: string;
-  testId: string;
-  children: ReactNode;
-};
+import RoleBadge from '../../../components/admin/RoleBadge';
+import type { DashboardViewProps, PanelProps } from './types';
 
 const Panel = ({ title, testId, children }: Readonly<PanelProps>) => (
   <Paper
@@ -53,10 +46,6 @@ const Panel = ({ title, testId, children }: Readonly<PanelProps>) => (
     {children}
   </Paper>
 );
-
-type DashboardViewProps = {
-  overview: UserOverview;
-};
 
 const DashboardView = ({ overview }: Readonly<DashboardViewProps>) => {
   const t = useTranslations('adminConsole');

@@ -1,13 +1,8 @@
 import { Badge } from '@mantine/core';
-import type { InsightUserRole } from '@/types/adminInsights';
-
-type RoleBadgeProps = {
-  role: InsightUserRole;
-  label: string;
-};
+import type { RoleBadgeProps } from './types';
 
 // Only theme colors are used, so the badge reads well in light and dark mode.
-export const RoleBadge = ({ role, label }: Readonly<RoleBadgeProps>) => {
+const RoleBadge = ({ role, label }: Readonly<RoleBadgeProps>) => {
   if (role === 'ADMIN') {
     return (
       <Badge
@@ -34,3 +29,4 @@ export const RoleBadge = ({ role, label }: Readonly<RoleBadgeProps>) => {
     </Badge>
   );
 };
+export default RoleBadge;
