@@ -30,7 +30,7 @@ import { RoleBadge } from '@/components/admin/RoleBadge';
 import { StatCard } from '@/components/admin/StatCard';
 import { formatJoinedDate, getInitials } from '@/components/admin/userDisplay';
 import type { UserOverview } from '@/types/adminInsights';
-import { ADMIN_ROUTES } from '@/types/routes';
+import { adminUsersRoute } from '@/types/routes';
 
 type PanelProps = {
   title: string;
@@ -200,7 +200,7 @@ const DashboardView = ({ overview }: Readonly<DashboardViewProps>) => {
                 ))}
                 <Button
                   component={Link}
-                  href={ADMIN_ROUTES.USERS}
+                  href={adminUsersRoute()}
                   variant="light"
                   fullWidth
                   mt="xs"

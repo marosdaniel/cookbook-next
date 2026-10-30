@@ -59,10 +59,13 @@ export const ADMIN_ROUTES = {
 } as const satisfies Record<string, Route>;
 
 /**
- * Builds the admin users list URL with the given filter/pagination params.
+ * Builds the admin users list URL, optionally with filter/pagination params.
+ *
+ * It returns a `Route`, so it can be passed to `next/link` hrefs (also through
+ * polymorphic Mantine components), where the plain string literal is rejected.
  */
-export const adminUsersRoute = (searchParams: URLSearchParams): Route => {
-  const query = searchParams.toString();
+export const adminUsersRoute = (searchParams?: URLSearchParams): Route => {
+  const query = searchParams?.toString();
 
   return (
     query ? `${ADMIN_ROUTES.USERS}?${query}` : ADMIN_ROUTES.USERS

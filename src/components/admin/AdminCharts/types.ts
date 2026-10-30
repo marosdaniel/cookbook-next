@@ -20,12 +20,6 @@ export type RoleDonutChartProps = {
   total: number;
 };
 
-export type DonutSegment = {
-  item: RoleChartItem;
-  length: number;
-  offset: number;
-};
-
 export type TopAuthorsChartProps = {
   data: readonly TopAuthor[];
   seriesLabel: string;
