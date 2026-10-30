@@ -1,0 +1,63 @@
+{
+  "sidebarAdmin": "Admin console",
+  "consoleTitle": "Admin console",
+  "adminBadge": "Admin",
+  "navDashboard": "Dashboard",
+  "navUsers": "Users",
+  "navSectionOverview": "Overview",
+  "navSectionPeople": "People",
+  "navSectionContent": "Content",
+  "roles": {
+    "ADMIN": "Admin",
+    "BLOGGER": "Blogger",
+    "USER": "User"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "User growth and activity at a glance.",
+    "stats": {
+      "totalUsers": "Total users",
+      "totalUsersHint": "All registered accounts",
+      "newLast7Days": "New in 7 days",
+      "newLast7DaysHint": "Sign-ups this week",
+      "newLast30Days": "New in 30 days",
+      "newLast30DaysHint": "Sign-ups this month",
+      "withRecipes": "Users with recipes",
+      "withRecipesHint": "{percent}% of all users"
+    },
+    "charts": {
+      "registrationsTitle": "Registrations, last 30 days",
+      "registrationsSeries": "New users",
+      "rolesTitle": "Users by role",
+      "topAuthorsTitle": "Most active authors",
+      "topAuthorsSeries": "Recipes",
+      "topAuthorsEmpty": "No recipes have been published yet."
+    },
+    "recentUsers": {
+      "title": "Newest members",
+      "empty": "No users yet.",
+      "viewAll": "View all users"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "description": "Search and review registered accounts.",
+    "searchPlaceholder": "Search by name, username or email",
+    "searchLabel": "Search users",
+    "roleFilterLabel": "Role",
+    "roleAll": "All roles",
+    "search": "Search",
+    "reset": "Reset filters",
+    "columns": {
+      "user": "User",
+      "email": "Email",
+      "role": "Role",
+      "recipes": "Recipes",
+      "joined": "Joined"
+    },
+    "empty": "No users match the current filters.",
+    "summary": "{total} users · page {page} of {pageCount}",
+    "previous": "Previous",
+    "next": "Next"
+  }
+}

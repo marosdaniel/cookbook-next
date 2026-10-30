@@ -1,0 +1,63 @@
+{
+  "sidebarAdmin": "Admin-Bereich",
+  "consoleTitle": "Admin-Bereich",
+  "adminBadge": "Admin",
+  "navDashboard": "Dashboard",
+  "navUsers": "Benutzer",
+  "navSectionOverview": "Übersicht",
+  "navSectionPeople": "Personen",
+  "navSectionContent": "Inhalte",
+  "roles": {
+    "ADMIN": "Admin",
+    "BLOGGER": "Blogger",
+    "USER": "Benutzer"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Nutzerwachstum und Aktivität auf einen Blick.",
+    "stats": {
+      "totalUsers": "Alle Benutzer",
+      "totalUsersHint": "Alle registrierten Konten",
+      "newLast7Days": "Neu in 7 Tagen",
+      "newLast7DaysHint": "Neuanmeldungen diese Woche",
+      "newLast30Days": "Neu in 30 Tagen",
+      "newLast30DaysHint": "Neuanmeldungen diesen Monat",
+      "withRecipes": "Benutzer mit Rezepten",
+      "withRecipesHint": "{percent} % aller Benutzer"
+    },
+    "charts": {
+      "registrationsTitle": "Registrierungen der letzten 30 Tage",
+      "registrationsSeries": "Neue Benutzer",
+      "rolesTitle": "Benutzer nach Rolle",
+      "topAuthorsTitle": "Aktivste Autoren",
+      "topAuthorsSeries": "Rezepte",
+      "topAuthorsEmpty": "Noch keine Rezepte veröffentlicht."
+    },
+    "recentUsers": {
+      "title": "Neueste Mitglieder",
+      "empty": "Noch keine Benutzer.",
+      "viewAll": "Alle Benutzer anzeigen"
+    }
+  },
+  "users": {
+    "title": "Benutzer",
+    "description": "Registrierte Konten suchen und prüfen.",
+    "searchPlaceholder": "Nach Name, Benutzername oder E-Mail suchen",
+    "searchLabel": "Benutzer suchen",
+    "roleFilterLabel": "Rolle",
+    "roleAll": "Alle Rollen",
+    "search": "Suchen",
+    "reset": "Filter zurücksetzen",
+    "columns": {
+      "user": "Benutzer",
+      "email": "E-Mail",
+      "role": "Rolle",
+      "recipes": "Rezepte",
+      "joined": "Beigetreten"
+    },
+    "empty": "Keine Benutzer entsprechen den aktuellen Filtern.",
+    "summary": "{total} Benutzer · Seite {page} von {pageCount}",
+    "previous": "Zurück",
+    "next": "Weiter"
+  }
+}

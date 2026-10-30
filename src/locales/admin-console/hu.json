@@ -1,0 +1,63 @@
+{
+  "sidebarAdmin": "Admin felület",
+  "consoleTitle": "Admin felület",
+  "adminBadge": "Admin",
+  "navDashboard": "Irányítópult",
+  "navUsers": "Felhasználók",
+  "navSectionOverview": "Áttekintés",
+  "navSectionPeople": "Emberek",
+  "navSectionContent": "Tartalom",
+  "roles": {
+    "ADMIN": "Admin",
+    "BLOGGER": "Blogger",
+    "USER": "Felhasználó"
+  },
+  "dashboard": {
+    "title": "Irányítópult",
+    "description": "A felhasználói növekedés és aktivitás egy pillantásra.",
+    "stats": {
+      "totalUsers": "Összes felhasználó",
+      "totalUsersHint": "Minden regisztrált fiók",
+      "newLast7Days": "Új: 7 nap",
+      "newLast7DaysHint": "Az e heti regisztrációk",
+      "newLast30Days": "Új: 30 nap",
+      "newLast30DaysHint": "A havi regisztrációk",
+      "withRecipes": "Receptet feltöltők",
+      "withRecipesHint": "Az összes felhasználó {percent}%-a"
+    },
+    "charts": {
+      "registrationsTitle": "Regisztrációk az elmúlt 30 napban",
+      "registrationsSeries": "Új felhasználók",
+      "rolesTitle": "Felhasználók szerepkör szerint",
+      "topAuthorsTitle": "Legaktívabb szerzők",
+      "topAuthorsSeries": "Receptek",
+      "topAuthorsEmpty": "Még nincs közzétett recept."
+    },
+    "recentUsers": {
+      "title": "Legújabb tagok",
+      "empty": "Még nincs felhasználó.",
+      "viewAll": "Összes felhasználó megtekintése"
+    }
+  },
+  "users": {
+    "title": "Felhasználók",
+    "description": "A regisztrált fiókok keresése és áttekintése.",
+    "searchPlaceholder": "Keresés név, felhasználónév vagy email alapján",
+    "searchLabel": "Felhasználók keresése",
+    "roleFilterLabel": "Szerepkör",
+    "roleAll": "Minden szerepkör",
+    "search": "Keresés",
+    "reset": "Szűrők törlése",
+    "columns": {
+      "user": "Felhasználó",
+      "email": "Email",
+      "role": "Szerepkör",
+      "recipes": "Receptek",
+      "joined": "Csatlakozott"
+    },
+    "empty": "Egy felhasználó sem felel meg a szűrőknek.",
+    "summary": "{total} felhasználó · {page}. oldal / {pageCount}",
+    "previous": "Előző",
+    "next": "Következő"
+  }
+}
