@@ -9,7 +9,6 @@ import {
   IconShieldLock,
 } from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'motion/react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { Session } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
@@ -58,7 +57,6 @@ const Navbar: FC = () => {
             label: adminTranslate('sidebarAdmin'),
             icon: IconShieldLock,
             link: ADMIN_ROUTES.DASHBOARD,
-            special: true,
           },
         ]
       : []),
