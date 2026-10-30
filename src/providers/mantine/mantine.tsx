@@ -12,6 +12,7 @@ import type { PropsWithChildren } from 'react';
 import { darkTheme } from './darkTheme';
 import { lightTheme } from './lightTheme';
 
+export const MANTINE_DEFAULT_PRIMARY_COLOR = '#E00890';
 const colorSchemeManager = localStorageColorSchemeManager({
   key: 'cookbook-color-scheme',
 });
@@ -33,7 +34,10 @@ const ThemeAwareProviders = ({ children }: Readonly<PropsWithChildren>) => {
     >
       <Notifications />
       <NextTopLoader
-        color={theme.colors?.[theme.primaryColor ?? 'pink']?.[7] ?? '#E00890'}
+        color={
+          theme.colors?.[theme.primaryColor ?? 'pink']?.[7] ??
+          MANTINE_DEFAULT_PRIMARY_COLOR
+        }
         showSpinner={false}
         height={2}
         crawl={true}

@@ -7,18 +7,26 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/carousel/styles.css';
 import '@mantine/spotlight/styles.css';
+import '@mantine/charts/styles.css';
 import './globals.css';
 import type { PropsWithChildren } from 'react';
 import Shell from '@/components/Shell';
 import { getLocaleFromCookies } from '@/lib/locale/locale.server';
+import { MANTINE_DEFAULT_PRIMARY_COLOR } from '../providers/mantine/mantine';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#FF00A1' },
-    { media: '(prefers-color-scheme: dark)', color: '#FF00A1' },
+    {
+      media: '(prefers-color-scheme: light)',
+      color: MANTINE_DEFAULT_PRIMARY_COLOR,
+    },
+    {
+      media: '(prefers-color-scheme: dark)',
+      color: MANTINE_DEFAULT_PRIMARY_COLOR,
+    },
   ],
 };
 
