@@ -62,7 +62,11 @@ export const UserInsightsRepository = {
     });
   },
 
-  findPage(params: { where: Prisma.UserWhereInput; skip: number; take: number }) {
+  findPage(params: {
+    where: Prisma.UserWhereInput;
+    skip: number;
+    take: number;
+  }) {
     return prisma.user.findMany({
       where: params.where,
       select: USER_LIST_SELECT,

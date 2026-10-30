@@ -1,65 +1,60 @@
 # [3.14.0](https://github.com/marosdaniel/cookbook-next/compare/v3.13.0...v3.14.0) (2026-10-29)
 
-
 ### Bug Fixes
 
-* **admin:** make bulk-delete audit strictly transactional ([3fe969c](https://github.com/marosdaniel/cookbook-next/commit/3fe969c95ec423c7fa180762478d9dbba44769cd))
-* **auth:** resolve sessions safely in the admin layout ([af6b4e8](https://github.com/marosdaniel/cookbook-next/commit/af6b4e8fa9a01c0b016f5f2c2f3c0224f1e06d84))
-* **auth:** treat revoked sessions as anonymous ([9c2edb6](https://github.com/marosdaniel/cookbook-next/commit/9c2edb68f60ef0c4d9a1275b42ac0c58ea54f316))
-* **auth:** uniform password-reset response and post-response email ([6555fa6](https://github.com/marosdaniel/cookbook-next/commit/6555fa69bee29ec49ab03fcb6814ffcdf3a1b381))
-* **cache:** use canonical per-user keys and bound unbounded lists ([b79d5f3](https://github.com/marosdaniel/cookbook-next/commit/b79d5f37b3456851e8609e32371d3733302dab99))
-* **prisma:** define referential action for recipe author ([bb93546](https://github.com/marosdaniel/cookbook-next/commit/bb93546a4dc28001b15c925e81b8180aa631ace4))
-* **user:** invalidate caches and audit admin account deletions ([bc2728e](https://github.com/marosdaniel/cookbook-next/commit/bc2728ed20c58adaec97452f0611506bba0c11d7))
+- **admin:** make bulk-delete audit strictly transactional ([3fe969c](https://github.com/marosdaniel/cookbook-next/commit/3fe969c95ec423c7fa180762478d9dbba44769cd))
+- **auth:** resolve sessions safely in the admin layout ([af6b4e8](https://github.com/marosdaniel/cookbook-next/commit/af6b4e8fa9a01c0b016f5f2c2f3c0224f1e06d84))
+- **auth:** treat revoked sessions as anonymous ([9c2edb6](https://github.com/marosdaniel/cookbook-next/commit/9c2edb68f60ef0c4d9a1275b42ac0c58ea54f316))
+- **auth:** uniform password-reset response and post-response email ([6555fa6](https://github.com/marosdaniel/cookbook-next/commit/6555fa69bee29ec49ab03fcb6814ffcdf3a1b381))
+- **cache:** use canonical per-user keys and bound unbounded lists ([b79d5f3](https://github.com/marosdaniel/cookbook-next/commit/b79d5f37b3456851e8609e32371d3733302dab99))
+- **prisma:** define referential action for recipe author ([bb93546](https://github.com/marosdaniel/cookbook-next/commit/bb93546a4dc28001b15c925e81b8180aa631ace4))
+- **user:** invalidate caches and audit admin account deletions ([bc2728e](https://github.com/marosdaniel/cookbook-next/commit/bc2728ed20c58adaec97452f0611506bba0c11d7))
 
 
 ### Features
 
-* **admin:** transactional audit log for destructive actions ([037df99](https://github.com/marosdaniel/cookbook-next/commit/037df99776fba862de5f19df61f9a6b3b90934db))
-* **auth:** throttle credentials login and harden authorize ([69e79bc](https://github.com/marosdaniel/cookbook-next/commit/69e79bccf95429ca755888a9164db83936281a4d))
-* **graphql:** authorize operations by root fields ([e4cc443](https://github.com/marosdaniel/cookbook-next/commit/e4cc44383e6e8c7fbcae8da3231ca9aaa67851dc))
-* **graphql:** enforce persisted-query allowlist ([8ce4f9c](https://github.com/marosdaniel/cookbook-next/commit/8ce4f9c464e50d9153c5ad8b1c5dbf5966011ea0))
-* **observability:** structured logging with pino ([b52f216](https://github.com/marosdaniel/cookbook-next/commit/b52f21610db98bb66dee578f51407210d14954be))
-* **ratelimit:** per-group limiters on resolved operation ([371bf26](https://github.com/marosdaniel/cookbook-next/commit/371bf2617959c25384638a61e5339728fa928407))
-* **recipe:** keyset-paginated trigram search ([6e361ca](https://github.com/marosdaniel/cookbook-next/commit/6e361ca60b5886b25d58a722c84f9f1724357785))
+- **admin:** transactional audit log for destructive actions ([037df99](https://github.com/marosdaniel/cookbook-next/commit/037df99776fba862de5f19df61f9a6b3b90934db))
+- **auth:** throttle credentials login and harden authorize ([69e79bc](https://github.com/marosdaniel/cookbook-next/commit/69e79bccf95429ca755888a9164db83936281a4d))
+- **graphql:** authorize operations by root fields ([e4cc443](https://github.com/marosdaniel/cookbook-next/commit/e4cc44383e6e8c7fbcae8da3231ca9aaa67851dc))
+- **graphql:** enforce persisted-query allowlist ([8ce4f9c](https://github.com/marosdaniel/cookbook-next/commit/8ce4f9c464e50d9153c5ad8b1c5dbf5966011ea0))
+- **observability:** structured logging with pino ([b52f216](https://github.com/marosdaniel/cookbook-next/commit/b52f21610db98bb66dee578f51407210d14954be))
+- **ratelimit:** per-group limiters on resolved operation ([371bf26](https://github.com/marosdaniel/cookbook-next/commit/371bf2617959c25384638a61e5339728fa928407))
+- **recipe:** keyset-paginated trigram search ([6e361ca](https://github.com/marosdaniel/cookbook-next/commit/6e361ca60b5886b25d58a722c84f9f1724357785))
 
 
 ### Performance Improvements
 
-* **auth:** cache session version in redis ([a204c8b](https://github.com/marosdaniel/cookbook-next/commit/a204c8b3d20a96942f8264557f76d7075542efcf))
-* **services:** trim queries and bound list loaders ([c899938](https://github.com/marosdaniel/cookbook-next/commit/c8999382b3c99a70ea365ac9cfe50bc536ed6785))
+- **auth:** cache session version in redis ([a204c8b](https://github.com/marosdaniel/cookbook-next/commit/a204c8b3d20a96942f8264557f76d7075542efcf))
+- **services:** trim queries and bound list loaders ([c899938](https://github.com/marosdaniel/cookbook-next/commit/c8999382b3c99a70ea365ac9cfe50bc536ed6785))
 
 # [3.13.0](https://github.com/marosdaniel/cookbook-next/compare/v3.12.0...v3.13.0) (2026-10-26)
 
-
 ### Bug Fixes
 
-* update locator for sign-up submit button in signup test cases ([131e326](https://github.com/marosdaniel/cookbook-next/commit/131e326aebece0c478df9bae385411f75ed31742))
+- update locator for sign-up submit button in signup test cases ([131e326](https://github.com/marosdaniel/cookbook-next/commit/131e326aebece0c478df9bae385411f75ed31742))
 
 
 ### Features
 
-* refactor authentication forms and tests; streamline animation variants and improve error handling ([9b87008](https://github.com/marosdaniel/cookbook-next/commit/9b87008c0bd2f6ff98cd0ada033cad5d4b8e95e5))
+- refactor authentication forms and tests; streamline animation variants and improve error handling ([9b87008](https://github.com/marosdaniel/cookbook-next/commit/9b87008c0bd2f6ff98cd0ada033cad5d4b8e95e5))
 
 # [3.12.0](https://github.com/marosdaniel/cookbook-next/compare/v3.11.0...v3.12.0) (2026-10-26)
 
-
 ### Features
 
-* update MetadataService to handle empty cached lists correctly ([50cc62b](https://github.com/marosdaniel/cookbook-next/commit/50cc62b5606271395b2522888966f6760238defb))
+- update MetadataService to handle empty cached lists correctly ([50cc62b](https://github.com/marosdaniel/cookbook-next/commit/50cc62b5606271395b2522888966f6760238defb))
 
 # [3.11.0](https://github.com/marosdaniel/cookbook-next/compare/v3.10.0...v3.11.0) (2026-10-23)
 
-
 ### Features
 
-* add support for view transitions in RecipeCard and RecipeCarousel components; update tests accordingly ([e949c43](https://github.com/marosdaniel/cookbook-next/commit/e949c430087fdfa8cde7e6145ce12bd2754a65a8))
+- add support for view transitions in RecipeCard and RecipeCarousel components; update tests accordingly ([e949c43](https://github.com/marosdaniel/cookbook-next/commit/e949c430087fdfa8cde7e6145ce12bd2754a65a8))
 
 # [3.10.0](https://github.com/marosdaniel/cookbook-next/compare/v3.9.0...v3.10.0) (2026-10-22)
 
-
 ### Features
 
-* update favicon documentation and generation process ([c3a62fb](https://github.com/marosdaniel/cookbook-next/commit/c3a62fb769e8d6bf4b6613d30e4da363dc5467df))
+- update favicon documentation and generation process ([c3a62fb](https://github.com/marosdaniel/cookbook-next/commit/c3a62fb769e8d6bf4b6613d30e4da363dc5467df))
 
 # [3.9.0](https://github.com/marosdaniel/cookbook-next/compare/v3.8.0...v3.9.0) (2026-10-13)
 

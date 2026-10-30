@@ -76,7 +76,8 @@ describe('UserRepository bulk deletes', () => {
       const tx = createTx();
       mockTransaction.mockImplementation(runWith(tx));
 
-      const result = await UserRepository.deleteAllRecipesExceptAuthor('admin-1');
+      const result =
+        await UserRepository.deleteAllRecipesExceptAuthor('admin-1');
 
       expect(mockTransaction).toHaveBeenCalledTimes(1);
       expect(tx.recipe.deleteMany).toHaveBeenCalledWith({

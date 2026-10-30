@@ -64,7 +64,11 @@ describe('UsersView', () => {
   });
 
   it('shows an empty message when no user matches', () => {
-    render(<UsersView result={{ ...baseResult, users: [], total: 0, pageCount: 1 }} />);
+    render(
+      <UsersView
+        result={{ ...baseResult, users: [], total: 0, pageCount: 1 }}
+      />,
+    );
 
     expect(screen.getByTestId('admin-users-empty')).toBeInTheDocument();
   });

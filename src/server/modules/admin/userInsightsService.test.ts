@@ -60,7 +60,11 @@ describe('buildDailySeries', () => {
   });
 
   it('does not skip or repeat days around a daylight saving change', () => {
-    const series = buildDailySeries([], 4, new Date('2026-10-26T12:00:00.000Z'));
+    const series = buildDailySeries(
+      [],
+      4,
+      new Date('2026-10-26T12:00:00.000Z'),
+    );
 
     expect(series.map((entry) => entry.date)).toEqual([
       '2026-10-23',

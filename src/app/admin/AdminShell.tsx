@@ -13,7 +13,12 @@ import {
   ThemeIcon,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconDashboard, IconShieldLock, IconTags, IconUsers } from '@tabler/icons-react';
+import {
+  IconDashboard,
+  IconShieldLock,
+  IconTags,
+  IconUsers,
+} from '@tabler/icons-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -56,7 +61,12 @@ const AdminShell = ({ children }: Readonly<PropsWithChildren>) => {
               'linear-gradient(90deg, var(--mantine-color-pink-6), var(--mantine-color-violet-6))',
           }}
         />
-        <Group h="calc(100% - 3px)" px={{ base: 'sm', sm: 'md' }} justify="space-between" wrap="nowrap">
+        <Group
+          h="calc(100% - 3px)"
+          px={{ base: 'sm', sm: 'md' }}
+          justify="space-between"
+          wrap="nowrap"
+        >
           <Group gap="sm" wrap="nowrap">
             <Burger
               opened={mobileOpened}
@@ -76,7 +86,11 @@ const AdminShell = ({ children }: Readonly<PropsWithChildren>) => {
                 <IconShieldLock size={17} />
               </ThemeIcon>
               <Breadcrumbs data-testid="admin-breadcrumbs">
-                <Anchor component={Link} href={ADMIN_ROUTES.DASHBOARD} size="sm">
+                <Anchor
+                  component={Link}
+                  href={ADMIN_ROUTES.DASHBOARD}
+                  size="sm"
+                >
                   {translate('consoleTitle')}
                 </Anchor>
                 {isDashboard ? (

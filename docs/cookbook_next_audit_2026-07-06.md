@@ -326,16 +326,16 @@ Kulcsdöntés: **`primaryShade: { light: 7, dark: 5 }`** — sötét módban a v
 
 ### 4.2 Vizuális/UX irányelvek
 
-| Terület            | Irányelv                                                                                                                                                                                                        |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Tipográfia**     | System font stack (zero font-loading költség); headings `fontWeight: 700`, h1 34/1.25 → h4 18/1.4. Input label: 500-as súly, `gray.7` (light) / `gray.4` (dark).                                                |
-| **Border-radius**  | `defaultRadius: 'md'` (10 px). Kártyák/modálok: `lg` (14 px), badge: `sm` (6 px) — a lekerekítés hierarchiát jelez (nagyobb felület → nagyobb rádiusz).                                                         |
-| **Árnyékok**       | Light: meleg tónusú (pink-alapú `rgba(38,6,28,…)`) dupla rétegű árnyékok. Dark: erősebb fekete árnyék + `withBorder: false` a kártyákon — sötétben az eleváció a felületszínből jöjjön, ne borderből.           |
-| **Spacing**        | Mantine defaults (4/8/16/24/32); kártya-belső: `md`, szekciók között `xl`.                                                                                                                                      |
-| **Kártya-dizájn**  | Light: `shadow: sm` + `withBorder: true` + `radius: lg`; hover: `shadow: md` + 2 px translateY (CSS module). Recept-kártya: 4:3 kép, kategória-badge a képen (blur backdrop), cím max 2 sor (`lineClamp={2}`).  |
-| **Dark kontraszt** | Body text `gray.2` (~11:1), másodlagos szöveg min. `gray.4`; tiszta fehér szöveg kerülendő (halo-effekt); képekre 8%-os sötétítő overlay dark módban.                                                           |
-| **Motion**         | `respectReducedMotion: true` beállítva; áttűnések ≤ 200 ms.                                                                                                                                                     |
-| **Modal**          | Overlay blur 4 px + 45% opacity — modern, tartalom-fókuszú.                                                                                                                                                     |
+| Terület            | Irányelv                                                                                                                                                                                                       |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tipográfia**     | System font stack (zero font-loading költség); headings `fontWeight: 700`, h1 34/1.25 → h4 18/1.4. Input label: 500-as súly, `gray.7` (light) / `gray.4` (dark).                                               |
+| **Border-radius**  | `defaultRadius: 'md'` (10 px). Kártyák/modálok: `lg` (14 px), badge: `sm` (6 px) — a lekerekítés hierarchiát jelez (nagyobb felület → nagyobb rádiusz).                                                        |
+| **Árnyékok**       | Light: meleg tónusú (pink-alapú `rgba(38,6,28,…)`) dupla rétegű árnyékok. Dark: erősebb fekete árnyék + `withBorder: false` a kártyákon — sötétben az eleváció a felületszínből jöjjön, ne borderből.          |
+| **Spacing**        | Mantine defaults (4/8/16/24/32); kártya-belső: `md`, szekciók között `xl`.                                                                                                                                     |
+| **Kártya-dizájn**  | Light: `shadow: sm` + `withBorder: true` + `radius: lg`; hover: `shadow: md` + 2 px translateY (CSS module). Recept-kártya: 4:3 kép, kategória-badge a képen (blur backdrop), cím max 2 sor (`lineClamp={2}`). |
+| **Dark kontraszt** | Body text `gray.2` (~11:1), másodlagos szöveg min. `gray.4`; tiszta fehér szöveg kerülendő (halo-effekt); képekre 8%-os sötétítő overlay dark módban.                                                          |
+| **Motion**         | `respectReducedMotion: true` beállítva; áttűnések ≤ 200 ms.                                                                                                                                                    |
+| **Modal**          | Overlay blur 4 px + 45% opacity — modern, tartalom-fókuszú.                                                                                                                                                    |
 
 ### 4.3 A darkTheme bekötése (jelenleg dead code!)
 

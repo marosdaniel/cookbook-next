@@ -132,7 +132,9 @@ export const UserInsightsService = {
       UserInsightsRepository.findRecent(RECENT_USERS_LIMIT),
     ]);
 
-    const roleCounts = new Map(roleRows.map((row) => [row.role, row._count._all]));
+    const roleCounts = new Map(
+      roleRows.map((row) => [row.role, row._count._all]),
+    );
 
     return {
       totalUsers,

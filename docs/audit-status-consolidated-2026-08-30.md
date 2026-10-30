@@ -5,8 +5,8 @@
 > - [cookbook_next_audit_2026-07-04.md](cookbook_next_audit_2026-07-04.md) (40 tételes backlog)
 > - [cookbook_next_audit_2026-07-06.md](cookbook_next_audit_2026-07-06.md) (v2 audit, 42 tételes backlog)
 > - [improvement-backlog-2026-07-24.md](improvement-backlog-2026-07-24.md) (P0×8, P1×18, C×5, P2×14)
-    >
-> **Módszertan**: minden állítás a 2026-08-30-i kódbázis tényleges fájljain ellenőrizve (nem a doksik önbevallásán). A három forrás átfedő tételei össze vannak vonva; a forrás-oszlop jelzi az eredetet.
+>     >
+  **Módszertan**: minden állítás a 2026-08-30-i kódbázis tényleges fájljain ellenőrizve (nem a doksik önbevallásán). A három forrás átfedő tételei össze vannak vonva; a forrás-oszlop jelzi az eredetet.
 
 > **Aktuális admin-státusz (2026-10-10):** az audit idején hiányzó admin MVP azóta elkészült: védett `/admin` felület, metadata CRUD, AuditLog modell/írás és E2E route-guard teszt. A régi táblázat többi státusza továbbra is a 2026-08-30-i kódbázist írja le; a felhasználó-/receptmoderáció, dashboard és auditnapló UI még nyitott.
 

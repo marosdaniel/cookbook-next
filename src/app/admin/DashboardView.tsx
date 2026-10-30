@@ -39,7 +39,14 @@ type PanelProps = {
 };
 
 const Panel = ({ title, testId, children }: Readonly<PanelProps>) => (
-  <Paper withBorder p="md" radius="md" shadow="xs" h="100%" data-testid={testId}>
+  <Paper
+    withBorder
+    p="md"
+    radius="md"
+    shadow="xs"
+    h="100%"
+    data-testid={testId}
+  >
     <Text fw={600} mb="md">
       {title}
     </Text>
@@ -180,7 +187,8 @@ const DashboardView = ({ overview }: Readonly<DashboardViewProps>) => {
                           {user.firstName} {user.lastName}
                         </Text>
                         <Text size="xs" c="dimmed">
-                          @{user.userName} · {formatJoinedDate(user.joinedAt, locale)}
+                          @{user.userName} ·{' '}
+                          {formatJoinedDate(user.joinedAt, locale)}
                         </Text>
                       </div>
                     </Group>

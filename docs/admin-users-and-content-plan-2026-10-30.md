@@ -4,13 +4,13 @@ Dátum: 2026-10-30. Ez a dokumentum a `feat/admin-user-insights-and-design` ág 
 
 ## 1. Ebben a körben elkészült
 
-| Terület | Tartalom |
-|---|---|
-| Design | Új `AdminShell`: márkagradiens sáv a fejlécen, gradiens pajzs-ikon és "Admin" jelvény, csoportosított oldalsáv (Áttekintés, Emberek, Tartalom), világos és sötét módban is olvasható felületek (csak Mantine-változók, hex szín nélkül) |
-| Oldalsáv | A publikus oldalsáv legelső eleme az admin felületre vezet (csak `ADMIN` szerepnél), gradiens pajzs-ikonnal |
-| Dashboard (`/admin`) | Statisztika-kártyák animált számokkal; Mantine Charts: regisztrációk (AreaChart), szerepek (DonutChart), legaktívabb szerzők (BarChart); legújabb tagok |
-| Felhasználók (`/admin/users`) | Keresés (név, felhasználónév, email), szerepszűrő, lapozás, szerep-jelvények, receptszám, csatlakozás ideje (csak olvasható) |
-| Adatréteg | `src/server/modules/admin/userInsights*`: repository és service, `assertAdminRole`; szerveroldali oldalbetöltés, **nem GraphQL** |
+| Terület                       | Tartalom                                                                                                                                                                                                                                |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Design                        | Új `AdminShell`: márkagradiens sáv a fejlécen, gradiens pajzs-ikon és "Admin" jelvény, csoportosított oldalsáv (Áttekintés, Emberek, Tartalom), világos és sötét módban is olvasható felületek (csak Mantine-változók, hex szín nélkül) |
+| Oldalsáv                      | A publikus oldalsáv legelső eleme az admin felületre vezet (csak `ADMIN` szerepnél), gradiens pajzs-ikonnal                                                                                                                             |
+| Dashboard (`/admin`)          | Statisztika-kártyák animált számokkal; Mantine Charts: regisztrációk (AreaChart), szerepek (DonutChart), legaktívabb szerzők (BarChart); legújabb tagok                                                                                 |
+| Felhasználók (`/admin/users`) | Keresés (név, felhasználónév, email), szerepszűrő, lapozás, szerep-jelvények, receptszám, csatlakozás ideje (csak olvasható)                                                                                                            |
+| Adatréteg                     | `src/server/modules/admin/userInsights*`: repository és service, `assertAdminRole`; szerveroldali oldalbetöltés, **nem GraphQL**                                                                                                        |
 
 ### Tervezői döntések
 
@@ -21,35 +21,35 @@ Dátum: 2026-10-30. Ez a dokumentum a `feat/admin-user-insights-and-design` ág 
 
 ## 2. További felhasználói tartalmak
 
-| Tartalom | Leírás | Előfeltétel | Prioritás |
-|---|---|---|---|
-| Felhasználó-részletező (`/admin/users/[id]`) | Profil, receptek, értékelések, kedvencek, követők, az adott felhasználót érintő admin műveletek | Auditnapló-nézet | P1 |
-| Szerepkezelés | USER, BLOGGER, ADMIN váltás; saját szerep és az utolsó admin védelme; `sessionVersion` növelése; audit | Server Action vagy GraphQL mutáció | P1 |
-| Felfüggesztés és visszaállítás | `UserStatus` mező, belépés tiltása, indok, audit | Prisma-migráció, `authorize` módosítás | P1 |
-| Kényszerített kijelentkeztetés | `sessionVersion` növelése, cache-kulcs törlése | — | P1 |
-| Jelszó-visszaállítás indítása | A meglévő folyamat indítása a felhasználó nevében; az admin nem látja a tokent | Rate limit az emailre | P2 |
-| Fiók törlése | Megerősítés begépeléssel, audit | `docs/user-deletion-policy.md` döntés | P2 |
-| Kötegelt műveletek | Kijelölés és tömeges felfüggesztés vagy kijelentkeztetés | Sorszintű műveletek | P2 |
-| Aktivitás-idővonal | Egy felhasználó eseményei időrendben | AuditLog bővítése | P3 |
-| Kohorsz-diagram | Regisztráció és megtartás hónapok szerint | Aggregált lekérdezés | P3 |
-| CSV export | A szűrt lista exportja | Adatvédelmi mérlegelés, audit | P3 |
+| Tartalom                                     | Leírás                                                                                                 | Előfeltétel                            | Prioritás |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------- | --------- |
+| Felhasználó-részletező (`/admin/users/[id]`) | Profil, receptek, értékelések, kedvencek, követők, az adott felhasználót érintő admin műveletek        | Auditnapló-nézet                       | P1        |
+| Szerepkezelés                                | USER, BLOGGER, ADMIN váltás; saját szerep és az utolsó admin védelme; `sessionVersion` növelése; audit | Server Action vagy GraphQL mutáció     | P1        |
+| Felfüggesztés és visszaállítás               | `UserStatus` mező, belépés tiltása, indok, audit                                                       | Prisma-migráció, `authorize` módosítás | P1        |
+| Kényszerített kijelentkeztetés               | `sessionVersion` növelése, cache-kulcs törlése                                                         | —                                      | P1        |
+| Jelszó-visszaállítás indítása                | A meglévő folyamat indítása a felhasználó nevében; az admin nem látja a tokent                         | Rate limit az emailre                  | P2        |
+| Fiók törlése                                 | Megerősítés begépeléssel, audit                                                                        | `docs/user-deletion-policy.md` döntés  | P2        |
+| Kötegelt műveletek                           | Kijelölés és tömeges felfüggesztés vagy kijelentkeztetés                                               | Sorszintű műveletek                    | P2        |
+| Aktivitás-idővonal                           | Egy felhasználó eseményei időrendben                                                                   | AuditLog bővítése                      | P3        |
+| Kohorsz-diagram                              | Regisztráció és megtartás hónapok szerint                                                              | Aggregált lekérdezés                   | P3        |
+| CSV export                                   | A szűrt lista exportja                                                                                 | Adatvédelmi mérlegelés, audit          | P3        |
 
 ## 3. Egyéb admin-tartalmak ötletei
 
-| Ötlet | Miért hasznos | Ingyenes megoldás | Munka |
-|---|---|---|---|
-| Recept-moderáció | Elrejtés vagy törlés szabálysértő receptnél | `RecipeStatus` mező, Mantine tábla | L |
-| Audit napló nézet | Ki mit módosított; a napló már íródik | Meglévő `AuditLog` tábla | M |
-| Értékelések moderálása | Visszaélések kezelése | Táblázat és törlés auditálva | M |
-| Rendszerállapot | Adatbázis- és Redis-elérhetőség, verzió, build azonosító | Meglévő megszakító állapota | S |
-| Kvóta-figyelő | Upstash (500 ezer parancs/hó), Neon és Vercel ingyenes keretek közelsége | Szolgáltatók API-ja vagy kézi összefoglaló | M |
-| Karbantartási üzenet | Bannert lehet mutatni a publikus oldalon | `SiteSetting` tábla vagy Edge Config | M |
-| Cache-kezelés | A metadata- és listacache kézi ürítése | `invalidateCacheScope` | S |
-| Biztonsági napló | Rate limit találatok, sikertelen belépések összesítve | Strukturált pino naplók | M |
-| Email-sablonok és tesztküldés | A reset és welcome levelek előnézete | Nodemailer | M |
-| Tartalom-statisztikák | Népszerű kategóriák, címkék, konyhák | Aggregált lekérdezések, Mantine Charts | M |
-| Bejelentések kezelése | Felhasználói jelentések sorba állítása | Új modell, a komment-rendszerrel együtt | L |
-| SEO-ellenőrzés | Sitemap, feed és JSON-LD gyors ellenőrzése | Meglévő végpontok | S |
+| Ötlet                         | Miért hasznos                                                            | Ingyenes megoldás                          | Munka |
+| ----------------------------- | ------------------------------------------------------------------------ | ------------------------------------------ | ----- |
+| Recept-moderáció              | Elrejtés vagy törlés szabálysértő receptnél                              | `RecipeStatus` mező, Mantine tábla         | L     |
+| Audit napló nézet             | Ki mit módosított; a napló már íródik                                    | Meglévő `AuditLog` tábla                   | M     |
+| Értékelések moderálása        | Visszaélések kezelése                                                    | Táblázat és törlés auditálva               | M     |
+| Rendszerállapot               | Adatbázis- és Redis-elérhetőség, verzió, build azonosító                 | Meglévő megszakító állapota                | S     |
+| Kvóta-figyelő                 | Upstash (500 ezer parancs/hó), Neon és Vercel ingyenes keretek közelsége | Szolgáltatók API-ja vagy kézi összefoglaló | M     |
+| Karbantartási üzenet          | Bannert lehet mutatni a publikus oldalon                                 | `SiteSetting` tábla vagy Edge Config       | M     |
+| Cache-kezelés                 | A metadata- és listacache kézi ürítése                                   | `invalidateCacheScope`                     | S     |
+| Biztonsági napló              | Rate limit találatok, sikertelen belépések összesítve                    | Strukturált pino naplók                    | M     |
+| Email-sablonok és tesztküldés | A reset és welcome levelek előnézete                                     | Nodemailer                                 | M     |
+| Tartalom-statisztikák         | Népszerű kategóriák, címkék, konyhák                                     | Aggregált lekérdezések, Mantine Charts     | M     |
+| Bejelentések kezelése         | Felhasználói jelentések sorba állítása                                   | Új modell, a komment-rendszerrel együtt    | L     |
+| SEO-ellenőrzés                | Sitemap, feed és JSON-LD gyors ellenőrzése                               | Meglévő végpontok                          | S     |
 
 ## 4. Fejlesztési terv
 

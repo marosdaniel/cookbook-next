@@ -1,7 +1,7 @@
 import type {
+  Prisma,
   Ingredient as PrismaIngredient,
   PreparationStep as PrismaPreparationStep,
-  Prisma,
   Recipe as PrismaRecipe,
 } from '@prisma/client';
 

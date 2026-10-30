@@ -4,14 +4,14 @@ Dátum: 2026-10-29. Az alapja a mai (2026-10-29) backend-commitok átnézése.
 
 ## 1. Elvégzett javítások
 
-| Tétel | Megoldás | Hol |
-|---|---|---|
-| Cache-kulcsok (kedvencek, követések, saját receptek) | Felhasználónként egyetlen kanonikus kulcs a maximális oldalmérettel, a `limit` olvasáskor szeletel; a korlátlan lista le van fedve a maximummal | PR #42 |
-| Tömeges törlés audit | A `deleteAll*` repository-metódusok kizárólag `$transaction`-ben futnak, a naplóírás kötelező, tranzakció nélküli visszaesés nincs | PR #42 |
-| Session-feloldás | `getSessionSafely()` (`src/lib/auth/safeSession.ts`): sosem dob, a visszavont session névtelen, a váratlan hiba naplózódik; az admin layout és a GraphQL-kontextus használja | PR #43 |
-| Törlések mellékhatásai | Az érintett azonosítók begyűjtése a törlés előtt, utána recept-, szerző-, felhasználói lista- és session-kulcsok érvénytelenítése; admin által más fiókjának törlése `USER_DELETED` audit-bejegyzést ír ugyanabban a tranzakcióban | PR #43 |
-| Fióktörlési szabályzat | `docs/user-deletion-policy.md`: a jelenlegi Cascade viselkedés és a döntési lehetőségek (**a döntés nyitott**) | PR #43 |
-| Allowlist-regiszter védőháló | `persistedQueryRegistry.coverage.test.ts`: minden generált kliens-dokumentum szerepel-e a regiszterben | PR #43 |
+| Tétel                                                | Megoldás                                                                                                                                                                                                                           | Hol    |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Cache-kulcsok (kedvencek, követések, saját receptek) | Felhasználónként egyetlen kanonikus kulcs a maximális oldalmérettel, a `limit` olvasáskor szeletel; a korlátlan lista le van fedve a maximummal                                                                                    | PR #42 |
+| Tömeges törlés audit                                 | A `deleteAll*` repository-metódusok kizárólag `$transaction`-ben futnak, a naplóírás kötelező, tranzakció nélküli visszaesés nincs                                                                                                 | PR #42 |
+| Session-feloldás                                     | `getSessionSafely()` (`src/lib/auth/safeSession.ts`): sosem dob, a visszavont session névtelen, a váratlan hiba naplózódik; az admin layout és a GraphQL-kontextus használja                                                       | PR #43 |
+| Törlések mellékhatásai                               | Az érintett azonosítók begyűjtése a törlés előtt, utána recept-, szerző-, felhasználói lista- és session-kulcsok érvénytelenítése; admin által más fiókjának törlése `USER_DELETED` audit-bejegyzést ír ugyanabban a tranzakcióban | PR #43 |
+| Fióktörlési szabályzat                               | `docs/user-deletion-policy.md`: a jelenlegi Cascade viselkedés és a döntési lehetőségek (**a döntés nyitott**)                                                                                                                     | PR #43 |
+| Allowlist-regiszter védőháló                         | `persistedQueryRegistry.coverage.test.ts`: minden generált kliens-dokumentum szerepel-e a regiszterben                                                                                                                             | PR #43 |
 
 ## 2. Nyitott tételek
 

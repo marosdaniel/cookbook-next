@@ -1,7 +1,6 @@
 'use client';
 
 import '@mantine/charts/styles.css';
-import { AreaChart, BarChart, DonutChart } from '@mantine/charts';
 import { ColorSwatch, Group, Stack, Text } from '@mantine/core';
 import type {
   DailyRegistration,

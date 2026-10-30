@@ -90,7 +90,11 @@ const UsersView = ({ result }: Readonly<UsersViewProps>) => {
             />
             <Button type="submit">{t('users.search')}</Button>
             {hasFilters ? (
-              <Button component={Link} href={ADMIN_ROUTES.USERS} variant="subtle">
+              <Button
+                component={Link}
+                href={ADMIN_ROUTES.USERS}
+                variant="subtle"
+              >
                 {t('users.reset')}
               </Button>
             ) : null}
@@ -112,7 +116,10 @@ const UsersView = ({ result }: Readonly<UsersViewProps>) => {
             </Table.Thead>
             <Table.Tbody>
               {result.users.map((user) => (
-                <Table.Tr key={user.id} data-testid={`admin-user-row-${user.id}`}>
+                <Table.Tr
+                  key={user.id}
+                  data-testid={`admin-user-row-${user.id}`}
+                >
                   <Table.Td>
                     <Group gap="sm" wrap="nowrap">
                       <Avatar color="pink" radius="xl" size="sm">

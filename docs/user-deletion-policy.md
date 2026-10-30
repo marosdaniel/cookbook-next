@@ -14,11 +14,11 @@ A kód a törlés után érvényteleníti a felhasználó cache-bejegyzéseit (s
 
 ## 2. Lehetőségek
 
-| Lehetőség | Leírás | Előny | Hátrány |
-|---|---|---|---|
-| A. Cascade (jelenlegi) | A fiókkal együtt a receptek is törlődnek | Egyszerű, adatvédelmi szempontból egyértelmű (nem marad személyhez köthető tartalom) | Más felhasználók által kedvencelt, értékelt receptek eltűnnek; nem visszafordítható |
-| B. Anonimizálás | `createdBy` nullable, `onDelete: SetNull`; a recept "törölt felhasználó" szerzővel megmarad | A közösségi tartalom megmarad | Több kód- és UI-munka (szerző nélküli receptek kezelése, jogosultságok, SEO); a recept szövege továbbra is személyes adatot tartalmazhat |
-| C. Soft delete | `deletedAt` a felhasználón, a fiók elérhetetlen, de az adat marad | Visszaállítható | Személyes adat marad az adatbázisban; külön törlési folyamat kell a végleges eltávolításhoz |
+| Lehetőség              | Leírás                                                                                      | Előny                                                                                | Hátrány                                                                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| A. Cascade (jelenlegi) | A fiókkal együtt a receptek is törlődnek                                                    | Egyszerű, adatvédelmi szempontból egyértelmű (nem marad személyhez köthető tartalom) | Más felhasználók által kedvencelt, értékelt receptek eltűnnek; nem visszafordítható                                                      |
+| B. Anonimizálás        | `createdBy` nullable, `onDelete: SetNull`; a recept "törölt felhasználó" szerzővel megmarad | A közösségi tartalom megmarad                                                        | Több kód- és UI-munka (szerző nélküli receptek kezelése, jogosultságok, SEO); a recept szövege továbbra is személyes adatot tartalmazhat |
+| C. Soft delete         | `deletedAt` a felhasználón, a fiók elérhetetlen, de az adat marad                           | Visszaállítható                                                                      | Személyes adat marad az adatbázisban; külön törlési folyamat kell a végleges eltávolításhoz                                              |
 
 ## 3. Javaslat
 

@@ -107,7 +107,10 @@ describe('canonical per-user cache entries', () => {
       const limited = await FollowService.getFollowing('user-1', 2);
       const unlimited = await FollowService.getFollowing('user-1');
 
-      expect(limited.users.map((user) => user.id)).toEqual(['user-1', 'user-2']);
+      expect(limited.users.map((user) => user.id)).toEqual([
+        'user-1',
+        'user-2',
+      ]);
       expect(limited.totalFollowing).toBe(3);
       expect(unlimited.users).toHaveLength(3);
       expect(mockFindFollowing).toHaveBeenCalledTimes(1);

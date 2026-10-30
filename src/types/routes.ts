@@ -64,9 +64,9 @@ export const ADMIN_ROUTES = {
 export const adminUsersRoute = (searchParams: URLSearchParams): Route => {
   const query = searchParams.toString();
 
-  return (query
-    ? `${ADMIN_ROUTES.USERS}?${query}`
-    : ADMIN_ROUTES.USERS) as Route;
+  return (
+    query ? `${ADMIN_ROUTES.USERS}?${query}` : ADMIN_ROUTES.USERS
+  ) as Route;
 };
 
 type StaticPublicRoute = Exclude<

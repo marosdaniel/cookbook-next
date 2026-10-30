@@ -44,9 +44,9 @@ describe('DeletionRepository', () => {
   it('collects the ids of the users that would be deleted, bounded', async () => {
     mockUserFindMany.mockResolvedValue([{ id: 'user-2' }, { id: 'user-3' }]);
 
-    await expect(DeletionRepository.findUserIdsExcept('admin-1')).resolves.toEqual(
-      ['user-2', 'user-3'],
-    );
+    await expect(
+      DeletionRepository.findUserIdsExcept('admin-1'),
+    ).resolves.toEqual(['user-2', 'user-3']);
     expect(mockUserFindMany).toHaveBeenCalledWith({
       where: { id: { not: 'admin-1' } },
       select: { id: true },

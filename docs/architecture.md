@@ -80,15 +80,15 @@ Megjegyzés: a service-ek egy része még a GraphQL-os hibakezelést (`throwCust
 
 ## 4. Biztonsági modell röviden
 
-| Réteg | Megoldás | Megjegyzés |
-|---|---|---|
-| Dokumentum-allowlist | `allowlist.ts` + `persistedQueryRegistry.ts` | Alapból csak productionben kényszerít (`GRAPHQL_ALLOWLIST_ENFORCE`). A `persistedQueryRegistry.coverage.test.ts` teszt minden generált kliens-dokumentumot ellenőriz. |
-| Jogosultság | `rootFieldAuth.ts`, `ROOT_FIELD_POLICY` | A kért gyökérmezők alapján dönt (fragmenseket is feloldva), ismeretlen mező = `ADMIN` (fail-closed). Teszt ellenőrzi, hogy a séma minden Query/Mutation mezőjéhez van szabály. |
-| Rate limit (HTTP) | `route.ts` | Parse előtti globális IP-limit: 100 kérés / 60 másodperc. |
-| Rate limit (művelet) | `rateLimit.ts` plugin | `auth-sensitive` 5/10 perc IP-nként, `password-change` 5/10 perc, `content-write` 30/10 perc, `rating` 60/10 perc, `admin` 60/10 perc felhasználónként; `resetPassword` emailenként (SHA-256 hash) 3/óra. |
-| Belépés | `authorize` (`auth.ts`) | Email (hash) szerint 5 próba / 15 perc, IP szerint 20 próba / 15 perc; egységes hibaüzenet. |
-| Mezőszint | `fieldAuth.ts` | `User.email`, `User.favoriteRecipes`: csak saját vagy admin. |
-| Audit | `AuditLog` | Admin műveletek, a tömeges és fióktörlések ugyanabban a tranzakcióban íródnak, mint a törlés. |
+| Réteg                | Megoldás                                     | Megjegyzés                                                                                                                                                                                                |
+| -------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dokumentum-allowlist | `allowlist.ts` + `persistedQueryRegistry.ts` | Alapból csak productionben kényszerít (`GRAPHQL_ALLOWLIST_ENFORCE`). A `persistedQueryRegistry.coverage.test.ts` teszt minden generált kliens-dokumentumot ellenőriz.                                     |
+| Jogosultság          | `rootFieldAuth.ts`, `ROOT_FIELD_POLICY`      | A kért gyökérmezők alapján dönt (fragmenseket is feloldva), ismeretlen mező = `ADMIN` (fail-closed). Teszt ellenőrzi, hogy a séma minden Query/Mutation mezőjéhez van szabály.                            |
+| Rate limit (HTTP)    | `route.ts`                                   | Parse előtti globális IP-limit: 100 kérés / 60 másodperc.                                                                                                                                                 |
+| Rate limit (művelet) | `rateLimit.ts` plugin                        | `auth-sensitive` 5/10 perc IP-nként, `password-change` 5/10 perc, `content-write` 30/10 perc, `rating` 60/10 perc, `admin` 60/10 perc felhasználónként; `resetPassword` emailenként (SHA-256 hash) 3/óra. |
+| Belépés              | `authorize` (`auth.ts`)                      | Email (hash) szerint 5 próba / 15 perc, IP szerint 20 próba / 15 perc; egységes hibaüzenet.                                                                                                               |
+| Mezőszint            | `fieldAuth.ts`                               | `User.email`, `User.favoriteRecipes`: csak saját vagy admin.                                                                                                                                              |
+| Audit                | `AuditLog`                                   | Admin műveletek, a tömeges és fióktörlések ugyanabban a tranzakcióban íródnak, mint a törlés.                                                                                                             |
 
 ### Ismert korlátok
 
