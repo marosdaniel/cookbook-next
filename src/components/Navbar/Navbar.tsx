@@ -1,8 +1,15 @@
 'use client';
 
 import { Box, Button, Loader, ScrollArea, Stack } from '@mantine/core';
-import { IconBook, IconLogin, IconLogout, IconPlus } from '@tabler/icons-react';
+import {
+  IconBook,
+  IconLogin,
+  IconLogout,
+  IconPlus,
+  IconShieldLock,
+} from '@tabler/icons-react';
 import { AnimatePresence, motion } from 'motion/react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { Session } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
@@ -10,7 +17,9 @@ import { useTranslations } from 'next-intl';
 import type { FC } from 'react';
 import { apolloClient } from '@/lib/apollo/client';
 import {
+  ADMIN_ROUTES,
   AUTH_ROUTES,
+  isAdminRoute,
   isProtectedRoute,
   PROTECTED_ROUTES,
   PUBLIC_ROUTES,
@@ -22,6 +31,7 @@ import NavbarLinksGroup from './NavbarLinksGroup/NavbarLinksGroup';
 
 const Navbar: FC = () => {
   const translate = useTranslations('sidebar');
+  const adminTranslate = useTranslations('adminConsole');
   const authTranslate = useTranslations('auth');
   const { data: session, status } = useSession() as {
     data: Session | null;
@@ -30,9 +40,10 @@ const Navbar: FC = () => {
   const pathname = usePathname();
   const isSessionLoading = status === 'loading';
   const isPending = false;
+  const isCurrentUserAdmin = session?.user?.role === 'ADMIN';
 
   const handleLogout = async () => {
-    const shouldRedirect = isProtectedRoute(pathname);
+    const shouldRedirect = isProtectedRoute(pathname) || isAdminRoute(pathname);
 
     void apolloClient.clearStore();
     await signOut({
@@ -41,6 +52,16 @@ const Navbar: FC = () => {
   };
 
   const navData = [
+    ...(isCurrentUserAdmin
+      ? [
+          {
+            label: adminTranslate('sidebarAdmin'),
+            icon: IconShieldLock,
+            link: ADMIN_ROUTES.DASHBOARD,
+            special: true,
+          },
+        ]
+      : []),
     ...(session
       ? [
           {

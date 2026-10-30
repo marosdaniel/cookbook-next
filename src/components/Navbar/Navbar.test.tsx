@@ -28,6 +28,7 @@ vi.mock('next-intl', () => ({
       allRecipes: 'All recipes',
       newRecipe: 'New recipe',
       logout: 'Logout',
+      sidebarAdmin: 'Admin console',
     })[key] || key,
 }));
 
@@ -38,6 +39,10 @@ vi.mock('react', async () => {
     useTransition: () => [false, (callback: () => void) => callback()],
   };
 });
+
+vi.mock('@/lib/apollo/client', () => ({
+  apolloClient: { clearStore: vi.fn() },
+}));
 
 vi.mock('../buttons/NavButton', () => ({
   default: ({ label, href }: { label: string; href: string }) => (
@@ -53,7 +58,7 @@ vi.mock('../buttons/UserButton', () => ({
 
 vi.mock('./NavbarLinksGroup/NavbarLinksGroup', () => ({
   default: ({ label, link }: { label: string; link?: string }) => (
-    <div data-testid={`navbar-group-${label}`}>
+    <div data-testid={`navbar-group-${typeof label === 'string' ? label : 'user'}`}>
       {label}
       {link ? `:${link}` : ''}
     </div>
@@ -86,6 +91,7 @@ describe('Navbar', () => {
     expect(screen.getByTestId('navbar-links')).toBeInTheDocument();
     expect(screen.getByTestId('navbar-footer')).toBeInTheDocument();
     expect(screen.getByText('login')).toBeInTheDocument();
+    expect(screen.queryByText('Admin console')).not.toBeInTheDocument();
     expect(screen.queryByText('Logout')).not.toBeInTheDocument();
   });
 
@@ -101,7 +107,7 @@ describe('Navbar', () => {
 
   it('renders the authenticated footer and user section when a session exists', () => {
     mockUseSession.mockReturnValue({
-      data: { user: { userName: 'Jane Doe', email: 'jane@example.com' } },
+      data: { user: { userName: 'Jane Doe', email: 'jane@example.com', role: 'USER' } },
       status: 'authenticated',
     });
 
@@ -109,11 +115,26 @@ describe('Navbar', () => {
 
     expect(screen.getByTestId('user-button')).toBeInTheDocument();
     expect(screen.getByText('Logout')).toBeInTheDocument();
+    expect(screen.queryByText('Admin console')).not.toBeInTheDocument();
+  });
+
+  it('renders the admin entry first and links to the dashboard only for admins', () => {
+    mockUseSession.mockReturnValue({
+      data: { user: { userName: 'Jane Admin', email: 'admin@example.com', role: 'ADMIN' } },
+      status: 'authenticated',
+    });
+
+    render(<Navbar />);
+
+    const groups = screen.getAllByTestId(/^navbar-group-/);
+    expect(groups[0]).toHaveTextContent('Admin console');
+    expect(groups[0]).toHaveTextContent('/admin');
+    expect(screen.getByTestId('navbar-group-Admin console')).toBeInTheDocument();
   });
 
   it('uses a public redirect callback when logging out from a non-protected route', () => {
     mockUseSession.mockReturnValue({
-      data: { user: { userName: 'Jane Doe', email: 'jane@example.com' } },
+      data: { user: { userName: 'Jane Doe', email: 'jane@example.com', role: 'USER' } },
       status: 'authenticated',
     });
     mockUsePathname.mockReturnValue('/recipes');
@@ -126,7 +147,7 @@ describe('Navbar', () => {
 
   it('uses the login route callback when logging out from a protected route', () => {
     mockUseSession.mockReturnValue({
-      data: { user: { userName: 'Jane Doe', email: 'jane@example.com' } },
+      data: { user: { userName: 'Jane Doe', email: 'jane@example.com', role: 'USER' } },
       status: 'authenticated',
     });
     mockUsePathname.mockReturnValue('/recipes/create');
