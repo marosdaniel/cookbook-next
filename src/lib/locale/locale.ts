@@ -1,4 +1,7 @@
 import type { LocaleMessages } from '@/types/common';
+import adminConsoleDe from '../../locales/admin-console/de.json';
+import adminConsoleEnGb from '../../locales/admin-console/en-gb.json';
+import adminConsoleHu from '../../locales/admin-console/hu.json';
 import deMessages from '../../locales/de.json';
 import enGbMessages from '../../locales/en-gb.json';
 import huMessages from '../../locales/hu.json';
@@ -8,10 +11,21 @@ export const DEFAULT_LOCALE = 'en-gb';
 
 const SUPPORTED_LOCALES = new Set(['en-gb', 'hu', 'de']);
 
+// The admin console strings live in their own namespace (`adminConsole`) so
+// the large main locale files do not have to change; they are merged here.
+const withAdminConsole = (
+  messages: unknown,
+  adminConsole: Record<string, unknown>,
+): LocaleMessages =>
+  ({
+    ...(messages as Record<string, unknown>),
+    adminConsole,
+  }) as unknown as LocaleMessages;
+
 const MESSAGES_MAP: Record<string, LocaleMessages> = {
-  'en-gb': enGbMessages as unknown as LocaleMessages,
-  hu: huMessages as unknown as LocaleMessages,
-  de: deMessages as unknown as LocaleMessages,
+  'en-gb': withAdminConsole(enGbMessages, adminConsoleEnGb),
+  hu: withAdminConsole(huMessages, adminConsoleHu),
+  de: withAdminConsole(deMessages, adminConsoleDe),
 };
 
 export const LOCALE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;

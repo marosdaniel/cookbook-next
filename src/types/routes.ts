@@ -54,8 +54,20 @@ export const PROTECTED_ROUTES = {
 // Admin routes; add an entry only together with its page.
 export const ADMIN_ROUTES = {
   DASHBOARD: '/admin',
+  USERS: '/admin/users',
   METADATA: '/admin/metadata',
 } as const satisfies Record<string, Route>;
+
+/**
+ * Builds the admin users list URL with the given filter/pagination params.
+ */
+export const adminUsersRoute = (searchParams: URLSearchParams): Route => {
+  const query = searchParams.toString();
+
+  return (query
+    ? `${ADMIN_ROUTES.USERS}?${query}`
+    : ADMIN_ROUTES.USERS) as Route;
+};
 
 type StaticPublicRoute = Exclude<
   (typeof PUBLIC_ROUTES)[keyof typeof PUBLIC_ROUTES],
