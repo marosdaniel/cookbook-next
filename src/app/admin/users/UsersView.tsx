@@ -92,7 +92,7 @@ const UsersView = ({ result }: Readonly<UsersViewProps>) => {
             {hasFilters ? (
               <Button
                 component={Link}
-                href={ADMIN_ROUTES.USERS}
+                href={adminUsersRoute()}
                 variant="subtle"
               >
                 {t('users.reset')}
