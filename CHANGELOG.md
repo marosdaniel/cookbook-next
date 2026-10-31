@@ -1,3 +1,11 @@
+# [3.16.0](https://github.com/marosdaniel/cookbook-next/compare/v3.15.0...v3.16.0) (2026-10-31)
+
+
+### Features
+
+* **admin:** add role change and delete services with server actions ([b77a92e](https://github.com/marosdaniel/cookbook-next/commit/b77a92e4d24ef72142b552936fb3547d03a68a01))
+* **admin:** add user actions menu, details modal and delete confirmation ([471d34c](https://github.com/marosdaniel/cookbook-next/commit/471d34c9f0599717099137b91ceb86eef5de3ff0))
+
 # [3.15.0](https://github.com/marosdaniel/cookbook-next/compare/v3.14.0...v3.15.0) (2026-10-30)
 
 ### Bug Fixes
