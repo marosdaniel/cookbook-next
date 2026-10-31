@@ -64,19 +64,31 @@ export const StatCard = ({
   >
     <Group justify="space-between" align="flex-start" wrap="nowrap">
       <div>
-        <Text size="xs" tt="uppercase" fw={700} c="dimmed">
+        <Text
+          size="xs"
+          tt="uppercase"
+          fw={700}
+          c="dimmed"
+          data-testid="admin-stat-label"
+        >
           {label}
         </Text>
-        <Text className={classes.statValue}>
+        <Text className={classes.statValue} data-testid="admin-stat-value">
           <AnimatedNumber value={value} locale={locale} />
         </Text>
       </div>
-      <ThemeIcon variant="light" color="pink" size={40} radius="md">
+      <ThemeIcon
+        variant="light"
+        color="pink"
+        size={40}
+        radius="md"
+        data-testid="admin-stat-icon"
+      >
         {icon}
       </ThemeIcon>
     </Group>
     {hint ? (
-      <Text size="xs" c="dimmed" mt="xs">
+      <Text size="xs" c="dimmed" mt="xs" data-testid="admin-stat-hint">
         {hint}
       </Text>
     ) : null}
