@@ -5,6 +5,8 @@
 
 > **Megvalósítási frissítés (2026-10-10):** az admin MVP elkészült. Elérhető a védett `/admin` felület és az AdminShell, a metadata CRUD (listázás, létrehozás, szerkesztés, aktiválás és rendezés), valamint az admin műveletek auditnaplózása. A route-guardhoz E2E-teszt is tartozik. A felhasználó- és receptmoderáció, a statisztikai dashboard és az auditnapló UI-ja továbbra is a későbbi fázisok része. Az alábbi állapotfelmérés a 2026-08-30-i kiindulópontot rögzíti.
 
+> **Megvalósítási frissítés (2026-10-31):** a 2. fázis nagy része elkészült. Kész a **dashboard** (`/admin`, 2026-10-30: statisztika-kártyák, Mantine diagramok, legújabb tagok), a **felhasználólista** (`/admin/users`: keresés, szerepszűrő, lapozás), a **szerepváltás**, a **felhasználó törlése** és a **részletező modál** (2026-10-31). Ezek **Server Actionként és szerveroldali service-ként** készültek, nem GraphQL-műveletként (lásd 5.3). Továbbra is nyitott: a `UserStatus` migráció és a felfüggesztés, az auditnapló UI-ja, a `RecipeStatus` és a receptmoderáció. Részletek: [admin-users-and-content-plan-2026-10-30.md](admin-users-and-content-plan-2026-10-30.md) és [admin-user-management-plan-2026-10-31.md](admin-user-management-plan-2026-10-31.md).
+
 ---
 
 ## 1. A korábbi terv felülvizsgálata — mi változott és miért
@@ -14,10 +16,10 @@ A 07-06-os terv négy pillére: (a) kétrétegű route-védelem, (b) `MetadataEn
 | A 07-06 terv pontja                               | Állapot 2026-08-30                                                                                                                                                     | Változtatás ebben a tervben                                                                                                                                                                         |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `proxy.ts` kiegészítése admin-ellenőrzéssel       | **Részben kész**: a [routePolicies.ts](../src/lib/auth/routePolicies.ts) már ismeri az `admin` route family-t, a proxy centralizált policy-ből dolgozik                | Nem kell új proxy-logika, csak az `/admin` family **aktiválása** + a layout guard megírása. A 07-06-os inline `pathname.startsWith('/admin')` kódrészlet **elavult** — a policy-modul a helyes hely |
-| `MetadataEntry` modell + migráció + seed          | **Kész, más néven**: `Metadata` modell (`MetadataType` enum, `isActive`, `sortOrder`), migráció `20260726000000_add_metadata_model`, seed a `METADATA_DEFINITIONS`-ból | A terv CRUD-része marad; **új elem**: a `METADATA_DEFINITIONS` fájl szerepének seed-only-ra szűkítése, hogy ne legyen két igazságforrás (lásd 5.2)                                                  |
-| Admin GraphQL API nulláról                        | **Részben kész**: az operationsConfig-ban már 5 admin művelet él (`DELETE_ALL_USER`, `CLEAN_USER_RECIPES`, `DELETE_ALL_RECIPES`, `CREATE_METADATA`, `DELETE_METADATA`) | A destruktív „delete all” műveletek **kivezetendők vagy audit-log mögé zárandók** (lásd 7.3); a terv finomabb granularitású műveleteket ad helyettük                                                |
-| `AuditLog`, `UserStatus`, `RecipeStatus` modellek | Nem készültek el                                                                                                                                                       | Változatlanul szükségesek; a séma pontosítva (7.1)                                                                                                                                                  |
-| UI: Mantine Table + szűrők                        | Nem készült el                                                                                                                                                         | Kibővítve: typedRoutes-konvenció, motion-integráció, cursor-pagináció (ami azóta bevezetett minta), persisted-query-registry regisztráció — ezek a 07-06 tervből **hiányoztak**                     |
+| `MetadataEntry` modell + migráció + seed          | **Kész, más néven**: `Metadata` modell (`MetadataType` enum, `isActive`, `sortOrder`), migráció `20260726000000_add_metadata_model`, seed a `METADATA_DEFINITIONS`-ból | A terv CRUD-része marad; **új elem**: a `METADATA_DEFINITIONS` fájl szerepének seed-only-ra szűkítése, hogy ne legyen két igazságforrás (lásd 5.2)                                                                                                                  |
+| Admin GraphQL API nulláról                        | **Részben kész**: az operationsConfig-ban már 5 admin művelet él (`DELETE_ALL_USER`, `CLEAN_USER_RECIPES`, `DELETE_ALL_RECIPES`, `CREATE_METADATA`, `DELETE_METADATA`) | A destruktív „delete all” műveletek **kivezetendők vagy audit-log mögé zárandók** (lásd 7.3); a terv finomabb granularitású műveleteket ad helyettük                                                                                                                |
+| `AuditLog`, `UserStatus`, `RecipeStatus` modellek | Nem készültek el. **Frissítés (2026-10-31):** az `AuditLog` ✅ elkészült (2026-10-10), a `UserStatus` és a `RecipeStatus` ❌ továbbra sincs                                  | Változatlanul szükségesek; a séma pontosítva (7.1)                                                                                                                                                  |
+| UI: Mantine Table + szűrők                        | Nem készült el. **Frissítés (2026-10-31):** ✅ a felhasználólista Mantine Table-lel, kereséssel, szerepszűrővel és lapozással elkészült                                       | Kibővítve: typedRoutes-konvenció, motion-integráció, cursor-pagináció (ami azóta bevezetett minta), persisted-query-registry regisztráció — ezek a 07-06 tervből **hiányoztak**                     |
 | — (nem szerepelt)                                 | —                                                                                                                                                                      | **Új szempontok**: nonce-alapú CSP-kompatibilitás, strict rate limiting az admin mutációkra, e2e tesztek, GDPR (user-törlés kaszkádjai), fokozatos MVP-bevezetés                                    |
 
 ## 2. Cél és scope
@@ -25,10 +27,10 @@ A 07-06-os terv négy pillére: (a) kétrétegű route-védelem, (b) `MetadataEn
 | Entitás                          | Admin képességek                                                                                                 | Fázis                                            |
 | -------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
 | **Metadata (taxonómia)**         | Listázás típusonként, létrehozás, szerkesztés (label/sortOrder), aktiválás/deaktiválás (soft delete), átrendezés | **MVP — kész (2026-10-10)**                      |
-| **Felhasználók**                 | Keresés/listázás, szerep-váltás (USER/BLOGGER/ADMIN), felfüggesztés (`SUSPENDED`), törlés (GDPR-kaszkáddal)      | **2. fázis**                                     |
-| **Receptek**                     | Keresés/listázás, moderációs elrejtés (`HIDDEN`), megtekintés, végleges törlés                                   | 2. fázis                                         |
-| **Dashboard**                    | Aggregált statisztikák (user/recept/rating számok, trendek)                                                      | 2. fázis                                         |
-| **Audit log**                    | Minden admin-akció megtekinthető naplója                                                                         | **MVP — írás kész (2026-10-10)** / 2. fázis (UI) |
+| **Felhasználók**                 | Keresés/listázás ✅, szerep-váltás (USER/BLOGGER/ADMIN) ✅, törlés ✅ (a GDPR-kaszkád a [user-deletion-policy.md](user-deletion-policy.md) szerint), felfüggesztés (`SUSPENDED`) ❌ | **2. fázis — részben kész (2026-10-31)**; a felfüggesztés nyitott |
+| **Receptek**                     | Keresés/listázás, moderációs elrejtés (`HIDDEN`), megtekintés, végleges törlés                                   | 2. fázis ❌                                     |
+| **Dashboard**                    | Aggregált statisztikák (user/recept/rating számok, trendek)                                                      | **2. fázis — kész (2026-10-30)**, a felhasználói adatokra (a recept- és rating-statisztikák nyitottak) |
+| **Audit log**                    | Minden admin-akció megtekinthető naplója                                                                         | **MVP — írás kész (2026-10-10)** / 2. fázis (UI) ❌ |
 | **Riportok/moderációs kérelmek** | Felhasználói bejelentések kezelése                                                                               | 3. fázis (a komment-rendszerrel együtt)          |
 
 ## 3. Jogosultsági modell — illeszkedés a meglévő rendszerhez
@@ -59,20 +61,22 @@ export default async function AdminLayout({
 
 3. **GraphQL operation-gating** — az új admin műveletek az `operationsConfig.adminOperations` listába kerülnek, és (mivel a kliens persisted-query allowlisttel dolgozik) a [persistedQueryRegistry.ts](../src/lib/graphql/persistedQueryRegistry.ts)-be is regisztrálandók. _Ez a lépés a 07-06 tervből hiányzott — nélküle az admin UI query-i 400-at kapnának._
 
+> **Frissítés (2026-10-31):** a felhasználói műveletek (szerepváltás, törlés) **nem GraphQL-en** futnak, ezért a 3. réteg rájuk nem vonatkozik. Helyette három másik réteg védi őket: a proxy és az admin layout, a Server Action első lépése (a munkamenet `ADMIN` szerepe), valamint a service `assertAdminRole` ellenőrzése.
+
 ## 4. Route- és layout-struktúra (typedRoutes-konvenció szerint)
 
 ```
 src/app/admin/
-├── layout.tsx              ← RBAC guard + AdminShell (külön AppShell, 260px navbar)
-├── page.tsx                ← Dashboard (2. fázis; MVP-ben redirect /admin/metadata-ra)
+├── layout.tsx              ← RBAC guard + AdminShell (külön AppShell, 260px navbar)  ✅
+├── page.tsx                ← Dashboard ✅ (kész, 2026-10-30; az MVP-ben redirect volt)
 ├── metadata/
-│   └── page.tsx            ← Master data CRUD (Tabs típusonként)
+│   └── page.tsx            ← Master data CRUD (Tabs típusonként)  ✅
 ├── users/
-│   └── page.tsx            ← Felhasználó-kezelés
+│   └── page.tsx            ← Felhasználó-kezelés ✅ (kész, 2026-10-31; a felfüggesztés nyitott)
 ├── recipes/
-│   └── page.tsx            ← Recept-moderáció (2. fázis)
+│   └── page.tsx            ← Recept-moderáció (2. fázis)  ❌
 └── audit-log/
-    └── page.tsx            ← Audit napló (2. fázis)
+    └── page.tsx            ← Audit napló (2. fázis)  ❌
 ```
 
 A [routes.ts](../src/types/routes.ts) bővítése a meglévő minta szerint:
@@ -89,6 +93,8 @@ export const ADMIN_ROUTES = {
 export const isAdminRoute = (path: string): boolean =>
   path === ADMIN_ROUTES.DASHBOARD || path.startsWith('/admin/');
 ```
+
+> A kódban jelenleg a `DASHBOARD`, a `USERS` és a `METADATA` útvonal létezik; a `RECIPES` és az `AUDIT_LOG` a megfelelő oldal elkészülésekor kerül be.
 
 ## 5. Backend terv
 
@@ -134,6 +140,8 @@ model AuditLog {
 }
 ```
 
+> **Státusz (2026-10-31):** az `AuditLog` modell ✅ létezik, a `USER_ROLE_CHANGED` (`payload`: `from`, `to`) és a `USER_DELETED` bejegyzést a kód írja. A `UserStatus` és a `RecipeStatus` ❌ még nem készült el.
+
 Fontos következmény (a 07-06 terv nem tért ki rá): a `RecipeStatus` bevezetésekor **minden publikus read-path**-ot (`listRecipes`, `getRecipeBySlugOrId`, sitemap, keresés, user-recipes) `status: 'PUBLISHED'` szűrésre kell állítani, a tulajdonos és az admin kivételével. Ez érinti a Redis cache-kulcsokat is (`cacheKeys`-be be kell kerülnie a nézői szerepnek, vagy a cache csak publikus listákra szorítkozik).
 
 ### 5.2 Metadata: az igazságforrás rendezése
@@ -169,8 +177,10 @@ type Mutation {
 }
 ```
 
-- Pagináció: a meglévő **cursor-mintával** (opaque `(createdAt,id)` cursor + `pageInfo`) — a 07-06 terv `cursor: ID` javaslata elavult, azóta van kiforrott konvenció.
+- Pagináció: a meglévő **cursor-mintával** (opaque `(createdAt,id)` cursor + `pageInfo`) — a 07-06 terv `cursor: ID` javaslata elavult, azóta van kiforódott konvenció.
 - A meglévő `DELETE_ALL_USER` / `DELETE_ALL_RECIPES` / `CLEAN_USER_RECIPES` műveletek maradhatnak, de **kizárólag audit-loggal és confirmation-tokennel** (a service már kér `DELETE_ALL` megerősítést — ez jó minta).
+
+> **Megvalósítás (2026-10-31):** a metadata-műveletek (`updateMetadata`, `setMetadataActive`, `reorderMetadata`) ✅ GraphQL-en készültek. A felhasználói műveletek viszont **Server Actionként** (`src/app/admin/users/actions.ts`) és szerveroldali service-ként (`UserManagementService`), ezért az `adminSetUserRole` GraphQL-mutáció és az `adminUsers` GraphQL-query nem készült el, és nem is szükséges hozzá codegen vagy allowlist-változás. Az `adminSetUserStatus` ❌ nyitott (a `UserStatus` migrációval együtt).
 
 ### 5.4 Service-réteg: `AdminService` + audit-wrapper
 
@@ -224,29 +234,35 @@ export const AdminService = {
 
 Szabály: admin nem módosíthatja/fokozhatja le **saját magát** (`actorId === targetId` → FORBIDDEN), és az utolsó ADMIN nem fokozható le.
 
+> **Megvalósítás (2026-10-31):** ✅ a szerepváltás a `UserManagementService.changeRole`-ban készült el. Eltérések a fenti vázlattól: a szerepmódosítás, a `sessionVersion` növelése és az audit-bejegyzés (`USER_ROLE_CHANGED`, `from`/`to`) **egy tranzakcióban** történik, nem az akció után; a saját fiókon nem lehet szerepet váltani és törölni, ami az utolsó admin védelmét is biztosítja (a művelet végzője mindig admin marad). A törlés a meglévő `AccountService.deleteUser`-t használja (`USER_DELETED` audit).
+
 ## 6. UI/UX (Mantine + motion)
 
-- **AdminShell**: külön `AppShell` (navbar 260 px, `Breadcrumbs` a headerben) — a publikus Shell-től független, de ugyanaz a theme. Szekciók: Metadata, Users, (Recipes, Dashboard, Audit log — 2. fázis).
-- **Listák**: `Table` + `ScrollArea` + debounced `TextInput` keresés + `Select` szűrők; sor-akciók `Menu`-ben; minden destruktív akció `modals.openConfirmModal`-lal (a `ModalsProvider` már bekötött).
-- **Metadata CRUD**: `Tabs` típusonként; inline szerkesztés (`TextInput` label, `NumberInput` sortOrder, `Switch` isActive); új elem `Modal`-ban; átrendezés fel/le `ActionIcon` (drag-and-drop csak ha az `@dnd-kit` a create-flow miatt amúgy is bekerül).
+- **AdminShell**: külön `AppShell` (navbar 260 px, `Breadcrumbs` a headerben) — a publikus Shell-től független, de ugyanaz a theme. Szekciók: Metadata, Users, (Recipes, Dashboard, Audit log — 2. fázis). ✅ Kész; a Dashboard és a Users szekció is elérhető.
+- **Listák**: `Table` + `ScrollArea` + debounced `TextInput` keresés + `Select` szűrők; sor-akciók `Menu`-ben; minden destruktív akció `modals.openConfirmModal`-lal (a `ModalsProvider` már bekötött). ✅ A felhasználólistában: keresés, szerepszűrő, lapozás, sor-akciók `Menu`-ben (almenüvel a szerepekhez); a megerősítés saját `Modal`, nem `modals.openConfirmModal`.
+- **Metadata CRUD**: `Tabs` típusonként; inline szerkesztés (`TextInput` label, `NumberInput` sortOrder, `Switch` isActive); új elem `Modal`-ban; átrendezés fel/le `ActionIcon` (drag-and-drop csak ha az `@dnd-kit` a create-flow miatt amúgy is bekerül). ✅ Kész.
 - **Motion-integráció** (a 07-06 tervből hiányzott; a [ux-motion-upgrade-plan-2026-08-30.md](ux-motion-upgrade-plan-2026-08-30.md) konvencióit követi):
   - táblasorok belépése: `motion.tr` + kis stagger (max 0.03s/row, 15 sor felett kikapcsolva),
   - sor-törlés/deaktiválás: `AnimatePresence` exit (height/opacity collapse),
   - stat-kártyák: `useInView`-alapú reveal (StrictMode-safe minta),
   - minden a globális `MotionConfig reducedMotion="user"` alatt — `prefers-reduced-motion` esetén automatikusan kikapcsol.
 - **Üres/hiba állapotok**: minden lista kap `EmptyState`-et (ikon + magyarázat + elsődleges akció) és skeleton-t.
-- **i18n**: új `admin.*` namespace mindhárom locale-ban (en-gb, hu, de).
+- **i18n**: új `admin.*` namespace mindhárom locale-ban (en-gb, hu, de). ✅ A dashboardhoz és a felhasználókezeléshez az `adminConsole` névtér készült (`src/locales/admin-console/`).
 
 ## 7. Biztonsági szempontok
 
 ### 7.1 Rate limiting
 
-Minden admin-mutáció a **strict limiterbe** (5 req/10 min) kerül a meglévő `rateLimit.ts` listabővítéssel; a read query-k a globális limit alatt maradnak.
+Minden admin-mutáció a **strict limiterbe** (5 req/10 min) kerül a meglévő `rateLimit.ts` listábővítéssel; a read query-k a globális limit alatt maradnak.
+
+> **Státusz (2026-10-31):** a GraphQL-es admin-mutációkra ✅ érvényes. A felhasználókezelő Server Actionkön ❌ jelenleg nincs rate limit; az admin szerepkör és a proxy védi őket.
 
 ### 7.2 CSRF / CSP
 
 - A GraphQL-en át futó admin-mutációkat a same-origin kérés, a role-alapú operation-gating és a strict rate limit védi; a persisted-query registry nincs bekötve a kérésvalidálásba, ezért nem tekinthető védelmi rétegnek. Új felület nem vezet be külön form-POST endpointot.
 - A nonce-alapú CSP-vel az admin UI kompatibilis, amíg csak Mantine/motion inline style-okat használ (style-attribútum, nem `<style>` tag) és nem ágyaz be inline scriptet. Chart-librarynél (ha később kell) ellenőrizendő.
+
+> **Frissítés (2026-10-31):** a dashboard diagramjai a `@mantine/charts` (Recharts) komponensekkel készültek. A diagramok CSP alatti működését böngészőben még ellenőrizni kell. A felhasználói műveletek Server Actionként futnak, a Next.js beépített eredet-ellenőrzésével.
 
 ### 7.3 Action confirmation + audit trail
 
@@ -254,16 +270,20 @@ Minden admin-mutáció a **strict limiterbe** (5 req/10 min) kerül a meglévő 
 - Minden admin-mutáció auditlogolt (5.4); a napló read-only, nem törölhető GraphQL-ből.
 - GDPR: user-törléskor a kaszkádok (receptek? ratingek? follow-ok?) explicit döntést igényelnek — javaslat: receptek megtartása „deleted user” anonim szerzővel VAGY teljes kaszkád; ezt a törlés-implementáció előtt kell eldönteni.
 
+> **Státusz (2026-10-31):** a felhasználó törlése ✅ megerősítő modállal (a törlendő receptek számának jelzésével) és auditnaplózassal (`USER_DELETED`) készült; a begépeléses megerősítés ❌ nincs. A kaszkád a [user-deletion-policy.md](user-deletion-policy.md) szerint értelmezendő.
+
 ### 7.4 Session
 
 Szerep-váltás után a cél-user `sessionVersion`-jét inkrementálni kell → a régi JWT-je azonnal érvénytelen (a mechanizmus már létezik).
+
+> **Státusz (2026-10-31):** ✅ megvalósult: a szerepváltás növeli a `sessionVersion`-t, és törli a gyorsítótárazott értékét, így az érintett felhasználó kijelentkezik, és újra belépve kapja meg az új szerepet.
 
 ## 8. Fokozatos bevezetési terv
 
 | Fázis                                       | Tartalom                                                                                                                                  | Becslés |
 | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | **MVP (Sprint A)** ✅ **Kész (2026-10-10)** | `/admin` layout guard + AdminShell + Metadata CRUD + AuditLog modell/írás + operation-gating és strict rate limit + E2E guard-teszt       | —       |
-| **Fázis 2 (Sprint B)**                      | Users lista + role/status műveletek + `UserStatus` migráció + Dashboard (`adminStats` aggregátumok) + Audit log UI                        | L       |
+| **Fázis 2 (Sprint B)** 🟡 **Részben kész (2026-10-31)** | Users lista ✅ + role műveletek ✅ + törlés ✅ + Dashboard ✅ (az `adminStats` helyett szerveroldali service-szel); **nyitott**: `UserStatus` migráció és status műveletek ❌, Audit log UI ❌ | L       |
 | **Fázis 3 (Sprint C)**                      | `RecipeStatus` migráció + publikus read-path szűrés + recept-moderáció UI + server-side draft (a felhasználói draft-igénnyel közös munka) | L       |
 | **Fázis 4**                                 | Riportok/bejelentések — csak a komment-rendszerrel együtt                                                                                 | —       |
 
