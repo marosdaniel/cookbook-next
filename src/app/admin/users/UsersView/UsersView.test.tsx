@@ -50,6 +50,10 @@ const baseResult: UserListResult = {
 
 const CURRENT_ADMIN_ID = 'admin-1';
 
+// The Mantine Modal root stays in the DOM while the modal is closed, only its
+// content is unmounted, so the content test id tells whether it is open.
+const DETAILS_CONTENT_TEST_ID = 'admin-user-details-content';
+
 describe('UsersView', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -110,13 +114,21 @@ describe('UsersView', () => {
     expect(screen.getByTestId('admin-users-empty')).toBeInTheDocument();
   });
 
+  it('keeps the details modal closed until a user is selected', () => {
+    render(<UsersView result={baseResult} currentUserId={CURRENT_ADMIN_ID} />);
+
+    expect(
+      screen.queryByTestId(DETAILS_CONTENT_TEST_ID),
+    ).not.toBeInTheDocument();
+  });
+
   it('opens the details modal with every user field when a row is clicked', async () => {
     render(<UsersView result={baseResult} currentUserId={CURRENT_ADMIN_ID} />);
 
     fireEvent.click(screen.getByTestId('admin-user-row-u1'));
 
     expect(
-      await screen.findByTestId('admin-user-details-modal'),
+      await screen.findByTestId(DETAILS_CONTENT_TEST_ID),
     ).toBeInTheDocument();
     expect(
       screen.getByTestId('admin-user-details-field-locale'),
@@ -135,7 +147,7 @@ describe('UsersView', () => {
     fireEvent.click(screen.getByTestId('admin-user-open-u1'));
 
     expect(
-      await screen.findByTestId('admin-user-details-modal'),
+      await screen.findByTestId(DETAILS_CONTENT_TEST_ID),
     ).toBeInTheDocument();
   });
 
@@ -148,7 +160,7 @@ describe('UsersView', () => {
       await screen.findByTestId('admin-user-actions-delete-u1'),
     ).toBeInTheDocument();
     expect(
-      screen.queryByTestId('admin-user-details-modal'),
+      screen.queryByTestId(DETAILS_CONTENT_TEST_ID),
     ).not.toBeInTheDocument();
   });
 
