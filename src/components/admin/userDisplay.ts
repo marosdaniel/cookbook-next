@@ -8,3 +8,10 @@ export const formatJoinedDate = (iso: string, locale: string): string =>
     dateStyle: 'medium',
     timeZone: DISPLAY_TIME_ZONE,
   }).format(new Date(iso));
+
+export const formatDateTime = (iso: string, locale: string): string =>
+  new Intl.DateTimeFormat(locale, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZone: DISPLAY_TIME_ZONE,
+  }).format(new Date(iso));

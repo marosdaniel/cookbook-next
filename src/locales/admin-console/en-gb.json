@@ -44,7 +44,7 @@
   },
   "users": {
     "title": "Users",
-    "description": "Search and review registered accounts.",
+    "description": "Search, review and manage registered accounts.",
     "searchPlaceholder": "Search by name, username or email",
     "searchLabel": "Search users",
     "roleFilterLabel": "Role",
@@ -56,11 +56,62 @@
       "email": "Email",
       "role": "Role",
       "recipes": "Recipes",
-      "joined": "Joined"
+      "joined": "Joined",
+      "actions": "Actions"
     },
     "empty": "No users match the current filters.",
     "summary": "{total} users · page {page} of {pageCount}",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "actions": {
+      "open": "Open actions for {name}",
+      "button": "Actions",
+      "label": "User actions",
+      "selfHint": "You cannot change your own account here.",
+      "promote": "Promote",
+      "chooseRole": "Choose a role",
+      "delete": "Delete user"
+    },
+    "details": {
+      "title": "User details",
+      "fields": {
+        "id": "ID",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "userName": "Username",
+        "email": "Email",
+        "role": "Role",
+        "locale": "Language",
+        "recipes": "Recipes",
+        "favorites": "Favourite recipes",
+        "ratings": "Ratings given",
+        "followers": "Followers",
+        "following": "Following",
+        "joined": "Joined",
+        "updated": "Last updated"
+      }
+    },
+    "delete": {
+      "title": "Delete user",
+      "message": "Are you sure you want to delete {name} (@{userName})? This cannot be undone.",
+      "recipesWarning": "{count, plural, =0 {They have not published any recipes.} one {Their # recipe will be deleted as well.} other {Their # recipes will be deleted as well.}}",
+      "cancel": "Cancel",
+      "confirm": "Delete user"
+    },
+    "notifications": {
+      "roleChangedTitle": "Role updated",
+      "roleChangedMessage": "@{userName} is now {role}. They have been signed out and need to sign in again.",
+      "deletedTitle": "User deleted",
+      "deletedMessage": "@{userName} has been deleted.",
+      "errorTitle": "Action failed"
+    },
+    "errors": {
+      "FORBIDDEN": "You do not have permission to do this.",
+      "SELF_ACTION": "You cannot do this to your own account.",
+      "NOT_FOUND": "The user no longer exists.",
+      "UNCHANGED": "The user already has this role.",
+      "INVALID_INPUT": "The request was not valid.",
+      "UNKNOWN": "Something went wrong. Please try again."
+    }
   }
 }

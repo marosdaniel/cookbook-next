@@ -44,7 +44,7 @@
   },
   "users": {
     "title": "Felhasználók",
-    "description": "A regisztrált fiókok keresése és áttekintése.",
+    "description": "A regisztrált fiókok keresése, áttekintése és kezelése.",
     "searchPlaceholder": "Keresés név, felhasználónév vagy email alapján",
     "searchLabel": "Felhasználók keresése",
     "roleFilterLabel": "Szerepkör",
@@ -56,11 +56,62 @@
       "email": "Email",
       "role": "Szerepkör",
       "recipes": "Receptek",
-      "joined": "Csatlakozott"
+      "joined": "Csatlakozott",
+      "actions": "Műveletek"
     },
     "empty": "Egy felhasználó sem felel meg a szűrőknek.",
     "summary": "{total} felhasználó · {page}. oldal / {pageCount}",
     "previous": "Előző",
-    "next": "Következő"
+    "next": "Következő",
+    "actions": {
+      "open": "Műveletek megnyitása: {name}",
+      "button": "Műveletek",
+      "label": "Felhasználói műveletek",
+      "selfHint": "A saját fiókodat itt nem módosíthatod.",
+      "promote": "Előléptetés",
+      "chooseRole": "Válassz szerepkört",
+      "delete": "Felhasználó törlése"
+    },
+    "details": {
+      "title": "Felhasználó adatai",
+      "fields": {
+        "id": "Azonosító",
+        "firstName": "Keresztnév",
+        "lastName": "Vezetéknév",
+        "userName": "Felhasználónév",
+        "email": "Email",
+        "role": "Szerepkör",
+        "locale": "Nyelv",
+        "recipes": "Receptek",
+        "favorites": "Kedvenc receptek",
+        "ratings": "Leadott értékelések",
+        "followers": "Követők",
+        "following": "Követett felhasználók",
+        "joined": "Csatlakozott",
+        "updated": "Utoljára módosítva"
+      }
+    },
+    "delete": {
+      "title": "Felhasználó törlése",
+      "message": "Biztosan törlöd {name} (@{userName}) fiókját? Ez a művelet nem vonható vissza.",
+      "recipesWarning": "{count, plural, =0 {Nincs közzétett receptje.} one {# receptje is törlődik.} other {# receptje is törlődik.}}",
+      "cancel": "Mégse",
+      "confirm": "Felhasználó törlése"
+    },
+    "notifications": {
+      "roleChangedTitle": "Szerepkör módosítva",
+      "roleChangedMessage": "@{userName} új szerepköre: {role}. Kijelentkeztettük, ezért újra be kell lépnie.",
+      "deletedTitle": "Felhasználó törölve",
+      "deletedMessage": "@{userName} fiókját töröltük.",
+      "errorTitle": "A művelet nem sikerült"
+    },
+    "errors": {
+      "FORBIDDEN": "Ehhez nincs jogosultságod.",
+      "SELF_ACTION": "Ezt a saját fiókodon nem teheted meg.",
+      "NOT_FOUND": "A felhasználó már nem létezik.",
+      "UNCHANGED": "A felhasználónak már ez a szerepköre.",
+      "INVALID_INPUT": "A kérés érvénytelen.",
+      "UNKNOWN": "Valami hiba történt. Próbáld újra."
+    }
   }
 }
