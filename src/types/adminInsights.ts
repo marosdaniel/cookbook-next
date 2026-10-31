@@ -37,6 +37,21 @@ export type InsightUser = {
   joinedAt: string;
 };
 
+/**
+ * Everything the admin user table and the details modal show about a user.
+ * It intentionally excludes the password hash, reset tokens and the session
+ * version.
+ */
+export type InsightUserDetail = InsightUser & {
+  locale: string;
+  /** ISO timestamp. */
+  updatedAt: string;
+  favoriteCount: number;
+  ratingCount: number;
+  followerCount: number;
+  followingCount: number;
+};
+
 export type UserOverview = {
   totalUsers: number;
   newUsers7d: number;
@@ -55,7 +70,7 @@ export type UserListQuery = {
 };
 
 export type UserListResult = {
-  users: InsightUser[];
+  users: InsightUserDetail[];
   total: number;
   page: number;
   pageCount: number;
@@ -63,3 +78,15 @@ export type UserListResult = {
   search: string;
   role: InsightUserRole | null;
 };
+
+export type AdminUserActionError =
+  | 'FORBIDDEN'
+  | 'SELF_ACTION'
+  | 'NOT_FOUND'
+  | 'UNCHANGED'
+  | 'INVALID_INPUT'
+  | 'UNKNOWN';
+
+export type AdminUserActionResult =
+  | { ok: true }
+  | { ok: false; error: AdminUserActionError };

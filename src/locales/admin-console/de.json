@@ -44,7 +44,7 @@
   },
   "users": {
     "title": "Benutzer",
-    "description": "Registrierte Konten suchen und prüfen.",
+    "description": "Registrierte Konten suchen, prüfen und verwalten.",
     "searchPlaceholder": "Nach Name, Benutzername oder E-Mail suchen",
     "searchLabel": "Benutzer suchen",
     "roleFilterLabel": "Rolle",
@@ -56,11 +56,62 @@
       "email": "E-Mail",
       "role": "Rolle",
       "recipes": "Rezepte",
-      "joined": "Beigetreten"
+      "joined": "Beigetreten",
+      "actions": "Aktionen"
     },
     "empty": "Keine Benutzer entsprechen den aktuellen Filtern.",
     "summary": "{total} Benutzer · Seite {page} von {pageCount}",
     "previous": "Zurück",
-    "next": "Weiter"
+    "next": "Weiter",
+    "actions": {
+      "open": "Aktionen für {name} öffnen",
+      "button": "Aktionen",
+      "label": "Benutzeraktionen",
+      "selfHint": "Dein eigenes Konto kannst du hier nicht ändern.",
+      "promote": "Befördern",
+      "chooseRole": "Rolle wählen",
+      "delete": "Benutzer löschen"
+    },
+    "details": {
+      "title": "Benutzerdetails",
+      "fields": {
+        "id": "ID",
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "userName": "Benutzername",
+        "email": "E-Mail",
+        "role": "Rolle",
+        "locale": "Sprache",
+        "recipes": "Rezepte",
+        "favorites": "Lieblingsrezepte",
+        "ratings": "Abgegebene Bewertungen",
+        "followers": "Follower",
+        "following": "Folgt",
+        "joined": "Beigetreten",
+        "updated": "Zuletzt geändert"
+      }
+    },
+    "delete": {
+      "title": "Benutzer löschen",
+      "message": "Möchtest du {name} (@{userName}) wirklich löschen? Das kann nicht rückgängig gemacht werden.",
+      "recipesWarning": "{count, plural, =0 {Es wurden keine Rezepte veröffentlicht.} one {Das Rezept (#) wird ebenfalls gelöscht.} other {Die # Rezepte werden ebenfalls gelöscht.}}",
+      "cancel": "Abbrechen",
+      "confirm": "Benutzer löschen"
+    },
+    "notifications": {
+      "roleChangedTitle": "Rolle aktualisiert",
+      "roleChangedMessage": "@{userName} hat jetzt die Rolle {role}. Die Person wurde abgemeldet und muss sich neu anmelden.",
+      "deletedTitle": "Benutzer gelöscht",
+      "deletedMessage": "@{userName} wurde gelöscht.",
+      "errorTitle": "Aktion fehlgeschlagen"
+    },
+    "errors": {
+      "FORBIDDEN": "Dafür fehlt dir die Berechtigung.",
+      "SELF_ACTION": "Das ist für dein eigenes Konto nicht möglich.",
+      "NOT_FOUND": "Der Benutzer existiert nicht mehr.",
+      "UNCHANGED": "Der Benutzer hat diese Rolle bereits.",
+      "INVALID_INPUT": "Die Anfrage war ungültig.",
+      "UNKNOWN": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
+    }
   }
 }

@@ -15,8 +15,35 @@ const USER_LIST_SELECT = {
   _count: { select: { recipes: true } },
 } satisfies Prisma.UserSelect;
 
+// Never select password, reset token fields or sessionVersion here: this data
+// is handed to client components.
+const USER_DETAIL_SELECT = {
+  id: true,
+  firstName: true,
+  lastName: true,
+  userName: true,
+  email: true,
+  role: true,
+  locale: true,
+  createdAt: true,
+  updatedAt: true,
+  _count: {
+    select: {
+      recipes: true,
+      favoriteRecipes: true,
+      ratings: true,
+      followers: true,
+      following: true,
+    },
+  },
+} satisfies Prisma.UserSelect;
+
 export type UserListRow = Prisma.UserGetPayload<{
   select: typeof USER_LIST_SELECT;
+}>;
+
+export type UserDetailRow = Prisma.UserGetPayload<{
+  select: typeof USER_DETAIL_SELECT;
 }>;
 
 export const UserInsightsRepository = {
@@ -69,7 +96,7 @@ export const UserInsightsRepository = {
   }) {
     return prisma.user.findMany({
       where: params.where,
-      select: USER_LIST_SELECT,
+      select: USER_DETAIL_SELECT,
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
       skip: params.skip,
       take: params.take,
