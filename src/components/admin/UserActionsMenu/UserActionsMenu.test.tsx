@@ -49,10 +49,12 @@ describe('UserActionsMenu', () => {
       />,
     );
 
-    expect(screen.getByTestId('admin-user-details-actions-u1')).toHaveTextContent(
-      'button',
-    );
-    expect(screen.queryByTestId('admin-user-actions-u1')).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId('admin-user-details-actions-u1'),
+    ).toHaveTextContent('button');
+    expect(
+      screen.queryByTestId('admin-user-actions-u1'),
+    ).not.toBeInTheDocument();
   });
 
   it('opens the menu and reports the user to delete', async () => {

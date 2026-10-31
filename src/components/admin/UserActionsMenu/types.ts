@@ -1,7 +1,4 @@
-import type {
-  InsightUserDetail,
-  InsightUserRole,
-} from '@/types/adminInsights';
+import type { InsightUserDetail, InsightUserRole } from '@/types/adminInsights';
 
 export type UserActionsMenuProps = {
   user: InsightUserDetail;

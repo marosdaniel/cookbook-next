@@ -24,9 +24,7 @@ const AdminUsersPage = async ({ searchParams }: AdminUsersPageProps) => {
     page: page ? Number(page) : undefined,
   });
 
-  return (
-    <UsersView result={result} currentUserId={session?.user?.id ?? ''} />
-  );
+  return <UsersView result={result} currentUserId={session?.user?.id ?? ''} />;
 };
 
 export default AdminUsersPage;

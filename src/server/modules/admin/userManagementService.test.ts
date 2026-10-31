@@ -123,7 +123,10 @@ describe('UserManagementService.deleteUser', () => {
     });
 
     await expect(
-      UserManagementService.deleteUser({ id: 'user-9', role: 'USER' }, 'user-2'),
+      UserManagementService.deleteUser(
+        { id: 'user-9', role: 'USER' },
+        'user-2',
+      ),
     ).rejects.toThrow('forbidden');
     expect(mocks.deleteUser).not.toHaveBeenCalled();
   });
@@ -153,10 +156,6 @@ describe('UserManagementService.deleteUser', () => {
       UserManagementService.deleteUser(actor, 'user-2'),
     ).resolves.toEqual({ ok: true });
 
-    expect(mocks.deleteUser).toHaveBeenCalledWith(
-      'admin-1',
-      'ADMIN',
-      'user-2',
-    );
+    expect(mocks.deleteUser).toHaveBeenCalledWith('admin-1', 'ADMIN', 'user-2');
   });
 });

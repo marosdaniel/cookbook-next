@@ -61,7 +61,9 @@ describe('UsersView', () => {
     render(<UsersView result={baseResult} currentUserId={CURRENT_ADMIN_ID} />);
 
     expect(screen.getByTestId('admin-users-filters')).toBeInTheDocument();
-    expect(screen.getByTestId('admin-users-column-actions')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('admin-users-column-actions'),
+    ).toBeInTheDocument();
     expect(screen.getByTestId('admin-user-row-u1')).toBeInTheDocument();
     expect(screen.getByTestId('admin-user-actions-u1')).toBeInTheDocument();
     expect(screen.getByText('ada@example.com')).toBeInTheDocument();
@@ -116,9 +118,9 @@ describe('UsersView', () => {
     expect(
       await screen.findByTestId('admin-user-details-modal'),
     ).toBeInTheDocument();
-    expect(screen.getByTestId('admin-user-details-field-locale')).toHaveTextContent(
-      'hu',
-    );
+    expect(
+      screen.getByTestId('admin-user-details-field-locale'),
+    ).toHaveTextContent('hu');
     expect(
       screen.getByTestId('admin-user-details-field-followers'),
     ).toHaveTextContent('7');

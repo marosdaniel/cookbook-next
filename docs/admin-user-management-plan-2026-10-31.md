@@ -11,17 +11,17 @@ Dátum: 2026-10-31. Ez a dokumentum a `feat/admin-user-management` ág tervét �
 
 ## 2. Tervezői döntések
 
-| Téma | Döntés | Indok |
-| --- | --- | --- |
-| Írási út | **Server Action** (`src/app/admin/users/actions.ts`), nem GraphQL | Nem kell új GraphQL-művelet, jogosultsági szabály, persisted query és codegen; a terv 2. fázisa is ezt engedi |
-| Séma | Nincs migráció | Az `AuditLog` tábla és a `User.sessionVersion` már létezik |
-| Szerepváltás | Tranzakció: `role` frissítés, `sessionVersion` növelés, `USER_ROLE_CHANGED` audit (`from`, `to`) | A régi JWT azonnal érvénytelen, így az érintett újra belépve kapja meg az új jogosultságot |
-| Gyorsítótár | `invalidateCacheScope({ sessionUserId })` a tranzakció után | A `jwt` callback a `sessionVersion`-t Redisből olvassa 60 másodperces TTL-lel |
-| Törlés | A meglévő `AccountService.deleteUser` | Már auditál (`USER_DELETED`) és törli a cache-t |
-| Önvédelem | Saját fiókon nem lehet szerepet váltani és törölni | Az utolsó admin így nem tűnhet el: a művelet végzője mindig admin marad |
-| Jogosultság | Három réteg: proxy és admin layout, az action első lépése (`ADMIN` szerep a munkamenetből), a service `assertAdminRole` ellenőrzése | Védelem mélységben |
-| Adatvédelem | A lista csak megjelenítendő mezőket kér le; jelszó, reset token, `sessionVersion` soha nem kerül a kliensre | Az admin modál sem kap érzékeny adatot |
-| Hibakezelés | Az action `{ ok: true }` vagy `{ ok: false, error }` értéket ad (`FORBIDDEN`, `SELF_ACTION`, `NOT_FOUND`, `UNCHANGED`, `INVALID_INPUT`, `UNKNOWN`) | A kliens lokalizált értesítést mutat, nincs kivétel a kliens felé |
+| Téma         | Döntés                                                                                                                                             | Indok                                                                                                         |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Írási út     | **Server Action** (`src/app/admin/users/actions.ts`), nem GraphQL                                                                                  | Nem kell új GraphQL-művelet, jogosultsági szabály, persisted query és codegen; a terv 2. fázisa is ezt engedi |
+| Séma         | Nincs migráció                                                                                                                                     | Az `AuditLog` tábla és a `User.sessionVersion` már létezik                                                    |
+| Szerepváltás | Tranzakció: `role` frissítés, `sessionVersion` növelés, `USER_ROLE_CHANGED` audit (`from`, `to`)                                                   | A régi JWT azonnal érvénytelen, így az érintett újra belépve kapja meg az új jogosultságot                    |
+| Gyorsítótár  | `invalidateCacheScope({ sessionUserId })` a tranzakció után                                                                                        | A `jwt` callback a `sessionVersion`-t Redisből olvassa 60 másodperces TTL-lel                                 |
+| Törlés       | A meglévő `AccountService.deleteUser`                                                                                                              | Már auditál (`USER_DELETED`) és törli a cache-t                                                               |
+| Önvédelem    | Saját fiókon nem lehet szerepet váltani és törölni                                                                                                 | Az utolsó admin így nem tűnhet el: a művelet végzője mindig admin marad                                       |
+| Jogosultság  | Három réteg: proxy és admin layout, az action első lépése (`ADMIN` szerep a munkamenetből), a service `assertAdminRole` ellenőrzése                | Védelem mélységben                                                                                            |
+| Adatvédelem  | A lista csak megjelenítendő mezőket kér le; jelszó, reset token, `sessionVersion` soha nem kerül a kliensre                                        | Az admin modál sem kap érzékeny adatot                                                                        |
+| Hibakezelés  | Az action `{ ok: true }` vagy `{ ok: false, error }` értéket ad (`FORBIDDEN`, `SELF_ACTION`, `NOT_FOUND`, `UNCHANGED`, `INVALID_INPUT`, `UNKNOWN`) | A kliens lokalizált értesítést mutat, nincs kivétel a kliens felé                                             |
 
 ## 3. Felület
 

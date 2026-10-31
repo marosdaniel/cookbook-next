@@ -48,9 +48,9 @@ describe('UserDetailsModal', () => {
   it('shows every available user field', async () => {
     renderModal();
 
-    expect(await screen.findByTestId('admin-user-details-name')).toHaveTextContent(
-      'Ada Lovelace',
-    );
+    expect(
+      await screen.findByTestId('admin-user-details-name'),
+    ).toHaveTextContent('Ada Lovelace');
     expect(screen.getByTestId('admin-user-details-username')).toHaveTextContent(
       '@ada',
     );
@@ -75,12 +75,12 @@ describe('UserDetailsModal', () => {
       ).toHaveTextContent(value);
     }
 
-    expect(screen.getByTestId('admin-user-details-field-joined')).toHaveTextContent(
-      '2026',
-    );
-    expect(screen.getByTestId('admin-user-details-field-updated')).toHaveTextContent(
-      '2026',
-    );
+    expect(
+      screen.getByTestId('admin-user-details-field-joined'),
+    ).toHaveTextContent('2026');
+    expect(
+      screen.getByTestId('admin-user-details-field-updated'),
+    ).toHaveTextContent('2026');
   });
 
   it('offers the same actions menu as the table', async () => {
@@ -94,6 +94,8 @@ describe('UserDetailsModal', () => {
   it('disables the actions while an action is running', async () => {
     renderModal({ busy: true });
 
-    expect(await screen.findByTestId('admin-user-details-actions-u1')).toBeDisabled();
+    expect(
+      await screen.findByTestId('admin-user-details-actions-u1'),
+    ).toBeDisabled();
   });
 });

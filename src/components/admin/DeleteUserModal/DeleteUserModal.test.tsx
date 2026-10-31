@@ -81,6 +81,8 @@ describe('DeleteUserModal', () => {
       />,
     );
 
-    expect(await screen.findByTestId('admin-delete-user-cancel')).toBeDisabled();
+    expect(
+      await screen.findByTestId('admin-delete-user-cancel'),
+    ).toBeDisabled();
   });
 });

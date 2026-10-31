@@ -21,7 +21,9 @@ const resolveAdminActor = async (): Promise<AdminActor | null> => {
 };
 
 const isValidId = (value: unknown): value is string =>
-  typeof value === 'string' && value.length > 0 && value.length <= MAX_ID_LENGTH;
+  typeof value === 'string' &&
+  value.length > 0 &&
+  value.length <= MAX_ID_LENGTH;
 
 // Every admin action goes through here: the session role is checked first, the
 // input is validated, unexpected errors are logged and never reach the client,
@@ -53,7 +55,10 @@ const runAdminUserAction = async (
 
     return result;
   } catch (error) {
-    logger.error({ err: error, action: name, targetId }, 'Admin user action failed');
+    logger.error(
+      { err: error, action: name, targetId },
+      'Admin user action failed',
+    );
 
     return { ok: false, error: 'UNKNOWN' };
   }

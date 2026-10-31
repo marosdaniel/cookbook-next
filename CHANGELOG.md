@@ -1,18 +1,17 @@
 # [3.15.0](https://github.com/marosdaniel/cookbook-next/compare/v3.14.0...v3.15.0) (2026-10-30)
 
-
 ### Bug Fixes
 
-* **admin:** render dashboard charts without extra dependencies ([69e2fb4](https://github.com/marosdaniel/cookbook-next/commit/69e2fb4fc733ebcda3449c23ade65ecc1f320923))
-* **layout:** import theme color constant from a server safe module ([48d0572](https://github.com/marosdaniel/cookbook-next/commit/48d0572be871e8480ce908c15fa54a87ea1297bb))
+- **admin:** render dashboard charts without extra dependencies ([69e2fb4](https://github.com/marosdaniel/cookbook-next/commit/69e2fb4fc733ebcda3449c23ade65ecc1f320923))
+- **layout:** import theme color constant from a server safe module ([48d0572](https://github.com/marosdaniel/cookbook-next/commit/48d0572be871e8480ce908c15fa54a87ea1297bb))
 
 
 ### Features
 
-* **admin:** add user dashboard with charts and a searchable user list ([c0dc805](https://github.com/marosdaniel/cookbook-next/commit/c0dc8052bbc419e695a6775e4df649f92bb91b7e))
-* **admin:** add user insights data layer, translations and content plan ([457b03b](https://github.com/marosdaniel/cookbook-next/commit/457b03b38e4e5130e653254b88b475742cfec21c))
-* **admin:** redesign admin shell and add role-gated sidebar entry ([b448838](https://github.com/marosdaniel/cookbook-next/commit/b448838f2966445f60075ddef602ace8e788486a))
-* **admin:** use Mantine Charts and fix typed admin users route ([b90a78d](https://github.com/marosdaniel/cookbook-next/commit/b90a78dff9ad23b976e7a020100dd5e8d9ce17e2))
+- **admin:** add user dashboard with charts and a searchable user list ([c0dc805](https://github.com/marosdaniel/cookbook-next/commit/c0dc8052bbc419e695a6775e4df649f92bb91b7e))
+- **admin:** add user insights data layer, translations and content plan ([457b03b](https://github.com/marosdaniel/cookbook-next/commit/457b03b38e4e5130e653254b88b475742cfec21c))
+- **admin:** redesign admin shell and add role-gated sidebar entry ([b448838](https://github.com/marosdaniel/cookbook-next/commit/b448838f2966445f60075ddef602ace8e788486a))
+- **admin:** use Mantine Charts and fix typed admin users route ([b90a78d](https://github.com/marosdaniel/cookbook-next/commit/b90a78dff9ad23b976e7a020100dd5e8d9ce17e2))
 
 # [3.14.0](https://github.com/marosdaniel/cookbook-next/compare/v3.13.0...v3.14.0) (2026-10-29)
 

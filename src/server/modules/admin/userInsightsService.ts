@@ -11,8 +11,8 @@ import {
 } from '@/types/adminInsights';
 import { assertAdminRole } from './policy';
 import {
-  UserInsightsRepository,
   type UserDetailRow,
+  UserInsightsRepository,
   type UserListRow,
 } from './userInsightsRepository';
 

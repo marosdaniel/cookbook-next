@@ -11,9 +11,9 @@ import {
 } from '@mantine/core';
 import { useLocale, useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
-import { formatDateTime, getInitials } from '../userDisplay';
 import RoleBadge from '../RoleBadge';
 import UserActionsMenu from '../UserActionsMenu';
+import { formatDateTime, getInitials } from '../userDisplay';
 import type { UserDetailsModalProps } from './types';
 
 type DetailRowProps = {
