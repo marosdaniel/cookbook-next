@@ -3,6 +3,7 @@ import {
   type DailyRegistration,
   INSIGHT_USER_ROLES,
   type InsightUser,
+  type InsightUserDetail,
   isInsightUserRole,
   type UserListQuery,
   type UserListResult,
@@ -11,6 +12,7 @@ import {
 import { assertAdminRole } from './policy';
 import {
   UserInsightsRepository,
+  type UserDetailRow,
   type UserListRow,
 } from './userInsightsRepository';
 
@@ -81,6 +83,16 @@ const toInsightUser = (row: UserListRow): InsightUser => ({
   role: row.role,
   recipeCount: row._count.recipes,
   joinedAt: row.createdAt.toISOString(),
+});
+
+const toInsightUserDetail = (row: UserDetailRow): InsightUserDetail => ({
+  ...toInsightUser(row),
+  locale: row.locale,
+  updatedAt: row.updatedAt.toISOString(),
+  favoriteCount: row._count.favoriteRecipes,
+  ratingCount: row._count.ratings,
+  followerCount: row._count.followers,
+  followingCount: row._count.following,
 });
 
 const buildUserWhere = (
@@ -184,7 +196,7 @@ export const UserInsightsService = {
     });
 
     return {
-      users: rows.map(toInsightUser),
+      users: rows.map(toInsightUserDetail),
       total,
       page,
       pageCount,

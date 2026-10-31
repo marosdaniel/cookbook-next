@@ -31,8 +31,16 @@ const userRow = {
   userName: 'ada',
   email: 'ada@example.com',
   role: 'USER',
+  locale: 'hu',
   createdAt: new Date('2026-10-01T08:00:00.000Z'),
-  _count: { recipes: 2 },
+  updatedAt: new Date('2026-10-02T09:30:00.000Z'),
+  _count: {
+    recipes: 2,
+    favoriteRecipes: 3,
+    ratings: 5,
+    followers: 7,
+    following: 1,
+  },
 };
 
 describe('buildDailySeries', () => {
@@ -161,6 +169,27 @@ describe('UserInsightsService.listUsers', () => {
       where: expect.objectContaining({ role: 'ADMIN', OR: expect.any(Array) }),
       skip: 2 * USER_LIST_PAGE_SIZE,
       take: USER_LIST_PAGE_SIZE,
+    });
+  });
+
+  it('maps every detail field and never exposes sensitive ones', async () => {
+    const result = await UserInsightsService.listUsers('ADMIN', {});
+
+    expect(result.users[0]).toEqual({
+      id: 'u1',
+      firstName: 'Ada',
+      lastName: 'Lovelace',
+      userName: 'ada',
+      email: 'ada@example.com',
+      role: 'USER',
+      recipeCount: 2,
+      joinedAt: '2026-10-01T08:00:00.000Z',
+      locale: 'hu',
+      updatedAt: '2026-10-02T09:30:00.000Z',
+      favoriteCount: 3,
+      ratingCount: 5,
+      followerCount: 7,
+      followingCount: 1,
     });
   });
 
