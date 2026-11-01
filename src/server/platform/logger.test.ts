@@ -53,4 +53,24 @@ describe('structured pino logger', () => {
       '[REDACTED]',
     );
   });
+
+  it('omits requestId outside a request context and silences logs under Vitest', () => {
+    vi.stubEnv('VITEST', 'true');
+    const chunks: string[] = [];
+    const stream = new Writable({
+      write(chunk, _encoding, callback) {
+        chunks.push(chunk.toString());
+        callback();
+      },
+    });
+
+    expect(createLogger(stream).level).toBe('silent');
+
+    vi.stubEnv('VITEST', '');
+    createLogger(stream).info({ event: 'no-context' }, 'outside request');
+
+    const parsed = JSON.parse(chunks[0] ?? '{}') as Record<string, unknown>;
+    expect(parsed).not.toHaveProperty('requestId');
+    expect(parsed.event).toBe('no-context');
+  });
 });

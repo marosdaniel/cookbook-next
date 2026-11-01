@@ -166,12 +166,10 @@ export async function invalidateCacheScope(
     }
   }
 
-  if (scope.authorId) {
-    keysToDelete.add(cacheKeys.userRecipes(scope.authorId, undefined));
-  }
-
-  for (const authorId of scope.authorIds ?? []) {
-    keysToDelete.add(cacheKeys.userRecipes(authorId, undefined));
+  for (const authorId of [scope.authorId, ...(scope.authorIds ?? [])]) {
+    if (authorId) {
+      keysToDelete.add(cacheKeys.userRecipes(authorId, undefined));
+    }
   }
 
   if (scope.favoriteUserId) {
