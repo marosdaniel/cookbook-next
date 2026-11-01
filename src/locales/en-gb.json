@@ -412,7 +412,9 @@
         "updatedTitle": "Label updated",
         "updatedMessage": "Recipes saved from now on will use the new label.",
         "keyTakenTitle": "Key already in use",
-        "keyTakenMessage": "Choose a different key for this type."
+        "keyTakenMessage": "Choose a different key for this type.",
+        "actionFailedTitle": "Action failed",
+        "actionFailedMessage": "The change could not be saved."
       }
     }
   },

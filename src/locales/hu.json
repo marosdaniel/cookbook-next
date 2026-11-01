@@ -411,7 +411,9 @@
         "updatedTitle": "Címke frissítve",
         "updatedMessage": "A mostantól mentett receptek az új címkét használják.",
         "keyTakenTitle": "A kulcs már foglalt",
-        "keyTakenMessage": "Válassz másik kulcsot ehhez a típushoz."
+        "keyTakenMessage": "Válassz másik kulcsot ehhez a típushoz.",
+        "actionFailedTitle": "A művelet sikertelen",
+        "actionFailedMessage": "A módosítást nem sikerült elmenteni."
       }
     }
   },

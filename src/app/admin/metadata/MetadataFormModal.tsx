@@ -10,16 +10,16 @@ import {
   showErrorNotification,
   showSuccessNotification,
 } from '@/utils/notifications';
-import { ADMIN_METADATA_REFETCH_QUERIES } from './consts';
-import type { MetadataFormState, MetadataFormValues } from './types';
+import {
+  ADMIN_METADATA_REFETCH_QUERIES,
+  LOCALLY_REPORTED_GRAPHQL_ERROR_CODES,
+} from './consts';
+import type {
+  MetadataFormModalProps,
+  MetadataFormState,
+  MetadataFormValues,
+} from './types';
 import { hasGraphQLErrorCode, validateMetadataKey } from './utils';
-
-type MetadataFormModalProps = {
-  opened: boolean;
-  state: MetadataFormState | null;
-  translationKeys: readonly string[];
-  onClose: () => void;
-};
 
 export const MetadataFormModal = ({
   opened,
@@ -135,6 +135,15 @@ const MetadataFormBody = ({
           translate('notifications.keyTakenTitle'),
           translate('notifications.keyTakenMessage'),
         );
+      } else if (
+        LOCALLY_REPORTED_GRAPHQL_ERROR_CODES.some((code) =>
+          hasGraphQLErrorCode(error, code),
+        )
+      ) {
+        showErrorNotification(
+          translate('notifications.actionFailedTitle'),
+          translate('notifications.actionFailedMessage'),
+        );
       }
     }
   };
@@ -166,7 +175,11 @@ const MetadataFormBody = ({
           data-testid="admin-metadata-translation-select"
         />
         <Group justify="flex-end" mt="sm">
-          <Button variant="default" onClick={onDone}>
+          <Button
+            variant="default"
+            onClick={onDone}
+            data-testid="admin-metadata-cancel"
+          >
             {translateCommon('general.cancel')}
           </Button>
           <Button

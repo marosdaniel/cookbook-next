@@ -25,10 +25,10 @@ import {
   RoleDonutChart,
   TopAuthorsChart,
 } from '@/components/admin/AdminCharts/AdminCharts';
+import RoleBadge from '@/components/admin/RoleBadge';
 import { StatCard } from '@/components/admin/StatCard';
 import { formatJoinedDate, getInitials } from '@/components/admin/userDisplay';
 import { adminUsersRoute } from '@/types/routes';
-import RoleBadge from '../../../components/admin/RoleBadge';
 import type { DashboardViewProps, PanelProps } from './types';
 
 const Panel = ({ title, testId, children }: Readonly<PanelProps>) => (
@@ -166,7 +166,12 @@ const DashboardView = ({ overview }: Readonly<DashboardViewProps>) => {
             {overview.recentUsers.length > 0 ? (
               <Stack gap="sm">
                 {overview.recentUsers.map((user) => (
-                  <Group key={user.id} justify="space-between" wrap="nowrap">
+                  <Group
+                    key={user.id}
+                    justify="space-between"
+                    wrap="nowrap"
+                    data-testid={`admin-dashboard-recent-user-${user.id}`}
+                  >
                     <Group gap="sm" wrap="nowrap">
                       <Avatar color="pink" radius="xl" size="md">
                         {getInitials(user.firstName, user.lastName)}
@@ -193,6 +198,7 @@ const DashboardView = ({ overview }: Readonly<DashboardViewProps>) => {
                   variant="light"
                   fullWidth
                   mt="xs"
+                  data-testid="admin-dashboard-view-all"
                 >
                   {t('dashboard.recentUsers.viewAll')}
                 </Button>

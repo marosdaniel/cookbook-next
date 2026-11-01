@@ -19,6 +19,7 @@ import {
   IconChevronRight,
   IconSearch,
 } from '@tabler/icons-react';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -31,6 +32,57 @@ import { INSIGHT_USER_ROLES } from '@/types/adminInsights';
 import { ADMIN_ROUTES, adminUsersRoute } from '@/types/routes';
 import type { UsersViewProps } from './types';
 import { useUserActions } from './useUserActions';
+
+type PageNavButtonProps = {
+  direction: 'prev' | 'next';
+  label: string;
+  /** Null when there is no page in this direction; the button is then disabled. */
+  href: Route | null;
+  testId: string;
+};
+
+const PageNavButton = ({
+  direction,
+  label,
+  href,
+  testId,
+}: Readonly<PageNavButtonProps>) => {
+  const icon =
+    direction === 'prev' ? (
+      <IconChevronLeft size={14} />
+    ) : (
+      <IconChevronRight size={14} />
+    );
+  const sectionProps =
+    direction === 'prev' ? { leftSection: icon } : { rightSection: icon };
+
+  if (!href) {
+    return (
+      <Button
+        disabled
+        variant="default"
+        size="xs"
+        {...sectionProps}
+        data-testid={testId}
+      >
+        {label}
+      </Button>
+    );
+  }
+
+  return (
+    <Button
+      component={Link}
+      href={href}
+      variant="default"
+      size="xs"
+      {...sectionProps}
+      data-testid={testId}
+    >
+      {label}
+    </Button>
+  );
+};
 
 const UsersView = ({ result, currentUserId }: Readonly<UsersViewProps>) => {
   const t = useTranslations('adminConsole');
@@ -247,50 +299,22 @@ const UsersView = ({ result, currentUserId }: Readonly<UsersViewProps>) => {
           })}
         </Text>
         <Group gap="xs">
-          {result.page > 1 ? (
-            <Button
-              component={Link}
-              href={buildPageHref(result.page - 1)}
-              variant="default"
-              size="xs"
-              leftSection={<IconChevronLeft size={14} />}
-              data-testid="admin-users-prev"
-            >
-              {t('users.previous')}
-            </Button>
-          ) : (
-            <Button
-              disabled
-              variant="default"
-              size="xs"
-              leftSection={<IconChevronLeft size={14} />}
-              data-testid="admin-users-prev"
-            >
-              {t('users.previous')}
-            </Button>
-          )}
-          {result.page < result.pageCount ? (
-            <Button
-              component={Link}
-              href={buildPageHref(result.page + 1)}
-              variant="default"
-              size="xs"
-              rightSection={<IconChevronRight size={14} />}
-              data-testid="admin-users-next"
-            >
-              {t('users.next')}
-            </Button>
-          ) : (
-            <Button
-              disabled
-              variant="default"
-              size="xs"
-              rightSection={<IconChevronRight size={14} />}
-              data-testid="admin-users-next"
-            >
-              {t('users.next')}
-            </Button>
-          )}
+          <PageNavButton
+            direction="prev"
+            label={t('users.previous')}
+            href={result.page > 1 ? buildPageHref(result.page - 1) : null}
+            testId="admin-users-prev"
+          />
+          <PageNavButton
+            direction="next"
+            label={t('users.next')}
+            href={
+              result.page < result.pageCount
+                ? buildPageHref(result.page + 1)
+                : null
+            }
+            testId="admin-users-next"
+          />
         </Group>
       </Group>
 

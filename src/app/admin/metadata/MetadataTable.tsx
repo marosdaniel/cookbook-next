@@ -17,19 +17,8 @@ import {
 import { motion } from 'motion/react';
 import { useTranslations } from 'next-intl';
 import { MOTION_TRANSITION } from '@/lib/motion/transitions';
-import type { AdminMetadataItem } from './types';
-import type { MoveDirection } from './utils';
-
-const STAGGER_MAX_ROWS = 15;
-const STAGGER_STEP_SECONDS = 0.03;
-
-type MetadataTableProps = {
-  items: readonly AdminMetadataItem[];
-  disabled: boolean;
-  onMove: (item: AdminMetadataItem, direction: MoveDirection) => void;
-  onToggleActive: (item: AdminMetadataItem, isActive: boolean) => void;
-  onEdit: (item: AdminMetadataItem) => void;
-};
+import { STAGGER_MAX_ROWS, STAGGER_STEP_SECONDS } from './consts';
+import type { MetadataTableProps } from './types';
 
 export const MetadataTable = ({
   items,
@@ -54,7 +43,7 @@ export const MetadataTable = ({
             <Table.Th>{translate('columns.actions')}</Table.Th>
           </Table.Tr>
         </Table.Thead>
-        <Table.Tbody>
+        <Table.Tbody data-testid="admin-metadata-table-body">
           {items.map((item, index) => {
             const isFirst = index === 0;
             const isLast = index === items.length - 1;
@@ -112,6 +101,7 @@ export const MetadataTable = ({
                     size="sm"
                     fw={500}
                     c={item.isActive ? undefined : 'dimmed'}
+                    data-testid={`admin-metadata-label-${item.id}`}
                   >
                     {label}
                   </Text>

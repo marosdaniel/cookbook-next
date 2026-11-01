@@ -447,7 +447,9 @@
         "updatedTitle": "Bezeichnung aktualisiert",
         "updatedMessage": "Ab jetzt gespeicherte Rezepte verwenden die neue Bezeichnung.",
         "keyTakenTitle": "Schlüssel bereits vergeben",
-        "keyTakenMessage": "Wähle für diesen Typ einen anderen Schlüssel."
+        "keyTakenMessage": "Wähle für diesen Typ einen anderen Schlüssel.",
+        "actionFailedTitle": "Aktion fehlgeschlagen",
+        "actionFailedMessage": "Die Änderung konnte nicht gespeichert werden."
       }
     }
   },

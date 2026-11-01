@@ -41,6 +41,14 @@ const AdminShell = ({ children }: Readonly<PropsWithChildren>) => {
   const isUsers = pathname.startsWith(ADMIN_ROUTES.USERS);
   const isMetadata = pathname.startsWith(ADMIN_ROUTES.METADATA);
 
+  const currentSectionKey = isDashboard
+    ? 'dashboard.title'
+    : isUsers
+      ? 'users.title'
+      : isMetadata
+        ? 'navMetadata'
+        : null;
+
   return (
     <AppShell
       header={{ height: 64 }}
@@ -74,6 +82,7 @@ const AdminShell = ({ children }: Readonly<PropsWithChildren>) => {
               hiddenFrom="sm"
               size="sm"
               aria-label={translate('navToggle')}
+              data-testid="admin-nav-toggle"
             />
             <Group gap="xs" wrap="nowrap">
               <ThemeIcon
@@ -90,22 +99,17 @@ const AdminShell = ({ children }: Readonly<PropsWithChildren>) => {
                   component={Link}
                   href={ADMIN_ROUTES.DASHBOARD}
                   size="sm"
+                  data-testid="admin-breadcrumb-console"
                 >
                   {translate('consoleTitle')}
                 </Anchor>
-                {isDashboard ? (
-                  <Text size="sm" fw={600}>
-                    {translate('dashboard.title')}
-                  </Text>
-                ) : null}
-                {isUsers ? (
-                  <Text size="sm" fw={600}>
-                    {translate('users.title')}
-                  </Text>
-                ) : null}
-                {isMetadata ? (
-                  <Text size="sm" fw={600}>
-                    {translate('navMetadata')}
+                {currentSectionKey ? (
+                  <Text
+                    size="sm"
+                    fw={600}
+                    data-testid="admin-breadcrumb-current"
+                  >
+                    {translate(currentSectionKey)}
                   </Text>
                 ) : null}
               </Breadcrumbs>
@@ -114,6 +118,7 @@ const AdminShell = ({ children }: Readonly<PropsWithChildren>) => {
                 gradient={{ from: 'pink', to: 'violet', deg: 45 }}
                 size="sm"
                 visibleFrom="sm"
+                data-testid="admin-badge"
               >
                 {translate('adminBadge')}
               </Badge>
@@ -129,6 +134,7 @@ const AdminShell = ({ children }: Readonly<PropsWithChildren>) => {
               variant="subtle"
               size="xs"
               visibleFrom="sm"
+              data-testid="admin-back-to-site"
             >
               {translate('backToSite')}
             </Button>

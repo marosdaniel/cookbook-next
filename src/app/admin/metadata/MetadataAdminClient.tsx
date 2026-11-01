@@ -24,27 +24,27 @@ import {
   type MetadataTypeName,
 } from '@/lib/metadata/metadataTypes';
 import { MOTION_TRANSITION } from '@/lib/motion/transitions';
-import { ADMIN_METADATA_REFETCH_QUERIES } from './consts';
+import { showErrorNotification } from '@/utils/notifications';
+import {
+  ADMIN_METADATA_REFETCH_QUERIES,
+  LOCALLY_REPORTED_GRAPHQL_ERROR_CODES,
+  NO_ITEMS,
+  SKELETON_ROWS,
+} from './consts';
 import { MetadataFormModal } from './MetadataFormModal';
 import { MetadataTable } from './MetadataTable';
 import type {
   AdminMetadataItem,
+  MetadataAdminClientProps,
   MetadataFormState,
-  TranslationKeysByType,
 } from './types';
 import {
   getReorderedIds,
+  hasGraphQLErrorCode,
   isMetadataTypeName,
   type MoveDirection,
   sortByOrder,
 } from './utils';
-
-type MetadataAdminClientProps = {
-  translationKeysByType: TranslationKeysByType;
-};
-
-const NO_ITEMS: readonly AdminMetadataItem[] = [];
-const SKELETON_ROWS = [1, 2, 3, 4, 5];
 
 const MetadataAdminClient = ({
   translationKeysByType,
@@ -84,28 +84,43 @@ const MetadataAdminClient = ({
   );
   const mutating = toggling || reordering;
 
-  const handleToggleActive = async (
-    item: AdminMetadataItem,
-    isActive: boolean,
-  ) => {
-    await setMetadataActive({ variables: { id: item.id, isActive } });
+  // Failures are reported here, so a rejected mutation never becomes an unhandled promise rejection.
+  const runMetadataMutation = async (mutate: () => Promise<unknown>) => {
+    try {
+      await mutate();
+    } catch (error) {
+      if (
+        LOCALLY_REPORTED_GRAPHQL_ERROR_CODES.some((code) =>
+          hasGraphQLErrorCode(error, code),
+        )
+      ) {
+        showErrorNotification(
+          translate('notifications.actionFailedTitle'),
+          translate('notifications.actionFailedMessage'),
+        );
+      }
+    }
   };
 
-  const handleMove = async (
-    item: AdminMetadataItem,
-    direction: MoveDirection,
-  ) => {
+  const handleToggleActive = (item: AdminMetadataItem, isActive: boolean) =>
+    runMetadataMutation(() =>
+      setMetadataActive({ variables: { id: item.id, isActive } }),
+    );
+
+  const handleMove = (item: AdminMetadataItem, direction: MoveDirection) => {
     const orderedIds = getReorderedIds(
       itemsByType[item.type],
       item.id,
       direction,
     );
 
-    if (orderedIds) {
-      await reorderMetadata({
-        variables: { type: item.type, orderedIds },
-      });
+    if (!orderedIds) {
+      return Promise.resolve();
     }
+
+    return runMetadataMutation(() =>
+      reorderMetadata({ variables: { type: item.type, orderedIds } }),
+    );
   };
 
   const openCreate = (type: MetadataTypeName) => {
@@ -210,7 +225,12 @@ const MetadataAdminClient = ({
         </Tabs.List>
 
         {METADATA_TYPES.map((type) => (
-          <Tabs.Panel key={type} value={type} pt="md">
+          <Tabs.Panel
+            key={type}
+            value={type}
+            pt="md"
+            data-testid={`admin-metadata-panel-${type}`}
+          >
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

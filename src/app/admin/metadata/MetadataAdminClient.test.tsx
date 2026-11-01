@@ -14,11 +14,25 @@ const mocks = vi.hoisted(() => ({
   setMetadataActive: vi.fn(),
   reorderMetadata: vi.fn(),
   defaultMutation: vi.fn(),
+  showErrorNotification: vi.fn(),
 }));
 
+vi.mock('@apollo/client', () => ({
+  CombinedGraphQLErrors: {
+    is: (error: unknown) =>
+      typeof error === 'object' &&
+      error !== null &&
+      'isCombined' in error &&
+      error.isCombined === true,
+  },
+}));
 vi.mock('@apollo/client/react', () => ({
   useQuery: (...args: unknown[]) => mocks.useQuery(...args),
   useMutation: (...args: unknown[]) => mocks.useMutation(...args),
+}));
+vi.mock('@/utils/notifications', () => ({
+  showErrorNotification: mocks.showErrorNotification,
+  showSuccessNotification: vi.fn(),
 }));
 
 import MetadataAdminClient from './MetadataAdminClient';
@@ -121,6 +135,30 @@ describe('MetadataAdminClient', () => {
     expect(mocks.reorderMetadata).toHaveBeenCalledWith({
       variables: { type: 'CATEGORY', orderedIds: ['cat-2', 'cat-1'] },
     });
+  });
+
+  it('reports a forbidden mutation instead of leaving it unhandled', async () => {
+    mocks.setMetadataActive.mockRejectedValue({
+      isCombined: true,
+      errors: [{ message: 'forbidden', extensions: { code: 'FORBIDDEN' } }],
+    });
+
+    render(
+      <MetadataAdminClient translationKeysByType={translationKeysByType} />,
+    );
+
+    fireEvent.click(
+      within(screen.getByTestId('admin-metadata-row-cat-1')).getByRole(
+        'switch',
+      ),
+    );
+
+    await vi.waitFor(() =>
+      expect(mocks.showErrorNotification).toHaveBeenCalledWith(
+        'actionFailedTitle',
+        'actionFailedMessage',
+      ),
+    );
   });
 
   it('opens the create form for the active type', async () => {
