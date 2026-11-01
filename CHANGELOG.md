@@ -1,3 +1,10 @@
+# [3.17.0](https://github.com/marosdaniel/cookbook-next/compare/v3.16.0...v3.17.0) (2026-11-01)
+
+
+### Features
+
+* **metadata:** enhance error handling and notifications in admin metadata components ([af00ebc](https://github.com/marosdaniel/cookbook-next/commit/af00ebc947cd8d3b87a30e0d61924c395d21d65a))
+
 # [3.16.0](https://github.com/marosdaniel/cookbook-next/compare/v3.15.0...v3.16.0) (2026-10-31)
 
 ### Features
