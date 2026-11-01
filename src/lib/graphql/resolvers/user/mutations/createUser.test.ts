@@ -51,4 +51,16 @@ describe('createUser resolver', () => {
     });
     expect(result).toEqual({ id: 'user-1' });
   });
+
+  it('throws when registration input is missing', async () => {
+    const context: GraphQLContext = {
+      prisma: {} as GraphQLContext['prisma'],
+      loaders: {} as GraphQLContext['loaders'],
+    };
+
+    await expect(
+      createUser({}, { userRegisterInput: undefined }, context),
+    ).rejects.toThrow('User registration input is required');
+    expect(mockCreateUser).not.toHaveBeenCalled();
+  });
 });

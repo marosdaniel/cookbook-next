@@ -39,4 +39,17 @@ describe('getRecipesByUserId resolver', () => {
       pageInfo: { hasNextPage: false, endCursor: null },
     });
   });
+
+  it('passes an undefined limit when none is provided', async () => {
+    mockGetRecipesByUserId.mockResolvedValue({ recipes: [], totalRecipes: 0 });
+
+    const context: GraphQLContext = {
+      prisma: {} as GraphQLContext['prisma'],
+      loaders: {} as GraphQLContext['loaders'],
+    };
+
+    await getRecipesByUserId({}, { userId: 'user-2' }, context);
+
+    expect(mockGetRecipesByUserId).toHaveBeenCalledWith('user-2', undefined);
+  });
 });

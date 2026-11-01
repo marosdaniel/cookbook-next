@@ -89,81 +89,31 @@ const UserDetailsModal = ({
           <Divider />
 
           <Stack gap="xs" data-testid="admin-user-details-fields">
-            <DetailRow fieldKey="id" label={t('users.details.fields.id')}>
-              <Code>{user.id}</Code>
-            </DetailRow>
-            <DetailRow
-              fieldKey="firstName"
-              label={t('users.details.fields.firstName')}
-            >
-              {user.firstName}
-            </DetailRow>
-            <DetailRow
-              fieldKey="lastName"
-              label={t('users.details.fields.lastName')}
-            >
-              {user.lastName}
-            </DetailRow>
-            <DetailRow
-              fieldKey="userName"
-              label={t('users.details.fields.userName')}
-            >
-              {user.userName}
-            </DetailRow>
-            <DetailRow fieldKey="email" label={t('users.details.fields.email')}>
-              {user.email}
-            </DetailRow>
-            <DetailRow fieldKey="role" label={t('users.details.fields.role')}>
-              {t(`roles.${user.role}`)}
-            </DetailRow>
-            <DetailRow
-              fieldKey="locale"
-              label={t('users.details.fields.locale')}
-            >
-              {user.locale}
-            </DetailRow>
-            <DetailRow
-              fieldKey="recipes"
-              label={t('users.details.fields.recipes')}
-            >
-              {user.recipeCount}
-            </DetailRow>
-            <DetailRow
-              fieldKey="favorites"
-              label={t('users.details.fields.favorites')}
-            >
-              {user.favoriteCount}
-            </DetailRow>
-            <DetailRow
-              fieldKey="ratings"
-              label={t('users.details.fields.ratings')}
-            >
-              {user.ratingCount}
-            </DetailRow>
-            <DetailRow
-              fieldKey="followers"
-              label={t('users.details.fields.followers')}
-            >
-              {user.followerCount}
-            </DetailRow>
-            <DetailRow
-              fieldKey="following"
-              label={t('users.details.fields.following')}
-            >
-              {user.followingCount}
-            </DetailRow>
-            <DetailRow
-              fieldKey="joined"
-              label={t('users.details.fields.joined')}
-            >
-              {formatDateTime(user.joinedAt, locale)}
-            </DetailRow>
-            <DetailRow
-              fieldKey="updated"
-              label={t('users.details.fields.updated')}
-            >
-              {formatDateTime(user.updatedAt, locale)}
-            </DetailRow>
+            {[
+              { key: 'id', value: <Code>{user.id}</Code> },
+              { key: 'firstName', value: user.firstName },
+              { key: 'lastName', value: user.lastName },
+              { key: 'userName', value: user.userName },
+              { key: 'email', value: user.email },
+              { key: 'role', value: t(`roles.${user.role}`) },
+              { key: 'locale', value: user.locale },
+              { key: 'recipes', value: user.recipeCount },
+              { key: 'favorites', value: user.favoriteCount },
+              { key: 'ratings', value: user.ratingCount },
+              { key: 'followers', value: user.followerCount },
+              { key: 'following', value: user.followingCount },
+              { key: 'joined', value: formatDateTime(user.joinedAt, locale) },
+              { key: 'updated', value: formatDateTime(user.updatedAt, locale) },
+            ].map(({ key, value }) => (
+              // Each label key under users.details.fields matches the row key.
+              <DetailRow
+                key={key}
+                fieldKey={key}
+                label={t(`users.details.fields.${key}`)}
+              >
+                {value}
+              </DetailRow>
+            ))}
           </Stack>
 
           <Divider />

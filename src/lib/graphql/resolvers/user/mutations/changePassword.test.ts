@@ -78,4 +78,31 @@ describe('changePassword resolver', () => {
       message: 'Password changed successfully',
     });
   });
+
+  it('reports failure when the user service rejects the password change', async () => {
+    mockChangePassword.mockResolvedValue(false);
+
+    const context: GraphQLContext = {
+      userId: 'user-1',
+      prisma: {} as GraphQLContext['prisma'],
+      loaders: {} as GraphQLContext['loaders'],
+    };
+
+    const result = await changePassword(
+      {},
+      {
+        passwordEditInput: {
+          currentPassword: 'wrong',
+          newPassword: 'newPass123!',
+          confirmNewPassword: 'newPass123!',
+        },
+      },
+      context,
+    );
+
+    expect(result).toEqual({
+      success: false,
+      message: 'Failed to change password',
+    });
+  });
 });

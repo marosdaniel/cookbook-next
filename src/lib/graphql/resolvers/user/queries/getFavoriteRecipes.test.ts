@@ -32,4 +32,16 @@ describe('getFavoriteRecipes resolver', () => {
     expect(mockGetFavoriteRecipes).toHaveBeenCalledWith('user-1', 2);
     expect(result).toEqual([]);
   });
+
+  it('throws when no user is authenticated', async () => {
+    const context: GraphQLContext = {
+      prisma: {} as GraphQLContext['prisma'],
+      loaders: {} as GraphQLContext['loaders'],
+    };
+
+    await expect(getFavoriteRecipes({}, { limit: 2 }, context)).rejects.toThrow(
+      'Authentication required',
+    );
+    expect(mockGetFavoriteRecipes).not.toHaveBeenCalled();
+  });
 });

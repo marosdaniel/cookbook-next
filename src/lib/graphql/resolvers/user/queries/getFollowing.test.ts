@@ -32,4 +32,16 @@ describe('getFollowing resolver', () => {
     expect(mockGetFollowing).toHaveBeenCalledWith('user-1', 5);
     expect(result).toEqual([]);
   });
+
+  it('throws when no user is authenticated', async () => {
+    const context: GraphQLContext = {
+      prisma: {} as GraphQLContext['prisma'],
+      loaders: {} as GraphQLContext['loaders'],
+    };
+
+    await expect(getFollowing({}, { limit: 5 }, context)).rejects.toThrow(
+      'Authentication required',
+    );
+    expect(mockGetFollowing).not.toHaveBeenCalled();
+  });
 });

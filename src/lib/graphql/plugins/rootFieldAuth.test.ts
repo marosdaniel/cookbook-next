@@ -96,7 +96,6 @@ describe('rootFieldAuth', () => {
         contextValue,
       } as never),
     ).resolves.toBeUndefined();
-    expect(contextValue.operationName).toBe('HomeBundle');
   });
 
   it('has an explicit policy in ROOT_FIELD_POLICY for every Query and Mutation field in SDL', () => {

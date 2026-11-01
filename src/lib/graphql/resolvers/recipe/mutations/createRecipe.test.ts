@@ -54,4 +54,18 @@ describe('createRecipe resolver', () => {
     expect(mockCreateRecipe).toHaveBeenCalledWith('user-1', recipeCreateInput);
     expect(result).toEqual({ id: 'recipe-1' });
   });
+
+  it('throws when recipe input is missing', async () => {
+    const context: GraphQLContext = {
+      userId: 'user-1',
+      prisma: {} as GraphQLContext['prisma'],
+      loaders: {} as GraphQLContext['loaders'],
+    };
+
+    await expect(
+      createRecipe({}, { recipeCreateInput: undefined }, context),
+    ).rejects.toThrow('Recipe input is required');
+    expect(mockResolveAuthenticatedUser).not.toHaveBeenCalled();
+    expect(mockCreateRecipe).not.toHaveBeenCalled();
+  });
 });

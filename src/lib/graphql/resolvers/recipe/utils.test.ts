@@ -5,6 +5,7 @@ import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import {
   assertPresent,
   buildRecipeData,
+  normalizeRecipeInput,
   resolveAuthenticatedUser,
   resolveRecipeMetadata,
   validateRequiredFields,
@@ -177,5 +178,96 @@ describe('recipe resolver utils', () => {
     await expect(
       resolveAuthenticatedUser({ userId: 'u1' } as never),
     ).resolves.toEqual(mockUser);
+  });
+
+  describe('normalizeRecipeInput', () => {
+    const baseInput = {
+      title: 'Soup',
+      description: null,
+      ingredients: [
+        { name: 'Water', quantity: 1, unit: 'l', isOptional: null, note: null },
+      ],
+      preparationSteps: [{ description: 'Boil', order: 1 }],
+      category: { value: 'main', label: 'Main' },
+      labels: null,
+      cookingTime: 20,
+      difficultyLevel: { value: 'easy', label: 'Easy' },
+      servings: 2,
+      imgSrc: null,
+      youtubeLink: null,
+      dietaryFlags: null,
+      allergens: null,
+      equipment: null,
+      costLevel: null,
+      tips: null,
+      substitutions: null,
+      slug: null,
+      seoTitle: null,
+      seoDescription: null,
+      socialImage: null,
+    };
+
+    it('replaces nullable optional fields with undefined', () => {
+      const result = normalizeRecipeInput(baseInput as never);
+
+      expect(result.description).toBeUndefined();
+      expect(result.labels).toBeUndefined();
+      expect(result.imgSrc).toBeUndefined();
+      expect(result.youtubeLink).toBeUndefined();
+      expect(result.dietaryFlags).toBeUndefined();
+      expect(result.tips).toBeUndefined();
+      expect(result.slug).toBeUndefined();
+      expect(result.ingredients).toEqual([
+        {
+          name: 'Water',
+          quantity: 1,
+          unit: 'l',
+          isOptional: undefined,
+          note: undefined,
+        },
+      ]);
+    });
+
+    it('keeps provided values and maps metadata lists', () => {
+      const result = normalizeRecipeInput({
+        ...baseInput,
+        description: 'Warm',
+        labels: [{ value: 'vegan', label: 'Vegan' }],
+        allergens: [{ value: 'milk', label: 'Milk' }],
+        tips: 'Season well',
+      } as never);
+
+      expect(result.description).toBe('Warm');
+      expect(result.labels).toEqual([{ value: 'vegan', label: 'Vegan' }]);
+      expect(result.allergens).toEqual([{ value: 'milk', label: 'Milk' }]);
+      expect(result.tips).toBe('Season well');
+    });
+
+    it('throws when an ingredient entry is missing', () => {
+      expect(() =>
+        normalizeRecipeInput({
+          ...baseInput,
+          ingredients: [null],
+        } as never),
+      ).toThrow('Ingredient 1 must be provided');
+    });
+
+    it('throws when a preparation step entry is missing', () => {
+      expect(() =>
+        normalizeRecipeInput({
+          ...baseInput,
+          preparationSteps: [{ description: 'Boil', order: 1 }, null],
+        } as never),
+      ).toThrow('Preparation step 2 must be provided');
+    });
+
+    it('throws when a label entry is missing', () => {
+      expect(() =>
+        normalizeRecipeInput({
+          ...baseInput,
+          labels: [null],
+        } as never),
+      ).toThrow('Label item 1 must be provided');
+    });
   });
 });

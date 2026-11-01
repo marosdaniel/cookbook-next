@@ -83,7 +83,7 @@ vi.mock('@/lib/validation/validation', async () => {
       parse: vi.fn(),
     },
     nameValidationSchema: {
-      parse: vi.fn(),
+      safeParse: vi.fn(() => ({ success: true })),
     },
     passwordEditValidationSchema: {
       safeParse: vi.fn(() => ({ success: true })),

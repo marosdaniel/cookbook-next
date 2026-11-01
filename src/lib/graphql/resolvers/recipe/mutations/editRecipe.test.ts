@@ -57,4 +57,18 @@ describe('editRecipe resolver', () => {
     );
     expect(result).toEqual({ id: 'recipe-1' });
   });
+
+  it('throws when recipe edit input is missing', async () => {
+    const { editRecipe } = await import('./editRecipe');
+    const context: GraphQLContext = {
+      role: 'USER',
+      prisma: {} as GraphQLContext['prisma'],
+      loaders: {} as GraphQLContext['loaders'],
+    };
+
+    await expect(
+      editRecipe({}, { id: 'recipe-1', recipeEditInput: undefined }, context),
+    ).rejects.toThrow('Recipe input is required');
+    expect(mockEditRecipe).not.toHaveBeenCalled();
+  });
 });
