@@ -1,5 +1,4 @@
 import crypto from 'node:crypto';
-import { after } from 'next/server';
 import { hashPassword, verifyPassword } from '@/lib/auth/password';
 import {
   generateResetToken,
@@ -14,7 +13,7 @@ import {
   setNewPasswordValidationSchema,
 } from '@/lib/validation/validation';
 import { invalidateCacheScope } from '@/server/platform/cache';
-import { logger } from '@/server/platform/logger';
+import { schedulePostResponseTask } from '@/server/platform/postResponse';
 import { UserRepository } from './repository';
 import type { PasswordEditDomainInput } from './types';
 
@@ -24,24 +23,11 @@ const UNIFORM_PASSWORD_RESET_RESPONSE = {
     'If an account with that email exists, a password reset link has been sent.',
 } as const;
 
-export const schedulePostResponseTask = (
-  task: () => Promise<unknown>,
-  errorMessage: string,
-): void => {
-  const executeSafely = async () => {
-    try {
-      await task();
-    } catch (error) {
-      logger.error({ err: error }, errorMessage);
-    }
-  };
+const RESET_TOKEN_TTL_MS = 60 * 60 * 1000;
 
-  try {
-    after(executeSafely);
-  } catch {
-    void executeSafely();
-  }
-};
+// Only the hash is stored, so a leaked database row cannot be used as a token.
+const hashResetToken = (token: string): string =>
+  crypto.createHash('sha256').update(token).digest('hex');
 
 export const PasswordService = {
   async changePassword(
@@ -116,11 +102,8 @@ export const PasswordService = {
     }
 
     const resetToken = generateResetToken();
-    const hashedToken = crypto
-      .createHash('sha256')
-      .update(resetToken)
-      .digest('hex');
-    const resetExpires = new Date(Date.now() + 60 * 60 * 1000);
+    const hashedToken = hashResetToken(resetToken);
+    const resetExpires = new Date(Date.now() + RESET_TOKEN_TTL_MS);
 
     await UserRepository.savePasswordResetToken(
       normalizedEmail,
@@ -151,8 +134,9 @@ export const PasswordService = {
       );
     }
 
-    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
-    const user = await UserRepository.findValidResetTokenUser(hashedToken);
+    const user = await UserRepository.findValidResetTokenUser(
+      hashResetToken(token),
+    );
 
     if (!user) {
       return throwCustomError(

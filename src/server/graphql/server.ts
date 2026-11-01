@@ -33,6 +33,16 @@ const armor = new ApolloArmor({
 
 const protection = armor.protect();
 
+const publicErrorCodes = new Set([
+  'BAD_USER_INPUT',
+  'BAD_REQUEST',
+  'PERSISTED_QUERY_NOT_ALLOWED',
+  'UNAUTHENTICATED',
+  'FORBIDDEN',
+  'NOT_FOUND',
+  'RATE_LIMITED',
+]);
+
 export const server = new ApolloServer<GraphQLContext>({
   typeDefs,
   resolvers: { ...scalarResolvers, ...resolvers },
@@ -41,16 +51,6 @@ export const server = new ApolloServer<GraphQLContext>({
   introspection: process.env.NODE_ENV !== 'production',
   allowBatchedHttpRequests: false,
   formatError: (formattedError) => {
-    const publicErrorCodes = new Set([
-      'BAD_USER_INPUT',
-      'BAD_REQUEST',
-      'PERSISTED_QUERY_NOT_ALLOWED',
-      'UNAUTHENTICATED',
-      'FORBIDDEN',
-      'NOT_FOUND',
-      'RATE_LIMITED',
-    ]);
-
     const code = formattedError.extensions?.code?.toString();
     const isProduction = process.env.NODE_ENV === 'production';
 

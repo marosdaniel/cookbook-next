@@ -207,7 +207,7 @@ export async function invalidateCacheScope(
       );
     }
 
-    if (scope.invalidateRecipeLists && currentRedis.incr) {
+    if (scope.invalidateRecipeLists) {
       await currentRedis.incr(cacheKeys.recipeListVersion);
     }
   } catch (error) {

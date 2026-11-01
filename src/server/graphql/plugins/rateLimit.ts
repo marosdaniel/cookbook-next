@@ -13,7 +13,7 @@ import {
   type RateLimitGroupName,
 } from '@/lib/rateLimit/rateLimit';
 import type { GraphQLContext } from '@/types/graphql/context';
-import { collectRootFields } from './rootFieldAuth';
+import { getOperationRootFields } from './rootFieldAuth';
 
 export async function enforceOperationRateLimits(
   doc: DocumentNode | undefined,
@@ -23,7 +23,7 @@ export async function enforceOperationRateLimits(
 ): Promise<void> {
   const fieldsToCheck =
     doc && op
-      ? collectRootFields(doc, op).filter((field) => field !== '__typename')
+      ? getOperationRootFields(doc, op)
       : operationName
         ? [operationName]
         : [];

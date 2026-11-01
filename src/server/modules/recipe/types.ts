@@ -5,6 +5,20 @@ import type {
   Recipe as PrismaRecipe,
 } from '@prisma/client';
 
+export interface RecipeFilterInput {
+  search?: string;
+  title?: string;
+  categoryKey?: string;
+  difficultyLevelKey?: string;
+  labelKeys?: string[];
+  maxCookingTime?: number;
+  cuisineKey?: string;
+  costLevelKey?: string;
+  dietaryFlagKeys?: string[];
+  allergenKeys?: string[];
+  equipmentKeys?: string[];
+}
+
 export const RECIPE_LIST_SELECT = {
   id: true,
   title: true,

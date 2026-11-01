@@ -53,6 +53,13 @@ export function collectRootFields(
   return names;
 }
 
+export function getOperationRootFields(
+  doc: DocumentNode,
+  op: OperationDefinitionNode,
+): string[] {
+  return collectRootFields(doc, op).filter((field) => field !== '__typename');
+}
+
 export function assertGraphQLRootFieldsAuthorized(
   doc: DocumentNode | undefined,
   op: OperationDefinitionNode | undefined,
@@ -76,9 +83,7 @@ export function assertGraphQLRootFieldsAuthorized(
     return;
   }
 
-  const rootFields = collectRootFields(doc, op).filter(
-    (field) => field !== '__typename',
-  );
+  const rootFields = getOperationRootFields(doc, op);
 
   if (rootFields.length === 0) {
     assertGraphQLOperationAuthorized(operationName, userRole);
@@ -109,8 +114,6 @@ export const rootFieldAuthPlugin: ApolloServerPlugin<GraphQLContext> = {
           operationName,
           role,
         );
-
-        requestContext.contextValue.operationName = operationName;
       },
     });
   },

@@ -9,23 +9,29 @@ import {
   type IngredientDomainInput,
   type NormalizablePreparationStep,
   RECIPE_LIST_SELECT,
+  type RecipeFilterInput,
 } from './types';
 
+export type { RecipeFilterInput };
 export { RECIPE_LIST_SELECT };
 
-export interface RecipeFilterInput {
-  search?: string;
-  title?: string;
-  categoryKey?: string;
-  difficultyLevelKey?: string;
-  labelKeys?: string[];
-  maxCookingTime?: number;
-  cuisineKey?: string;
-  costLevelKey?: string;
-  dietaryFlagKeys?: string[];
-  allergenKeys?: string[];
-  equipmentKeys?: string[];
-}
+const toIngredientCreateInputs = (ingredients: IngredientDomainInput[]) =>
+  ingredients.map((i) => ({
+    localId: i.localId,
+    name: i.name,
+    quantity: i.quantity,
+    unit: i.unit,
+    isOptional: i.isOptional ?? false,
+    note: i.note ?? null,
+  }));
+
+const toPreparationStepCreateInputs = (
+  preparationSteps: NormalizablePreparationStep[],
+) =>
+  preparationSteps.map((s, index) => ({
+    description: s.description,
+    order: s.order || index + 1,
+  }));
 
 export function buildWhereClause(
   filter?: RecipeFilterInput,
@@ -198,20 +204,10 @@ export const RecipeRepository = {
         ...data,
         createdBy: userId,
         ingredients: {
-          create: ingredients.map((i) => ({
-            localId: i.localId,
-            name: i.name,
-            quantity: i.quantity,
-            unit: i.unit,
-            isOptional: i.isOptional ?? false,
-            note: i.note ?? null,
-          })),
+          create: toIngredientCreateInputs(ingredients),
         },
         preparationSteps: {
-          create: preparationSteps.map((s, index) => ({
-            description: s.description,
-            order: s.order || index + 1,
-          })),
+          create: toPreparationStepCreateInputs(preparationSteps),
         },
       },
       include: { ingredients: true, preparationSteps: true },
@@ -233,21 +229,11 @@ export const RecipeRepository = {
         ...data,
         ingredients: {
           deleteMany: {},
-          create: ingredients.map((i) => ({
-            localId: i.localId,
-            name: i.name,
-            quantity: i.quantity,
-            unit: i.unit,
-            isOptional: i.isOptional ?? false,
-            note: i.note ?? null,
-          })),
+          create: toIngredientCreateInputs(ingredients),
         },
         preparationSteps: {
           deleteMany: {},
-          create: preparationSteps.map((s, index) => ({
-            description: s.description,
-            order: s.order || index + 1,
-          })),
+          create: toPreparationStepCreateInputs(preparationSteps),
         },
       },
       include: { ingredients: true, preparationSteps: true },

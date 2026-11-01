@@ -17,7 +17,15 @@
   },
   "Skeleton component": {
     "prefix": "cmp",
-    "body": ["import React from 'react';", "", "const $1 = () => {", "  return null;", "};", "", "export default $2;$0"]
+    "body": [
+      "import React from 'react';",
+      "",
+      "const $1 = () => {",
+      "  return null;",
+      "};",
+      "",
+      "export default $2;$0"
+    ]
   },
   "Styled Component": {
     "prefix": "scomp",

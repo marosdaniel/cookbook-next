@@ -1,33 +1,32 @@
-{   
-    "biome.enabled": true,
-    "editor.defaultFormatter": "biomejs.biome",
-    "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "file",
-    "editor.codeActionsOnSave": {
-        "quickfix.biome": "explicit",
-        "source.organizeImports.biome": "explicit",
-        "source.fixAll.biome": "explicit"
-    },
-    "[typescript]": {
-        "editor.defaultFormatter": "biomejs.biome"
-    },
-    "[typescriptreact]": {
-        "editor.defaultFormatter": "biomejs.biome"
-    },
-    "[javascript]": {
-        "editor.defaultFormatter": "biomejs.biome"
-    },
-    "[javascriptreact]": {
-        "editor.defaultFormatter": "biomejs.biome"
-    },
-    "[json]": {
-        "editor.defaultFormatter": "biomejs.biome"
-    },
-    "[jsonc]": {
-        "editor.defaultFormatter": "biomejs.biome"
-    },
-    "sonarlint.connectedMode.project": {
-        "connectionId": "marosdaniel",
-        "projectKey": "marosdaniel_cookbook-next"
-    },
+{
+  "biome.enabled": true,
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.biome": "explicit",
+    "source.fixAll.biome": "explicit"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "sonarlint.connectedMode.project": {
+    "connectionId": "marosdaniel",
+    "projectKey": "marosdaniel_cookbook-next"
+  }
 }

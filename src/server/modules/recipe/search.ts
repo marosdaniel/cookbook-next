@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
-import type { RecipeFilterInput } from './repository';
+import { decodeCursor, encodeCursor } from '@/server/platform/pagination';
+import type { RecipeFilterInput } from './types';
 
 export interface CreatedAtCursor {
   createdAt: string;
@@ -11,67 +12,44 @@ export interface SearchScoreCursor {
   id: string;
 }
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
+const isCreatedAtCursor = (value: unknown): value is CreatedAtCursor =>
+  isRecord(value) &&
+  typeof value.createdAt === 'string' &&
+  typeof value.id === 'string' &&
+  !Number.isNaN(Date.parse(value.createdAt));
+
+const isSearchScoreCursor = (value: unknown): value is SearchScoreCursor =>
+  isRecord(value) &&
+  typeof value.score === 'number' &&
+  Number.isFinite(value.score) &&
+  typeof value.id === 'string' &&
+  value.id !== '';
+
 export const encodeCreatedAtCursor = (cursor: {
   createdAt: Date;
   id: string;
 }): string =>
-  Buffer.from(
-    JSON.stringify({
-      createdAt: cursor.createdAt.toISOString(),
-      id: cursor.id,
-    }),
-  ).toString('base64url');
+  encodeCursor({
+    createdAt: cursor.createdAt.toISOString(),
+    id: cursor.id,
+  });
 
 export const decodeCreatedAtCursor = (
   cursor: string | undefined,
-): CreatedAtCursor | null => {
-  if (!cursor) return null;
-  try {
-    const decoded = JSON.parse(
-      Buffer.from(cursor, 'base64url').toString(),
-    ) as CreatedAtCursor;
-    if (
-      typeof decoded.createdAt !== 'string' ||
-      typeof decoded.id !== 'string' ||
-      Number.isNaN(Date.parse(decoded.createdAt))
-    ) {
-      return null;
-    }
-    return decoded;
-  } catch {
-    return null;
-  }
-};
+): CreatedAtCursor | null => decodeCursor(cursor, isCreatedAtCursor);
 
 export const encodeSearchScoreCursor = (cursor: SearchScoreCursor): string =>
-  Buffer.from(
-    JSON.stringify({
-      score: Number(cursor.score.toFixed(6)),
-      id: cursor.id,
-    }),
-  ).toString('base64url');
+  encodeCursor({
+    score: Number(cursor.score.toFixed(6)),
+    id: cursor.id,
+  });
 
 export const decodeSearchScoreCursor = (
   cursor: string | undefined,
-): SearchScoreCursor | null => {
-  if (!cursor) return null;
-  try {
-    const decoded = JSON.parse(
-      Buffer.from(cursor, 'base64url').toString(),
-    ) as SearchScoreCursor;
-    if (
-      typeof decoded.score !== 'number' ||
-      !Number.isFinite(decoded.score) ||
-      typeof decoded.id !== 'string' ||
-      !decoded.id
-    ) {
-      return null;
-    }
-    return decoded;
-  } catch {
-    return null;
-  }
-};
+): SearchScoreCursor | null => decodeCursor(cursor, isSearchScoreCursor);
 
 export interface TrigramSearchRow {
   id: string;

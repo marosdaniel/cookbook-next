@@ -1,5 +1,6 @@
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
+import { isAdminRole } from '@/server/modules/admin/policy';
 import {
   cached,
   cacheKeys,
@@ -18,6 +19,32 @@ import {
 } from '@/server/platform/errors';
 import { resolveQueryLimit } from '@/server/platform/pagination';
 import { UserRepository } from './repository';
+
+const validateFavoriteTarget = async (
+  currentUserId: string,
+  currentUserRole: string,
+  targetUserId: string,
+  recipeId: string,
+): Promise<DomainError | null> => {
+  if (currentUserId !== targetUserId && !isAdminRole(currentUserRole)) {
+    return domainForbidden(
+      'UNAUTHORIZED',
+      'Unauthorized operation - insufficient permissions',
+    );
+  }
+
+  const user = await UserRepository.findById(targetUserId);
+  if (!user) {
+    return domainNotFound('USER_NOT_FOUND', 'User not found');
+  }
+
+  const recipe = await UserRepository.findRecipeById(recipeId);
+  if (!recipe) {
+    return domainNotFound('RECIPE_NOT_FOUND', 'Recipe not found');
+  }
+
+  return null;
+};
 
 export const FavoritesService = {
   async getFavoriteRecipes(userId: string, limit?: number) {
@@ -47,23 +74,14 @@ export const FavoritesService = {
     targetUserId: string,
     recipeId: string,
   ): Promise<Result<DomainSuccess, DomainError>> {
-    if (currentUserId !== targetUserId && currentUserRole !== 'ADMIN') {
-      return err(
-        domainForbidden(
-          'UNAUTHORIZED',
-          'Unauthorized operation - insufficient permissions',
-        ),
-      );
-    }
-
-    const user = await UserRepository.findById(targetUserId);
-    if (!user) {
-      return err(domainNotFound('USER_NOT_FOUND', 'User not found'));
-    }
-
-    const recipe = await UserRepository.findRecipeById(recipeId);
-    if (!recipe) {
-      return err(domainNotFound('RECIPE_NOT_FOUND', 'Recipe not found'));
+    const validationError = await validateFavoriteTarget(
+      currentUserId,
+      currentUserRole,
+      targetUserId,
+      recipeId,
+    );
+    if (validationError) {
+      return err(validationError);
     }
 
     const alreadyFavorite = await UserRepository.hasFavoriteRecipe(
@@ -94,23 +112,14 @@ export const FavoritesService = {
     targetUserId: string,
     recipeId: string,
   ): Promise<Result<DomainSuccess, DomainError>> {
-    if (currentUserId !== targetUserId && currentUserRole !== 'ADMIN') {
-      return err(
-        domainForbidden(
-          'UNAUTHORIZED',
-          'Unauthorized operation - insufficient permissions',
-        ),
-      );
-    }
-
-    const user = await UserRepository.findById(targetUserId);
-    if (!user) {
-      return err(domainNotFound('USER_NOT_FOUND', 'User not found'));
-    }
-
-    const recipe = await UserRepository.findRecipeById(recipeId);
-    if (!recipe) {
-      return err(domainNotFound('RECIPE_NOT_FOUND', 'Recipe not found'));
+    const validationError = await validateFavoriteTarget(
+      currentUserId,
+      currentUserRole,
+      targetUserId,
+      recipeId,
+    );
+    if (validationError) {
+      return err(validationError);
     }
 
     const alreadyFavorite = await UserRepository.hasFavoriteRecipe(

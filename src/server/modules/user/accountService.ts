@@ -11,10 +11,12 @@ import {
 import {
   assertAdminRole,
   assertDestructiveConfirmation,
+  isAdminRole,
 } from '@/server/modules/admin/policy';
 import { invalidateCacheScope } from '@/server/platform/cache';
+import { schedulePostResponseTask } from '@/server/platform/postResponse';
 import { DeletionRepository } from './deletionRepository';
-import { PasswordService, schedulePostResponseTask } from './passwordService';
+import { PasswordService } from './passwordService';
 import { UserRepository } from './repository';
 import {
   USER_REGISTER_DOMAIN_KEYS,
@@ -165,7 +167,7 @@ export const AccountService = {
   },
 
   async deleteUser(currentUserId: string, currentUserRole: string, id: string) {
-    if (currentUserRole !== 'ADMIN' && currentUserId !== id) {
+    if (!isAdminRole(currentUserRole) && currentUserId !== id) {
       return throwCustomError(
         'Unauthorized operation - insufficient permissions',
         ErrorTypes.FORBIDDEN,
