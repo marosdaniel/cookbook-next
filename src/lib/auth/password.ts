@@ -16,12 +16,10 @@ const ARGON2_OPTIONS = {
 let cachedDummyHashPromise: Promise<string> | null = null;
 
 const getDummyHash = (): Promise<string> => {
-  if (!cachedDummyHashPromise) {
-    cachedDummyHashPromise = argon2.hash(
-      'dummy-timing-equalization-password',
-      ARGON2_OPTIONS,
-    );
-  }
+  cachedDummyHashPromise ??= argon2.hash(
+    'dummy-timing-equalization-password',
+    ARGON2_OPTIONS,
+  );
   return cachedDummyHashPromise;
 };
 

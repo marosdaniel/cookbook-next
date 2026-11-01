@@ -1,6 +1,4 @@
-import { err, ok, type Result, ResultAsync } from 'neverthrow';
-
-export { err, ok, type Result, ResultAsync };
+export { err, ok, type Result, ResultAsync } from 'neverthrow';
 
 export type DomainErrorCode =
   | 'NOT_FOUND'

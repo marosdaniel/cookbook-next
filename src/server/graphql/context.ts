@@ -8,13 +8,11 @@ import {
   createUserRecipesLoader,
 } from '@/lib/dataloader/loaders';
 import { prisma } from '@/lib/prisma/prisma';
-import {
-  type RequestStoreContext,
-  requestStorage,
-} from '@/server/platform/requestContext';
+import { requestStorage } from '@/server/platform/requestContext';
 import type { GraphQLContext } from '@/types/graphql/context';
 
-export { type RequestStoreContext, requestStorage };
+export type { RequestStoreContext } from '@/server/platform/requestContext';
+export { requestStorage };
 
 export const resolveSessionSafely = getSessionSafely;
 

@@ -6,13 +6,7 @@ import type {
 import { prisma } from '@/lib/prisma/prisma';
 import { ErrorTypes } from '@/lib/validation/errorCatalog';
 import { throwCustomError } from '@/lib/validation/throwCustomError';
-import {
-  assertPresent,
-  buildRecipeData,
-  resolveRecipeMetadata,
-  sanitizeRecipeInput,
-  validateRequiredFields,
-} from '@/server/modules/recipe/mapper';
+import { assertPresent } from '@/server/modules/recipe/mapper';
 import type {
   NormalizablePreparationStep,
   NormalizedRecipeInput,
@@ -25,7 +19,7 @@ export {
   resolveRecipeMetadata,
   sanitizeRecipeInput,
   validateRequiredFields,
-};
+} from '@/server/modules/recipe/mapper';
 
 /* ─── Auth Guard ─────────────────────────────── */
 

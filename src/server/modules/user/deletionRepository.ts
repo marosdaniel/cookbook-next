@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma/prisma';
 export const DELETION_INVALIDATION_LIMIT = 5000;
 
 export const DeletionRepository = {
-  async findRecipeIdentifiersNotAuthoredBy(actorId: string) {
+  findRecipeIdentifiersNotAuthoredBy(actorId: string) {
     return prisma.recipe.findMany({
       where: { createdBy: { not: actorId } },
       select: { id: true, slug: true, createdBy: true },
@@ -24,7 +24,7 @@ export const DeletionRepository = {
 
   // An admin deleting somebody else's account is always audited, in the same
   // transaction as the delete itself.
-  async deleteByIdWithAudit(params: {
+  deleteByIdWithAudit(params: {
     actorId: string;
     targetId: string;
     deletedRecipeCount: number;

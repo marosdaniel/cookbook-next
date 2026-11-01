@@ -6,7 +6,7 @@ import { DEFAULT_QUERY_MAX_LIMIT } from '@/server/platform/pagination';
 const LATEST_RECIPES_LIMIT = 4;
 
 export const UserRepository = {
-  async findPublicById(id: string) {
+  findPublicById(id: string) {
     return prisma.user.findUnique({
       where: { id },
       select: {
@@ -23,11 +23,11 @@ export const UserRepository = {
     });
   },
 
-  async findById(id: string) {
+  findById(id: string) {
     return prisma.user.findUnique({ where: { id } });
   },
 
-  async findByIdWithRecipeIdentifiers(id: string) {
+  findByIdWithRecipeIdentifiers(id: string) {
     return prisma.user.findUnique({
       where: { id },
       include: {
@@ -38,13 +38,13 @@ export const UserRepository = {
     });
   },
 
-  async findByEmail(email: string) {
+  findByEmail(email: string) {
     return prisma.user.findUnique({
       where: { email },
     });
   },
 
-  async findByUserNameOrEmailInsensitive(userName: string, email: string) {
+  findByUserNameOrEmailInsensitive(userName: string, email: string) {
     return prisma.user.findFirst({
       where: {
         OR: [
@@ -55,7 +55,7 @@ export const UserRepository = {
     });
   },
 
-  async findWithFavoriteRecipes(userId: string, take?: number) {
+  findWithFavoriteRecipes(userId: string, take?: number) {
     return prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -91,7 +91,7 @@ export const UserRepository = {
     ]);
   },
 
-  async createUser(data: {
+  createUser(data: {
     firstName: string;
     lastName: string;
     userName: string;
@@ -108,7 +108,7 @@ export const UserRepository = {
     });
   },
 
-  async updatePasswordAndIncrementSession(
+  updatePasswordAndIncrementSession(
     userId: string,
     hashedPassword: string,
     clearResetToken: boolean = false,
@@ -125,11 +125,7 @@ export const UserRepository = {
     });
   },
 
-  async savePasswordResetToken(
-    email: string,
-    hashedToken: string,
-    expiresAt: Date,
-  ) {
+  savePasswordResetToken(email: string, hashedToken: string, expiresAt: Date) {
     return prisma.user.update({
       where: { email },
       data: {
@@ -139,7 +135,7 @@ export const UserRepository = {
     });
   },
 
-  async findValidResetTokenUser(hashedToken: string) {
+  findValidResetTokenUser(hashedToken: string) {
     return prisma.user.findFirst({
       where: {
         resetPasswordToken: hashedToken,
@@ -148,7 +144,7 @@ export const UserRepository = {
     });
   },
 
-  async updateProfile(
+  updateProfile(
     userId: string,
     data: { firstName: string; lastName: string; locale: string },
   ) {
@@ -158,13 +154,13 @@ export const UserRepository = {
     });
   },
 
-  async deleteById(id: string) {
+  deleteById(id: string) {
     return prisma.user.delete({ where: { id } });
   },
 
   // The delete and its AuditLog entry must succeed or fail together, so both
   // always run inside a single interactive transaction.
-  async deleteAllUsersExcept(actorId: string) {
+  deleteAllUsersExcept(actorId: string) {
     return prisma.$transaction(async (tx) => {
       const deleted = await tx.user.deleteMany({
         where: { id: { not: actorId } },
@@ -182,7 +178,7 @@ export const UserRepository = {
     });
   },
 
-  async deleteAllRecipesExceptAuthor(actorId: string) {
+  deleteAllRecipesExceptAuthor(actorId: string) {
     return prisma.$transaction(async (tx) => {
       const deleted = await tx.recipe.deleteMany({
         where: { createdBy: { not: actorId } },
@@ -200,7 +196,7 @@ export const UserRepository = {
     });
   },
 
-  async findRecipeById(recipeId: string) {
+  findRecipeById(recipeId: string) {
     return prisma.recipe.findUnique({ where: { id: recipeId } });
   },
 
@@ -211,21 +207,21 @@ export const UserRepository = {
     return Boolean(match);
   },
 
-  async connectFavoriteRecipe(userId: string, recipeId: string) {
+  connectFavoriteRecipe(userId: string, recipeId: string) {
     return prisma.user.update({
       where: { id: userId },
       data: { favoriteRecipes: { connect: { id: recipeId } } },
     });
   },
 
-  async disconnectFavoriteRecipe(userId: string, recipeId: string) {
+  disconnectFavoriteRecipe(userId: string, recipeId: string) {
     return prisma.user.update({
       where: { id: userId },
       data: { favoriteRecipes: { disconnect: { id: recipeId } } },
     });
   },
 
-  async findFollow(followerId: string, followingId: string) {
+  findFollow(followerId: string, followingId: string) {
     return prisma.follow.findUnique({
       where: {
         followerId_followingId: {
@@ -236,13 +232,13 @@ export const UserRepository = {
     });
   },
 
-  async createFollow(followerId: string, followingId: string) {
+  createFollow(followerId: string, followingId: string) {
     return prisma.follow.create({
       data: { followerId, followingId },
     });
   },
 
-  async deleteFollow(followerId: string, followingId: string) {
+  deleteFollow(followerId: string, followingId: string) {
     return prisma.follow.delete({
       where: {
         followerId_followingId: {

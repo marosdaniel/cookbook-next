@@ -39,7 +39,7 @@ describe('structured pino logger', () => {
       },
     );
 
-    expect(chunks.length).toBe(1);
+    expect(chunks).toHaveLength(1);
     const parsed = JSON.parse(chunks[0] ?? '{}') as Record<string, unknown>;
     expect(parsed.requestId).toBe('req-abc-123');
     expect(parsed.event).toBe('auth.attempt');

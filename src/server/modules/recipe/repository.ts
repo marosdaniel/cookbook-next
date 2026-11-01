@@ -98,7 +98,7 @@ export type RecipeWithAuthor = Prisma.RecipeGetPayload<{
 }>;
 
 export const RecipeRepository = {
-  async findSlugConflict(slug: string, excludeRecipeId?: string) {
+  findSlugConflict(slug: string, excludeRecipeId?: string) {
     return prisma.recipe.findFirst({
       where: {
         slug: { equals: slug, mode: 'insensitive' },
@@ -108,7 +108,7 @@ export const RecipeRepository = {
     });
   },
 
-  async searchPaginatedByTrigram(opts: {
+  searchPaginatedByTrigram(opts: {
     searchTerm: string;
     filter?: RecipeFilterInput;
     cursor?: SearchScoreCursor | null;
@@ -148,20 +148,20 @@ export const RecipeRepository = {
     ]);
   },
 
-  async findByIdWithRelations(id: string) {
+  findByIdWithRelations(id: string) {
     return prisma.recipe.findUnique({
       where: { id },
       include: { ingredients: true, preparationSteps: true },
     });
   },
 
-  async findById(id: string) {
+  findById(id: string) {
     return prisma.recipe.findUnique({
       where: { id },
     });
   },
 
-  async findBySlugOrIdWithAuthor(idOrSlug: string) {
+  findBySlugOrIdWithAuthor(idOrSlug: string) {
     return prisma.recipe.findFirst({
       where: { OR: [{ slug: idOrSlug }, { id: idOrSlug }] },
       include: {
@@ -190,7 +190,7 @@ export const RecipeRepository = {
     ]);
   },
 
-  async createWithRelations(
+  createWithRelations(
     userId: string,
     data: Omit<
       Prisma.RecipeUncheckedCreateInput,
@@ -214,7 +214,7 @@ export const RecipeRepository = {
     });
   },
 
-  async updateWithRelations(
+  updateWithRelations(
     recipeId: string,
     data: Omit<
       Prisma.RecipeUncheckedUpdateInput,
@@ -240,13 +240,13 @@ export const RecipeRepository = {
     });
   },
 
-  async deleteById(id: string) {
+  deleteById(id: string) {
     return prisma.recipe.delete({
       where: { id },
     });
   },
 
-  async upsertRating(recipeId: string, userId: string, ratingValue: number) {
+  upsertRating(recipeId: string, userId: string, ratingValue: number) {
     return prisma.rating.upsert({
       where: {
         recipeId_userId: { recipeId, userId },
@@ -260,7 +260,7 @@ export const RecipeRepository = {
     });
   },
 
-  async deleteRating(recipeId: string, userId: string) {
+  deleteRating(recipeId: string, userId: string) {
     return prisma.rating.delete({
       where: { recipeId_userId: { recipeId, userId } },
     });
