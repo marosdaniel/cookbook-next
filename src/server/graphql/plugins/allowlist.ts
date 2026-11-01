@@ -35,8 +35,11 @@ export const assertAllowedDocument = (document: DocumentNode | string) => {
 export const allowlistPlugin: ApolloServerPlugin<GraphQLContext> = {
   requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
     return Promise.resolve({
-      async didResolveOperation(requestContext) {
-        assertAllowedDocument(requestContext.document);
+      didResolveOperation(requestContext) {
+        return new Promise<void>((resolve) => {
+          assertAllowedDocument(requestContext.document);
+          resolve();
+        });
       },
     });
   },

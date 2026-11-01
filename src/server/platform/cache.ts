@@ -209,13 +209,22 @@ export async function invalidateCacheScope(
 
   try {
     const keys = [...keysToDelete];
-    for (let start = 0; start < keys.length; start += KEY_DELETE_BATCH_SIZE) {
-      await Promise.all(
-        keys
-          .slice(start, start + KEY_DELETE_BATCH_SIZE)
-          .map((key) => currentRedis.del(key)),
-      );
-    }
+    const batches = Array.from(
+      { length: Math.ceil(keys.length / KEY_DELETE_BATCH_SIZE) },
+      (_, index) =>
+        keys.slice(
+          index * KEY_DELETE_BATCH_SIZE,
+          (index + 1) * KEY_DELETE_BATCH_SIZE,
+        ),
+    );
+    // Batches run one after another to keep the Redis load throttled.
+    await batches.reduce<Promise<unknown>>(
+      (previous, batch) =>
+        previous.then(() =>
+          Promise.all(batch.map((key) => currentRedis.del(key))),
+        ),
+      Promise.resolve(),
+    );
 
     if (scope.invalidateRecipeLists) {
       await currentRedis.incr(cacheKeys.recipeListVersion);

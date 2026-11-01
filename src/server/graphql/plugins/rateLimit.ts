@@ -29,6 +29,7 @@ export async function enforceOperationRateLimits(
   }
 
   const checkedGroups = new Set<RateLimitGroupName>();
+  const groupChecks: Array<() => Promise<void>> = [];
 
   for (const fieldName of fieldsToCheck) {
     const groupConfig = getRateLimitGroupForField(fieldName);
@@ -43,28 +44,36 @@ export async function enforceOperationRateLimits(
         ? (context.clientKey ?? 'anonymous')
         : (context.userId ?? context.clientKey ?? 'anonymous');
 
-    const result = await executeRateLimitWithFallback(
-      groupConfig.limiter,
-      groupConfig.fallbackLimiter,
-      key,
-    );
+    groupChecks.push(async () => {
+      const result = await executeRateLimitWithFallback(
+        groupConfig.limiter,
+        groupConfig.fallbackLimiter,
+        key,
+      );
 
-    if (!result.success) {
-      throw new GraphQLError('Too many requests', {
-        extensions: {
-          code: 'RATE_LIMITED',
-          group: groupConfig.group,
-          http: {
-            status: 429,
-            headers: new Map([
-              ['X-RateLimit-Limit', result.limit.toString()],
-              ['X-RateLimit-Remaining', result.remaining.toString()],
-            ]),
+      if (!result.success) {
+        throw new GraphQLError('Too many requests', {
+          extensions: {
+            code: 'RATE_LIMITED',
+            group: groupConfig.group,
+            http: {
+              status: 429,
+              headers: new Map([
+                ['X-RateLimit-Limit', result.limit.toString()],
+                ['X-RateLimit-Remaining', result.remaining.toString()],
+              ]),
+            },
           },
-        },
-      });
-    }
+        });
+      }
+    });
   }
+
+  // Groups run one after another so a rejected group stops the later ones from consuming their quota.
+  await groupChecks.reduce<Promise<void>>(
+    (previous, check) => previous.then(check),
+    Promise.resolve(),
+  );
 }
 
 export const rateLimitPlugin: ApolloServerPlugin<GraphQLContext> = {

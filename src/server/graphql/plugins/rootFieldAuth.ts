@@ -104,16 +104,19 @@ export function assertGraphQLRootFieldsAuthorized(
 export const rootFieldAuthPlugin: ApolloServerPlugin<GraphQLContext> = {
   requestDidStart(): Promise<GraphQLRequestListener<GraphQLContext>> {
     return Promise.resolve({
-      async didResolveOperation(requestContext) {
-        const { operationName, document, operation } = requestContext;
-        const { role } = requestContext.contextValue;
+      didResolveOperation(requestContext) {
+        return new Promise<void>((resolve) => {
+          const { operationName, document, operation } = requestContext;
+          const { role } = requestContext.contextValue;
 
-        assertGraphQLRootFieldsAuthorized(
-          document,
-          operation,
-          operationName,
-          role,
-        );
+          assertGraphQLRootFieldsAuthorized(
+            document,
+            operation,
+            operationName,
+            role,
+          );
+          resolve();
+        });
       },
     });
   },

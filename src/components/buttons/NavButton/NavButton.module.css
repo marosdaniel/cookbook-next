@@ -11,3 +11,13 @@
     0 8px 25px rgba(219, 39, 119, 0.3),
     0 4px 15px rgba(139, 92, 246, 0.2);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .navButton {
+    transition: none;
+  }
+
+  .navButton:hover {
+    transform: none;
+  }
+}
