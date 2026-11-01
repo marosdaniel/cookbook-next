@@ -176,7 +176,7 @@ export const buildRecipeData = (
       : null,
 
     // SEO fields (sanitized)
-    slug: sanitizeOptional(input.slug) ?? null,
+    slug: sanitizeOptional(input.slug) || null,
     seoTitle: sanitizeOptional(input.seoTitle) ?? null,
     seoDescription: sanitizeOptional(input.seoDescription) ?? null,
     socialImage: input.socialImage ?? null,

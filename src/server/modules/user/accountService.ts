@@ -139,18 +139,30 @@ export const AccountService = {
       lastName: rawLastName,
       locale,
     } = userUpdateInput;
-    const firstName = rawFirstName ? sanitizeText(rawFirstName) : rawFirstName;
-    const lastName = rawLastName ? sanitizeText(rawLastName) : rawLastName;
-    if (firstName || lastName) {
-      nameValidationSchema.parse({
-        firstName: firstName || 'placeholder',
-        lastName: lastName || 'placeholder',
-      });
-    }
-
     const user = await UserRepository.findById(userId);
     if (!user) {
       return throwCustomError('User not found', ErrorTypes.NOT_FOUND);
+    }
+
+    const firstName =
+      rawFirstName == null ? undefined : sanitizeText(rawFirstName);
+    const lastName =
+      rawLastName == null ? undefined : sanitizeText(rawLastName);
+    if (firstName !== undefined || lastName !== undefined) {
+      const nameResult = nameValidationSchema.safeParse({
+        firstName: firstName ?? user.firstName,
+        lastName: lastName ?? user.lastName,
+      });
+      if (!nameResult.success) {
+        return throwCustomError(
+          nameResult.error.issues[0]?.message || 'Validation failed',
+          ErrorTypes.VALIDATION_ERROR,
+          {
+            messageKey: USER_REGISTER_DOMAIN_KEYS.VALIDATION_ERROR,
+            zodIssues: nameResult.error.issues,
+          },
+        );
+      }
     }
 
     const updatedUser = await UserRepository.updateProfile(userId, {
