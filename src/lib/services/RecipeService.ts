@@ -84,6 +84,86 @@ type RecipeListResult = {
   };
 };
 
+function emptyRecipeListResult(): RecipeListResult {
+  return {
+    recipes: [],
+    totalRecipes: 0,
+    pageInfo: { hasNextPage: false, endCursor: null },
+  };
+}
+
+async function findSearchRecipePage(
+  searchTerm: string,
+  filter: RecipeFilterInput | undefined,
+  after: string | undefined,
+  limit: number | undefined,
+): Promise<RecipeListResult | null> {
+  const rows = await RecipeRepository.searchPaginatedByTrigram({
+    searchTerm,
+    filter,
+    cursor: decodeSearchScoreCursor(after),
+    take: limit ? limit + 1 : undefined,
+  });
+
+  if (rows.length === 0) return null;
+
+  const totalRecipes = Number(rows[0]?.totalCount ?? rows.length);
+  const hasNextPage = Boolean(limit && rows.length > limit);
+  const pageRows = hasNextPage ? rows.slice(0, limit) : rows;
+  const pageRecipes = await RecipeRepository.findManyListByIds(
+    pageRows.map((row) => row.id),
+  );
+  const lastRow = pageRows.at(-1);
+
+  return {
+    recipes: pageRecipes,
+    totalRecipes,
+    pageInfo: {
+      hasNextPage,
+      endCursor: lastRow
+        ? encodeSearchScoreCursor({
+            score: Number(lastRow.score),
+            id: lastRow.id,
+          })
+        : null,
+    },
+  };
+}
+
+async function findCreatedAtRecipePage(
+  filter: RecipeFilterInput | undefined,
+  after: string | undefined,
+  limit: number | undefined,
+): Promise<RecipeListResult> {
+  const cursor = decodeCreatedAtCursor(after);
+  const where = buildWhereClause(filter);
+  if (cursor) {
+    where.OR = [
+      { createdAt: { lt: new Date(cursor.createdAt) } },
+      { createdAt: new Date(cursor.createdAt), id: { lt: cursor.id } },
+    ];
+  }
+
+  const [recipes, totalRecipes] = await RecipeRepository.findManyListAndCount({
+    where,
+    countWhere: buildWhereClause(filter),
+    take: limit ? limit + 1 : undefined,
+  });
+
+  const hasNextPage = Boolean(limit && recipes.length > limit);
+  const pageRecipes = hasNextPage ? recipes.slice(0, limit) : recipes;
+  const lastRecipe = pageRecipes.at(-1);
+
+  return {
+    recipes: pageRecipes,
+    totalRecipes,
+    pageInfo: {
+      hasNextPage,
+      endCursor: lastRecipe ? encodeCreatedAtCursor(lastRecipe) : null,
+    },
+  };
+}
+
 export const RecipeService = {
   // Queries
   async getRecipes(limit?: number, filter?: RecipeFilterInput, after?: string) {
@@ -102,82 +182,23 @@ export const RecipeService = {
     const searchTerm = (filter?.search ?? filter?.title)?.trim();
 
     if (searchTerm) {
-      const searchCursor = decodeSearchScoreCursor(after);
-      const rows = await RecipeRepository.searchPaginatedByTrigram({
+      const searchResult = await findSearchRecipePage(
         searchTerm,
         filter,
-        cursor: searchCursor,
-        take: normalizedLimit ? normalizedLimit + 1 : undefined,
-      });
-
-      if (rows.length === 0) {
-        return {
-          recipes: [],
-          totalRecipes: 0,
-          pageInfo: { hasNextPage: false, endCursor: null },
-        };
-      }
-
-      const totalRecipes = Number(rows[0]?.totalCount ?? rows.length);
-      const hasNextPage = Boolean(
-        normalizedLimit && rows.length > normalizedLimit,
+        after,
+        normalizedLimit,
       );
-      const pageRows = hasNextPage ? rows.slice(0, normalizedLimit) : rows;
-      const pageRecipes = await RecipeRepository.findManyListByIds(
-        pageRows.map((row) => row.id),
-      );
-      const lastRow = pageRows.at(-1);
-
-      const searchResult: RecipeListResult = {
-        recipes: pageRecipes,
-        totalRecipes,
-        pageInfo: {
-          hasNextPage,
-          endCursor: lastRow
-            ? encodeSearchScoreCursor({
-                score: Number(lastRow.score),
-                id: lastRow.id,
-              })
-            : null,
-        },
-      };
+      if (!searchResult) return emptyRecipeListResult();
 
       await setCachedValue(cacheKey, searchResult, LIST_CACHE_TTL_SECONDS);
       return searchResult;
     }
 
-    const cursor = decodeCreatedAtCursor(after);
-    const where = buildWhereClause(filter);
-    if (cursor) {
-      where.OR = [
-        { createdAt: { lt: new Date(cursor.createdAt) } },
-        { createdAt: new Date(cursor.createdAt), id: { lt: cursor.id } },
-      ];
-    }
-
-    const [recipes, totalRecipes] = await RecipeRepository.findManyListAndCount(
-      {
-        where,
-        countWhere: buildWhereClause(filter),
-        take: normalizedLimit ? normalizedLimit + 1 : undefined,
-      },
+    const result = await findCreatedAtRecipePage(
+      filter,
+      after,
+      normalizedLimit,
     );
-
-    const hasNextPage = Boolean(
-      normalizedLimit && recipes.length > normalizedLimit,
-    );
-    const pageRecipes = hasNextPage
-      ? recipes.slice(0, normalizedLimit)
-      : recipes;
-    const lastRecipe = pageRecipes.at(-1);
-    const result = {
-      recipes: pageRecipes,
-      totalRecipes,
-      pageInfo: {
-        hasNextPage,
-        endCursor: lastRecipe ? encodeCreatedAtCursor(lastRecipe) : null,
-      },
-    };
 
     await setCachedValue(cacheKey, result, LIST_CACHE_TTL_SECONDS);
 

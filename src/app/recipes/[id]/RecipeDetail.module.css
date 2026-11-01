@@ -201,6 +201,14 @@
   box-shadow: var(--mantine-shadow-md);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .stepCard,
+  .stepCard:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
 .stepsTimeline {
   position: relative;
   display: grid;

@@ -41,13 +41,14 @@ const AdminShell = ({ children }: Readonly<PropsWithChildren>) => {
   const isUsers = pathname.startsWith(ADMIN_ROUTES.USERS);
   const isMetadata = pathname.startsWith(ADMIN_ROUTES.METADATA);
 
-  const currentSectionKey = isDashboard
-    ? 'dashboard.title'
-    : isUsers
-      ? 'users.title'
-      : isMetadata
-        ? 'navMetadata'
-        : null;
+  let currentSectionKey: string | null = null;
+  if (isDashboard) {
+    currentSectionKey = 'dashboard.title';
+  } else if (isUsers) {
+    currentSectionKey = 'users.title';
+  } else if (isMetadata) {
+    currentSectionKey = 'navMetadata';
+  }
 
   return (
     <AppShell

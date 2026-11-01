@@ -37,6 +37,14 @@
   box-shadow: var(--mantine-shadow-md);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
 .imageSection {
   position: relative;
   z-index: 1;

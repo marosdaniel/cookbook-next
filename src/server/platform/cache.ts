@@ -139,14 +139,10 @@ export interface CacheInvalidationScope {
   invalidateRecipeLists?: boolean;
 }
 
-export async function invalidateCacheScope(
+function collectRecipeScopeKeys(
   scope: CacheInvalidationScope,
-): Promise<void> {
-  const currentRedis = redis;
-  if (!currentRedis) return;
-
-  const keysToDelete = new Set<string>();
-
+  keysToDelete: Set<string>,
+) {
   const addRecipeKeys = (recipeId: string) => {
     keysToDelete.add(cacheKeys.recipeDetail(recipeId));
     keysToDelete.add(cacheKeys.recipeLookup(recipeId));
@@ -171,7 +167,12 @@ export async function invalidateCacheScope(
       keysToDelete.add(cacheKeys.userRecipes(authorId, undefined));
     }
   }
+}
 
+function collectUserScopeKeys(
+  scope: CacheInvalidationScope,
+  keysToDelete: Set<string>,
+) {
   if (scope.favoriteUserId) {
     keysToDelete.add(cacheKeys.userFavorites(scope.favoriteUserId, undefined));
   }
@@ -194,6 +195,17 @@ export async function invalidateCacheScope(
   if (scope.metadataActive) {
     keysToDelete.add(cacheKeys.metadataActive);
   }
+}
+
+export async function invalidateCacheScope(
+  scope: CacheInvalidationScope,
+): Promise<void> {
+  const currentRedis = redis;
+  if (!currentRedis) return;
+
+  const keysToDelete = new Set<string>();
+  collectRecipeScopeKeys(scope, keysToDelete);
+  collectUserScopeKeys(scope, keysToDelete);
 
   try {
     const keys = [...keysToDelete];

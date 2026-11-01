@@ -36,3 +36,17 @@
 .unfollowButton:hover {
   transform: scale(1.02);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .headerIcon {
+    animation: none;
+  }
+
+  .userCard,
+  .userCard:hover,
+  .unfollowButton,
+  .unfollowButton:hover {
+    transition: none;
+    transform: none;
+  }
+}

@@ -21,12 +21,12 @@ export async function enforceOperationRateLimits(
   operationName: string | null | undefined,
   context: Pick<GraphQLContext, 'userId' | 'clientKey'>,
 ): Promise<void> {
-  const fieldsToCheck =
-    doc && op
-      ? getOperationRootFields(doc, op)
-      : operationName
-        ? [operationName]
-        : [];
+  let fieldsToCheck: string[] = [];
+  if (doc && op) {
+    fieldsToCheck = getOperationRootFields(doc, op);
+  } else if (operationName) {
+    fieldsToCheck = [operationName];
+  }
 
   const checkedGroups = new Set<RateLimitGroupName>();
 
